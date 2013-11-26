@@ -28,16 +28,16 @@ Examples and Background
 
 You can also use Plotly and IPython to make interactive graphs. 
 
-- A [Plotly tutorial](http://nbviewer.ipython.org/7576511) on using the [Plotly graphing API](https://plot.ly/api/Python) to graphs with multiple axes, subplots, and insets. 
+- A [Plotly demo](http://nbviewer.ipython.org/7576511) on using the [Plotly graphing API](https://plot.ly/api/Python) to make interactive, collaborative, publication-quality graphs, explained more fully by this [talk](https://www.youtube.com/watch?v=zG8FYPFU9n4).
 
-- A [Plotly demo](http://nbviewer.ipython.org/7628933) on using the [Plotly graphing API](https://plot.ly/api/Python) to make interactive, collaborative, publication-quality graphs, explained more fully by this [talk](https://www.youtube.com/watch?v=zG8FYPFU9n4).
+- A [Plotly tutorial](http://nbviewer.ipython.org/7628933) on using the [Plotly graphing API](https://plot.ly/api/Python) to graphs with multiple axes, subplots, and insets. 
 
 - A [demonstration and tutorial](http://nbviewer.ipython.org/7551139) on making interactive graphs with [Plotly](https://plot.ly/) and Julia.
 
 - [Plotly graphs in the Washington Post, embedded as an iframe](www.washingtonpost.com/blogs/wonkblog/wp/2013/06/14/do-low-taxes-on-the-rich-leave-the-middle-class-with-lower-wages/)
 
 Use cases
-_________ 
+------------
 
 - Stats, physics, and sciences, for stats, fits, and functions [beta distribution](https://plot.ly/~jackp/705/)
 
