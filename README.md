@@ -1,4 +1,4 @@
-Plotly MATLAB-API: Data Visualization and Analytics 
+MATLAB-API: Data Visualization and Analytics 
 ======
 
 Plotly's scientific graphing libraries let you plot and share interactive, publication-quality graphs and charts
