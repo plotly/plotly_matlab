@@ -28,8 +28,10 @@ function valstr = m2json(val)
         else
             valstr = 'false';
         end
+    elseif isinf(val)
+        valstr = 'null'
+    elseif isnan(val)
+        valstr = 'null'
     else
         valstr = ''; % wtf is it?
-    end   
-    valstr = strrep(valstr, 'Inf', 'null');
-    valstr = strrep(valstr, 'NaN', 'null');
+    end
