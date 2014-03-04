@@ -13,7 +13,6 @@ for i=1:numel(c)
     if cn(i)<1
         cn(i)=1;
     end
-    display(cn(i))
     color_cell{i} = parseColor(colormap(cn(i),:));
 end
 

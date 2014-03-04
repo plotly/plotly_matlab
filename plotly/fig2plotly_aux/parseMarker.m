@@ -47,8 +47,7 @@ function marker_str = parseMarker(d, CLim, colormap)
         color_ref = d.Color;
     end
     
-    color_field = d.MarkerEdgeColor;
-    
+    color_field = d.MarkerEdgeColor;    
     colors = setColorProperty(color_field, color_ref, CLim, colormap);
     if numel(colors)==1
         if numel(colors{1})>0
@@ -59,7 +58,6 @@ function marker_str = parseMarker(d, CLim, colormap)
     end
     
     color_field = d.MarkerFaceColor;
-    display(color_field)
     colors = setColorProperty(color_field, color_ref, CLim, colormap);
     if numel(colors)==1
         if numel(colors{1})>0
@@ -68,49 +66,6 @@ function marker_str = parseMarker(d, CLim, colormap)
     else
         marker_str.color = colors;
     end
-    
-%     
-%     %direct colors?
-%     if size(color_ref, 2)==3
-%         
-%         %single color
-%         if size(color_ref, 1)==1
-%             if strcmp('flat', d.MarkerEdgeColor) || strcmp('auto', d.MarkerEdgeColor)
-%                 marker_str.line.color = parseColor(color_ref);
-%             else
-%                 marker_str.line.color = parseColor(d.MarkerEdgeColor);
-%             end
-%             if strcmp('flat', d.MarkerFaceColor) || strcmp('auto', d.MarkerFaceColor)
-%                 marker_str.color = parseColor(color_ref);
-%             else
-%                 marker_str.color = parseColor(d.MarkerFaceColor);
-%             end
-%         else
-%             %TODO: multiple colors
-%         end
-%         
-%     else
-%         if size(color_ref, 1)==numel(d.XData)
-%             
-%             if strcmp('flat', d.MarkerEdgeColor) || strcmp('auto', d.MarkerEdgeColor)
-%                 marker_str.line.color = mapColors(color_ref, CLim, colormap);
-%             else
-%                 marker_str.line.color = parseColor(d.MarkerEdgeColor);
-%             end
-%             if strcmp('flat', d.MarkerFaceColor) || strcmp('auto', d.MarkerFaceColor)
-%                 marker_str.color = mapColors(color_ref, CLim, colormap);
-%             else
-%                 marker_str.color = parseColor(d.MarkerFaceColor);
-%             end
-%         end
-%     end
-%     
-%     if strcmp('none', d.MarkerEdgeColor)
-%         marker_str.line.color = 'rgba(0,0,0,0)';
-%     end
-%     if strcmp('none', d.MarkerFaceColor)
-%         marker_str.color = 'rgba(0,0,0,0)';
-%     end
-%     
+ 
     
 end

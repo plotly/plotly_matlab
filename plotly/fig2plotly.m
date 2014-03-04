@@ -16,7 +16,7 @@ response = plotly(data, struct('layout', layout, ...
     'filename',plot_name, ...
 	'fileopt', 'overwrite'));
 
-display('Check out your plot at:')
+display('Done! Check out your plot at:')
 display(response.url)
 
 end

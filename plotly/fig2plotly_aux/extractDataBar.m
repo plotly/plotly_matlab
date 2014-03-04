@@ -53,7 +53,6 @@ else
     end
 end
 colors = setColorProperty(color_field, color_ref, CLim, colormap);
-display(colors)
 if numel(colors{1})>0
     data.marker.line.color = colors{1};
 end
@@ -67,7 +66,6 @@ else
     end
 end
 colors = setColorProperty(color_field, color_ref, CLim, colormap);
-display(colors)
 if numel(colors{1})>0
     data.marker.color = colors{1};
 end

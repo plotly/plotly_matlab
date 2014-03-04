@@ -83,7 +83,7 @@ for i=axis_num:-1:1
                         %TODO: improve condition to differentiate between
                         %scatter and bar chart
                         if isfield(m_data, 'BarLayout')
-                            display('hggroup bar plot!')
+                            %bar plot
                             [data{data_counter} layout] = extractDataBar(m_data, layout, xid, yid, m_axis.CLim, f.Colormap);
                             data_counter = data_counter+1;
                             % copy in bar gaps
