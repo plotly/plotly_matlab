@@ -1,5 +1,5 @@
 function st = makecall(args, un, key, origin, structargs)
-    version = '0.2';
+    version = '0.4.2';
     platform = 'MATLAB';
     
     args = m2json(args);
