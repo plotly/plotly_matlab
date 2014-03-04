@@ -4,7 +4,7 @@ MATLAB-API: Data Visualization and Analytics
 Plotly's scientific graphing libraries let you make and share interactive, publication-quality graphs
 in your browser. Plotly's online graphing tools can interface with your desktop environment, allowing you to import or stream data. Then, style beautiful graphs with code and Plotly's online interface. Easily share your data and graphs publicly with a URL or privately with your team.
 
-Gallery Examples
+Gallery Examples 
 -------------
 
 Find these examples and the code used to create them [here](https://plot.ly/api).
