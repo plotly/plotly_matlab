@@ -72,6 +72,7 @@ for i=axis_num:-1:1
                         end
                         
                     end
+
                     if strcmp('patch',m_data.Type)
                         %area plot
                         data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap);
@@ -106,14 +107,7 @@ for i=axis_num:-1:1
                         
                     end
                     
-                    if strcmp('text',m_data.Type)
-                        annot_tmp = extractDataAnnotation(m_data, xid, yid);
-                        if numel(annot_tmp)>0
-                            annotations{annot_counter} = annot_tmp;
-                            annot_counter = annot_counter+1;
-                        end
-                        
-                    end
+                    
                     
                     
                 end

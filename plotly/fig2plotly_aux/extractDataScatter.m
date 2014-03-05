@@ -51,13 +51,30 @@ end
 
 %define mode
 if marker_bool && line_bool
-data.mode = 'lines+markers';
+    data.mode = 'lines+markers';
 else
     if marker_bool
         data.mode = 'markers';
     end
     if line_bool
         data.mode = 'lines';
+    end
+end
+
+% ERROR BARS
+if isfield(d, 'LData')
+    data.error_y.type = 'data';
+    data.error_y.array = d.LData;
+    data.error_y.visible = true;
+    if isfield(d, 'Color') && size(d.Color,2)==3
+        data.error_y.color = parseColor(d.Color);
+    else
+        data.error_y.color = 'rgb(100, 100, 100)';
+    end
+    if isfield(data, 'marker') ...
+            && isfield(data.marker, 'line') ...
+            && isfield(data.marker.line, 'width')
+        data.error_y.thickness = data.marker.line.width;
     end
 end
 

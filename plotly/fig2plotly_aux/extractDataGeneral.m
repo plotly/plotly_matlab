@@ -16,6 +16,8 @@ end
 
 if numel(d.DisplayName)>0
     data.name = parseText(d.DisplayName);
+else
+    data.showlegend = false;
 end
 
 

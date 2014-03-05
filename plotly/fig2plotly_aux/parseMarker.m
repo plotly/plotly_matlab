@@ -29,7 +29,7 @@ function marker_str = parseMarker(d, CLim, colormap)
     
     %SIZE
     if isfield(d, 'MarkerSize')
-        marker_str.size = d.MarkerSize;
+        marker_str.size = 1.3*d.MarkerSize;
     end
     if isfield(d, 'SizeData')
         if numel(d.SizeData)==1
