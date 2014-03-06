@@ -27,13 +27,23 @@ data.font.color = parseColor(d.Color);
 
 %POSITION
 xd_range = xa.domain(2) - xa.domain(1);
-yd_range = ya.domain(2) - ya.domain(1);
 xr_range = xa.range(2) - xa.range(1);
+if strcmp('linear', xa.type)
+data.x = xa.domain(1)+ (d.Extent(1) - xa.range(1))*xd_range / xr_range;
+data.x = xa.domain(1)+ 0.5*xd_range;
+end
+if strcmp('log', xa.type)
+data.x = xa.domain(1)+ 0.5*xd_range;
+end
+yd_range = ya.domain(2) - ya.domain(1);
 yr_range = ya.range(2) - ya.range(1);
-
-%use center of bounding box as reference
-data.x = xa.domain(1)+ (d.Extent(1)+d.Extent(3)/2 - xa.range(1))*xd_range / xr_range;
-data.y = ya.domain(1)+ (d.Extent(2)+d.Extent(4)/2 - ya.range(1))*yd_range / yr_range;
+if strcmp('linear', ya.type)
+data.y = ya.domain(1)+ (d.Extent(2) - ya.range(1))*yd_range / yr_range;
+data.y = ya.domain(2)+ 0.04;
+end
+if strcmp('log', ya.type)
+data.y = ya.domain(2)+ 0.04;
+end
 
 data.align = d.HorizontalAlignment;
 data.xanchor = 'center';
