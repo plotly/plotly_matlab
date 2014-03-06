@@ -36,7 +36,7 @@ data.x = xa.domain(1)+ (d.Extent(1)+d.Extent(3)/2 - xa.range(1))*xd_range / xr_r
 data.y = ya.domain(1)+ (d.Extent(2)+d.Extent(4)/2 - ya.range(1))*yd_range / yr_range;
 
 data.align = d.HorizontalAlignment;
-data.xanchor = 'middle';
+data.xanchor = 'center';
 data.yanchor = 'middle';
 
 %ARROW

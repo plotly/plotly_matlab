@@ -6,7 +6,7 @@ function [data, layout, title] = convertFigure(f)
 %           get the current figure struct.
 %       data - a cell containing plotly data structs
 %       layout - a plotly layout struct
-%       title - a string with the title of the plot
+%       title - a string with the 
 % 
 % For full documentation and examples, see https://plot.ly/api
 
@@ -31,7 +31,6 @@ layout = {};
 legend={};
 x_axis={};
 y_axis={};
-title = '';
 
 % copy general layout fields
 layout = extractLayoutGeneral(f, layout);
@@ -52,7 +51,6 @@ for i=axis_num:-1:1
             if numel(annot_tmp)>0
                 annotations{annot_counter} = annot_tmp;
                 annot_counter = annot_counter+1;
-                title = annot_tmp.text;
             end
             data_num = numel(m_axis.Children);
             if data_num>0

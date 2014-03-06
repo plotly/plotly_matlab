@@ -36,7 +36,7 @@ data.font.color = parseColor(d.Color);
 data.x = d.Extent(1)+d.Extent(3)/2;
 data.y = d.Extent(2)+d.Extent(4)/2;
 data.align = d.HorizontalAlignment;
-data.xanchor = 'middle';
+data.xanchor = 'center';
 data.yanchor = 'middle';
 
 %ARROW
