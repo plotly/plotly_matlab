@@ -1,9 +1,10 @@
-function [data, layout, title] = convertFigure(f)
+function [data, layout, title] = convertFigure(f, strip_style)
 % convertFigure - converts a matlab figure object into data and layout
 % plotly structs.
 %   [data, layout] = convertFigure(f)
 %       f - root figure object in the form of a struct. Use f = get(gcf); to
 %           get the current figure struct.
+%       strip_style - boolean, strips all stlying to plotly defaults
 %       data - a cell containing plotly data structs
 %       layout - a plotly layout struct
 %       title - a string with the title of the plot
@@ -34,7 +35,7 @@ y_axis={};
 title = '';
 
 % copy general layout fields
-layout = extractLayoutGeneral(f, layout);
+layout = extractLayoutGeneral(f, layout, strip_style);
 
 % For each axes
 %TEMP: reverse order of children
@@ -46,9 +47,9 @@ for i=axis_num:-1:1
     else
         %TODO:do something about this add/replace thing...
         if strcmp('axes',m_axis.Type) %%&& (strcmp('replace',m_axis.NextPlot) || strcmp('new',m_axis.NextPlot))
-            [xid, yid, x_axis y_axis] = extractAxes(m_axis, layout, x_axis, y_axis);
+            [xid, yid, x_axis y_axis] = extractAxes(m_axis, layout, x_axis, y_axis, strip_style);
             m_title = get(m_axis.Title);
-            annot_tmp = extractTitle(m_title, x_axis{xid}, y_axis{yid});
+            annot_tmp = extractTitle(m_title, x_axis{xid}, y_axis{yid}, strip_style);
             if numel(annot_tmp)>0
                 annotations{annot_counter} = annot_tmp;
                 annot_counter = annot_counter+1;
@@ -63,12 +64,12 @@ for i=axis_num:-1:1
                     
                     if strcmp('line',m_data.Type)
                         %line scatter plot
-                        data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap);
+                        data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
                     end
                     if strcmp('text',m_data.Type)
                         %annotation
-                        annot_tmp = extractDataAnnotation(m_data, xid, yid);
+                        annot_tmp = extractDataAnnotation(m_data, xid, yid, strip_style);
                         if numel(annot_tmp)>0
                             annotations{annot_counter} = annot_tmp;
                             annot_counter = annot_counter+1;
@@ -78,8 +79,8 @@ for i=axis_num:-1:1
 
                     if strcmp('patch',m_data.Type)
                         %area plot
-                        data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap);
-                        data{data_counter} = parseFill(m_data, data{data_counter}, m_axis.CLim, f.Colormap);
+                        data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        data{data_counter} = parseFill(m_data, data{data_counter}, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
                     end
                     if strcmp('hggroup',m_data.Type)
@@ -88,7 +89,7 @@ for i=axis_num:-1:1
                         %scatter and bar chart
                         if isfield(m_data, 'BarLayout')
                             %bar plot
-                            [data{data_counter} layout] = extractDataBar(m_data, layout, xid, yid, m_axis.CLim, f.Colormap);
+                            [data{data_counter} layout] = extractDataBar(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                             data_counter = data_counter+1;
                             % copy in bar gaps
                             layout.bargap = 1-m_data.BarWidth;
@@ -97,13 +98,13 @@ for i=axis_num:-1:1
                         else
                             if isfield(m_data, 'Marker') && numel(m_data.Marker)>0
                                 %scatter plot
-                                data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap);
+                                data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                                 data_counter = data_counter+1;
                             end
                             if isfield(m_data, 'EdgeColor') && isfield(m_data, 'FaceColor')
                                 %area plot
-                                data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap);
-                                data{data_counter} = parseFill(m_data, data{data_counter}, m_axis.CLim, f.Colormap);
+                                data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                                data{data_counter} = parseFill(m_data, data{data_counter}, m_axis.CLim, f.Colormap, strip_style);
                                 data_counter = data_counter+1;
                             end
                         end

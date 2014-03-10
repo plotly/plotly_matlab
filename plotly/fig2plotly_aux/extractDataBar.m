@@ -1,4 +1,4 @@
-function [data, layout] = extractDataBar(d, layout, xid, yid, CLim, colormap)
+function [data, layout] = extractDataBar(d, layout, xid, yid, CLim, colormap, strip_style)
 % extractDataScatter - create a data struct for scatter plots
 %   [data, layout] = extractDataBar(d, layout, xid, yid, CLim, colormap)
 %       d - a data struct from matlab describing a scatter plot
@@ -35,41 +35,43 @@ if strcmp(d.BarLayout,'stacked')
     layout.barmode='stack';
 end
 
-
 %other attributes
-m_child = get(d.Children(1));
-if isfield(m_child, 'CData')
-    color_ref = m_child.CData;
-else
-    color_ref = m_child.Color;
-end
-
-color_field=[];
-if isfield(d, 'Color')
-    color_field = d.Color;
-else
-    if isfield(d, 'EdgeColor')
-        color_field = d.EdgeColor;
+if ~strip_style
+    m_child = get(d.Children(1));
+    if isfield(m_child, 'CData')
+        color_ref = m_child.CData;
+    else
+        color_ref = m_child.Color;
     end
-end
-colors = setColorProperty(color_field, color_ref, CLim, colormap);
-if numel(colors{1})>0
-    data.marker.line.color = colors{1};
-end
-
-color_field=[];
-if isfield(d, 'Color')
-    color_field = d.Color;
-else
-    if isfield(d, 'FaceColor')
-        color_field = d.FaceColor;
+    
+    color_field=[];
+    if isfield(d, 'Color')
+        color_field = d.Color;
+    else
+        if isfield(d, 'EdgeColor')
+            color_field = d.EdgeColor;
+        end
     end
+    colors = setColorProperty(color_field, color_ref, CLim, colormap);
+    if numel(colors{1})>0
+        data.marker.line.color = colors{1};
+    end
+    
+    color_field=[];
+    if isfield(d, 'Color')
+        color_field = d.Color;
+    else
+        if isfield(d, 'FaceColor')
+            color_field = d.FaceColor;
+        end
+    end
+    colors = setColorProperty(color_field, color_ref, CLim, colormap);
+    if numel(colors{1})>0
+        data.marker.color = colors{1};
+    end
+    
+    data.marker.line.width = d.LineWidth;
+    
 end
-colors = setColorProperty(color_field, color_ref, CLim, colormap);
-if numel(colors{1})>0
-    data.marker.color = colors{1};
-end
-
-data.marker.line.width = d.LineWidth;
 
 end

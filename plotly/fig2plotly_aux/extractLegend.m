@@ -3,7 +3,7 @@ function legend = extractLegend(a)
 %   [legend] = extractLegend(a)
 %       a - a data struct from matlab describing an axis used as a legend
 %       legend - a plotly legend struct
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 legend = {};
@@ -11,7 +11,6 @@ legend = {};
 if strcmp(a.Visible, 'on')
     
     legend.traceorder = 'reversed';
-    
     %POSITION
     x_ref = a.Position(1)+a.Position(3)/2;
     y_ref = a.Position(2)+a.Position(4)/2;
@@ -40,6 +39,7 @@ if strcmp(a.Visible, 'on')
         legend.y = a.Position(2);
         legend.yanchor = 'bottom';
     end
+    
     
     
 end

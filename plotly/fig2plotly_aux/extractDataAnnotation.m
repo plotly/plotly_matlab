@@ -1,4 +1,4 @@
-function data = extractDataAnnotation(d, xid, yid)
+function data = extractDataAnnotation(d, xid, yid, strip_style)
 % extractDataAnnotation - create a general purpose annotation struct
 %   [data] = extractDataAnnotation(d, xid, yid)
 %       xid,yid - reference axis indices
@@ -25,11 +25,13 @@ data.yref = ['y' num2str(yid)];
 
 %TEXT
 data.text = parseText(d.String);
-if strcmp(d.FontUnits, 'points')
-    data.font.size = 1.3*d.FontSize;
+if ~strip_style
+    if strcmp(d.FontUnits, 'points')
+        data.font.size = 1.3*d.FontSize;
+    end
+    data.font.color = parseColor(d.Color);
+    %TODO: add font type
 end
-data.font.color = parseColor(d.Color);
-%TODO: add font type
 
 %POSITION
 %use center of bounding box as reference

@@ -1,4 +1,4 @@
-function data = extractTitle(d, xa, ya)
+function data = extractTitle(d, xa, ya, strip_style)
 % extractTitle - create an annotation struct for plot titles
 %   [data] = extractTitle(d, xa, ya)
 %       xa,ya - reference axis structs
@@ -19,11 +19,13 @@ data.yref = 'paper';
 
 %TEXT
 data.text = parseText(d.String);
-if strcmp(d.FontUnits, 'points')
-    data.font.size = 1.3*d.FontSize;
+if ~strip_style
+    if strcmp(d.FontUnits, 'points')
+        data.font.size = 1.3*d.FontSize;
+    end
+    data.font.color = parseColor(d.Color);
+    %TODO: add font type
 end
-data.font.color = parseColor(d.Color);
-%TODO: add font type
 
 %POSITION
 xd_range = xa.domain(2) - xa.domain(1);

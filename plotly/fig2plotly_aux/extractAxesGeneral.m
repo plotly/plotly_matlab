@@ -1,16 +1,21 @@
-function [xaxes, yaxes] = extractAxesGeneral(a, layout, xaxes, yaxes)
+function [xaxes, yaxes] = extractAxesGeneral(a, layout, xaxes, yaxes, strip_style)
 % extractAxesGeneral - copy general axes struct attributes
 %   [xaxes, yaxes] = extractAxesGeneral(a, layout, xaxes, yaxes)
 %       a - a data struct from matlab describing an axes
 %       layout - a plotly layout strcut
 %       x_axis, y_axis - axis objects
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 %POSITION
-xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)];
-yaxes.domain = [a.Position(2) a.Position(2)+a.Position(4)] ...
-    *(layout.height-layout.margin.t)/layout.height;
+if ~strip_style
+    xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)];
+    yaxes.domain = [a.Position(2) a.Position(2)+a.Position(4)] ...
+        *(layout.height-layout.margin.t)/layout.height;
+else
+    xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)];
+    yaxes.domain = [a.Position(2) a.Position(2)+a.Position(4)];
+end
 if yaxes.domain(1)>1
     yaxes.domain(1)=1;
 end
@@ -20,55 +25,64 @@ end
 xaxes.side = a.XAxisLocation;
 yaxes.side = a.YAxisLocation;
 
-%TICKS
-if strcmp(a.TickDir, 'in')
-    xaxes.ticks = 'inside';
-    yaxes.ticks = 'inside';
-else
-    xaxes.ticks = 'outside';
-    yaxes.ticks = 'outside';   
-end
-total_length = max(layout.height*(yaxes.domain(2)-yaxes.domain(1)), ...
-    layout.width*(xaxes.domain(2)-xaxes.domain(1)))*a.TickLength(1);
-xaxes.ticklen = total_length;
-yaxes.ticklen = total_length;
-if strcmp(a.Box,'on')
-    xaxes.mirror = 'ticks';
-    yaxes.mirror = 'ticks';
-else
-    xaxes.mirror = false;
-    yaxes.mirror = false;
+if ~strip_style
+    
+    %TICKS
+    if strcmp(a.TickDir, 'in')
+        xaxes.ticks = 'inside';
+        yaxes.ticks = 'inside';
+    else
+        xaxes.ticks = 'outside';
+        yaxes.ticks = 'outside';
+    end
+    total_length = max(layout.height*(yaxes.domain(2)-yaxes.domain(1)), ...
+        layout.width*(xaxes.domain(2)-xaxes.domain(1)))*a.TickLength(1);
+    xaxes.ticklen = total_length;
+    yaxes.ticklen = total_length;
+    if strcmp(a.Box,'on')
+        xaxes.mirror = 'ticks';
+        yaxes.mirror = 'ticks';
+    else
+        xaxes.mirror = false;
+        yaxes.mirror = false;
+    end
+    
+    %TODO: should this multiplier remain?
+    if strcmp(a.FontUnits, 'points')
+        xaxes.tickfont.size = 1.3*a.FontSize;
+        yaxes.tickfont.size = 1.3*a.FontSize;
+    end
+    
+    %LINES
+    if strcmp(a.XGrid, 'on') || strcmp(a.XMinorGrid, 'on')
+        xaxes.showgrid = true;
+    else
+        xaxes.showgrid = false;
+    end
+    if strcmp(a.YGrid, 'on') || strcmp(a.YMinorGrid, 'on')
+        yaxes.showgrid = true;
+    else
+        yaxes.showgrid = false;
+    end
+    xaxes.zeroline = false;
+    yaxes.zeroline = false;
+    
+    %COLORS
+    xaxes.linecolor = parseColor(a.XColor);
+    xaxes.tickcolor = parseColor(a.XColor);
+    xaxes.tickfont.color = parseColor(a.XColor);
+    yaxes.linecolor = parseColor(a.YColor);
+    yaxes.tickcolor = parseColor(a.YColor);
+    yaxes.tickfont.color = parseColor(a.YColor);
+    
 end
 
-%TODO: should this multiplier remain?
-if strcmp(a.FontUnits, 'points')
-    xaxes.tickfont.size = 1.3*a.FontSize;
-    yaxes.tickfont.size = 1.3*a.FontSize;
-end
 
-%LINES
-if strcmp(a.XGrid, 'on') || strcmp(a.XMinorGrid, 'on')
-    xaxes.showgrid = true;
-else
-    xaxes.showgrid = false;
-end
-if strcmp(a.YGrid, 'on') || strcmp(a.YMinorGrid, 'on')
-    yaxes.showgrid = true;
-else
-    yaxes.showgrid = false;
-end
-xaxes.zeroline = false;
-yaxes.zeroline = false;
 
-%COLORS
-xaxes.linecolor = parseColor(a.XColor);
-xaxes.tickcolor = parseColor(a.XColor);
-xaxes.tickfont.color = parseColor(a.XColor);
-yaxes.linecolor = parseColor(a.YColor);
-yaxes.tickcolor = parseColor(a.YColor);
-yaxes.tickfont.color = parseColor(a.YColor);
 
 %SCALE
+xaxes.type = a.XScale;
+yaxes.type = a.YScale;
 xaxes.range = a.XLim;
 yaxes.range = a.YLim;
 if strcmp(a.XDir, 'reverse')
@@ -77,8 +91,7 @@ end
 if strcmp(a.YDir, 'reverse')
     yaxes.range = [a.YLim(2) a.YLim(1)];
 end
-xaxes.type = a.XScale;
-yaxes.type = a.YScale;
+
 if strcmp('log', xaxes.type)
     xaxes.range = log10(xaxes.range);
 end
@@ -106,25 +119,29 @@ end
 
 %LABELS
 if numel(a.XLabel)==1
-    m_title = get(a.XLabel);    
+    m_title = get(a.XLabel);
     if numel(m_title.String)>0
         xaxes.title = parseText(m_title.String);
-        if strcmp(m_title.FontUnits, 'points')
-            xaxes.titlefont.size = 1.3*m_title.FontSize;
+        if ~strip_style
+            if strcmp(m_title.FontUnits, 'points')
+                xaxes.titlefont.size = 1.3*m_title.FontSize;
+            end
+            xaxes.titlefont.color = parseColor(m_title.Color);
         end
-        xaxes.titlefont.color = parseColor(m_title.Color);        
-    end 
+    end
 end
 
 if numel(a.YLabel)==1
-    m_title = get(a.YLabel);    
+    m_title = get(a.YLabel);
     if numel(m_title.String)>0
         yaxes.title = parseText(m_title.String);
-        if strcmp(m_title.FontUnits, 'points')
-            yaxes.titlefont.size = 1.3*m_title.FontSize;
+        if ~strip_style
+            if strcmp(m_title.FontUnits, 'points')
+                yaxes.titlefont.size = 1.3*m_title.FontSize;
+            end
+            yaxes.titlefont.color = parseColor(m_title.Color);
         end
-        yaxes.titlefont.color = parseColor(m_title.Color);        
-    end 
+    end
 end
 
 
