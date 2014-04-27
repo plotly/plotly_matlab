@@ -26,7 +26,8 @@ xaxes.side = a.XAxisLocation;
 yaxes.side = a.YAxisLocation;
 
 if ~strip_style
-    
+    xaxes.showline = true;
+    yaxes.showline = true;
     %TICKS
     if strcmp(a.TickDir, 'in')
         xaxes.ticks = 'inside';

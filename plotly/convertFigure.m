@@ -32,6 +32,8 @@ layout = {};
 legend={};
 x_axis={};
 y_axis={};
+colorbar=[];
+empty_axis=[];
 title = '';
 
 % copy general layout fields
@@ -60,60 +62,54 @@ for i=axis_num:-1:1
                 % For each data object in a given axes
                 for j=1:data_num
                     m_data = get(m_axis.Children(j));
-                    %display(['Data child ' num2str(j) ' is of type ' m_data.Type])
                     
-                    if strcmp('line',m_data.Type)
-                        %line scatter plot
+                    %conditions for deretmining the data type
+                    data_type = findDataType(m_data, m_axis);
+                    
+                    if strcmp('box',data_type)
+                        datas = extractDataBox(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        for dt=1:numel(datas)
+                            data{data_counter} = datas{dt};
+                            data_counter = data_counter+1;
+                        end
+                    end
+                    if strcmp('heatmap',data_type)
+                        data{data_counter} = extractDataHeatMap(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        data_counter = data_counter+1;
+                    end
+                    if strcmp('colorbar',data_type)
+                        empty_axis=[empty_axis; xid, yid];
+                        colorbar = extractColorBar(m_axis, strip_style);
+                    end
+                    if strcmp('scatter',data_type)
                         data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
                     end
-                    if strcmp('text',m_data.Type)
-                        %annotation
+                    if strcmp('annotation',data_type)
                         annot_tmp = extractDataAnnotation(m_data, xid, yid, strip_style);
                         if numel(annot_tmp)>0
                             annotations{annot_counter} = annot_tmp;
                             annot_counter = annot_counter+1;
                         end
-                        
                     end
-
-                    if strcmp('patch',m_data.Type)
-                        %area plot
+                    if strcmp('histogram',data_type)
+                        [data{data_counter} layout] = extractDataHist(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        data_counter = data_counter+1;
+                        % copy in bar gaps
+                        bar_counter = bar_counter+1;
+                    end
+                    if strcmp('area',data_type)
                         data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data{data_counter} = parseFill(m_data, data{data_counter}, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
                     end
-                    if strcmp('hggroup',m_data.Type)
-                        
-                        %TODO: improve condition to differentiate between
-                        %scatter and bar chart
-                        if isfield(m_data, 'BarLayout')
-                            %bar plot
-                            [data{data_counter} layout] = extractDataBar(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
-                            data_counter = data_counter+1;
-                            % copy in bar gaps
-                            layout.bargap = 1-m_data.BarWidth;
-                            layout.barmode = m_data.BarLayout(1:end-2);
-                            bar_counter = bar_counter+1;
-                        else
-                            if isfield(m_data, 'Marker') && numel(m_data.Marker)>0
-                                %scatter plot
-                                data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
-                                data_counter = data_counter+1;
-                            end
-                            if isfield(m_data, 'EdgeColor') && isfield(m_data, 'FaceColor')
-                                %area plot
-                                data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
-                                data{data_counter} = parseFill(m_data, data{data_counter}, m_axis.CLim, f.Colormap, strip_style);
-                                data_counter = data_counter+1;
-                            end
-                        end
-                        
+                    if strcmp('bar',data_type)
+                        [data{data_counter} layout] = extractDataBar(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        data_counter = data_counter+1;
+                        bar_counter = bar_counter+1;
                     end
                     
-                    
-                    
-                    
+
                 end
             end
             
@@ -126,6 +122,16 @@ end
 if bar_counter>1 && strcmp(layout.barmode, 'group')
     layout.bargroupgap = layout.bargap;
     layout.bargap = 0.3;
+end
+
+% INSERT COLORBAR IN THE FIRST HEATMAP DATA STRUCT
+ptr = 1;
+while ptr<=numel(data)
+    if strcmp('heatmap', data{ptr}.type)
+        data{ptr}.colorbar = colorbar;
+        break;
+    end
+    ptr = ptr+1;
 end
 
 % ANNOTATIONS
@@ -141,20 +147,32 @@ else
 end
 
 
-% Assemble axis
+% ASSEMBLE AXIS
+% rescale domain of after removal of empty axis (if any)
+if numel(empty_axis)>0
+    [x_axis, y_axis] = reevaluateDomains(x_axis, y_axis, empty_axis);
+end
+
+
+
+% assign axis
 for i = 1:numel(x_axis)
-    if i==1
-        eval('layout.xaxis=x_axis{1};')
-    else
-        eval(['layout.xaxis' num2str(i) '=x_axis{' num2str(i) '};'])
+    if numel(empty_axis)==0 || ~any(empty_axis(:,1)==i)
+        if i==1
+            eval('layout.xaxis=x_axis{1};')
+        else
+            eval(['layout.xaxis' num2str(i) '=x_axis{' num2str(i) '};'])
+        end
     end
 end
 
 for i = 1:numel(y_axis)
-    if i==1
-        eval('layout.yaxis=y_axis{1};')
-    else
-        eval(['layout.yaxis' num2str(i) '=y_axis{' num2str(i) '};'])
+    if numel(empty_axis)==0 || ~any(empty_axis(:,2)==i)
+        if i==1
+            eval('layout.yaxis=y_axis{1};')
+        else
+            eval(['layout.yaxis' num2str(i) '=y_axis{' num2str(i) '};'])
+        end
     end
 end
 

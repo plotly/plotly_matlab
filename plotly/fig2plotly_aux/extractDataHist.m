@@ -15,6 +15,9 @@ data = {};
 % copy general
 data = extractDataGeneral(d, data);
 
+data.x = (d.XData(2,:)+d.XData(3,:))/2;
+data.y = d.YData(2,:);
+
 % copy in data type and values
 data.type = 'bar';
 
@@ -28,22 +31,15 @@ end
 data.xaxis = ['x' num2str(xid)];
 data.yaxis = ['y' num2str(yid)];
 
-if strcmp(d.BarLayout,'grouped')
-    layout.barmode='group';
-end
-if strcmp(d.BarLayout,'stacked')
-    layout.barmode='stack';
-end
+layout.bargap = (d.XData(3,1)-d.XData(2,2))/(d.XData(3,1)-d.XData(2,1));
 
-layout.bargap = 1-d.BarWidth;
 
 %other attributes
 if ~strip_style
-    m_child = get(d.Children(1));
-    if isfield(m_child, 'CData')
-        color_ref = m_child.CData;
+    if isfield(d, 'CData')
+        color_ref = d.CData(2,:);
     else
-        color_ref = m_child.Color;
+        color_ref = d.Color;
     end
     
     color_field=[];
