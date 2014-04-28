@@ -55,6 +55,11 @@ if strcmp('hggroup',m_data.Type)
         end
     end
     
+    %TOIMPORVE: consition to detect contour plot
+    if isfield(m_data, 'LevelStep')
+        data_type = 'contour';
+    end
+    
     %if none of the above, assume box plot
     if numel(data_type)==0
         data_type = 'box';

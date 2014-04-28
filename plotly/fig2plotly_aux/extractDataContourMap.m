@@ -1,6 +1,6 @@
-function data = extractDataHeatMap(d, xid, yid, CLim, colormap, strip_style)
-% extractDataHeatMap - create a data struct for heat maps
-%   data = extractDataHeatMap(d, xid, yid, CLim, colormap)
+function data = extractDataContourMap(d, xid, yid, CLim, colormap, strip_style)
+% extractDataContourMap - create a data struct for contour maps
+%   data = extractDataContourMap(d, xid, yid, CLim, colormap)
 %       d - a data struct from matlab describing a scatter plot
 %       xid,yid - reference axis indices
 %       CLim - a 1x2 vector of extents of the color map
@@ -24,7 +24,7 @@ else
 end
 
 % copy in data type and values
-data.type = 'heatmap';
+data.type = 'contour';
 data.showscale = false;
 
 % set reference axis
@@ -40,7 +40,11 @@ data.yaxis = ['y' num2str(yid)];
 
 %other attributes
 
-data.z = d.CData;
+data.z = d.ZData;
+min_x = min(min(d.XData));
+min_y = min(min(d.YData));
+max_x = max(max(d.XData));
+max_y = max(max(d.YData));
 
 if ~strip_style
     
@@ -58,6 +62,16 @@ if ~strip_style
 
     
 end
+
+%contour attributes
+data.autocontour = false;
+data.contours = struct( 'start', d.LevelList(1), 'size', d.LevelStep, ...
+    'end', d.LevelList(end));
+
+data.dx = (max_x-min_x)/size(d.ZData,1);
+data.dy = (max_y-min_y)/size(d.ZData,2);
+data.x0 = min_x;
+data.y0 = min_y;
 
 
 end

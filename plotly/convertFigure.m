@@ -77,6 +77,10 @@ for i=axis_num:-1:1
                         data{data_counter} = extractDataHeatMap(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
                     end
+                    if strcmp('contour',data_type)
+                        data{data_counter} = extractDataContourMap(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        data_counter = data_counter+1;
+                    end
                     if strcmp('colorbar',data_type)
                         empty_axis=[empty_axis; xid, yid];
                         colorbar = extractColorBar(m_axis, strip_style);
@@ -127,8 +131,11 @@ end
 % INSERT COLORBAR IN THE FIRST HEATMAP DATA STRUCT
 ptr = 1;
 while ptr<=numel(data)
-    if strcmp('heatmap', data{ptr}.type)
-        data{ptr}.colorbar = colorbar;
+    if strcmp('heatmap', data{ptr}.type) || strcmp('contour', data{ptr}.type)        
+        if numel(colorbar)>0
+            data{ptr}.colorbar = colorbar;
+            data{ptr}.showscale = true;
+        end
         break;
     end
     ptr = ptr+1;
