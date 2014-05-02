@@ -55,7 +55,7 @@ if strcmp('hggroup',m_data.Type)
         end
     end
     
-    %TOIMPORVE: consition to detect contour plot
+    %TOIMPORVE: condition to detect contour plot
     if isfield(m_data, 'LevelStep')
         data_type = 'contour';
     end

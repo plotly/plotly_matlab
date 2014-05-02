@@ -117,6 +117,28 @@ if strcmp('linear', yaxes.type)
         yaxes.autotick = true;
     end
 end
+%TOIMPROVE: check if the axis is a datetime. There is no implementatin for
+%type category yet.
+if numel(a.XTickLabel)>0
+    [start, finish, t0, tstep] = extractDateTicks(a.XTickLabel, a.XTick);
+    if numel(start)>0
+        xaxes.type = 'date';
+        xaxes.range = [start, finish];
+        xaxes.tick0 = t0;
+        xaxes.dtick = tstep;
+        xaxes.autotick = true;
+    end
+end
+if numel(a.YTickLabel)>0
+    [start, finish, t0, tstep] = extractDateTicks(a.YTickLabel, a.YTick);
+    if numel(start)>0
+        yaxes.type = 'date';
+        yaxes.range = [start, finish];
+        yaxes.tick0 = t0;
+        yaxes.dtick = tstep;
+        yaxes.autotick = true;
+    end
+end
 
 %LABELS
 if numel(a.XLabel)==1

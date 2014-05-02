@@ -40,16 +40,21 @@ title = '';
 layout = extractLayoutGeneral(f, layout, strip_style);
 
 % For each axes
-%TEMP: reverse order of children
+%TOIMPROVE: for now, reverse order of children. This works well for most
+%cases, not a perfect solution.
 for i=axis_num:-1:1
+    %get figure child struct
     m_axis = get(f.Children(i));
-    %TODO:do something about this add/replace thing...
+    
+    %test if legend
     if strcmp('legend',m_axis.Tag)
         legend = extractLegend(m_axis);
     else
-        %TODO:do something about this add/replace thing...
-        if strcmp('axes',m_axis.Type) %%&& (strcmp('replace',m_axis.NextPlot) || strcmp('new',m_axis.NextPlot))
+        %test if axes
+        if strcmp('axes',m_axis.Type)
+            %extract axis and add to axis list
             [xid, yid, x_axis y_axis] = extractAxes(m_axis, layout, x_axis, y_axis, strip_style);
+            %extract title and add to annotations
             m_title = get(m_axis.Title);
             annot_tmp = extractTitle(m_title, x_axis{xid}, y_axis{yid}, strip_style);
             if numel(annot_tmp)>0
@@ -87,6 +92,8 @@ for i=axis_num:-1:1
                     end
                     if strcmp('scatter',data_type)
                         data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        %account for datetime
+                        data{data_counter} = dateTimeScale(m_axis, x_axis{xid}, y_axis{yid},data{data_counter});
                         data_counter = data_counter+1;
                     end
                     if strcmp('annotation',data_type)
@@ -99,12 +106,13 @@ for i=axis_num:-1:1
                     if strcmp('histogram',data_type)
                         [data{data_counter} layout] = extractDataHist(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
-                        % copy in bar gaps
                         bar_counter = bar_counter+1;
                     end
                     if strcmp('area',data_type)
                         data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data{data_counter} = parseFill(m_data, data{data_counter}, m_axis.CLim, f.Colormap, strip_style);
+                        %account for datetime
+                        data{data_counter} = dateTimeScale(m_axis, x_axis{xid}, y_axis{yid},data{data_counter});
                         data_counter = data_counter+1;
                     end
                     if strcmp('bar',data_type)
@@ -122,7 +130,7 @@ for i=axis_num:-1:1
     end
 end
 
-% BAR MODIFY
+% MODIFY WHEN MULTIPLE BARS
 if bar_counter>1 && strcmp(layout.barmode, 'group')
     layout.bargroupgap = layout.bargap;
     layout.bargap = 0.3;
@@ -160,9 +168,6 @@ if numel(empty_axis)>0
     [x_axis, y_axis] = reevaluateDomains(x_axis, y_axis, empty_axis);
 end
 
-
-
-% assign axis
 for i = 1:numel(x_axis)
     if numel(empty_axis)==0 || ~any(empty_axis(:,1)==i)
         if i==1

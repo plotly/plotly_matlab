@@ -30,7 +30,7 @@ end
 %POSITION
 xd_range = xa.domain(2) - xa.domain(1);
 xr_range = xa.range(2) - xa.range(1);
-if strcmp('linear', xa.type)
+if strcmp('linear', xa.type) || strcmp('date', xa.type)
 data.x = xa.domain(1)+ (d.Extent(1) - xa.range(1))*xd_range / xr_range;
 data.x = xa.domain(1)+ 0.5*xd_range;
 end
