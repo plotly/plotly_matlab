@@ -8,10 +8,10 @@ function st = makecall(args, un, key, origin, structargs)
     payload = {'platform', platform, 'version', version, 'args', args, 'un', un, 'key', key, 'origin', origin, 'kwargs', kwargs};
 
     if (is_octave)
-        ## use octave super_powers
+        % use octave super_powers
         resp = urlread(url, 'post', payload);
     else
-        ## do it matlab way
+        % do it matlab way
         resp = urlread(url, 'Post', payload);
     end
 
@@ -32,7 +32,7 @@ function st = makecall(args, un, key, origin, structargs)
     end
 end
 
-## subfunction that checks if we are in octave
+% subfunction that checks if we are in octave
 function r = is_octave ()
     persistent x;
     if (isempty (x))
