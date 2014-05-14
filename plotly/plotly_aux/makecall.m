@@ -7,7 +7,14 @@ function st = makecall(args, un, key, origin, structargs)
     url = 'https://plot.ly/clientresp';
     payload = {'platform', platform, 'version', version, 'args', args, 'un', un, 'key', key, 'origin', origin, 'kwargs', kwargs};
 
-    resp = urlread(url, 'Post', payload);
+    if (is_octave)
+        ## use octave super_powers
+        resp = urlread(url, 'post', payload);
+    else
+        ## do it matlab way
+        resp = urlread(url, 'Post', payload);
+    end
+
     st = json2struct(resp);
 
     f = fieldnames(st);
@@ -23,4 +30,13 @@ function st = makecall(args, un, key, origin, structargs)
     if any(strcmp(f,'filename'))
         plotlysession(st.filename)
     end
+end
+
+## subfunction that checks if we are in octave
+function r = is_octave ()
+    persistent x;
+    if (isempty (x))
+        x = exist ('OCTAVE_VERSION', 'builtin');
+    end
+    r = x;
 end
