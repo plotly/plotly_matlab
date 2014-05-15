@@ -1,8 +1,8 @@
-function [figure] = test_get_figure(requestor, api_key, file_owner, file_id, status_code)
+function [figure] = test_getplotlyfigure(requestor, api_key, file_owner, file_id, status_code)
 
     signin(requestor, api_key);
     try
-        figure = get_figure(file_owner, file_id);
+        figure = getplotlyfigure(file_owner, file_id);
     catch err
         fprintf([err.identifier, '\n', err.message,'\n']);
         assert(strcmp(err.identifier,...
