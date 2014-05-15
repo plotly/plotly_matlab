@@ -31,5 +31,5 @@ function [response] = plotly(varargin)
         args = varargin(1:end);
     end
 
-    response= makecall(args, un, key, origin, structargs);    
+    response = makecall(args, un, key, origin, structargs);    
 end

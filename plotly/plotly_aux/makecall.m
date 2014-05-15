@@ -15,28 +15,8 @@ function st = makecall(args, un, key, origin, structargs)
         resp = urlread(url, 'Post', payload);
     end
 
-    st = json2struct(resp);
+    st = loadjson(resp);
 
-    f = fieldnames(st);
-    if any(strcmp(f,'error'))
-        error(st.error)                    
-    end
-    if any(strcmp(f,'warning'))
-        fprintf(st.warning)
-    end
-    if any(strcmp(f,'message'))
-        fprintf(st.message)
-    end
-    if any(strcmp(f,'filename'))
-        plotlysession(st.filename)
-    end
-end
+    response_handler(resp);
 
-% subfunction that checks if we are in octave
-function r = is_octave ()
-    persistent x;
-    if (isempty (x))
-        x = exist ('OCTAVE_VERSION', 'builtin');
-    end
-    r = x;
 end
