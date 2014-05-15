@@ -2,7 +2,7 @@ function [figure] = test_getplotlyfigure(requestor, api_key, file_owner, file_id
 
     signin(requestor, api_key);
     try
-        figure = getplotlyfigure(file_owner, file_id);
+        figure = getplotlyfig(file_owner, file_id);
     catch err
         fprintf([err.identifier, '\n', err.message,'\n']);
         assert(strcmp(err.identifier,...

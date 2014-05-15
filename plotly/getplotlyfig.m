@@ -1,4 +1,4 @@
-function figure = getplotlyfigure(file_owner, file_id)
+function figure = getplotlyfig(file_owner, file_id)
 
     [un, key] = signin;
 
