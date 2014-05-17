@@ -22,10 +22,8 @@ function figure = getplotlyfig(file_owner, file_id)
 
     url = ['https://plot.ly/apigetfile/', file_owner, '/', num2str(file_id)];
 
-    [response, extras] = urlread2(url, 'Post', '', headers);
-
-    response_handler(response, extras);
-
-    response_object = loadjson(response);
+    [response_string, extras] = urlread2(url, 'Post', '', headers);
+    response_handler(response_string, extras);
+    response_object = loadjson(response_string);
     figure = response_object.payload.figure;
 end
