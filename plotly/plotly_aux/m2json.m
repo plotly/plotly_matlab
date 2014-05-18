@@ -19,6 +19,8 @@ function valstr = m2json(val)
         end
         if length(val)>1
             valstr = ['[' valstr ']'];
+        elseif length(val) == 0
+            valstr = '[]';
         end
         valstr = strrep(valstr, 'Inf', 'null');
         valstr = strrep(valstr, 'NaN', 'null');
@@ -31,5 +33,6 @@ function valstr = m2json(val)
             valstr = 'false';
         end
     else
+        disp [val ' iselse'];
         valstr = ''; % wtf is it?
     end

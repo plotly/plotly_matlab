@@ -387,7 +387,7 @@ function num = parse_number(varargin)
 
 function val = parse_value(varargin)
     global pos inStr len
-    true = 1; false = 0;
+    % true = 1; false = 0;
 
     switch(inStr(pos))
         case '"'
@@ -423,7 +423,7 @@ function val = parse_value(varargin)
             end
         case 'n'
             if pos+3 <= len && strcmpi(inStr(pos:pos+3), 'null')
-                val = [];
+                val = NaN;
                 pos = pos + 4;
                 return;
             end

@@ -1,4 +1,48 @@
-function saveplotlyfig(figure, filename)
+function saveplotlyfig(data, layout, filename)
+
+    if isstruct(data)
+        data = {{data}};
+    elseif iscell(data)
+        data = {data};
+    end
+    figure = struct('data', data, 'layout', layout);
+
+    payload = m2json(figure);
+
+    url = 'https://plot.ly/apigenimage/';
+
+    [un, key] = signin;
+
+    headers = struct(...
+                    'name',...
+                        {...
+                            'plotly-username',...
+                            'plotly-apikey',...
+                            'plotly-version',...
+                            'plotly-platform',...
+                            'user-agent'
+                        },...
+                    'value',...
+                        {...
+                            un,...
+                            key,...
+                            '1.0',...
+                            'MATLAB',...
+                            'MATLAB'
+                        });
+
+    [response_string, extras] = urlread2(url, 'Post', payload, headers);
+    response_handler(response_string, extras);
+    response_object = loadjson(response_string);
+
+    % Check if '.png' is the suffix of the filename
+    % and add it if it isn't
+    if(isempty(strfind(filename, '.png')) || ...
+        strfind(filename, '.png')~=length(filename)-length('.png')+1)
+        filename = [filename, '.png'];
+    end
+
+    base64decode(response_object.payload, filename);
 
 
 
