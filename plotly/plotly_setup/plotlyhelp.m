@@ -1,0 +1,1 @@
+web('http://nbviewer.ipython.org/github/BRONSOLO/plotly_matlab_notebook/blob/master/welcome_home.ipynb','-browser')
