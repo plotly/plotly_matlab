@@ -6,14 +6,14 @@ for locs = 1:size(startupPaths,1);
     addString = 'addpath(genpath(fullfile(matlabroot,''toolbox'',''plotly'')));';
     %open current startup.m
     currentStartupID = fopen(startupPaths{locs},'r');
-    if currentStartupID == -1, error('Cannot open file. Super weird! Contact Chuck@plot.ly'), end 
+    if currentStartupID == -1, error('plotly:startupRead', ['Cannot read' startupPaths{locs} 'Contact Chuck@plot.ly']), end 
     %check for any instances of the addplotlyapi function
     startupScan = textscan(currentStartupID, '%s', 'delimiter', '\n', 'whitespace', '');
     startupLines = startupScan{1};
     Index = find(strcmp(startupLines,addString));
     %reopen current startup.m with new permission
     currentStartupID = fopen(startupPaths{locs},'a+');
-    if currentStartupID == -1, error('Cannot open file. Super weird! Contact Chuck@plot.ly'), end 
+    if currentStartupID == -1, error('plotly:startupWrite',['Cannot write to' startupPaths{locs} 'Contact Chuck@plot.ly']), end 
     %if addString is not in startup.m add it
     if(~any(Index));
         fprintf(currentStartupID,['\n' addString]);
