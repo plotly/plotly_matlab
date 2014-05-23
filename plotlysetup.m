@@ -17,16 +17,16 @@ catch exception %plotlysetup input problem catch...
 end
 
 try %check to see if plotly is in the searchpath
-    currentPlotlyPath = genpath([pwd '/plotly']);
+    plotlysetupPath = which('plotlysetup'); 
+    plotlyFolderPath = [plotlysetupPath(1:end-length('plotlysetup.m')) 'plotly']; %there has to be a nicer way of doing this!
     %if it was not found
-    if (strcmp(currentPlotlyPath,''))
+    if (strcmp(genpath(plotlyFolderPath),''))
         error('plotly:plotlyFilePath',...
             ['Shoot! It looks like MATLAB is having trouble finding the current version '  ...
             '\n\t\t\tof Plotly. Please make sure that the plotly/ API folder is in the same '  ...
             '\n\t\t\tdirectory as plotlysetup.m. Contact chuck@plot.ly for more information. \n\n']);
     end
-    addpath(genpath([pwd '/plotly']));
-    plotlyFolderPath = [pwd '/plotly'];
+    addpath(genpath(plotlyFolderPath));
 catch exception %plotly file not found problem catch
     fprintf(['\n\n' exception.identifier '\t --- \t' exception.message]);
     return
@@ -74,9 +74,11 @@ if(~is_octave)%if MATLAB
             
             %move a copy of the plotly api to matlab root directory %should check with user for overwrite...but we're not!
             [status, mess, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath, 'f');
-            
             %check that the plotly api was copied to the matlab root toolbox directory
             if (status == 0)
+                disp(mess)
+                disp(messid)
+
                 if(~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
                     error('plotly:copyPlotlyAPI',...
                         ['Shoot! It looks like you might not have write permission ' ...
