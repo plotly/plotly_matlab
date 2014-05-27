@@ -25,6 +25,7 @@ function valstr = m2json(val)
         valstr = strrep(valstr, 'Inf', 'null');
         valstr = strrep(valstr, 'NaN', 'null');
     elseif ischar(val)
+         val = checkescape(val); %add escape characters
          valstr = ['"' val '"'];
     elseif islogical(val)
         if val
