@@ -9,9 +9,6 @@ function [response] = plotly(varargin)
 % See also plotlylayout, plotlystyle, signin, signup
 %
 % For full documentation and examples, see https://plot.ly/api
-    % check if signed in
-    [un, key] = signin;
-
     origin = 'plot';
     if isstruct(varargin{end})
         structargs = varargin{end};
@@ -28,5 +25,5 @@ function [response] = plotly(varargin)
         args = varargin(1:end);
     end
 
-    response = makecall(args, un, key, origin, structargs);
+    response = makecall(args, origin, structargs);
 end

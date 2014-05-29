@@ -3,16 +3,11 @@ function [response] = plotlylayout(varargin)
 %   [response] = plotlylayout(layout, kwargs)
 %       layout - struct specifying the layout
 %       kwargs - an optional argument struct
-% 
+%
 % See also plotly, plotlystyle, signin, signup
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
-    % check if signed in
-    [un, key] = signin;
-    if isempty(un) || isempty(key)
-        error('Not signed in.')
-    end
-    
+
     %%%%%%%%%%%%%%%
     % call plotly %
     %%%%%%%%%%%%%%%
@@ -33,5 +28,5 @@ function [response] = plotlylayout(varargin)
         structargs = struct('filename', plotlysession,'fileopt',NaN);
     end
 
-    response = makecall(args, un, key, origin, structargs);    
+    response = makecall(args, un, key, origin, structargs);
 end
