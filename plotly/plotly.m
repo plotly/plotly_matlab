@@ -5,15 +5,12 @@ function [response] = plotly(varargin)
 %       x1,y1 - arrays
 %       data1 - a data struct with styling information
 %       kwargs - an optional argument struct
-% 
+%
 % See also plotlylayout, plotlystyle, signin, signup
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
     % check if signed in
     [un, key] = signin;
-    if isempty(un) || isempty(key)
-        error('Not signed in.')
-    end
 
     origin = 'plot';
     if isstruct(varargin{end})
@@ -31,5 +28,5 @@ function [response] = plotly(varargin)
         args = varargin(1:end);
     end
 
-    response = makecall(args, un, key, origin, structargs);    
+    response = makecall(args, un, key, origin, structargs);
 end

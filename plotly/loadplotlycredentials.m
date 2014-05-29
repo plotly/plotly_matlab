@@ -1,4 +1,4 @@
-function [username, api_key] = loadplotlycredentials()
+function creds = loadplotlycredentials()
 
     userhome = getuserdir();
     plotly_credentials_file = [userhome '/.plotly/.credentials'];
@@ -25,9 +25,6 @@ function [username, api_key] = loadplotlycredentials()
 
     creds_string = sprintf(creds_string_array);
 
-    creds_struct = json2struct(creds_string);
-
-    username = creds_struct.username;
-    api_key = creds_struct.api_key;
+    creds = loadjson(creds_string);
 
 end

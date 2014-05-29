@@ -1,7 +1,15 @@
-function saveplotlycredentials(username, api_key)
+function saveplotlycredentials(username, api_key, extra_struct)
     % Save plotly authentication credentials.
     % Plotly credentials are saved as JSON strings
     % in ~/.plotly/.credentials
+    % extra is a struct
+
+    % if the credentials file exists, then load it up
+    try
+      creds = loadplotlycredentials();
+    catch
+      creds = struct();
+    end
 
     % Create the .plotly folder
     userhome = getuserdir();
@@ -26,9 +34,23 @@ function saveplotlycredentials(username, api_key)
                'chris@plot.ly for support.']);
     end
 
-    credentials = m2json(struct('username', username, 'api_key', api_key));
+    if nargin < 3
+      creds.username = username;
+      creds.api_key  = api_key;
+    else
+      % merge extra into creds
+      % remove overlapping fields from first struct
+      updated_creds = rmfield(creds, intersect(fieldnames(creds), fieldnames(extra_struct)));
+      % obtain all unique names of remaining fields
+      names = [fieldnames(updated_creds); fieldnames(extra_struct)];
+      % merge both structs
+      updated_creds = cell2struct([struct2cell(updated_creds); struct2cell(extra_struct)], names, 1);
+      creds = updated_creds;
+    end
 
-    fprintf(fileID, credentials);
+    creds_string = m2json(creds);
+
+    fprintf(fileID, creds_string);
 
     fclose(fileID);
 

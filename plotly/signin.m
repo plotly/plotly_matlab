@@ -11,9 +11,9 @@ function [un, key] = signin(varargin)
         plotlysession('MATLAB API');
         mlock;
     elseif isempty(USERNAME) || isempty(KEY)
-        [un, key] = loadplotlycredentials();
-        USERNAME = un;
-        KEY = key;
+        creds = loadplotlycredentials();
+        USERNAME = creds.username;
+        KEY = creds.api_key;
     else
         un = USERNAME;
         key = KEY;
