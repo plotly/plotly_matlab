@@ -1,5 +1,7 @@
-function saveplotlycredentials(username, api_key)
-% SAVEPLOTLYCREDENTIALS Save plotly authentication credentials
+function savecredentials(username, api_key)
+% SAVECREDENTIALS Save/ovewrite plotly authentication credentials
+%
+%   SAVECREDENTIALS(USERNAME, API_KEY)
 
 %   Plotly credentials are saved as JSON strings:
 %       - Under Windows in $APPDATA$\credentials\plotly

@@ -18,7 +18,7 @@ classdef plotly
             
             if nargin == 0
                 try
-                    obj = obj.loadplotlycredentials;
+                    obj = obj.loadcredentials;
                 catch
                     obj.signup
                 end
@@ -35,6 +35,12 @@ classdef plotly
             obj.Key  = key;
         end
         
+        function obj = savecredentials(obj)
+            % SAVECREDENTIALS Save/overwrite plotly authentication credentials
+            
+            % Call external
+            savecredentials(obj.User,obj.Key)
+        end
     end
     methods(Access = private)
         
@@ -46,9 +52,8 @@ classdef plotly
             obj.Key  = response.api_key;
         end
         
-        % LOADPLOTLYCREDENTIALS
-        function obj = loadplotlycredentials(obj)
-   
+        function obj = loadcredentials(obj)
+            % LOADCREDENTIALS
             % Credentials file name
             userhome = getuserdir();
             if ispc
