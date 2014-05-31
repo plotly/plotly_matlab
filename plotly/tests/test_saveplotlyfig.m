@@ -7,8 +7,11 @@ test_failures_json = [26, 36, 49];
 test_failures_toolarge = [39];
 signin(test_account, test_account_key);
 
+formats = {'png', 'pdf', 'jpg', 'svg'};
 for i=1:length(images)
-    disp(['testing https://plot.ly/~PlotlyImageTest/' num2str(images(i))])
-    figure = getplotlyfig(test_account, images(i));
-    saveplotlyfig(figure.data, figure.layout, ['test_saveplotlyfig_images/' 'PlotlyImageTest_' num2str(images(i)) '.png']);
+    for j=1:length(formats)
+        disp(['testing https://plot.ly/~PlotlyImageTest/' num2str(images(i)) '.' formats{j}])
+        figure = getplotlyfig(test_account, images(i));
+        saveplotlyfig(figure.data, figure.layout, ['test_saveplotlyfig_images/' 'PlotlyImageTest_' num2str(images(i))], formats{j});
+    end
 end
