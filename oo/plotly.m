@@ -29,13 +29,6 @@ classdef plotly
             end
         end
         
-        function obj = plot(obj,varargin)
-            hf = figure('visible','off');
-            ha = axes('parent',hf);
-            plot(ha,varargin{:})
-            obj = obj.fig2plotly(hf);
-        end
-        
         function obj = fig2plotly(obj, varargin)
             % FIG2PLOTLY Converts a Matlab figure object into a Plotly figure
             
@@ -115,6 +108,9 @@ classdef plotly
             
         end
         
+        function obj = plot(obj,varargin)
+            obj = plothelper(obj, @plot, varargin);
+        end
         function obj = savecredentials(obj)
             % SAVECREDENTIALS Save/overwrite plotly authentication credentials
             
@@ -124,6 +120,18 @@ classdef plotly
     end
     
     methods(Access = private)
+        
+        function obj = plothelper(obj, fun, inputs)
+            % Create invisible figure and axes
+            hf = figure('visible','off');
+            ha = axes('parent',hf);
+            % Invoke matlab function 
+            fun(ha, inputs{:})
+            % Convert figure
+            obj = obj.fig2plotly(hf);
+            % Cleanup
+            delete([hf,ha])
+        end
         
         function obj = signup(obj)
             % SIGNUP
