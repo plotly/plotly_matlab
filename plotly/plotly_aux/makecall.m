@@ -12,13 +12,12 @@ function st = makecall(args, origin, structargs)
               'chris@plot.ly.']);
     end
 
-    version = '0.6';
     platform = 'MATLAB';
 
     args = m2json(args);
     kwargs = m2json(structargs);
     url = [domain '/clientresp'];
-    payload = {'platform', platform, 'version', version, 'args', args, 'un', un, 'key', key, 'origin', origin, 'kwargs', kwargs};
+    payload = {'platform', platform, 'version', plotly_version, 'args', args, 'un', un, 'key', key, 'origin', origin, 'kwargs', kwargs};
 
     if (is_octave)
         % use octave super_powers
