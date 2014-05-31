@@ -14,21 +14,27 @@ classdef plotly
     
     methods
         
+        % CONSTRUCTOR
         function obj = plotly(user,key)
             % PLOTLY Sign into plot.ly
             
+            % No inputs
             if nargin == 0
+                % Try to load previously saved credentials ...
                 try
                     obj = obj.loadcredentials;
+                % ... try to sign up
                 catch
-                    obj.signup
+                    obj.signup;
                 end
+            % Use provided credentials    
             elseif nargin == 2
                 obj.User = user;
                 obj.Key  = key;
             end
         end
         
+        % CONVERSION of Matlab figuyre to plot.ly
         function obj = fig2plotly(obj, varargin)
             % FIG2PLOTLY Converts a Matlab figure object into a Plotly figure
             
@@ -87,7 +93,7 @@ classdef plotly
                     end
              end
             
-             %convert figure into data and layout data structures
+            % convert figure into data and layout data structures
             [data, layout, title] = convertFigure(f, strip_style);
             
             if numel(title)>0 && strcmp('untitled', plot_name)
@@ -111,6 +117,8 @@ classdef plotly
         function obj = plot(obj,varargin)
             obj = plothelper(obj, @plot, varargin);
         end
+        
+        % SAVE
         function obj = savecredentials(obj)
             % SAVECREDENTIALS Save/overwrite plotly authentication credentials
             
@@ -176,11 +184,14 @@ classdef plotly
             % Read in credentials
             credentials = fread(fileID, [1,inf],'*char');
             credentials = json2struct(credentials);
+            status = fclose(fileID);
             
             % Save state
             obj.User = credentials.username;
             obj.Key  = credentials.api_key;
             
+            % Printf result
+            if status == 0, fprintf('Credentials successfully loaded.\n'),end
         end
     end
 

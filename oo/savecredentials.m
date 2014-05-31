@@ -22,29 +22,36 @@ function savecredentials(username, api_key)
     if (status == 0)
         if(~strcmp(messid, 'MATLAB:MKDIR:DirectoryExists'))
             error('plotly:savecredentials',...
-                 ['Error saving credentials folder at ' ...
-                  filename ': '...
-                  mess ', ' messid '. Get in touch at ' ...
-                  'chris@plot.ly for support.']);
+                 ['Error saving credentials folder at %s:\n' ...
+                  '%s %s.\nGet in touch at ' ...
+                  'chris@plot.ly for support.'], filename,mess,messid);
         end
     end
     
-    % Create file
+    % Unhide if already exists and overwrite
+    if exist(filename, 'file')
+        fileattrib(filename, '-h')
+    end
     fileID = fopen(filename, 'w');
     if(fileID == -1)
         error('plotly:savecredentials',...
-              ['Error opening credentials file at '...
-               filename '. Get in touch at '...
-               'chris@plot.ly for support.']);
+              ['Error opening credentials file at %s.\n',...
+              'Get in touch at chris@plot.ly for support.'], filename);
     end
     
     % Save credentials and close
     credentials = m2json(struct('username', username, 'api_key', api_key));
     fprintf(fileID, credentials);
-    fclose(fileID);
+    status = fclose(fileID);
 
-    % Hide folder and file (Win)
-    if ispc
-        fileattrib(folder,'+h','','s')
+    % Hide folder and file
+    if ispc 
+        user = '';
+    else
+        user = 'u';
     end
+    fileattrib(folder,'+h',user,'s')
+    
+    % Print result
+    if status == 0, fprintf('Credentials successfully saved.\n'), end
 end
