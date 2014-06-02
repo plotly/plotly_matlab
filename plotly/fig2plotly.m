@@ -20,7 +20,7 @@ function [response] = fig2plotly(varargin)
 f = get(gcf);
 plot_name = 'untitled';
 strip_style = false;
-open_browser = true;
+open_browser = false;
 
 switch numel(varargin)
     case 0
