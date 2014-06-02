@@ -1,11 +1,16 @@
-function saveplotlyfig(data, layout, filename)
+function saveplotlyfig(data, layout, filename, format)
+
+    [path, name, ext] = fileparts(filename);
+    if nargin < 4
+        format = 'png';
+    end
 
     if isstruct(data)
         data = {{data}};
     elseif iscell(data)
         data = {data};
     end
-    figure = struct('data', data, 'layout', layout);
+    figure = struct('data', data, 'layout', layout, 'format', format);
 
     payload = m2json(figure);
 
@@ -26,7 +31,7 @@ function saveplotlyfig(data, layout, filename)
                         {...
                             un,...
                             key,...
-                            '1.0',...
+                            plotly_version,...
                             'MATLAB',...
                             'MATLAB'
                         });
@@ -35,15 +40,16 @@ function saveplotlyfig(data, layout, filename)
     response_handler(response_string, extras);
     response_object = loadjson(response_string);
 
-    % Check if '.png' is the suffix of the filename
-    % and add it if it isn't
-    if(isempty(strfind(filename, '.png')) || ...
-        strfind(filename, '.png')~=length(filename)-length('.png')+1)
-        filename = [filename, '.png'];
+    if strcmp(ext, '')
+        filename = [filename '.' format];
     end
 
-    base64decode(response_object.payload, filename);
-
-
-
+    if strcmp(format, 'svg')
+        fileID = fopen(filename, 'w');
+        fprintf(fileID, response_string);
+        fclose(fileID);
+    else
+        base64decode(response_object.payload, filename);
+%        base64decode(response_string, filename);
+    end
 end
