@@ -50,7 +50,7 @@ switch numel(varargin)
                 end
                 if strcmp('open', varargin{i})
                     open_browser = varargin{i+1};
-                end             
+                end
             end
         end
         
@@ -67,13 +67,10 @@ end
 % send graph request
 response = plotly(data, struct('layout', layout, ...
     'filename',plot_name, ...
-	'fileopt', 'overwrite'));
+    'fileopt', 'overwrite'));
 
 if open_browser
-    status = dos(['open ' response.url ' > nul 2> nul']);
-    if status==1
-        status = dos(['start ' response.url ' > nul 2> nul']);
-    end
+    openurl(response.url);
 end
 
 end

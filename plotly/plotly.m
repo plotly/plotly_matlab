@@ -5,31 +5,38 @@ function [response] = plotly(varargin)
 %       x1,y1 - arrays
 %       data1 - a data struct with styling information
 %       kwargs - an optional argument struct
-% 
+%
 % See also plotlylayout, plotlystyle, signin, signup
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
-    % check if signed in
-    [un, key] = signin;
-    if isempty(un) || isempty(key)
-        error('Not signed in.')
-    end
+% check if signed in
+[un, key] = signin;
+if isempty(un) || isempty(key)
+    error('Not signed in.')
+end
 
-    origin = 'plot';
-    if isstruct(varargin{end})
-        structargs = varargin{end};
-        f = lower(fieldnames(structargs));
-        if ~any(strcmp('filename',f))
-            structargs.filename = NaN;
-        end
-        if ~any(strcmp('fileopt',f))
-            structargs.fileopt = NaN;
-        end
-        args = varargin(1:(end-1));
-    else
-        structargs = struct('filename', NaN,'fileopt',NaN);
-        args = varargin(1:end);
+origin = 'plot';
+if isstruct(varargin{end})
+    structargs = varargin{end};
+    f = lower(fieldnames(structargs));
+    if ~any(strcmp('filename',f))
+        structargs.filename = NaN;
     end
+    if ~any(strcmp('fileopt',f))
+        structargs.fileopt = NaN;
+    end
+    args = varargin(1:(end-1));
+else
+    structargs = struct('filename', NaN,'fileopt',NaN);
+    args = varargin(1:end);
+end
 
-    response = makecall(args, un, key, origin, structargs);    
+response = makecall(args, un, key, origin, structargs);
+
+% try
+%     if(~strcmp(response.url,''));
+% fprintf(['\nLet''s have a look: <a href="matlab:openurl(''%s'')">' response.url '</a>\n'],response.url)
+%     end    
+% end
+
 end
