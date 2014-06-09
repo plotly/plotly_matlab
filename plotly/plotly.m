@@ -30,7 +30,7 @@ response = makecall(args, origin, structargs);
 try
     robj = get(0); 
     g = robj.ScreenSize; 
-    if(~strcmp(response.url,'') && sum(g)~=4);
+    if(~strcmp(response.url,'') && any(g~=1));
         fprintf(['\nLet''s have a look: <a href="matlab:openurl(''%s'')">' response.url '</a>\n\n'],response.url)
     end
 end
