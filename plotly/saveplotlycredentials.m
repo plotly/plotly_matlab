@@ -38,6 +38,8 @@ function saveplotlycredentials(username, api_key, extra_struct)
       creds.username = username;
       creds.api_key  = api_key;
     else
+      creds.username = username; 
+      creds.api_key = api_key; 
       % merge extra into creds
       % remove overlapping fields from first struct
       updated_creds = rmfield(creds, intersect(fieldnames(creds), fieldnames(extra_struct)));
@@ -50,7 +52,7 @@ function saveplotlycredentials(username, api_key, extra_struct)
 
     creds_string = m2json(creds);
 
-    fprintf(fileID, creds_string);
+    fprintf(fileID,'%s',creds_string);
 
     fclose(fileID);
 

@@ -23,7 +23,7 @@ function creds = loadplotlycredentials()
 
     creds_string_array = fread(fileID, '*char');
 
-    creds_string = sprintf(creds_string_array);
+    creds_string = sprintf('%s',creds_string_array);
 
     creds = loadjson(creds_string);
 
