@@ -53,14 +53,14 @@ for i=axis_num:-1:1
         %test if axes
         if strcmp('axes',m_axis.Type)
             %extract axis and add to axis list
-            [xid, yid, x_axis y_axis] = extractAxes(m_axis, layout, x_axis, y_axis, strip_style);
+            [xid, yid, x_axis y_axis] = extractAxes(f.Children(i),m_axis, layout, x_axis, y_axis, strip_style);
             %extract title and add to annotations
             m_title = get(m_axis.Title);
-            annot_tmp = extractTitle(m_title, x_axis{xid}, y_axis{yid}, strip_style);
+            annot_tmp = extractTitle(f.Children(i),m_title, x_axis{xid}, y_axis{yid}, strip_style);
             if numel(annot_tmp)>0
                 annotations{annot_counter} = annot_tmp;
                 annot_counter = annot_counter+1;
-                title = annot_tmp.text;
+                title = ''; %annot_tmp.text;
             end
             data_num = numel(m_axis.Children);
             if data_num>0
@@ -150,7 +150,7 @@ while ptr<=numel(data)
 end
 
 % ANNOTATIONS
-layout.annotations = annotations;
+layout.annotations = ''; % annotations;
 
 
 % LEGEND
