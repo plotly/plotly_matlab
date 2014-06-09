@@ -1,4 +1,4 @@
-function [xid, yid, x_axis y_axis] = extractAxes(a, layout, x_axis, y_axis, strip_style)
+function [xid, yid, x_axis y_axis] = extractAxes(axhan, a,layout, x_axis, y_axis, strip_style)
 % extractAxes - create an axes struct
 %   [xid, yid, x_axis y_axis] = extractAxes(a, layout, x_axis, y_axis)
 %       a - a data struct from matlab describing an axes
@@ -14,7 +14,7 @@ yaxes={};
 
 %copy over general properties
 
-[xaxes, yaxes] = extractAxesGeneral(a, layout, xaxes, yaxes, strip_style);
+[xaxes, yaxes] = extractAxesGeneral(axhan, a, layout, xaxes, yaxes, strip_style);
 
 
 %OVERLAY CHECK
