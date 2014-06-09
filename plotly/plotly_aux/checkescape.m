@@ -1,7 +1,7 @@
 function [ escaped_val ] = check_escape(val)
 %adds '\' escape character if needed
 ec = '\';
-ind = find( (val == '"') | (val == '\' ));
+ind = find( (val == '"') | (val == '\' ) | (val == '/' ));
 if(ind)
     if(ind(1) == 1)
         val = ['\' val];
