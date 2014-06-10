@@ -3,13 +3,14 @@ function plotlysetup(varargin)
 % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
 % [3] calls saveplotlycredentials
 % [TODO]: Account for octave users
-% {TODO]: Test on windows machine
+% [TODO]: Test on windows machine
+% [TODO]: Allow for streaming vars to be passed into plotlysetup 
 
 try %check number of inputs
     if (nargin<2||nargin>3)
         error('plotly:setupInputs',....
             ['\n\nWhoops! Wrong number of inputs. Please setup your Plotly '...
-            '\nMATLAB API by calling >>plotlysetup(' '''user_name''' ',' '''api_key''' ',' '''domain [optional]'') \n\n']);
+            '\nMATLAB API by calling >>plotlysetup(' '''user_name''' ',' '''api_key''' ',' ''' endpoint domain [optional]'') \n\n']);
     end
 catch exception %plotlysetup input problem catch...
     fprintf(['\n\n' exception.identifier exception.message]);
@@ -154,15 +155,26 @@ end %end check for matlab...
 
 try %save user credentials
     fprintf('Saving user credentials ... ');
-    saveplotlycredentials(varargin{:});
+    saveplotlycredentials(varargin{1:2});
     %worked!
-    fprintf('Done\n\n');
+    fprintf('Done\n');
 catch exception %writing credentials file permission problem catch...
     fprintf(['\n\n' exception.identifier exception.message]);
 end
 
+if nargin == 3
+    try %save user config
+        fprintf('Saving user endpoint configuration ... ');
+        saveplotlyconfig(varargin{3});
+        %worked!
+        fprintf('Done\n\n');
+    catch exception %writing credentials file permission problem catch...
+        fprintf(['\n\n' exception.identifier exception.message]);
+    end
+end
+
 %sign in the user
-signin(varargin{:}); 
+signin(varargin{:});
 
 %greet the people!
 fprintf(['Welcome to Plotly! If you are new to Plotly please enter: >>plotlyhelp to get started!\n\n'])
