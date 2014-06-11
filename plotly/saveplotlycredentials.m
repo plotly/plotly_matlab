@@ -12,7 +12,15 @@ end
 
 % Create the .plotly folder
 userhome = getuserdir();
-plotly_credentials_folder = fullfile(userhome,'.plotly');
+
+if ispc
+    plotly_credentials_folder   = fullfile(userhome,'plotly');
+    plotly_credentials_file = fullfile(plotly_credentials_folder, 'credentials');
+else
+    plotly_credentials_folder   = fullfile(userhome,'.plotly');
+    plotly_credentials_file = fullfile(plotly_credentials_folder, '.credentials');
+end
+
 [status, mess, messid] = mkdir(plotly_credentials_folder);
 
 if (status == 0)
@@ -24,8 +32,6 @@ if (status == 0)
             'chris@plot.ly for support.']);
     end
 end
-
-plotly_credentials_file = fullfile(plotly_credentials_folder,'.credentials');
 
 fileIDCred = fopen(plotly_credentials_file, 'w');
 

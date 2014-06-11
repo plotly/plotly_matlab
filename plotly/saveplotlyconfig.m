@@ -12,7 +12,15 @@ end
 
 % Create the .plotly folder
 userhome = getuserdir();
-plotly_config_folder = fullfile(userhome,'.plotly');
+
+if ispc
+    plotly_config_folder   = fullfile(userhome,'plotly');
+    plotly_config_file = fullfile(plotly_config_folder, 'config');
+else
+    plotly_config_folder   = fullfile(userhome,'.plotly');
+    plotly_config_file = fullfile(plotly_config_folder, '.config');
+end
+
 [status, mess, messid] = mkdir(plotly_config_folder);
 
 if (status == 0)
@@ -24,8 +32,6 @@ if (status == 0)
             'chris@plot.ly for support.']);
     end
 end
-
-plotly_config_file = fullfile(plotly_config_folder,'.config');
 
 fileIDConfig = fopen(plotly_config_file, 'w');
 
@@ -43,7 +49,7 @@ switch nargin
     case 2
         config.plotly_rest_url  = plotly_domain;
         config.stream_rest_url  = plotly_streaming_domain;
-    otherwise %if neither endpoints are specified, no worries! 
+    otherwise %if neither endpoints are specified, no worries!
 end
 
 config_string = m2json(config);
