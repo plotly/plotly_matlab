@@ -11,7 +11,8 @@ function [response] = fig2plotly(varargin)
 %       List of valid properties:
 %           'name' - ('untitled')string, name of the plot
 %           'strip' - (false)boolean, ignores all styling, uses plotly defaults
-%           'open' - (true)boolean, opens a browser window with plot result
+%           'open' - (false)boolean, opens a browser window with plot result
+%           'world_readable -(true)boolean, sets the privacy of the plot 
 %       response - a struct containing the result info of the plot
 %
 % For full documentation and examples, see https://plot.ly/api
@@ -21,6 +22,7 @@ f = get(gcf);
 plot_name = 'untitled';
 strip_style = false;
 open_browser = false;
+world_readable = true; 
 
 switch numel(varargin)
     case 0
@@ -51,6 +53,9 @@ switch numel(varargin)
                 if strcmp('open', varargin{i})
                     open_browser = varargin{i+1};
                 end
+                if strcmp('world_readable', varargin{i})
+                    world_readable = varargin{i+1};
+                end
             end
         end
         
@@ -67,7 +72,7 @@ end
 % send graph request
 response = plotly(data, struct('layout', layout, ...
     'filename',plot_name, ...
-    'fileopt', 'overwrite'));
+    'fileopt', 'overwrite','world_readable',world_readable));
 
 if open_browser
     openurl(response.url);
