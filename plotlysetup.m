@@ -162,6 +162,9 @@ catch exception %writing credentials file permission problem catch...
     fprintf(['\n\n' exception.identifier exception.message]);
 end
 
+%sign in the user
+signin(varargin{1:2});
+
 if nargin == 3
     try %save user config
         fprintf('Saving user endpoint configuration ... ');
@@ -172,9 +175,6 @@ if nargin == 3
         fprintf(['\n\n' exception.identifier exception.message]);
     end
 end
-
-%sign in the user
-signin(varargin{:});
 
 %greet the people!
 fprintf(['Welcome to Plotly! If you are new to Plotly please enter: >>plotlyhelp to get started!\n\n'])
