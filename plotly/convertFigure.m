@@ -60,7 +60,7 @@ for i=axis_num:-1:1
             if numel(annot_tmp)>0
                 annotations{annot_counter} = annot_tmp;
                 annot_counter = annot_counter+1;
-                title = ''; %annot_tmp.text;
+                title =  annot_tmp.text;
             end
             data_num = numel(m_axis.Children);
             if data_num>0
@@ -150,7 +150,7 @@ while ptr<=numel(data)
 end
 
 % ANNOTATIONS
-layout.annotations = ''; % annotations;
+layout.annotations =  annotations;
 
 
 % LEGEND
