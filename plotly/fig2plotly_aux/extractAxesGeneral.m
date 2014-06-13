@@ -1,4 +1,4 @@
-function [xaxes, yaxes] = extractAxesGeneral(a, layout, xaxes, yaxes, strip_style)
+function [xaxes, yaxes] = extractAxesGeneral(axhan, a, layout, xaxes, yaxes, strip_style)
 % extractAxesGeneral - copy general axes struct attributes
 %   [xaxes, yaxes] = extractAxesGeneral(a, layout, xaxes, yaxes)
 %       a - a data struct from matlab describing an axes
@@ -142,30 +142,58 @@ end
 
 %LABELS
 if numel(a.XLabel)==1
+    
     m_title = get(a.XLabel);
     if numel(m_title.String)>0
-        xaxes.title = parseText(m_title.String);
+        xaxes.title = m_title.String;
+        %xaxes.title = parseText(m_title.String);
         if ~strip_style
             if strcmp(m_title.FontUnits, 'points')
                 xaxes.titlefont.size = 1.3*m_title.FontSize;
             end
             xaxes.titlefont.color = parseColor(m_title.Color);
         end
+    else
+        if(isappdata(axhan,'MWBYPASS_xlabel')) %look for bypass 
+            ad = getappdata(axhan,'MWBYPASS_ylabel');
+            try
+                adAx = get(ad{2});
+                m_title.String = adAx.XLabel;
+                xaxes.title = m_title.String;
+            catch exception
+                disp('Had trouble locating XLabel');
+                return
+            end
+        end
+        
     end
-end
-
-if numel(a.YLabel)==1
-    m_title = get(a.YLabel);
+    
+    if numel(a.YLabel)==1
+        
+        m_title = get(a.YLabel);
+    end
     if numel(m_title.String)>0
-        yaxes.title = parseText(m_title.String);
+        yaxes.title = m_title.String;
+        % yaxes.title = parseText(m_title.String);
         if ~strip_style
             if strcmp(m_title.FontUnits, 'points')
                 yaxes.titlefont.size = 1.3*m_title.FontSize;
             end
             yaxes.titlefont.color = parseColor(m_title.Color);
         end
+    else
+        if(isappdata(axhan,'MWBYPASS_ylabel'))
+            ad = getappdata(axhan,'MWBYPASS_ylabel');
+            try
+                adAx = get(ad{2});
+                m_title.String = adAx.YLabel;
+                yaxes.title = m_title.String;
+            catch exception
+                disp('Had trouble locating YLabel');
+                return
+            end
+        end
     end
-end
-
-
+    
+    
 end

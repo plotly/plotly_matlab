@@ -7,8 +7,8 @@ if strcmp('image',m_data.Type)
     %test if image plot is the colorbar
     if ~strcmp('Colorbar',m_axis.Tag)
         data_type = 'heatmap';
-
-    else 
+        
+    else
         data_type = 'colorbar';
     end
 end
@@ -16,7 +16,7 @@ if strcmp('line',m_data.Type)
     data_type = 'scatter';
 end
 if strcmp('text',m_data.Type)
-    data_type = 'annotation';  
+    data_type = 'annotation';
 end
 
 if strcmp('patch',m_data.Type)
@@ -36,7 +36,7 @@ if strcmp('patch',m_data.Type)
         
         data_type = 'area';
     end
-
+    
 end
 if strcmp('hggroup',m_data.Type)
     
@@ -44,14 +44,14 @@ if strcmp('hggroup',m_data.Type)
     %scatter and bar chart
     if isfield(m_data, 'BarLayout')
         data_type = 'bar';
-
+        
     else
         if isfield(m_data, 'Marker') && numel(m_data.Marker)>0
             data_type = 'scatter';
         end
         if isfield(m_data, 'EdgeColor') && isfield(m_data, 'FaceColor')
             data_type = 'area';
-
+            
         end
     end
     
@@ -63,6 +63,18 @@ if strcmp('hggroup',m_data.Type)
     %if none of the above, assume box plot
     if numel(data_type)==0
         data_type = 'box';
+    end
+    
+    m_child  = m_data.Children(1);
+    if (m_child > 0)
+        m_child_type= get(m_child,'Type');
+        if strcmpi(m_child_type,'line');
+            data_type = 'scatter';
+        end
+    end
+    
+    if(numel(data_type) == 0)
+        data_type = 'box'; 
     end
     
 end

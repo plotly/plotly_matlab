@@ -6,8 +6,15 @@ function data = extractDataGeneral(d, data)
 % 
 % For full documentation and examples, see https://plot.ly/api
 
+if strcmpi(d.Type,'line')
 data.x = d.XData;
 data.y = d.YData;
+else %look at children
+   child_temp = get(d.Children(1)); 
+   data.x = child_temp.XData; 
+   data.y = child_temp.YData; 
+end
+
 if strcmp('on', d.Visible)
     data.visible = true;
 else
@@ -15,7 +22,8 @@ else
 end
 
 if numel(d.DisplayName)>0
-    data.name = parseText(d.DisplayName);
+  %  data.name = parseText(d.DisplayName);
+  data.name = (d.DisplayName);
 else
     data.showlegend = false;
 end

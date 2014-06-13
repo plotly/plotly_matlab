@@ -9,21 +9,30 @@ function [response] = plotly(varargin)
 % See also plotlylayout, plotlystyle, signin, signup
 %
 % For full documentation and examples, see https://plot.ly/api
-    origin = 'plot';
-    if isstruct(varargin{end})
-        structargs = varargin{end};
-        f = lower(fieldnames(structargs));
-        if ~any(strcmp('filename',f))
-            structargs.filename = NaN;
-        end
-        if ~any(strcmp('fileopt',f))
-            structargs.fileopt = NaN;
-        end
-        args = varargin(1:(end-1));
-    else
-        structargs = struct('filename', NaN,'fileopt',NaN);
-        args = varargin(1:end);
+origin = 'plot';
+if isstruct(varargin{end})
+    structargs = varargin{end};
+    f = lower(fieldnames(structargs));
+    if ~any(strcmp('filename',f))
+        structargs.filename = NaN;
     end
+    if ~any(strcmp('fileopt',f))
+        structargs.fileopt = NaN;
+    end
+    args = varargin(1:(end-1));
+else
+    structargs = struct('filename', NaN,'fileopt',NaN);
+    args = varargin(1:end);
+end
 
-    response = makecall(args, origin, structargs);
+response = makecall(args, origin, structargs);
+
+try
+    robj = get(0); 
+    g = robj.ScreenSize; 
+    if(~strcmp(response.url,'') && any(g~=1));
+        fprintf(['\nLet''s have a look: <a href="matlab:openurl(''%s'')">' response.url '</a>\n\n'],response.url)
+    end
+end
+
 end

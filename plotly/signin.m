@@ -4,6 +4,8 @@ function [un, key, domain] = signin(varargin)
 % See also plotly, plotlylayout, plotlystyle, signup
 %
 % For full documentation and examples, see https://plot.ly/api
+%[TODO]: account for stream cred/config vars. 
+
     persistent USERNAME KEY PLOTLY_DOMAIN
     if nargin==2 && ischar(varargin{1}) && ischar(varargin{2})
         USERNAME = varargin{1};
@@ -19,8 +21,8 @@ function [un, key, domain] = signin(varargin)
     key = KEY;
     if isempty(PLOTLY_DOMAIN)
         try
-            creds = loadplotlycredentials();
-            PLOTLY_DOMAIN = creds.plotly_rest_url;
+            config = loadplotlyconfig();
+            PLOTLY_DOMAIN = config.plotly_rest_url;
         catch
             % fails cuz either creds haven't been written yet
             % or because plotly_rest_url wasn't a key in the
@@ -29,4 +31,5 @@ function [un, key, domain] = signin(varargin)
         end
     end
     domain = PLOTLY_DOMAIN;
+    
 end

@@ -68,10 +68,13 @@ data.autocontour = false;
 data.contours = struct( 'start', d.LevelList(1), 'size', d.LevelStep, ...
     'end', d.LevelList(end));
 
+data.contours.coloring = 'lines'; %default for now. 
+
 data.dx = (max_x-min_x)/size(d.ZData,1);
 data.dy = (max_y-min_y)/size(d.ZData,2);
 data.x0 = min_x;
 data.y0 = min_y;
+
 
 
 end
