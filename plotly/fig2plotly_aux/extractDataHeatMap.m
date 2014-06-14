@@ -41,6 +41,8 @@ data.yaxis = ['y' num2str(yid)];
 %other attributes
 
 data.z = d.CData;
+data.x = d.XData; 
+data.y = d.YData; 
 
 if ~strip_style
     

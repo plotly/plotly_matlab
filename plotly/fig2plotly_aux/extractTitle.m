@@ -28,6 +28,8 @@ else
             disp('Had trouble locating Title');
             return
         end
+    else
+        data.text= ' '; 
     end
 end
 

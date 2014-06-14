@@ -120,6 +120,7 @@ end
 %TOIMPROVE: check if the axis is a datetime. There is no implementatin for
 %type category yet.
 if numel(a.XTickLabel)>0
+    try datenum(a.XTickLabel);
     [start, finish, t0, tstep] = extractDateTicks(a.XTickLabel, a.XTick);
     if numel(start)>0
         xaxes.type = 'date';
@@ -128,8 +129,12 @@ if numel(a.XTickLabel)>0
         xaxes.dtick = tstep;
         xaxes.autotick = true;
     end
+    catch 
+        %it was not a date... 
+    end
 end
 if numel(a.YTickLabel)>0
+    try datenum(a.YTickLabel);
     [start, finish, t0, tstep] = extractDateTicks(a.YTickLabel, a.YTick);
     if numel(start)>0
         yaxes.type = 'date';
@@ -137,6 +142,9 @@ if numel(a.YTickLabel)>0
         yaxes.tick0 = t0;
         yaxes.dtick = tstep;
         yaxes.autotick = true;
+    end
+    catch
+        %it was not a date... 
     end
 end
 

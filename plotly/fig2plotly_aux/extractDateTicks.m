@@ -12,7 +12,8 @@ date_nums = zeros(num_ticks,1);
 dates_registered = 0;
 for i=1:num_ticks
     try
-        n=datenum(tick_labels(i,:));
+         n = ticks(i); %assumes datenum 
+        %n=datenum(tick_labels(i,:)); %need to know the dateform to do this properly 
     catch
         n=[];
         if num_ticks==numel(ticks)
@@ -36,7 +37,7 @@ if dates_registered==num_ticks
     %display('these are dates!')
     millis_from_epoch = zeros(num_ticks,1);
     for i=1:num_ticks
-        millis_from_epoch(i) = (date_nums(i)-datenum(1970,1,1))*1000*60*60*24;
+        millis_from_epoch(i) = (date_nums(i)-datenum(1970,1,1))*1000*60*60*24; 
     end
     
     
