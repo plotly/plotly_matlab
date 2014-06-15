@@ -6,13 +6,17 @@ function data = extractDataGeneral(d, data)
 % 
 % For full documentation and examples, see https://plot.ly/api
 
-if strcmpi(d.Type,'line')
+if (strcmp(d.Type,'line')||strcmp(d.Type,'patch')); 
 data.x = d.XData;
 data.y = d.YData;
-else %look at children
+else %look at children (this should look for line/patch children) 
    child_temp = get(d.Children(1)); 
+   if(any(d.Children))
    data.x = child_temp.XData; 
    data.y = child_temp.YData; 
+   else
+       %no children and not a line or a patch? 
+   end
 end
 
 if strcmp('on', d.Visible)

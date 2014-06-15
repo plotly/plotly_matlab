@@ -72,7 +72,7 @@ end
 % send graph request
 response = plotly(data, struct('layout', layout, ...
     'filename',plot_name, ...
-    'fileopt', 'overwrite','world_readable',world_readable));
+    'fileopt', 'new','world_readable',world_readable));
 
 if open_browser
     openurl(response.url);
