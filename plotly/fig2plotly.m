@@ -27,14 +27,14 @@ world_readable = true;
 switch numel(varargin)
     case 0
     case 1
-        if isa(varargin{1}, 'double')
+        if ishandle(varargin{1}) 
             f = get(varargin{1});
         end
         if isa(varargin{1}, 'struct')
             f = varargin{1};
         end
     otherwise
-        if isa(varargin{1}, 'double')
+        if ishandle(varargin{1}) 
             f = get(varargin{1});
         end
         if isa(varargin{1}, 'struct')

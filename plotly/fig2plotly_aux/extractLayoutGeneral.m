@@ -1,6 +1,7 @@
 function layout = extractLayoutGeneral(f, layout, strip_style)
 
 %General attributes of the layout.
+%TODO - incorporate JSON GRAPH REF
 if strip_style
     layout.autosize = true;
     layout.margin.l=40;
