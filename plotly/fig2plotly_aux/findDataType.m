@@ -12,6 +12,19 @@ if strcmp('image',m_data.Type)
         data_type = 'colorbar';
     end
 end
+if strcmp('surface',m_data.Type)
+    %heatmap plot
+    %test if image plot is the colorbar
+    if ~strcmp('Colorbar',m_axis.Tag)
+        if exist(get(m_data.ZData))
+            data_type = 'histogram2d';
+        else
+            data_type = 'heatmap';
+        end
+    else
+        data_type = 'colorbar';
+    end
+end
 if strcmp('line',m_data.Type)
     data_type = 'scatter';
 end
@@ -71,10 +84,6 @@ if strcmp('hggroup',m_data.Type)
         if strcmpi(m_child_type,'line');
             data_type = 'scatter';
         end
-    end
-    
-    if(numel(data_type) == 0)
-        data_type = 'box'; 
     end
     
 end

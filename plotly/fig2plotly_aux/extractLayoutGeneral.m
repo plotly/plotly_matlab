@@ -21,13 +21,13 @@ end
 layout.width = f.Position(3);
 layout.height = f.Position(4)+layout.margin.t;
 
-%page color
-try
-    layout.paper_bgcolor = parseColor(f.Color);
-end
-
-%plot colour
 if(~strip_style)
+    %page color
+    try
+        layout.paper_bgcolor = parseColor(f.Color);
+    end
+    
+    %plot colour
     for c = 1:length(f.Children)
         g = get(f.Children(c));
         try
