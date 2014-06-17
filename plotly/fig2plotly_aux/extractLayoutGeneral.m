@@ -22,21 +22,22 @@ end
 layout.width = f.Position(3);
 layout.height = f.Position(4)+layout.margin.t;
 
-if(~strip_style)
-    %page color
-    try
-        layout.paper_bgcolor = parseColor(f.Color);
-    end
-    
-    %plot colour
-    for c = 1:length(f.Children)
-        g = get(f.Children(c));
-        try
-            if(~strcmp(parseColor(g.Color),'rgb(255,255,255)'))
-                layout.plot_bgcolor = parseColor(g.Color);
-            end
-        end
-    end
-end
+%ADD PAGE/PLOT COLOR - NOT USED RIGHT NOW 
+% if(~strip_style)
+%     %page color
+%     try
+%         layout.paper_bgcolor = parseColor(f.Color);
+%     end
+%     
+%     %plot colour
+%     for c = 1:length(f.Children)
+%         g = get(f.Children(c));
+%         try
+%             if(~strcmp(parseColor(g.Color),'rgb(255,255,255)'))
+%                 layout.plot_bgcolor = parseColor(g.Color);
+%             end
+%         end
+%     end
+% end
 
 end
