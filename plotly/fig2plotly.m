@@ -27,14 +27,14 @@ world_readable = true;
 switch numel(varargin)
     case 0
     case 1
-        if isa(varargin{1}, 'double')
+        if ishandle(varargin{1}) 
             f = get(varargin{1});
         end
         if isa(varargin{1}, 'struct')
             f = varargin{1};
         end
     otherwise
-        if isa(varargin{1}, 'double')
+        if ishandle(varargin{1}) 
             f = get(varargin{1});
         end
         if isa(varargin{1}, 'struct')
@@ -72,7 +72,7 @@ end
 % send graph request
 response = plotly(data, struct('layout', layout, ...
     'filename',plot_name, ...
-    'fileopt', 'overwrite','world_readable',world_readable));
+    'fileopt', 'new','world_readable',world_readable));
 
 if open_browser
     openurl(response.url);

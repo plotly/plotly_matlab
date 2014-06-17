@@ -7,7 +7,7 @@ function [data, layout] = extractDataBar(d, layout, xid, yid, CLim, colormap, st
 %       CLim - a 1x2 vector of extents of the color map
 %       colormap - a kx3 matrix representing the colormap
 %       data - a data strcut
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 data = {};
@@ -25,11 +25,26 @@ end
 if yid==1
     yid=[];
 end
+
 data.xaxis = ['x' num2str(xid)];
 data.yaxis = ['y' num2str(yid)];
 
+%horizontal histogram
+try
+    if(strcmp(d.Horizontal,'on'))
+        x_temp = data.x;
+        data.x = data.y;
+        data.y = x_temp;
+        data.orientation = 'h';
+    end
+end
+
 if strcmp(d.BarLayout,'grouped')
-    layout.barmode='group';
+    if(~ishold)%improve this
+        layout.barmode='group';
+    else
+        layout.barmode='overlay';
+    end
 end
 if strcmp(d.BarLayout,'stacked')
     layout.barmode='stack';
@@ -76,4 +91,3 @@ if ~strip_style
     
 end
 
-end

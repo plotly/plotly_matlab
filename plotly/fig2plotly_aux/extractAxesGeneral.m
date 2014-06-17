@@ -28,6 +28,8 @@ yaxes.side = a.YAxisLocation;
 if ~strip_style
     xaxes.showline = true;
     yaxes.showline = true;
+    xaxes.linewidth = 1.1; 
+    yaxes.linewidth = 1.1; 
     %TICKS
     if strcmp(a.TickDir, 'in')
         xaxes.ticks = 'inside';

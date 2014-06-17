@@ -8,8 +8,8 @@ function colorbar = extractColorBar(d, strip_style)
 
 colorbar = {};
 
-if ~strip_style
-
+%if ~strip_style
+ 
     colorbar.titleside = 'right';
     colorbar.xanchor='right';
     %TICKS
@@ -44,7 +44,7 @@ if ~strip_style
     if numel(color_ticks)>0
         colorbar.tick0 = color_ticks(1);
         colorbar.dtick = color_ticks(2)-color_ticks(1);
-        colorbar.nticks = numel(color_ticks);
+        %colorbar.nticks = numel(color_ticks); not needed for colorbar.autotick = false
     end
     
     %TODO: should this multiplier remain?
@@ -56,6 +56,6 @@ if ~strip_style
     
     
     
-end
+%end
 
 end
