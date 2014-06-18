@@ -69,7 +69,7 @@ for b=1:num_boxes
         end
         
         %RECORD OUTLIERS
-        marker_data.marker = []; 
+        marker_data.marker =struct(); 
         if strcmp('Outliers',dc.Tag)
             if ~isnan(dc.YData)
                 outliers = dc.YData;
