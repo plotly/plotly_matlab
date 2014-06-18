@@ -23,7 +23,7 @@ plot_name = 'untitled';
 strip_style = false;
 open_browser = false;
 world_readable = true;
-fileopt = 'new';
+fileopt = 'overwrite';
 
 switch numel(varargin)
     case 0
