@@ -12,7 +12,7 @@ function [response] = fig2plotly(varargin)
 %           'name' - ('untitled')string, name of the plot
 %           'strip' - (false)boolean, ignores all styling, uses plotly defaults
 %           'open' - (false)boolean, opens a browser window with plot result
-%           'world_readable -(true)boolean, sets the privacy of the plot 
+%           'world_readable -(true)boolean, sets the privacy of the plot
 %       response - a struct containing the result info of the plot
 %
 % For full documentation and examples, see https://plot.ly/api
@@ -22,19 +22,20 @@ f = get(gcf);
 plot_name = 'untitled';
 strip_style = false;
 open_browser = false;
-world_readable = true; 
+world_readable = true;
+fileopt = 'new';
 
 switch numel(varargin)
     case 0
     case 1
-        if ishandle(varargin{1}) 
+        if ishandle(varargin{1})
             f = get(varargin{1});
         end
         if isa(varargin{1}, 'struct')
             f = varargin{1};
         end
     otherwise
-        if ishandle(varargin{1}) 
+        if ishandle(varargin{1})
             f = get(varargin{1});
         end
         if isa(varargin{1}, 'struct')
@@ -56,6 +57,9 @@ switch numel(varargin)
                 if strcmp('world_readable', varargin{i})
                     world_readable = varargin{i+1};
                 end
+                if strcmp('fileopt', varargin{i})
+                    fileopt = varargin{i+1};
+                end
             end
         end
         
@@ -65,14 +69,14 @@ end
 %convert figure into data and layout data structures
 [data, layout, title] = convertFigure(f, strip_style);
 
-if numel(title)>0 && strcmp('untitled', plot_name)
+if numel(title)>0 && strcmp('untitled', plot_name) && ~any(regexp(title, '\$'))
     plot_name = title;
 end
 
 % send graph request
 response = plotly(data, struct('layout', layout, ...
     'filename',plot_name, ...
-    'fileopt', 'new','world_readable',world_readable));
+    'fileopt', fileopt ,'world_readable',world_readable));
 
 if open_browser
     openurl(response.url);
