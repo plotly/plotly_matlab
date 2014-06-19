@@ -58,7 +58,7 @@ if ~strip_style
         data.scl{i} = {(i-1)/(size(colormap,1)-1), parseColor(colormap(i,:))};  
     end
     
-    data.colorbar = {};
+    data.colorbar = struct();
 
     
 end
