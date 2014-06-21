@@ -29,7 +29,7 @@ else
             return
         end
     else
-        data.text= ' '; 
+        data.text= ''; 
     end
 end
 
