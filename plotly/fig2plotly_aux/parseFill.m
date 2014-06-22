@@ -8,7 +8,7 @@ function data = parseFill(d, data, CLim, colormap, strip_style)
 % 
 % For full documentation and examples, see https://plot.ly/api
 
-data.fill = 'tozeroy';
+data.fill = 'tonexty';
 
 %get child
 if strcmp(d.Type, 'patch')
@@ -29,9 +29,5 @@ if strcmp(d.Type, 'hggroup')
     %TODO: improve data ordering
     data.y = m_data.YData(2:(numel(m_data.YData)-1)/2+1);
 end
-
-
-
-
 
 end
