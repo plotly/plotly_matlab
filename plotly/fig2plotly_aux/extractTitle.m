@@ -9,12 +9,8 @@ function data = extractTitle(than,d, xa, ya, strip_style)
 
 data = {};
 
-% set reference axis
-data.xref = 'paper';
-data.yref = 'paper';
-
 %TEXT
-if(d.String > 0)
+if(numel(d.String) > 0)
     %data.text = parseText(d.String);
     data.text = d.String; 
 else
@@ -25,13 +21,16 @@ else
             m_title.String = adAx.Title;
             data.text = m_title.String;
         catch exception
-            disp('Had trouble locating Title');
             return
         end
     else
-        data.text= ' '; 
+        return; 
     end
 end
+
+% set reference axis
+data.xref = 'paper';
+data.yref = 'paper';
 
 if ~strip_style
     if strcmp(d.FontUnits, 'points')

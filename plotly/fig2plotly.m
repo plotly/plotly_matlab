@@ -23,7 +23,7 @@ plot_name = 'untitled';
 strip_style = false;
 open_browser = false;
 world_readable = true;
-fileopt = 'overwrite';
+fileopt = ''; 
 
 switch numel(varargin)
     case 0
@@ -69,8 +69,24 @@ end
 %convert figure into data and layout data structures
 [data, layout, title] = convertFigure(f, strip_style);
 
+%if fileopt not specified - overwrite the plot if the name has been specified
+if ~strcmp('untitled', plot_name)
+    if(numel(fileopt)==0)
+        fileopt = 'overwrite';
+    end
+end
+
+%if fileopt not specified - change the filename of the plot to the title of the plot if no name has been provided
 if numel(title)>0 && strcmp('untitled', plot_name) && ~any(regexp(title, '\$'))
     plot_name = title;
+    if(numel(fileopt)==0)
+        fileopt = 'new';
+    end
+end
+
+%if fileopt has not yet been specied, set it to 'new'
+if(numel(fileopt) == 0) 
+    fileopt = 'new'; 
 end
 
 % send graph request
