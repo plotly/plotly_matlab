@@ -5,7 +5,7 @@ function data = extractDataHeatMap(d, xid, yid, CLim, colormap, strip_style)
 %       xid,yid - reference axis indices
 %       CLim - a 1x2 vector of extents of the color map
 %       colormap - a kx3 matrix representing the colormap
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 data = {};
@@ -41,23 +41,27 @@ data.yaxis = ['y' num2str(yid)];
 %other attributes
 
 data.z = d.CData;
+if(size(d.XData,2) == 2)
+    data.x = d.XData(1):d.XData(2);  
+else
+    data.x = d.XData;
+end
+if(size(d.YData,2) == 2)
+    data.y = d.YData(1):d.YData(2);  
+else
+    data.y = d.YData;
+end
+data.zmin = CLim(1);
+data.zmax = CLim(2);
+data.zauto = false;
 
 if ~strip_style
     
-    data.zmin = CLim(1);
-    data.zmax = CLim(2);
-    
-    data.zauto = false;
-    
     data.scl = {};
     for i=1:size(colormap,1)
-        data.scl{i} = {(i-1)/(size(colormap,1)-1), parseColor(colormap(i,:))};  
+        data.scl{i} = {(i-1)/(size(colormap,1)-1), parseColor(colormap(i,:))};
     end
     
-    data.colorbar = {};
-
-    
 end
-
 
 end

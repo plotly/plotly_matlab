@@ -7,7 +7,7 @@ function [data, layout] = extractDataBar(d, layout, xid, yid, CLim, colormap, st
 %       CLim - a 1x2 vector of extents of the color map
 %       colormap - a kx3 matrix representing the colormap
 %       data - a data strcut
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 data = {};
@@ -32,9 +32,10 @@ data.xaxis = ['x' num2str(xid)];
 data.yaxis = ['y' num2str(yid)];
 
 layout.bargap = (d.XData(3,1)-d.XData(2,2))/(d.XData(3,1)-d.XData(2,1));
-
-
+ 
 %other attributes
+data.marker.line.width = d.LineWidth; 
+
 if ~strip_style
     if isfield(d, 'CData')
         color_ref = d.CData(2,:);

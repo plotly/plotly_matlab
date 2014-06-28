@@ -69,6 +69,7 @@ for b=1:num_boxes
         end
         
         %RECORD OUTLIERS
+        marker_data.marker =struct(); 
         if strcmp('Outliers',dc.Tag)
             if ~isnan(dc.YData)
                 outliers = dc.YData;
@@ -105,6 +106,7 @@ for b=1:num_boxes
     
     %styiling
     data.marker = marker_data.marker;
+    
     data.line = line_data.line;
     %TOIMPORVE: fill color might be an option in matlab, have not seen it
     %yet, so default to transparent

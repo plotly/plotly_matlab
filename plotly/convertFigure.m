@@ -8,7 +8,7 @@ function [data, layout, title] = convertFigure(f, strip_style)
 %       data - a cell containing plotly data structs
 %       layout - a plotly layout struct
 %       title - a string with the title of the plot
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 
@@ -43,15 +43,18 @@ layout = extractLayoutGeneral(f, layout, strip_style);
 %TOIMPROVE: for now, reverse order of children. This works well for most
 %cases, not a perfect solution.
 for i=axis_num:-1:1
+    
     %get figure child struct
     m_axis = get(f.Children(i));
     
-    %test if legend
-    if strcmp('legend',m_axis.Tag)
-        legend = extractLegend(m_axis);
-    else
-        %test if axes
-        if strcmp('axes',m_axis.Type)
+    %test if axes
+    if strcmp('axes',m_axis.Type)
+        
+        %test if legend
+        if strcmp('legend',m_axis.Tag)
+            legend = extractLegend(m_axis);
+        else
+            
             %extract axis and add to axis list
             [xid, yid, x_axis y_axis] = extractAxes(f.Children(i),m_axis, layout, x_axis, y_axis, strip_style);
             %extract title and add to annotations
@@ -78,6 +81,7 @@ for i=axis_num:-1:1
                             data_counter = data_counter+1;
                         end
                     end
+                    
                     if strcmp('heatmap',data_type)
                         data{data_counter} = extractDataHeatMap(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
@@ -120,12 +124,13 @@ for i=axis_num:-1:1
                         data_counter = data_counter+1;
                         bar_counter = bar_counter+1;
                     end
-                    
-
+%                     if strcmp('histogram2d',data_type)
+%                         [data{data_counter} layout] = extractDataHistogram2d(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+%                         data_counter = data_counter+1;
+%                         bar_counter = bar_counter+1;
+%                     end
                 end
             end
-            
-            
         end
     end
 end
@@ -139,7 +144,7 @@ end
 % INSERT COLORBAR IN THE FIRST HEATMAP DATA STRUCT
 ptr = 1;
 while ptr<=numel(data)
-    if strcmp('heatmap', data{ptr}.type) || strcmp('contour', data{ptr}.type)        
+    if strcmp('heatmap', data{ptr}.type) || strcmp('contour', data{ptr}.type)
         if numel(colorbar)>0
             data{ptr}.colorbar = colorbar;
             data{ptr}.showscale = true;
@@ -152,7 +157,6 @@ end
 % ANNOTATIONS
 layout.annotations =  annotations;
 
-
 % LEGEND
 if numel(legend)==0
     layout.showlegend = false;
@@ -161,9 +165,14 @@ else
     layout.showlegend = true;
 end
 
+%layout.showlegend = any(legend);
+%if(layout.showlegend)
+%layout.legend=legend;
+%end
+
 
 % ASSEMBLE AXIS
-% rescale domain of after removal of empty axis (if any)
+% rescale domain of after removal of empty axis (if any - for colorbar)
 if numel(empty_axis)>0
     [x_axis, y_axis] = reevaluateDomains(x_axis, y_axis, empty_axis);
 end
@@ -188,5 +197,11 @@ for i = 1:numel(y_axis)
     end
 end
 
+%INVERT THE ORDER OF THE FIGURES
+data_temp = data; 
+for d = 1:length(data)
+data_temp{d} = data{end-(d-1)};
+end
+data = data_temp; 
 
 end
