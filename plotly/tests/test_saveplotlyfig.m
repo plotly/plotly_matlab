@@ -9,9 +9,9 @@ test_failures_toolarge = [39];
 
 formats = {'png', 'pdf', 'jpeg', 'svg'};
 for i=1:length(images)
-    disp(['testing https://plot.ly/~PlotlyImageTest/' num2str(images(i)) '.' formats{j}])
+    disp(['testing https://plot.ly/~PlotlyImageTest/' num2str(images(i))])
     figure = getplotlyfig(test_account, images(i));
     for j=1:length(formats)
-        saveplotlyfig(figure, ['test_saveplotlyfig_images/' 'PlotlyImageTest_' num2str(images(i)) '.' formats{j}], formats{j});
+        saveplotlyfig(figure, ['test_saveplotlyfig_images/' 'PlotlyImageTest_' num2str(images(i))], formats{j});
     end
 end
