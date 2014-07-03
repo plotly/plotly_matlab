@@ -12,7 +12,8 @@ data = {};
 %TEXT
 if(numel(d.String) > 0)
     %data.text = parseText(d.String);
-    data.text = d.String; 
+    data.text = parseLatex(d.String,d); 
+    %data.text = d.String; 
 else
     if(isappdata(than,'MWBYPASS_title'))
         ad = getappdata(than,'MWBYPASS_title');
@@ -38,6 +39,8 @@ if ~strip_style
     end
     data.font.color = parseColor(d.Color);
     %TODO: add font type
+    %GO THROUGH MATLAB FONTS
+    %GO THROUGH PLOTLY FONTS 
 end
 
 %POSITION
