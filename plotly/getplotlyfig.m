@@ -1,6 +1,6 @@
 function figure = getplotlyfig(file_owner, file_id)
 
-    [un, key] = signin;
+    [un, key, domain] = signin;
 
     headers = struct(...
                     'name',...
@@ -20,7 +20,7 @@ function figure = getplotlyfig(file_owner, file_id)
                             'MATLAB'
                         });
 
-    url = ['https://plot.ly/apigetfile/', file_owner, '/', num2str(file_id)];
+    url = [domain, '/apigetfile/', file_owner, '/', num2str(file_id)];
 
     [response_string, extras] = urlread2(url, 'Post', '', headers);
     response_handler(response_string, extras);
