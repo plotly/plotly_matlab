@@ -76,11 +76,11 @@ if ~strcmp('untitled', plot_name)
     end
 end
 
-%if fileopt not specified - change the filename of the plot to the title of the plot if no name has been provided
-if numel(title)>0 && strcmp('untitled', plot_name) && ~any(regexp(title, '\$'))
-    plot_name = title;
+%if fileopt not specified - change the filename of the plot to the stripped title of the plot if no name has been provided
+if numel(title)>0 && strcmp('untitled', plot_name) %&& ~any(regexp(title, '\$'))
+    plot_name = stripTitle(title);
     if(numel(fileopt)==0)
-        fileopt = 'new';
+        fileopt = 'overwrite';
     end
 end
 
