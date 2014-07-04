@@ -24,7 +24,7 @@ data.xref = ['x' num2str(xid)];
 data.yref = ['y' num2str(yid)];
 
 %TEXT
-data.text = parseText(d.String);
+data.text = parseLatex(d.String,d);
 if ~strip_style
     if strcmp(d.FontUnits, 'points')
         data.font.size = 1.3*d.FontSize;

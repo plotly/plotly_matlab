@@ -28,7 +28,7 @@ yaxes.side = a.YAxisLocation;
 if ~strip_style
     xaxes.showline = true;
     yaxes.showline = true;
-    xaxes.linewidth = 1.1; 
+    xaxes.linewidth = 1.2; 
     yaxes.linewidth = 1.1; 
     %TICKS
     if strcmp(a.TickDir, 'in')
@@ -155,7 +155,7 @@ if numel(a.XLabel)==1
     
     m_title = get(a.XLabel);
     if numel(m_title.String)>0
-        xaxes.title = m_title.String;
+        xaxes.title = parseLatex(m_title.String,m_title);
         %xaxes.title = parseText(m_title.String);
         if ~strip_style
             if strcmp(m_title.FontUnits, 'points')
@@ -169,7 +169,7 @@ if numel(a.XLabel)==1
             try
                 adAx = get(ad{2});
                 m_title.String = adAx.XLabel;
-                xaxes.title = m_title.String;
+                xaxes.title = parseLatex(m_title.String,m_title);
             catch exception
                 disp('Had trouble locating XLabel');
                 return
@@ -183,7 +183,7 @@ if numel(a.XLabel)==1
         m_title = get(a.YLabel);
     end
     if numel(m_title.String)>0
-        yaxes.title = m_title.String;
+        yaxes.title = parseLatex(m_title.String,m_title);
         % yaxes.title = parseText(m_title.String);
         if ~strip_style
             if strcmp(m_title.FontUnits, 'points')
@@ -197,7 +197,7 @@ if numel(a.XLabel)==1
             try
                 adAx = get(ad{2});
                 m_title.String = adAx.YLabel;
-                yaxes.title = m_title.String;
+                yaxes.title = parseLatex(m_title.String,m_title);
             catch exception
                 disp('Had trouble locating YLabel');
                 return
