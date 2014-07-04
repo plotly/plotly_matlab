@@ -38,9 +38,12 @@ if ~strip_style
         data.font.size = 1.3*d.FontSize;
     end
     data.font.color = parseColor(d.Color);
-    %TODO: add font type
-    %GO THROUGH MATLAB FONTS
-    %GO THROUGH PLOTLY FONTS 
+    
+    %FONT TYPE 
+%     try 
+%     data.font.family = extractFont(d.FontName);
+%     end
+    
 end
 
 %POSITION
