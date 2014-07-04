@@ -1,30 +1,55 @@
-function formatStr = parseLatex(inputText,d)
-% IF $$ signs - if on outside just keep their style
-% IF $$ signs - if on inside move everything on outside of $$ to \text{} and place $$ on outside
-% IF NO $$ but \greek put $$ around string and .. look for \greek and isolate the rest with \text { }
-% IF NO $$ and no greek, keep as is.
-% CHECK THE INTERPRETER IF LATEX
+function formatStr = parseLatex(inputStr,d)
+
+% parseLatex(inputStr,d) converts TeX, and LaTeX
+% strings into a format that preserves the text/math
+% formatting structure used by mathjax for Plotly plots.
+%
+% TeX: parses through inputStr for instances of
+% the specials characters: \, _, and ^. Uses whitespace
+% as a delimter for the end of \ words, uses either the
+% enclosing { } brackets as delimeters for _ and ^ or
+% simply the immediately proceeding character if no
+% curly brackets are present. If the immediatlye proceeding
+% character is a \ word, the entire word up to the next
+% whitespace is taken. All other characters are contained
+% within \text{ } blocks. Resulting string is places within
+% inline: formatStr = $ ...parsedStr... $ delimeters.
+%
+% LaTeX: parses through inputStr for instances of $
+% or $$. Assumes that $/$$ are only ever used as
+% delimiters. Anything chars that do not fall within the
+% $/$ or $$/$$ blocks are placed within a \text{ } block.
+% Finally, all instances of $/$$ are removed and the
+% resulting string is placed (if no $$ instance is present)
+% within inline: formatStr = $ ...parsedStr...$ delimeters
+% or (if an instance of $$ is present) wihtin block:
+% formatStr $$... parsedStr ... $$ delimeters.
 
 try
+    
+    %------- PARSE TEX --------%
+    
     if(strcmp(d.Interpreter,'tex'));
-        istex = false; %check to see if there is tex present
-        formatStr = inputText;
-        scount = 1; %iterates through formatStr
-        ccount = 1; %iterates through formatStrCell
         
-        % look for \ ^ and _
-        % text needs to be put in \text{} blocks and everything else needs to be untouched
-        % the issue - plotly format should have \text{} blocks around text for nicer formatting
-        % look for \, ^ and _ . Place everything else in \text{}
+        istex = false;
+        formatStr = inputStr;
+        %counter to iterate through formatStr
+        scount = 1;
+        %counter to iterate through formatStrCell
+        ccount = 1;
         
+        %iterate through formatStr
         while scount <= (length(formatStr))
             switch formatStr(scount)
+                
+                %- \words - %
+                
                 case '\'
                     istex = true;
                     formatStrCell{ccount} = [];
-                    while((scount <= length(formatStr)))
-                        %break \ statements at whitespace: ' '
+                    while(scount <= length(formatStr))
                         formatStrCell{ccount} = [formatStrCell{ccount} formatStr(scount)];
+                        %break \word structure at whitespace: ' '
                         if(strcmp(formatStr(scount),' '))
                             scount = scount + 1;
                             break
@@ -32,16 +57,38 @@ try
                         scount = scount + 1;
                     end
                     ccount = ccount + 1;
+                    
+                    %- _ subscripts -%
+                    
                 case '_'
                     istex = true;
                     formatStrCell{ccount} = [];
-                    if(~strcmp(formatStr(scount+1),'{')) %assumes formatStr(scount+1) exists
-                        formatStrCell{ccount} = [formatStr(scount) formatStr(scount+1)];
-                        scount = scount + 2;
-                        ccount = ccount + 1;
+                    % look for enclosing { }
+                    if(~strcmp(formatStr(scount+1),'{'))
+                        % if no { } look for \ word
+                        if(strcmp(formatStr(scount+1),'\'))
+                            while (scount <= length(formatStr))
+                                formatStrCell{ccount} = [formatStrCell{ccount} formatStr(scount)];
+                                % break \word structure at whitespace: ' '
+                                if(strcmp(formatStr(scount), ' '))
+                                    scount = scount + 1;
+                                    break
+                                end
+                                scount = scount + 1;
+                            end
+                            ccount = ccount + 1;
+                            % if no { } and no \word
+                        else
+                            % take immediately proceeding char (existence assumed)
+                            formatStrCell{ccount} = [formatStr(scount) formatStr(scount+1)];
+                            scount = scount + 2;
+                            ccount = ccount + 1;
+                        end
                     else
-                        while ((scount <= length(formatStr)))
+                        % if enclosing { } are present
+                        while (scount <= length(formatStr))
                             formatStrCell{ccount} = [formatStrCell{ccount} formatStr(scount)];
+                            % break _{ structure at '}'
                             if(strcmp(formatStr(scount), '}'))
                                 scount = scount + 1;
                                 break
@@ -50,16 +97,38 @@ try
                         end
                         ccount = ccount + 1;
                     end
+                    
+                    %- ^ superscripts - %
+                    
                 case '^'
                     istex = true;
                     formatStrCell{ccount} = [];
-                    if(~strcmp(formatStr(scount+1),'{')) %assumes formatStr(scount+1) exists
-                        formatStrCell{ccount} = [formatStr(scount) formatStr(scount+1)];
-                        scount = scount + 2;
-                        ccount = ccount + 1;
+                    % look for enclosing { }
+                    if(~strcmp(formatStr(scount+1),'{'))
+                        % if no { } look for \ word
+                        if(strcmp(formatStr(scount+1),'\'))
+                            while ((scount <= length(formatStr)))
+                                formatStrCell{ccount} = [formatStrCell{ccount} formatStr(scount)];
+                                % break \word structure at whitespace: ' '
+                                if(strcmp(formatStr(scount), ' '))
+                                    scount = scount + 1;
+                                    break
+                                end
+                                scount = scount + 1;
+                            end
+                            ccount = ccount + 1;
+                            % if no { } and no \word
+                        else
+                            % take immediately proceeding char (existence assumed)
+                            formatStrCell{ccount} = [formatStr(scount) formatStr(scount+1)];
+                            scount = scount + 2;
+                            ccount = ccount + 1;
+                        end
                     else
+                        % if enclosing { } are present
                         while ((scount <= length(formatStr)))
                             formatStrCell{ccount} = [formatStrCell{ccount} formatStr(scount)];
+                            % break ^{ structure at '}'
                             if(strcmp(formatStr(scount), '}'))
                                 scount = scount + 1;
                                 break
@@ -68,9 +137,13 @@ try
                         end
                         ccount = ccount + 1;
                     end
+                    
+                    %- \text{ } - %
+                    
                 otherwise
                     formatStrCell{ccount} = ['\text{'];
-                    while ((scount <= length(formatStr)))
+                    while (scount <= length(formatStr))
+                        %break \text{ } structure at \word, _ or ^ chars
                         if(strcmp(formatStr(scount), '_') || strcmp(formatStr(scount), '^') || strcmp(formatStr(scount), '\') )
                             break
                         end
@@ -82,39 +155,55 @@ try
             end
         end
         
+        %created parsedStr from formatStrCell
+        parsedStr = [ formatStrCell{:} ];
+        
+        % place in inline: $...parsedStr...$ delimiters
         if(istex)
-            formatStr = ['$' formatStrCell{:} '$'];
+            formatStr = ['$' parsedStr '$'];
         else
-            formatStr = inputText;
+            formatStr = inputStr;
         end
         
+        %------- PARSE LATEX --------%
+        
     elseif(strcmp(d.Interpreter,'latex'));
-        islatex = false; %check to see if there is latex present
-        %assume that $ are only used in title as delimiters
-        formatStr = inputText;
-        scount = 1; %iterates through formatStr
-        ccount = 1; %iterates through formatStrCell
+        
+        islatex = false;
+        formatStr = inputStr;
+        %counter to iterate through formatStr
+        scount = 1;
+        %counter to iterate through formatStrCell
+        ccount = 1;
+        %look for existence of $$
         dsPairs = regexp(formatStr,'\$\$');
-        %from $$ $$ or $ $
+        
+        %iterate through formatStr
         while scount <= (length(formatStr))
+            
             if(strcmp(formatStr(scount),'$'))
                 islatex = true;
+                
+                %- $$... $$ -%
                 if any(dsPairs == scount)
-                    %double $$ situation
                     nextS = regexp(formatStr(scount+1:end),'\$\$','once');
                     formatStrCell{ccount} = formatStr(scount:scount + nextS);
                     scount = scount + nextS + 2;
                     ccount = ccount + 1;
+                    
+                    %- $ ... $ -%
                 else
-                    %single $ situation
                     nextS = regexp(formatStr(scount+1:end),'\$','once');
                     formatStrCell{ccount} = formatStr(scount:scount + nextS);
                     scount = scount + nextS + 1;
                     ccount = ccount + 1;
                 end
+                
+                %- \text{ } -%
+                
             else
                 formatStrCell{ccount} = ['\text{'];
-                while(scount<= length(formatStr)) %always going to be outside a $ pair
+                while(scount<= length(formatStr))
                     if(strcmp(formatStr(scount),'$'))
                         break
                     end
@@ -126,40 +215,31 @@ try
             end
         end
         
-        %remove all $
-        formatStr = [formatStrCell{:}];
-        dsloc = regexp(formatStr,'\$');
-        formatStr(dsloc) = '';
+        %remove all instances of $
+        parsedStr = [formatStrCell{:}];
+        parsedStr(regexp(parsedStr,'\$')) = '';
         
+        % place in inline: $...parsedStr...$
+        % or $$...parsedStr...$$ delimiters
         if(islatex)
             if(any(dsPairs))
-                formatStr = ['$$' formatStr '$$'];
+                formatStr = ['$$' parsedStr '$$'];
             else
-                formatStr = ['$' formatStr '$'];
+                formatStr = ['$' parsedStr '$'];
             end
         else
-            formatStr = inputText;
+            formatStr = inputStr;
         end
         
-        %same approach as tex but need to handle $$/$
-        %don't touch anything within $$ signs - can't be nested
-        %everything else is in \text{}
-        %find pairs of $ or $$
-        %1 - create cell array of string
-        %2 - check string cell array and see if $
-        %3 - if $ check for next $
-        %4 - if next $ is immediately after then take the next next $$ if
-        %5 - none then just take one $
-        %6 - from that dollar sign to next dollar sign do nothing
-        %7 - between dollar signs add \text{};
-        %ex: $\sqrt{5}$ + $$\int123$$ + $$hello$;
-        
+        %------- NO PARSE--------%
     else
-        formatStr = inputText; %do nothing (allow user to specify mathjax format)
+        %allows for user to specify mathjax format directly
+        formatStr = inputStr;
     end
     
+    %display error message if parse was not successful
 catch
-    formatStr = inputText;
+    formatStr = inputStr;
     display(['Sorry - we could not successfully parse the latex within your title.', ...
         'Please consult www.plot.ly/matlab for more information']);
 end
