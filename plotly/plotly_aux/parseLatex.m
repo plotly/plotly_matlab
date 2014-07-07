@@ -6,14 +6,15 @@ function formatStr = parseLatex(inputStr,d)
 %
 % TeX: parses through inputStr for instances of
 % the specials characters: \, _, and ^. Uses whitespace
-% as a delimter for the end of \ words, uses either the
-% enclosing { } brackets as delimeters for _ and ^ or
-% simply the immediately proceeding character if no
-% curly brackets are present. If the immediatlye proceeding
-% character is a \ word, the entire word up to the next
-% whitespace is taken. All other characters are contained
-% within \text{ } blocks. Resulting string is places within
-% inline: formatStr = $ ...parsedStr... $ delimeters.
+% as a delimter for the end of \reservedwords (enforced 
+% if not already present), uses either the enclosing { } 
+% brackets  as delimeters for _ and ^ or simply the
+% immediately proceeding character if no curly brackets 
+% are present. If the immediately proceeding character 
+% of ^ or _ is a \reservedword, the entire word up to the 
+% next whitespace is taken. All other characters are 
+% contained within \text{ } blocks. Resulting string is 
+% placed within inline: formatStr = $ ...parsedStr... $ delimeters.
 %
 % LaTeX: parses through inputStr for instances of $
 % or $$. Assumes that $/$$ are only ever used as
@@ -24,15 +25,17 @@ function formatStr = parseLatex(inputStr,d)
 % within inline: formatStr = $ ...parsedStr...$ delimeters
 % or (if an instance of $$ is present) wihtin block:
 % formatStr $$... parsedStr ... $$ delimeters.
+ 
 
 try
-    
+    istex = false;
+    islatex = false;
     %------- PARSE TEX --------%
     
     if(strcmp(d.Interpreter,'tex'));
         
-        istex = false;
-        formatStr = inputStr;
+        %add white space after reserved TeX words
+        formatStr = formatRW(inputStr);
         %counter to iterate through formatStr
         scount = 1;
         %counter to iterate through formatStrCell
@@ -169,7 +172,6 @@ try
         
     elseif(strcmp(d.Interpreter,'latex'));
         
-        islatex = false;
         formatStr = inputStr;
         %counter to iterate through formatStr
         scount = 1;
@@ -240,9 +242,12 @@ try
     %display error message if parse was not successful
 catch
     formatStr = inputStr;
-    display(['Sorry - we could not successfully parse the TeX/LaTeX within your MATLAB string', ...
+    display(['Sorry - we could not successfully parse the TeX/LaTeX within your MATLAB string. ', ...
         'Please consult www.plot.ly/matlab for more information']);
 end
+
+
+
 
 
 
