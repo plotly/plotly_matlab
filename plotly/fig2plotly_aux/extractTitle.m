@@ -12,8 +12,8 @@ data = {};
 %TEXT
 if(numel(d.String) > 0)
     %data.text = parseText(d.String);
-    data.text = parseLatex(d.String,d); 
-    %data.text = d.String; 
+    data.text = parseLatex(d.String,d);
+    %data.text = d.String;
 else
     if(isappdata(than,'MWBYPASS_title'))
         ad = getappdata(than,'MWBYPASS_title');
@@ -25,7 +25,7 @@ else
             return
         end
     else
-        return; 
+        return;
     end
 end
 
@@ -39,10 +39,15 @@ if ~strip_style
     end
     data.font.color = parseColor(d.Color);
     
-    %FONT TYPE 
-%     try 
-%     data.font.family = extractFont(d.FontName);
-%     end
+    %FONT TYPE
+    try
+        data.font.family = extractFont(d.FontName);
+    catch
+        display(['We could not find the font family you specified.',...
+                    'The default font: Open Sans, sans-serif will be used',...
+                    'See https://www.plot.ly/matlab for more information.']); 
+        data.font.family = 'Open Sans, sans-serif';
+    end
     
 end
 
