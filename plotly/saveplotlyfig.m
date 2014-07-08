@@ -62,7 +62,7 @@ function saveplotlyfig(figure_or_data, filename, varargin)
 
     response_handler(response_string, extras);
     image_data = response_string;
-
+    
     fileID = fopen(filename, 'w');
     fwrite(fileID, image_data);
     fclose(fileID);
