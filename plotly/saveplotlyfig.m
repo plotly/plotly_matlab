@@ -11,7 +11,7 @@ function saveplotlyfig(figure_or_data, filename, varargin)
         filename = [filename, '.png'];
         format = 'png';
     elseif( ~strcmp(ext, '') && nargin < 3)
-        format = ext(2:length(ext))
+        format = ext(2:length(ext));
     elseif(strcmp(ext,'') && nargin==3)
         filename = [filename, '.', varargin{1}];
     else
