@@ -1,0 +1,189 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Fill_Plot</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-24"><meta name="DC.source" content="Fill_Plot.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><p>This is an example of how to create filled polygons on a plot in MATLAB&reg;.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/fill.html"><tt>fill</tt></a> function in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Create a yellow triangle</span>
+figure;
+x = [0.25, 1.0, 1.0];
+y = [0.25, 0.25, 1.0];
+fill(x, y, <span class="string">'y'</span>);
+hold <span class="string">on</span>;
+
+<span class="comment">% Create an orange diamond</span>
+x = [2.0, 2.25, 2.0, 1.75];
+y = [1.25, 1.55, 2.25, 1.5];
+c = [1 0.8 0.3];
+fill(x, y, c);
+
+<span class="comment">% Create a blue rectangle</span>
+left = 3.0;
+right = left + 0.5;
+bottom = 1.0;
+top = bottom + 1;
+x = [left left right right];
+y = [bottom top top bottom];
+fill(x, y, <span class="string">'b'</span>);
+
+<span class="comment">% Create a purple transparent circle</span>
+xc = 3.0; yc = 1.0;
+r = 0.5;
+x = r*sin(-pi:0.1*pi:pi) + xc;
+y = r*cos(-pi:0.1*pi:pi) + yc;
+c = [0.6 0 1];
+fill(x, y, c, <span class="string">'FaceAlpha'</span>, 0.4);
+
+<span class="comment">% Create a light blue star</span>
+xc = 1.0; yc = 3.0;
+t = (-1/4:1/10:3/4)*2*pi;
+r1 = 0.5; r2 = 0.2;
+r = (r1+r2)/2 + (r1-r2)/2*(-1).^[0:10];
+x = r.*cos(t) + xc;
+y = r2 - r.*sin(t) + yc;
+c = [0.6 0.8 1.0];
+fill(x, y, c);
+
+<span class="comment">%  Create a green transparent ellipse</span>
+xc = 0.75; yc = 2.5;
+x = 0.4*sin(-pi:0.1*pi:pi) + xc;
+y = 0.7*cos(-pi:0.1*pi:pi) + yc;
+c = [0 0.5 0];
+fill(x, y, c, <span class="string">'FaceAlpha'</span>, 0.2);
+
+<span class="comment">% Create a red stop sign</span>
+t = (1/16:1/8:1)'*2*pi;
+x = 0.4*sin(t) + 3;
+y = 0.4*cos(t) + 3;
+fill(x, y ,<span class="string">'r'</span>, <span class="string">'FaceAlpha'</span>, 1);
+
+<span class="comment">% Set the axis limits</span>
+axis([0 4 0 4]);
+axis <span class="string">square</span>;
+
+<span class="comment">% Add a title</span>
+title(<span class="string">'Filled Polygons'</span>);
+</pre><img vspace="5" hspace="5" src="Fill_Plot_01.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of how to create filled polygons on a plot in MATLAB®.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/fill.html |fill|> function in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Create a yellow triangle
+figure;
+x = [0.25, 1.0, 1.0];
+y = [0.25, 0.25, 1.0];
+fill(x, y, 'y');
+hold on;
+
+% Create an orange diamond
+x = [2.0, 2.25, 2.0, 1.75];
+y = [1.25, 1.55, 2.25, 1.5];
+c = [1 0.8 0.3];
+fill(x, y, c);
+
+% Create a blue rectangle
+left = 3.0;
+right = left + 0.5;
+bottom = 1.0;
+top = bottom + 1;
+x = [left left right right];
+y = [bottom top top bottom];
+fill(x, y, 'b');
+
+% Create a purple transparent circle
+xc = 3.0; yc = 1.0;
+r = 0.5;
+x = r*sin(-pi:0.1*pi:pi) + xc;
+y = r*cos(-pi:0.1*pi:pi) + yc;
+c = [0.6 0 1];
+fill(x, y, c, 'FaceAlpha', 0.4);
+
+% Create a light blue star
+xc = 1.0; yc = 3.0;
+t = (-1/4:1/10:3/4)*2*pi;
+r1 = 0.5; r2 = 0.2;
+r = (r1+r2)/2 + (r1-r2)/2*(-1).^[0:10];
+x = r.*cos(t) + xc;
+y = r2 - r.*sin(t) + yc;
+c = [0.6 0.8 1.0];
+fill(x, y, c);
+
+%  Create a green transparent ellipse
+xc = 0.75; yc = 2.5;
+x = 0.4*sin(-pi:0.1*pi:pi) + xc;
+y = 0.7*cos(-pi:0.1*pi:pi) + yc;
+c = [0 0.5 0];
+fill(x, y, c, 'FaceAlpha', 0.2);
+
+% Create a red stop sign
+t = (1/16:1/8:1)'*2*pi;
+x = 0.4*sin(t) + 3;
+y = 0.4*cos(t) + 3;
+fill(x, y ,'r', 'FaceAlpha', 1);
+
+% Set the axis limits
+axis([0 4 0 4]);
+axis square;
+
+% Add a title
+title('Filled Polygons');
+
+##### SOURCE END #####
+--></body></html>

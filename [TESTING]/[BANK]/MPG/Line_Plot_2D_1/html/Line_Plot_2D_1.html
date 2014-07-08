@@ -1,0 +1,117 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Line_Plot_2D_1</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-22"><meta name="DC.source" content="Line_Plot_2D_1.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><p>This is an example of how to create an line plot in MATLAB&reg;.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/plot.html"><tt>plot</tt></a> function in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Define values for x, y1, and y2</span>
+x  = 0: .1 : 2*pi;
+y1 = cos(x);
+y2 = sin(x);
+
+<span class="comment">% Plot y1 vs. x (blue, solid) and y2 vs. x (red, dashed)</span>
+figure;
+plot(x, y1, <span class="string">'b'</span>, x, y2, <span class="string">'r-.'</span>, <span class="string">'linewidth'</span>, 2);
+
+<span class="comment">% Turn on the grid</span>
+grid <span class="string">on</span>;
+
+<span class="comment">% Set the axis limits</span>
+axis([0 2*pi -1.5 1.5]);
+
+<span class="comment">% Add title and axis labels</span>
+title(<span class="string">'Trigonometric Functions'</span>, <span class="string">'fontsize'</span>, 10);
+xlabel(<span class="string">'angle'</span>);
+ylabel(<span class="string">'sin(x) and cos(x)'</span>);
+</pre><img vspace="5" hspace="5" src="Line_Plot_2D_1_01.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of how to create an line plot in MATLAB®.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/plot.html |plot|> function in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Define values for x, y1, and y2
+x  = 0: .1 : 2*pi;
+y1 = cos(x);
+y2 = sin(x);
+
+% Plot y1 vs. x (blue, solid) and y2 vs. x (red, dashed)
+figure;
+plot(x, y1, 'b', x, y2, 'r-.', 'linewidth', 2);
+
+% Turn on the grid
+grid on;
+
+% Set the axis limits
+axis([0 2*pi -1.5 1.5]);
+
+% Add title and axis labels
+title('Trigonometric Functions', 'fontsize', 10);
+xlabel('angle');
+ylabel('sin(x) and cos(x)');
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,251 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Area_Bar_Pie_Charts_with_Annotations</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-23"><meta name="DC.source" content="Area_Bar_Pie_Charts_with_Annotations.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><p>This is an example of creating area charts, bar charts, and pie charts with some annotation in MATLAB&reg;.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/fill.html"><tt>fill</tt></a>, <a href="http://www.mathworks.com/help/matlab/ref/bar.html"><tt>bar</tt></a>, <a href="http://www.mathworks.com/help/matlab/ref/text.html"><tt>text</tt></a>, and <a href="http://www.mathworks.com/help/matlab/ref/pie.html"><tt>pie</tt></a> functions in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Set up data</span>
+t  = 0:0.01:2*pi;
+x1 = -pi/2:0.01:pi/2;
+x2 = -pi/2:0.01:pi/2;
+y1 = sin(2*x1);
+y2 = 0.5*tan(0.8*x2);
+y3 = -0.7*tan(0.8*x2);
+rho = 1 + 0.5*sin(7*t).*cos(3*t);
+x = rho.*cos(t);
+y = rho.*sin(t);
+
+<span class="comment">% Create the left plot (filled plots, errorbars, texts)</span>
+figure;
+subplot(121);
+hold <span class="string">on</span>;
+h(1) = fill(x, y, [0 .7 .7]);
+set(h(1), <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>);
+
+h(2) = fill([x1, x2(end:-1:1)], [y1, y2(end:-1:1)], [.8 .8 .6]);
+set(h(2), <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>);
+
+h(3) = line(x1, y1, <span class="string">'LineWidth'</span>, 1.5, <span class="string">'LineStyle'</span>, <span class="string">':'</span>);
+h(4) = line(x2, y2, <span class="string">'Linewidth'</span>, 1.5, <span class="string">'LineStyle'</span>, <span class="string">'--'</span>, <span class="string">'Color'</span>, <span class="string">'red'</span>);
+h(5) = line(x2, y3, <span class="string">'Linewidth'</span>, 1.5, <span class="string">'LineStyle'</span>, <span class="string">'-.'</span>, <span class="string">'Color'</span>, [0 .5 0]);
+
+<span class="comment">% Create error bars</span>
+err = abs(y2-y1);
+hh = errorbar(x2(1:15:end), y3(1:15:end), err(1:15:end), <span class="string">'r'</span>);
+h(6) = hh(1);
+
+<span class="comment">% Create annotations</span>
+text(x2(15), y3(15), <span class="string">'\leftarrow \psi = -.7tan(.8\theta)'</span>, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'FontName'</span>, <span class="string">'times-roman'</span>, <span class="keyword">...</span>
+   <span class="string">'Color'</span>, [0 0.5 0], <span class="string">'FontAngle'</span>, <span class="string">'italic'</span>);
+text(x2(10), y2(10),<span class="string">'\leftarrow \psi = .5tan(.8\theta)'</span>, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'FontName'</span>, <span class="string">'times-roman'</span>,<span class="keyword">...</span>
+   <span class="string">'Color'</span>, <span class="string">'red'</span>, <span class="string">'FontAngle'</span>, <span class="string">'italic'</span>);
+
+text(0, -1.65, <span class="string">'Text box'</span>, <span class="string">'EdgeColor'</span>, [.3 0 .3], <span class="keyword">...</span>
+   <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>, <span class="keyword">...</span>
+   <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>, <span class="string">'LineStyle'</span>, <span class="string">':'</span>, <span class="keyword">...</span>
+   <span class="string">'FontName'</span>, <span class="string">'palatino'</span>, <span class="string">'Margin'</span>, 4, <span class="string">'BackgroundColor'</span>, [.8 .8 1], <span class="keyword">...</span>
+   <span class="string">'LineWidth'</span>, 1);
+
+<span class="comment">% Adjust axes properties</span>
+axis <span class="string">equal</span>;
+set(gca, <span class="string">'Box'</span>, <span class="string">'on'</span>, <span class="string">'LineWidth'</span>, 1, <span class="string">'Layer'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+   <span class="string">'XMinorTick'</span>, <span class="string">'on'</span>, <span class="string">'YMinorTick'</span>, <span class="string">'on'</span>, <span class="string">'XGrid'</span>, <span class="string">'off'</span>, <span class="string">'YGrid'</span>, <span class="string">'on'</span>, <span class="keyword">...</span>
+   <span class="string">'TickDir'</span>, <span class="string">'out'</span>, <span class="string">'TickLength'</span>, [.015 .015], <span class="string">'XLim'</span>, x1([1,end]),<span class="keyword">...</span>
+   <span class="string">'FontName'</span>, <span class="string">'avantgarde'</span>, <span class="string">'Fontsize'</span>, 10, <span class="string">'FontWeight'</span>, <span class="string">'normal'</span>, <span class="keyword">...</span>
+   <span class="string">'FontAngle'</span>, <span class="string">'italic'</span>);
+
+xlabel(<span class="string">'theta (\theta)'</span>, <span class="string">'FontName'</span>, <span class="string">'bookman'</span>, <span class="string">'FontSize'</span>, 12, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+ylabel(<span class="string">'value(\Psi)'</span>, <span class="string">'FontName'</span>, <span class="string">'helvetica'</span>, <span class="string">'FontSize'</span>, 12, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'FontAngle'</span>, <span class="string">'normal'</span>);
+title(<span class="string">'Cool Plot'</span>, <span class="string">'FontName'</span>,<span class="string">'palatino'</span>, <span class="string">'FontSize'</span>, 18, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'FontAngle'</span>, <span class="string">'italic'</span>, <span class="string">'Color'</span>, [.3 .3 0]);
+legh = legend(h, <span class="string">'blob'</span>, <span class="string">'diff'</span>, <span class="string">'sin(2\theta)'</span>, <span class="string">'tan'</span>, <span class="string">'tan2'</span>, <span class="string">'error'</span>, 1);
+set(legh, <span class="string">'FontName'</span>, <span class="string">'helvetica'</span>, <span class="string">'FontSize'</span>, 8, <span class="string">'FontAngle'</span>, <span class="string">'italic'</span>);
+
+<span class="comment">% Create the upper right plot (bar chart)</span>
+subplot(222);
+bar(rand(10,5), <span class="string">'stacked'</span>);
+set(gca, <span class="string">'Box'</span>, <span class="string">'on'</span>, <span class="string">'LineWidth'</span>, .5, <span class="string">'Layer'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+   <span class="string">'XMinorTick'</span>, <span class="string">'on'</span>, <span class="string">'YMinorTick'</span>, <span class="string">'on'</span>, <span class="string">'XGrid'</span>, <span class="string">'on'</span>, <span class="string">'YGrid'</span>, <span class="string">'on'</span>, <span class="keyword">...</span>
+   <span class="string">'TickDir'</span>, <span class="string">'in'</span>, <span class="string">'TickLength'</span>, [.015 .015], <span class="string">'XLim'</span>, [0 11], <span class="keyword">...</span>
+   <span class="string">'FontName'</span>, <span class="string">'helvetica'</span>, <span class="string">'FontSize'</span>, 8, <span class="string">'FontWeight'</span>, <span class="string">'normal'</span>, <span class="keyword">...</span>
+   <span class="string">'YAxisLocation'</span>, <span class="string">'right'</span>);
+xlabel(<span class="string">'bins'</span>, <span class="string">'FontName'</span>, <span class="string">'avantgarde'</span>, <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'normal'</span>);
+yH = ylabel(<span class="string">'y val (\xi)'</span>, <span class="string">'FontName'</span>, <span class="string">'bookman'</span>, <span class="string">'FontSize'</span>, 10, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'normal'</span>);
+set(yH, <span class="string">'Rotation'</span>, -90, <span class="string">'VerticalAlignment'</span>, <span class="string">'bottom'</span>);
+title(<span class="string">'Bar Graph'</span>, <span class="string">'FontName'</span>, <span class="string">'times-roman'</span>, <span class="string">'FontSize'</span>, 12, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'Color'</span>, [0 .7 .7]);
+
+<span class="comment">% Create the bottom right plot (pie chart)</span>
+subplot(224);
+pie([2 4 3 5], {<span class="string">'North'</span>, <span class="string">'South'</span>, <span class="string">'East'</span>, <span class="string">'West'</span>});
+tP = get(get(gca, <span class="string">'Title'</span>), <span class="string">'Position'</span>);
+set(get(gca, <span class="string">'Title'</span>), <span class="string">'Position'</span>, [tP(1), 1.2, tP(3)]);
+title(<span class="string">'Pie Chart'</span>, <span class="string">'FontName'</span>, <span class="string">'avantgarde'</span>, <span class="string">'FontSize'</span>, 12, <span class="keyword">...</span>
+   <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'FontAngle'</span>, <span class="string">'italic'</span>, <span class="string">'Color'</span>, [.7 0 .7]);
+th = findobj(gca, <span class="string">'Type'</span>, <span class="string">'text'</span>);
+set(th, <span class="string">'FontName'</span>, <span class="string">'bookman'</span>, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'FontAngle'</span>, <span class="string">'italic'</span>);
+</pre><img vspace="5" hspace="5" src="Area_Bar_Pie_Charts_with_Annotations_01.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of creating area charts, bar charts, and pie charts with some annotation in MATLAB®.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/fill.html |fill|>, <http://www.mathworks.com/help/matlab/ref/bar.html |bar|>, <http://www.mathworks.com/help/matlab/ref/text.html |text|>, and <http://www.mathworks.com/help/matlab/ref/pie.html |pie|> functions in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Set up data
+t  = 0:0.01:2*pi;
+x1 = -pi/2:0.01:pi/2;
+x2 = -pi/2:0.01:pi/2;
+y1 = sin(2*x1);
+y2 = 0.5*tan(0.8*x2);
+y3 = -0.7*tan(0.8*x2);
+rho = 1 + 0.5*sin(7*t).*cos(3*t);
+x = rho.*cos(t);
+y = rho.*sin(t);
+
+% Create the left plot (filled plots, errorbars, texts)
+figure;
+subplot(121);
+hold on;
+h(1) = fill(x, y, [0 .7 .7]);
+set(h(1), 'EdgeColor', 'none');
+
+h(2) = fill([x1, x2(end:-1:1)], [y1, y2(end:-1:1)], [.8 .8 .6]);
+set(h(2), 'EdgeColor', 'none');
+
+h(3) = line(x1, y1, 'LineWidth', 1.5, 'LineStyle', ':');
+h(4) = line(x2, y2, 'Linewidth', 1.5, 'LineStyle', 'REPLACE_WITH_DASH_DASH', 'Color', 'red');
+h(5) = line(x2, y3, 'Linewidth', 1.5, 'LineStyle', '-.', 'Color', [0 .5 0]);
+
+% Create error bars
+err = abs(y2-y1);
+hh = errorbar(x2(1:15:end), y3(1:15:end), err(1:15:end), 'r');
+h(6) = hh(1);
+
+% Create annotations
+text(x2(15), y3(15), '\leftarrow \psi = -.7tan(.8\theta)', ...
+   'FontWeight', 'bold', 'FontName', 'times-roman', ...
+   'Color', [0 0.5 0], 'FontAngle', 'italic');
+text(x2(10), y2(10),'\leftarrow \psi = .5tan(.8\theta)', ...
+   'FontWeight', 'bold', 'FontName', 'times-roman',...
+   'Color', 'red', 'FontAngle', 'italic');
+
+text(0, -1.65, 'Text box', 'EdgeColor', [.3 0 .3], ...
+   'HorizontalAlignment', 'center', ...
+   'VerticalAlignment', 'middle', 'LineStyle', ':', ...
+   'FontName', 'palatino', 'Margin', 4, 'BackgroundColor', [.8 .8 1], ...
+   'LineWidth', 1);
+
+% Adjust axes properties
+axis equal;
+set(gca, 'Box', 'on', 'LineWidth', 1, 'Layer', 'top', ...
+   'XMinorTick', 'on', 'YMinorTick', 'on', 'XGrid', 'off', 'YGrid', 'on', ...
+   'TickDir', 'out', 'TickLength', [.015 .015], 'XLim', x1([1,end]),...
+   'FontName', 'avantgarde', 'Fontsize', 10, 'FontWeight', 'normal', ...
+   'FontAngle', 'italic');
+
+xlabel('theta (\theta)', 'FontName', 'bookman', 'FontSize', 12, ...
+   'FontWeight', 'bold');
+ylabel('value(\Psi)', 'FontName', 'helvetica', 'FontSize', 12, ...
+   'FontWeight', 'bold', 'FontAngle', 'normal');
+title('Cool Plot', 'FontName','palatino', 'FontSize', 18, ...
+   'FontWeight', 'bold', 'FontAngle', 'italic', 'Color', [.3 .3 0]);
+legh = legend(h, 'blob', 'diff', 'sin(2\theta)', 'tan', 'tan2', 'error', 1);
+set(legh, 'FontName', 'helvetica', 'FontSize', 8, 'FontAngle', 'italic');
+
+% Create the upper right plot (bar chart)
+subplot(222);
+bar(rand(10,5), 'stacked');
+set(gca, 'Box', 'on', 'LineWidth', .5, 'Layer', 'top', ...
+   'XMinorTick', 'on', 'YMinorTick', 'on', 'XGrid', 'on', 'YGrid', 'on', ...
+   'TickDir', 'in', 'TickLength', [.015 .015], 'XLim', [0 11], ...
+   'FontName', 'helvetica', 'FontSize', 8, 'FontWeight', 'normal', ...
+   'YAxisLocation', 'right');
+xlabel('bins', 'FontName', 'avantgarde', 'FontSize', 10, ...
+   'FontWeight', 'normal');
+yH = ylabel('y val (\xi)', 'FontName', 'bookman', 'FontSize', 10, ...
+   'FontWeight', 'normal');
+set(yH, 'Rotation', -90, 'VerticalAlignment', 'bottom');
+title('Bar Graph', 'FontName', 'times-roman', 'FontSize', 12, ...
+   'FontWeight', 'bold', 'Color', [0 .7 .7]);
+
+% Create the bottom right plot (pie chart)
+subplot(224);
+pie([2 4 3 5], {'North', 'South', 'East', 'West'});
+tP = get(get(gca, 'Title'), 'Position');
+set(get(gca, 'Title'), 'Position', [tP(1), 1.2, tP(3)]);
+title('Pie Chart', 'FontName', 'avantgarde', 'FontSize', 12, ...
+   'FontWeight', 'bold', 'FontAngle', 'italic', 'Color', [.7 0 .7]);
+th = findobj(gca, 'Type', 'text');
+set(th, 'FontName', 'bookman', 'FontWeight', 'bold', 'FontAngle', 'italic');
+
+##### SOURCE END #####
+--></body></html>

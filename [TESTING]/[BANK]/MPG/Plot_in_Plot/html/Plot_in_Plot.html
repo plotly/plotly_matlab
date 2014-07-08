@@ -1,0 +1,149 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Plot_in_Plot</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-23"><meta name="DC.source" content="Plot_in_Plot.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><p>This is an example of how to create an inset plot within another plot in MATLAB&reg;.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/axes.html"><tt>axes</tt></a> function in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Create data</span>
+t = linspace(0,2*pi);
+t(1) = eps;
+y = sin(t);
+
+<span class="comment">% Place axes at (0.1,0.1) with width and height of 0.8</span>
+figure;
+handaxes1 = axes(<span class="string">'position'</span>, [0.1 0.1 0.8 0.8]);
+
+<span class="comment">% Main plot</span>
+plot(t, y);
+xlabel(<span class="string">'t'</span>); ylabel(<span class="string">'sin(t)'</span>);
+set(handaxes1, <span class="string">'box'</span>, <span class="string">'off'</span>);
+
+<span class="comment">% Adjust XY label font</span>
+handxlabel1 = get(gca, <span class="string">'xlabel'</span>);
+set(handxlabel1, <span class="string">'fontsize'</span>, 16, <span class="string">'fontweight'</span>, <span class="string">'bold'</span>);
+handylabel1 = get(gca, <span class="string">'ylabel'</span>);
+set(handylabel1, <span class="string">'fontsize'</span>, 16, <span class="string">'fontweight'</span>, <span class="string">'bold'</span>);
+
+<span class="comment">% Place second set of axes on same plot</span>
+handaxes2 = axes(<span class="string">'position'</span>, [0.6 0.6 0.2 0.2]);
+fill(t, y.^2, <span class="string">'g'</span>);
+set(handaxes2, <span class="string">'box'</span>, <span class="string">'off'</span>);
+xlabel(<span class="string">'t'</span>); ylabel(<span class="string">'(sin(t))^2'</span>);
+
+<span class="comment">% Adjust XY label font</span>
+set(get(handaxes2, <span class="string">'xlabel'</span>), <span class="string">'fontname'</span>, <span class="string">'times'</span>)
+set(get(handaxes2, <span class="string">'ylabel'</span>), <span class="string">'fontname'</span>, <span class="string">'times'</span>)
+
+<span class="comment">% Add another set of axes</span>
+handaxes3 = axes(<span class="string">'position'</span>, [0.25 0.25 0.2 0.2]);
+plot(t, y.^3);
+set(handaxes3, <span class="string">'box'</span>,<span class="string">'off'</span>);
+xlabel(<span class="string">'t'</span>); ylabel(<span class="string">'(sin(t))^3'</span>);
+</pre><img vspace="5" hspace="5" src="Plot_in_Plot_01.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of how to create an inset plot within another plot in MATLAB®.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/axes.html |axes|> function in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Create data
+t = linspace(0,2*pi);
+t(1) = eps;
+y = sin(t);
+
+% Place axes at (0.1,0.1) with width and height of 0.8
+figure;
+handaxes1 = axes('position', [0.1 0.1 0.8 0.8]); 
+
+% Main plot
+plot(t, y);
+xlabel('t'); ylabel('sin(t)');
+set(handaxes1, 'box', 'off');
+
+% Adjust XY label font
+handxlabel1 = get(gca, 'xlabel');
+set(handxlabel1, 'fontsize', 16, 'fontweight', 'bold');
+handylabel1 = get(gca, 'ylabel');
+set(handylabel1, 'fontsize', 16, 'fontweight', 'bold');
+
+% Place second set of axes on same plot
+handaxes2 = axes('position', [0.6 0.6 0.2 0.2]);
+fill(t, y.^2, 'g');
+set(handaxes2, 'box', 'off');
+xlabel('t'); ylabel('(sin(t))^2');
+
+% Adjust XY label font
+set(get(handaxes2, 'xlabel'), 'fontname', 'times')
+set(get(handaxes2, 'ylabel'), 'fontname', 'times')
+
+% Add another set of axes
+handaxes3 = axes('position', [0.25 0.25 0.2 0.2]);
+plot(t, y.^3);
+set(handaxes3, 'box','off');
+xlabel('t'); ylabel('(sin(t))^3');
+
+##### SOURCE END #####
+--></body></html>

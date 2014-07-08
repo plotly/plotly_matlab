@@ -1,0 +1,149 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Colormap_Chart</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-23"><meta name="DC.source" content="Colormap_Chart.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><p>This is an example of creating a chart of built-in colormaps in MATLAB&reg;.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/colormap.html"><tt>colormap</tt></a> function in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Define built-in colormaps</span>
+maps = {<span class="string">'jet'</span>, <span class="string">'hsv'</span>, <span class="string">'hot'</span>, <span class="string">'cool'</span>, <span class="string">'spring'</span>, <span class="string">'summer'</span>, <span class="string">'autumn'</span>, <span class="keyword">...</span>
+    <span class="string">'winter'</span>, <span class="string">'gray'</span>, <span class="string">'bone'</span>, <span class="string">'copper'</span>, <span class="string">'pink'</span>, <span class="string">'lines'</span>};
+
+<span class="comment">% Number of color levels to create</span>
+nLevels = 16;
+
+figure;
+
+<span class="comment">% X data points for color patches</span>
+xData = [linspace(0, 15, nLevels); linspace(1, 16, nLevels); <span class="keyword">...</span>
+    linspace(1, 16, nLevels); linspace(0, 15, nLevels)];
+
+<span class="comment">% Create each color bar</span>
+<span class="keyword">for</span> iMap = 1:length(maps)
+    offset = 2*(length(maps) - iMap);
+    yData = [zeros(2, nLevels); 1.5*ones(2, nLevels)] + offset;
+
+    <span class="comment">% Construct appropriate colormap.</span>
+    cData = feval(maps{iMap}, nLevels);
+
+    <span class="comment">% Display colormap chart</span>
+    patch(<span class="string">'XData'</span>, xData, <span class="string">'YData'</span>, yData, <span class="keyword">...</span>
+        <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>, <span class="keyword">...</span>
+        <span class="string">'FaceColor'</span>, <span class="string">'flat'</span>, <span class="keyword">...</span>
+        <span class="string">'FaceVertexCData'</span>, cData);
+    rectangle(<span class="string">'Position'</span>, [0, offset, 16, 1.5], <span class="keyword">...</span>
+        <span class="string">'Curvature'</span>, [0 0])
+    text(16, offset, sprintf(<span class="string">' %s'</span>, maps{iMap}), <span class="keyword">...</span>
+        <span class="string">'VerticalAlignment'</span>, <span class="string">'bottom'</span>, <span class="keyword">...</span>
+        <span class="string">'FontSize'</span>, 12);
+<span class="keyword">end</span>
+
+axis <span class="string">equal</span> <span class="string">off</span>;
+title(<span class="string">'Built-in Colormaps'</span>);
+</pre><img vspace="5" hspace="5" src="Colormap_Chart_01.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of creating a chart of built-in colormaps in MATLAB®.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/colormap.html |colormap|> function in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Define built-in colormaps
+maps = {'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', ...
+    'winter', 'gray', 'bone', 'copper', 'pink', 'lines'};
+
+% Number of color levels to create
+nLevels = 16;
+
+figure;
+
+% X data points for color patches
+xData = [linspace(0, 15, nLevels); linspace(1, 16, nLevels); ...
+    linspace(1, 16, nLevels); linspace(0, 15, nLevels)];
+
+% Create each color bar
+for iMap = 1:length(maps)
+    offset = 2*(length(maps) - iMap);
+    yData = [zeros(2, nLevels); 1.5*ones(2, nLevels)] + offset;
+    
+    % Construct appropriate colormap.
+    cData = feval(maps{iMap}, nLevels);
+    
+    % Display colormap chart
+    patch('XData', xData, 'YData', yData, ...
+        'EdgeColor', 'none', ...
+        'FaceColor', 'flat', ...
+        'FaceVertexCData', cData);
+    rectangle('Position', [0, offset, 16, 1.5], ...
+        'Curvature', [0 0])
+    text(16, offset, sprintf(' %s', maps{iMap}), ...
+        'VerticalAlignment', 'bottom', ...
+        'FontSize', 12);
+end
+
+axis equal off;
+title('Built-in Colormaps');
+
+##### SOURCE END #####
+--></body></html>
