@@ -28,8 +28,8 @@ yaxes.side = a.YAxisLocation;
 if ~strip_style
     xaxes.showline = true;
     yaxes.showline = true;
-    xaxes.linewidth = 1.1; 
-    yaxes.linewidth = 1.1; 
+    xaxes.linewidth = 1.2;
+    yaxes.linewidth = 1.1;
     %TICKS
     if strcmp(a.TickDir, 'in')
         xaxes.ticks = 'inside';
@@ -123,30 +123,30 @@ end
 %type category yet.
 if numel(a.XTickLabel)>0
     try datenum(a.XTickLabel);
-    [start, finish, t0, tstep] = extractDateTicks(a.XTickLabel, a.XTick);
-    if numel(start)>0
-        xaxes.type = 'date';
-        xaxes.range = [start, finish];
-        xaxes.tick0 = t0;
-        xaxes.dtick = tstep;
-        xaxes.autotick = true;
-    end
-    catch 
-        %it was not a date... 
+        [start, finish, t0, tstep] = extractDateTicks(a.XTickLabel, a.XTick);
+        if numel(start)>0
+            xaxes.type = 'date';
+            xaxes.range = [start, finish];
+            xaxes.tick0 = t0;
+            xaxes.dtick = tstep;
+            xaxes.autotick = true;
+        end
+    catch
+        %it was not a date...
     end
 end
 if numel(a.YTickLabel)>0
     try datenum(a.YTickLabel);
-    [start, finish, t0, tstep] = extractDateTicks(a.YTickLabel, a.YTick);
-    if numel(start)>0
-        yaxes.type = 'date';
-        yaxes.range = [start, finish];
-        yaxes.tick0 = t0;
-        yaxes.dtick = tstep;
-        yaxes.autotick = true;
-    end
+        [start, finish, t0, tstep] = extractDateTicks(a.YTickLabel, a.YTick);
+        if numel(start)>0
+            yaxes.type = 'date';
+            yaxes.range = [start, finish];
+            yaxes.tick0 = t0;
+            yaxes.dtick = tstep;
+            yaxes.autotick = true;
+        end
     catch
-        %it was not a date... 
+        %it was not a date...
     end
 end
 
@@ -155,21 +155,31 @@ if numel(a.XLabel)==1
     
     m_title = get(a.XLabel);
     if numel(m_title.String)>0
-        xaxes.title = m_title.String;
+        xaxes.title = parseLatex(m_title.String,m_title);
         %xaxes.title = parseText(m_title.String);
         if ~strip_style
             if strcmp(m_title.FontUnits, 'points')
                 xaxes.titlefont.size = 1.3*m_title.FontSize;
             end
             xaxes.titlefont.color = parseColor(m_title.Color);
+            
+            %FONT TYPE
+            try
+                data.font.family = extractFont(m_title.FontName);
+            catch
+                display(['We could not find the font family you specified.',...
+                    'The default font: Open Sans, sans-serif will be used',...
+                    'See https://www.plot.ly/matlab for more information.']);
+                data.font.family = 'Open Sans, sans-serif';
+            end
         end
     else
-        if(isappdata(axhan,'MWBYPASS_xlabel')) %look for bypass 
+        if(isappdata(axhan,'MWBYPASS_xlabel')) %look for bypass
             ad = getappdata(axhan,'MWBYPASS_ylabel');
             try
                 adAx = get(ad{2});
                 m_title.String = adAx.XLabel;
-                xaxes.title = m_title.String;
+                xaxes.title = parseLatex(m_title.String,m_title);
             catch exception
                 disp('Had trouble locating XLabel');
                 return
@@ -183,13 +193,24 @@ if numel(a.XLabel)==1
         m_title = get(a.YLabel);
     end
     if numel(m_title.String)>0
-        yaxes.title = m_title.String;
+        yaxes.title = parseLatex(m_title.String,m_title);
         % yaxes.title = parseText(m_title.String);
         if ~strip_style
             if strcmp(m_title.FontUnits, 'points')
                 yaxes.titlefont.size = 1.3*m_title.FontSize;
             end
             yaxes.titlefont.color = parseColor(m_title.Color);
+            
+            %FONT TYPE
+            try
+                data.font.family = extractFont(m_title.FontName);
+            catch
+                display(['We could not find the font family you specified.',...
+                    'The default font: Open Sans, sans-serif will be used',...
+                    'See https://www.plot.ly/matlab for more information.']);
+                data.font.family = 'Open Sans, sans-serif';
+            end
+            
         end
     else
         if(isappdata(axhan,'MWBYPASS_ylabel'))
@@ -197,7 +218,7 @@ if numel(a.XLabel)==1
             try
                 adAx = get(ad{2});
                 m_title.String = adAx.YLabel;
-                yaxes.title = m_title.String;
+                yaxes.title = parseLatex(m_title.String,m_title);
             catch exception
                 disp('Had trouble locating YLabel');
                 return

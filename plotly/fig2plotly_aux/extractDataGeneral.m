@@ -32,7 +32,15 @@ end
 
 if numel(d.DisplayName)>0
     %  data.name = parseText(d.DisplayName);
-    data.name = (d.DisplayName);
+    try
+        %look for interpreter for data name (tex/latex/none)
+        tempm = findobj('-property','Interpreter'); 
+        interp = get(tempm(1),'Interpreter'); 
+        m.Interpreter = interp; 
+    catch
+        m.Interpreter = 'tex'; 
+    end
+    data.name = (parseLatex(d.DisplayName,m));
 else
     data.showlegend = false;
 end

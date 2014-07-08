@@ -4,7 +4,7 @@ function data = extractDataAnnotation(d, xid, yid, strip_style)
 %       xid,yid - reference axis indices
 %       d - a data struct from matlab describing an annotation
 %       data - a plotly annotation struct
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 data = {};
@@ -24,29 +24,33 @@ data.xref = ['x' num2str(xid)];
 data.yref = ['y' num2str(yid)];
 
 %TEXT
-data.text = parseText(d.String);
+data.text = parseLatex(d.String,d);
 if ~strip_style
     if strcmp(d.FontUnits, 'points')
         data.font.size = 1.3*d.FontSize;
     end
     data.font.color = parseColor(d.Color);
-    %TODO: add font type
+    %FONT TYPE
+    try
+        data.font.family = extractFont(d.FontName);
+    catch
+        display(['We could not find the font family you specified.',...
+            'The default font: Open Sans, sans-serif will be used',...
+            'See https://www.plot.ly/matlab for more information.']);
+        data.font.family = 'Open Sans, sans-serif';
+    end
 end
 
 %POSITION
-%use center of bounding box as reference
-data.x = d.Extent(1)+d.Extent(3)/2;
-data.y = d.Extent(2)+d.Extent(4)/2;
+%NEW: try bottome left of bounding box as reference. OLD: use center of bounding box as reference
+data.x = d.Extent(1);%+d.Extent(3)/2;
+data.y = d.Extent(2);%+d.Extent(4)/2;
 data.align = d.HorizontalAlignment;
-data.xanchor = 'center';
-data.yanchor = 'middle';
+data.xanchor = 'left';
+data.yanchor = 'bottom';
 
-%ARROW
+%ARROW (NEED TO ADD ANNOTATION.M SUPPORT) 
 data.showarrow = false;
-
-%TODO: if visible, set ax, ay
-
-
-
+%TODO: if visible, set ax, ay (if arrow) 
 
 end

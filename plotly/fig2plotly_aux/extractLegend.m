@@ -10,7 +10,7 @@ legend = {};
 
 if strcmp(a.Visible, 'on')
     
-    legend.traceorder = 'reversed';
+    %legend.traceorder = 'reversed';
     %POSITION
     x_ref = a.Position(1)+a.Position(3)/2;
     y_ref = a.Position(2)+a.Position(4)/2;
