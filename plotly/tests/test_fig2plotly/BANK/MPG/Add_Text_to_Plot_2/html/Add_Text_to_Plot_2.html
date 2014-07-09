@@ -1,0 +1,147 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Add_Text_to_Plot_2</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-23"><meta name="DC.source" content="Add_Text_to_Plot_2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><p>This is an example of how to add text to a plot in MATLAB&reg;.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/text.html"><tt>text</tt></a> function in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Define functions f = x^2 and g = 5*sin(x)+5</span>
+x = -3.0:0.01:3.0;
+f = x.^2;
+g = 5*sin(x) + 5;
+
+<span class="comment">% Plot function f</span>
+figure;
+plot(x, f, <span class="string">'r-'</span>, <span class="string">'LineWidth'</span>, 2);
+hold <span class="string">on</span>;
+
+<span class="comment">% Plot function g</span>
+plot(x, g, <span class="string">'b-'</span>, <span class="string">'LineWidth'</span>, 2);
+axis([-3,3,-5,15]);
+
+<span class="comment">% Add title and axis labels</span>
+title(<span class="string">'f(x) = x^2 ; g(x) = sin(x) + 5'</span>,<span class="string">'FontSize'</span>,12);
+xlabel(<span class="string">'x'</span>,<span class="string">'FontSize'</span>,12);
+ylabel(<span class="string">'f(x) ; g(x)'</span>,<span class="string">'FontSize'</span>,12);
+
+<span class="comment">% Label the curve for function f in red</span>
+text(-2.6, 7.7, <span class="string">'f(x) = x^2'</span>, <span class="string">'Color'</span>, <span class="string">'r'</span>);
+
+<span class="comment">% Label the curve for function g in blue</span>
+text(-2.6, -0.75, <span class="string">'g(x) = 5*sin(x)+5'</span>, <span class="string">'Color'</span>, <span class="string">'b'</span>);
+
+<span class="comment">% Put markers at the two points where the functions are equal</span>
+xeq(1) = -0.956; yeq(1) = 0.916;
+xeq(2) =  2.685; yeq(2) = 7.207;
+plot(xeq, yeq, <span class="string">'o'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'k'</span>, <span class="string">'MarkerEdgeColor'</span>,<span class="string">'k'</span>, <span class="keyword">...</span>
+    <span class="string">'LineWidth'</span>, 2, <span class="string">'MarkerSize'</span>, 6);
+
+<span class="comment">% Label the points where the curves are equal in black</span>
+text(-0.7, 1  , <span class="string">'f(x) = g(x)'</span>, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+text(1.8 , 7.2, <span class="string">'f(x) = g(x)'</span>, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+</pre><img vspace="5" hspace="5" src="Add_Text_to_Plot_2_01.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of how to add text to a plot in MATLAB®.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/text.html |text|> function in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Define functions f = x^2 and g = 5*sin(x)+5
+x = -3.0:0.01:3.0;
+f = x.^2;
+g = 5*sin(x) + 5;
+
+% Plot function f
+figure;
+plot(x, f, 'r-', 'LineWidth', 2);
+hold on;
+
+% Plot function g
+plot(x, g, 'b-', 'LineWidth', 2);
+axis([-3,3,-5,15]);
+
+% Add title and axis labels
+title('f(x) = x^2 ; g(x) = sin(x) + 5','FontSize',12);
+xlabel('x','FontSize',12);
+ylabel('f(x) ; g(x)','FontSize',12);
+
+% Label the curve for function f in red
+text(-2.6, 7.7, 'f(x) = x^2', 'Color', 'r');
+
+% Label the curve for function g in blue
+text(-2.6, -0.75, 'g(x) = 5*sin(x)+5', 'Color', 'b');
+
+% Put markers at the two points where the functions are equal
+xeq(1) = -0.956; yeq(1) = 0.916;
+xeq(2) =  2.685; yeq(2) = 7.207;
+plot(xeq, yeq, 'o', 'MarkerFaceColor', 'k', 'MarkerEdgeColor','k', ...
+    'LineWidth', 2, 'MarkerSize', 6);
+
+% Label the points where the curves are equal in black
+text(-0.7, 1  , 'f(x) = g(x)', 'Color', 'k');
+text(1.8 , 7.2, 'f(x) = g(x)', 'Color', 'k');
+
+##### SOURCE END #####
+--></body></html>

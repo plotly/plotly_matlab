@@ -1,0 +1,216 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Animation</title><meta name="generator" content="MATLAB 7.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-23"><meta name="DC.source" content="Animation.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><p>This is an example of how to create animations and animated GIFs in MATLAB&reg;. In this example, we will animate the motion of a double-pendulum. We solve the ordinary differential equation using <a href="http://www.mathworks.com/help/matlab/ref/ode45.html"><tt>ode45</tt></a>.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/getframe.html"><tt>getframe</tt></a> and <a href="http://www.mathworks.com/help/matlab/ref/imwrite.html"><tt>imwrite</tt></a> functions in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Parameters and initial conditions</span>
+<span class="comment">%   mass, link length, initial angles, simulation time</span>
+m = 1;
+L = 1;
+theta1 = 3*pi/4;
+theta2 = 3*pi/8;
+t = linspace(0, 10, 200);
+
+<span class="comment">% Solving ODE of a double pendulum</span>
+[T,Y] = ode45(@(t, x) double_pendulum(t, x, m, L), <span class="keyword">...</span>
+    t, [theta1, theta2, 0, 0]);
+
+<span class="comment">% Calculating joint coordinates for animation purposes</span>
+x = [ L*sin(Y(:,1)),  L*sin(Y(:,1))+L*sin(Y(:,2))];
+y = [-L*cos(Y(:,1)), -L*cos(Y(:,1))-L*cos(Y(:,2))];
+
+<span class="comment">% Convert radians to degrees</span>
+ang = Y(:,1:2)*180/pi;
+
+<span class="comment">% Set up first frame</span>
+figure(<span class="string">'Color'</span>, <span class="string">'white'</span>);
+subplot(2,1,1);
+plot(T, ang, <span class="string">'LineWidth'</span>, 2);
+hh1(1) = line(T(1), ang(1,1), <span class="string">'Marker'</span>, <span class="string">'.'</span>, <span class="string">'MarkerSize'</span>, 20, <span class="keyword">...</span>
+    <span class="string">'Color'</span>, <span class="string">'b'</span>);
+hh1(2) = line(T(1), ang(1,2), <span class="string">'Marker'</span>, <span class="string">'.'</span>, <span class="string">'MarkerSize'</span>, 20, <span class="keyword">...</span>
+    <span class="string">'Color'</span>, [0 .5 0]);
+xlabel(<span class="string">'time (sec)'</span>); ylabel(<span class="string">'angle (deg)'</span>);
+
+subplot(2,1,2);
+hh2 = plot([0, x(1,1);x(1,1), x(1,2)], [0, y(1,1);y(1,1), y(1,2)], <span class="keyword">...</span>
+    <span class="string">'.-'</span>, <span class="string">'MarkerSize'</span>, 20, <span class="string">'LineWidth'</span>, 2);
+axis <span class="string">equal</span>
+axis([-2*L 2*L -2*L 2*L]);
+ht = title(sprintf(<span class="string">'Time: %0.2f sec'</span>, T(1)));
+
+<span class="comment">% Get figure size</span>
+pos = get(gcf, <span class="string">'Position'</span>);
+width = pos(3); height = pos(4);
+
+<span class="comment">% Preallocate data (for storing frame data)</span>
+mov = zeros(height, width, 1, length(T), <span class="string">'uint8'</span>);
+
+<span class="comment">% Loop through by changing XData and YData</span>
+<span class="keyword">for</span> id = 1:length(T)
+    <span class="comment">% Update graphics data. This is more efficient than recreating plots.</span>
+    set(hh1(1), <span class="string">'XData'</span>, T(id)          , <span class="string">'YData'</span>, ang(id, 1));
+    set(hh1(2), <span class="string">'XData'</span>, T(id)          , <span class="string">'YData'</span>, ang(id, 2));
+    set(hh2(1), <span class="string">'XData'</span>, [0, x(id, 1)]  , <span class="string">'YData'</span>, [0, y(id, 1)]);
+    set(hh2(2), <span class="string">'XData'</span>, x(id, :)       , <span class="string">'YData'</span>, y(id, :));
+    set(ht, <span class="string">'String'</span>, sprintf(<span class="string">'Time: %0.2f sec'</span>, T(id)));
+
+    <span class="comment">% Get frame as an image</span>
+    f = getframe(gcf);
+
+    <span class="comment">% Create a colormap for the first frame. For the rest of the frames,</span>
+    <span class="comment">% use the same colormap</span>
+    <span class="keyword">if</span> id == 1
+        [mov(:,:,1,id), map] = rgb2ind(f.cdata, 256, <span class="string">'nodither'</span>);
+    <span class="keyword">else</span>
+        mov(:,:,1,id) = rgb2ind(f.cdata, map, <span class="string">'nodither'</span>);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Create animated GIF</span>
+imwrite(mov, map, <span class="string">'animation.gif'</span>, <span class="string">'DelayTime'</span>, 0, <span class="string">'LoopCount'</span>, inf);
+</pre><img vspace="5" hspace="5" src="Animation_01.png" alt=""> <p><b>Animated GIF</b></p><p><img vspace="5" hspace="5" src="../animation.gif" alt=""> </p><p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.13<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of how to create animations and animated GIFs in MATLAB®. In this example, we will animate the motion of a double-pendulum. We solve the ordinary differential equation using <http://www.mathworks.com/help/matlab/ref/ode45.html |ode45|>.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/getframe.html |getframe|> and <http://www.mathworks.com/help/matlab/ref/imwrite.html |imwrite|> functions in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Parameters and initial conditions
+%   mass, link length, initial angles, simulation time
+m = 1;
+L = 1;
+theta1 = 3*pi/4;
+theta2 = 3*pi/8;
+t = linspace(0, 10, 200);
+
+% Solving ODE of a double pendulum
+[T,Y] = ode45(@(t, x) double_pendulum(t, x, m, L), ...
+    t, [theta1, theta2, 0, 0]);
+
+% Calculating joint coordinates for animation purposes
+x = [ L*sin(Y(:,1)),  L*sin(Y(:,1))+L*sin(Y(:,2))];
+y = [-L*cos(Y(:,1)), -L*cos(Y(:,1))-L*cos(Y(:,2))];
+
+% Convert radians to degrees
+ang = Y(:,1:2)*180/pi;
+
+% Set up first frame
+figure('Color', 'white');
+subplot(2,1,1);
+plot(T, ang, 'LineWidth', 2);
+hh1(1) = line(T(1), ang(1,1), 'Marker', '.', 'MarkerSize', 20, ...
+    'Color', 'b');
+hh1(2) = line(T(1), ang(1,2), 'Marker', '.', 'MarkerSize', 20, ...
+    'Color', [0 .5 0]);
+xlabel('time (sec)'); ylabel('angle (deg)');
+
+subplot(2,1,2);
+hh2 = plot([0, x(1,1);x(1,1), x(1,2)], [0, y(1,1);y(1,1), y(1,2)], ...
+    '.-', 'MarkerSize', 20, 'LineWidth', 2);
+axis equal
+axis([-2*L 2*L -2*L 2*L]);
+ht = title(sprintf('Time: %0.2f sec', T(1)));
+
+% Get figure size
+pos = get(gcf, 'Position');
+width = pos(3); height = pos(4);
+
+% Preallocate data (for storing frame data)
+mov = zeros(height, width, 1, length(T), 'uint8');
+
+% Loop through by changing XData and YData
+for id = 1:length(T)
+    % Update graphics data. This is more efficient than recreating plots.
+    set(hh1(1), 'XData', T(id)          , 'YData', ang(id, 1));
+    set(hh1(2), 'XData', T(id)          , 'YData', ang(id, 2));
+    set(hh2(1), 'XData', [0, x(id, 1)]  , 'YData', [0, y(id, 1)]);
+    set(hh2(2), 'XData', x(id, :)       , 'YData', y(id, :));
+    set(ht, 'String', sprintf('Time: %0.2f sec', T(id)));
+    
+    % Get frame as an image
+    f = getframe(gcf);
+    
+    % Create a colormap for the first frame. For the rest of the frames,
+    % use the same colormap
+    if id == 1
+        [mov(:,:,1,id), map] = rgb2ind(f.cdata, 256, 'nodither');
+    else
+        mov(:,:,1,id) = rgb2ind(f.cdata, map, 'nodither');
+    end
+end
+
+% Create animated GIF
+imwrite(mov, map, 'animation.gif', 'DelayTime', 0, 'LoopCount', inf);
+
+%%
+% *Animated GIF*
+%
+% <<../animation.gif>>
+
+##### SOURCE END #####
+--></body></html>

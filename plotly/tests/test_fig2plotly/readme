@@ -1,0 +1,11 @@
+The tests found within test_fig2plotly rely on the folder structure remaining: 
+
+test_fig2plotly/AUX
+test_fig2plotly/BANK
+test_fig2plotly/BANK/MPG
+test_fig2plotly/BANK/PD	
+test_fig2plotly/BASE
+
+Keep this in mind if you want to restructure this diretory/subdirectories. 
+
+

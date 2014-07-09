@@ -1,0 +1,157 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Subplot_2</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-24"><meta name="DC.source" content="Subplot_2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><p>This is an example of how to create subplots with multiple plot types in MATLAB&reg;.</p><p>Read about the <a href="http://www.mathworks.com/help/matlab/ref/subplot.html"><tt>subplot</tt></a> function in the MATLAB&reg; documentation.</p><p>Go to <a href="http://www.mathworks.com/discovery/gallery.html">MATLAB Plot Gallery</a></p><pre class="codeinput"><span class="comment">% Create the data to be plotted</span>
+TBdata = [1990 4889 16.4; 1991 5273 17.4; 1992 5382 17.4; 1993 5173 16.5;
+          1994 4860 15.4; 1995 4675 14.7; 1996 4313 13.5; 1997 4059 12.5;
+          1998 3855 11.7; 1999 3608 10.8; 2000 3297  9.7; 2001 3332  9.6;
+          2002 3169  9.0; 2003 3227  9.0; 2004 2989  8.2; 2005 2903  7.9;
+          2006 2779  7.4; 2007 2725  7.2];
+
+measles = [38556 24472 14556 18060 19549 8122 28541 7880 3283 4135 7953 1884]';
+mumps = [20178 23536 34561 37395 36072 32237 18597 9408 6005 6268 8963 13882]';
+chickenPox = [37140 32169 37533 39103 33244 23269 16737 5411 3435 6052 12825 23332]';
+years = TBdata(:, 1);
+cases = TBdata(:, 2);
+rate  = TBdata(:, 3);
+
+<span class="comment">% Create the pie chart in position 1 of a 2x2 grid</span>
+figure;
+subplot(2, 2, 1);
+pie([sum(measles) sum(mumps) sum(chickenPox)], {<span class="string">'Measles'</span> <span class="string">'Mumps'</span> <span class="string">'Chicken Pox'</span>});
+title(<span class="string">'Childhood Diseases'</span>);
+
+<span class="comment">% Create the bar chart in position 2 of a 2x2 grid</span>
+subplot(2, 2, 2);
+bar(1:12, [measles/1000 mumps/1000 chickenPox/1000], 0.5, <span class="string">'stack'</span>);
+xlabel(<span class="string">'Month'</span>);
+ylabel(<span class="string">'Cases (in thousands)'</span>);
+title(<span class="string">'Childhood Diseases'</span>);
+axis([0 13 0 100]);
+
+<span class="comment">% Create the stem chart in position 3 of a 2x2 grid</span>
+subplot(2, 2, 3);
+stem(years, cases);
+xlabel(<span class="string">'Years'</span>);
+ylabel(<span class="string">'Cases'</span>);
+title(<span class="string">'Tuberculosis Cases'</span>);
+axis([1988 2009 0 6000]);
+
+<span class="comment">% Create the line plot in position 4 of a 2x2 grid</span>
+subplot(2, 2, 4);
+plot(years, rate);
+xlabel(<span class="string">'Years'</span>);
+ylabel(<span class="string">'Infection Rate'</span>);
+title(<span class="string">'Tuberculosis Cases'</span>);
+axis([1988 2009 5 20]);
+</pre><img vspace="5" hspace="5" src="Subplot_2_01.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% This is an example of how to create subplots with multiple plot types in MATLAB®.
+% 
+% Read about the <http://www.mathworks.com/help/matlab/ref/subplot.html |subplot|> function in the MATLAB® documentation.
+%
+% Go to <http://www.mathworks.com/discovery/gallery.html MATLAB Plot Gallery>
+%
+% Copyright 2012 The MathWorks, Inc.
+
+% Create the data to be plotted
+TBdata = [1990 4889 16.4; 1991 5273 17.4; 1992 5382 17.4; 1993 5173 16.5;
+          1994 4860 15.4; 1995 4675 14.7; 1996 4313 13.5; 1997 4059 12.5;
+          1998 3855 11.7; 1999 3608 10.8; 2000 3297  9.7; 2001 3332  9.6;
+          2002 3169  9.0; 2003 3227  9.0; 2004 2989  8.2; 2005 2903  7.9;
+          2006 2779  7.4; 2007 2725  7.2];
+      
+measles = [38556 24472 14556 18060 19549 8122 28541 7880 3283 4135 7953 1884]';
+mumps = [20178 23536 34561 37395 36072 32237 18597 9408 6005 6268 8963 13882]';
+chickenPox = [37140 32169 37533 39103 33244 23269 16737 5411 3435 6052 12825 23332]';
+years = TBdata(:, 1);
+cases = TBdata(:, 2);
+rate  = TBdata(:, 3);
+
+% Create the pie chart in position 1 of a 2x2 grid
+figure;
+subplot(2, 2, 1);
+pie([sum(measles) sum(mumps) sum(chickenPox)], {'Measles' 'Mumps' 'Chicken Pox'});
+title('Childhood Diseases');
+
+% Create the bar chart in position 2 of a 2x2 grid
+subplot(2, 2, 2);
+bar(1:12, [measles/1000 mumps/1000 chickenPox/1000], 0.5, 'stack');
+xlabel('Month');
+ylabel('Cases (in thousands)');
+title('Childhood Diseases');
+axis([0 13 0 100]);
+
+% Create the stem chart in position 3 of a 2x2 grid
+subplot(2, 2, 3);
+stem(years, cases);
+xlabel('Years');
+ylabel('Cases');
+title('Tuberculosis Cases');
+axis([1988 2009 0 6000]);
+
+% Create the line plot in position 4 of a 2x2 grid
+subplot(2, 2, 4);
+plot(years, rate);
+xlabel('Years');
+ylabel('Infection Rate');
+title('Tuberculosis Cases');
+axis([1988 2009 5 20]);
+
+##### SOURCE END #####
+--></body></html>
