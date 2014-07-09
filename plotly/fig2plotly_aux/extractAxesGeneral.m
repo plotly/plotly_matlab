@@ -50,10 +50,10 @@ if ~strip_style
         yaxes.mirror = false;
     end
     
-    %TODO: should this multiplier remain?
+    
     if strcmp(a.FontUnits, 'points')
-        xaxes.tickfont.size = 1.3*a.FontSize;
-        yaxes.tickfont.size = 1.3*a.FontSize;
+        xaxes.tickfont.size = a.FontSize;
+        yaxes.tickfont.size = a.FontSize;
     end
     
     %LINES
