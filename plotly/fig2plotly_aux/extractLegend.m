@@ -41,7 +41,14 @@ if strcmp(a.Visible, 'on')
     end
     
     
+    if (strcmp(a.Box,'on'))
+        %LEGEND BORDER SIZE
+        legend.borderwidth = max(1.1,a.LineWidth); %defaults to 1.1 for LineWidths smaller than 1.1
+        %LEGEND BORDER COLOR
+        legend.bordercolor = parseColor(a.EdgeColor);
+        %LEGEND COLOR
+        legend.bgcolor = parseColor(a.Color);
+    end
     
 end
-
 end
