@@ -88,7 +88,7 @@ end
 
 %TEST FOLDER
 c = clock;
-imgTestDir = fullfile(testF2PDir, ['TEST' '[ v.' plotly_version '-' date '-', ...
+imgTestDir = fullfile(testF2PDir, ['TEST' '[v.' plotly_version '-' date '-', ...
     num2str(c(4)) '-' num2str(c(5)) '-' num2str(floor(c(6))) ']']);
 
 %MAKE TEST FOLDER DIRECTORY IF ~REBASE
