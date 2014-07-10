@@ -146,6 +146,13 @@ end
 function runScripts(folderName,scriptInfo,imgDir,ext)
 for localInd = 1:length(scriptInfo);
     sc = scriptInfo(localInd).name;
+    %seed rand.num. gen.
+    s = RandStream('mcg16807','Seed',0);
+    RandStream.setDefaultStream(s);
+    rand
+    randi(30)
+    randn
+    %run the scripts 
     run(fullfile(folderName,sc));
     %getplotlyfig
     fsInd = findstr(plotly_url,'/');
