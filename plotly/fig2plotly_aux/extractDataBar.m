@@ -69,7 +69,7 @@ if ~strip_style
             color_field = d.EdgeColor;
         end
     end
-    colors = setColorProperty(color_field, color_ref, CLim, colormap);
+    colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
     if numel(colors{1})>0
         data.marker.line.color = colors{1};
     end
@@ -82,7 +82,7 @@ if ~strip_style
             color_field = d.FaceColor;
         end
     end
-    colors = setColorProperty(color_field, color_ref, CLim, colormap);
+    colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
     if numel(colors{1})>0
         data.marker.color = colors{1};
     end

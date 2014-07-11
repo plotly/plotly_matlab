@@ -23,7 +23,7 @@ function line_str = parseLine(d)
         end
     end
     
-    colors = setColorProperty(color_field, [], [], []);
+    colors = setColorProperty(color_field, [], [], [], d);
     if numel(colors{1})>0
         line_str.color = colors{1};
     end

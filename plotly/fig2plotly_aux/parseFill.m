@@ -13,14 +13,14 @@ data.fill = 'tonexty';
 %get child
 if strcmp(d.Type, 'patch')
     if ~strip_style
-        colors = setColorProperty(d.FaceColor,d.CData, CLim, colormap);
+        colors = setColorProperty(d.FaceColor,d.CData, CLim, colormap,d);
         data.fillcolor = colors{1};
     end
 end
 if strcmp(d.Type, 'hggroup')
     if ~strip_style
         m_data = get(d.Children(1));
-        colors = setColorProperty(m_data.FaceColor,m_data.CData, CLim, colormap);
+        colors = setColorProperty(m_data.FaceColor,m_data.CData, CLim, colormap,d);
         if numel(colors{1})>0
             data.fillcolor = colors{1};
         end
