@@ -15,8 +15,7 @@ if strcmp(prop, 'none')
 end
 
 %if color defined by map
-if strcmp(prop, 'flat')
-    %if direct color mapping
+if (strcmp(prop, 'flat') || (strcmpi(prop, 'auto')))
     if size(color_ref,2)==3
         color = cell(1, size(color_ref,1));
         for i=1:size(color_ref,1)
@@ -27,20 +26,18 @@ if strcmp(prop, 'flat')
     end
 end
 
-%if color defined by axes (or figure)
+%if color defined by axes (or figure) (only used with scattergroup)
+%using isfield(get(mh),'CData') to determine if scattergroup
 try
-    if strcmp(prop, 'auto')
+    if (strcmp(prop, 'auto') && isfield(mh,'CData'))
         ah = ancestor(mh.Parent,'axes');
-        if isfield(get(ah),'Color')
-            axCol = get(ah,'Color'); 
-            switch axCol 
-                case 'none'
-                    fh = ancestor(mh.Parent,'figure'); 
-                    figCol = get(fh,'Color'); 
-                    color{1}  = parseColor(figCol); 
-                otherwise
-                    color{1} = parseColor(axCol); 
-            end
+        axCol = get(ah,'Color');
+        if(isa(axCol,'double'))
+            color{1} = parseColor(axCol);
+        else
+            fh = ancestor(mh.Parent,'figure');
+            figCol = get(fh,'Color');
+            color{1}  = parseColor(figCol);
         end
     end
 catch
