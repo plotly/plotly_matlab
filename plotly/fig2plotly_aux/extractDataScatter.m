@@ -35,8 +35,6 @@ if isfield(d, 'Marker') && ~strcmp('none', d.Marker)
     marker_bool = true;
     if ~strip_style
         marker_str = parseMarker(d,CLim, colormap);
-        
-        
         if numel(marker_str)~=0
             data.marker = marker_str;
         end
@@ -47,8 +45,6 @@ if isfield(d, 'LineStyle') && ~strcmp('none', d.LineStyle)
     line_bool = true;
     if ~strip_style
         line_str = parseLine(d);
-        
-        
         if numel(line_str)~=0
             data.line = line_str;
         end
@@ -58,14 +54,15 @@ end
 %define mode
 if marker_bool && line_bool
     data.mode = 'lines+markers';
+elseif marker_bool
+    data.mode = 'markers';
+elseif line_bool
+    data.mode = 'lines'; 
 else
-    if marker_bool
-        data.mode = 'markers';
-    end
-    if line_bool
-        data.mode = 'lines';
-    end
+    data.mode = 'none'; 
 end
+
+ 
 
 % ERROR BARS
 if isfield(d, 'LData')
