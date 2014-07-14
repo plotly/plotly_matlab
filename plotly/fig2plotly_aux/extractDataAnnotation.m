@@ -42,15 +42,15 @@ if ~strip_style
 end
 
 %POSITION
-%NEW: try bottome left of bounding box as reference. OLD: use center of bounding box as reference
+%NEW: try bottom left of bounding box as reference. OLD: use center of bounding box as reference
 data.x = d.Extent(1);%+d.Extent(3)/2;
 data.y = d.Extent(2);%+d.Extent(4)/2;
 data.align = d.HorizontalAlignment;
 data.xanchor = 'left';
 data.yanchor = 'bottom';
 
-%ARROW (NEED TO ADD ANNOTATION.M SUPPORT) 
+%ARROW (NEED TO ADD ANNOTATION.M SUPPORT)
 data.showarrow = false;
-%TODO: if visible, set ax, ay (if arrow) 
+%TODO: if visible, set ax, ay (if arrow)
 
 end
