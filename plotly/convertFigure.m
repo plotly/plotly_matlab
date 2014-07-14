@@ -52,7 +52,7 @@ for i=axis_num:-1:1
         
         %test if legend
         if strcmp('legend',m_axis.Tag)
-            legend = extractLegend(m_axis);
+            legend = extractLegend(m_axis,f.Children(i));
         else
             
             %extract axis and add to axis list
@@ -124,11 +124,11 @@ for i=axis_num:-1:1
                         data_counter = data_counter+1;
                         bar_counter = bar_counter+1;
                     end
-%                     if strcmp('histogram2d',data_type)
-%                         [data{data_counter} layout] = extractDataHistogram2d(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
-%                         data_counter = data_counter+1;
-%                         bar_counter = bar_counter+1;
-%                     end
+                    %                     if strcmp('histogram2d',data_type)
+                    %                         [data{data_counter} layout] = extractDataHistogram2d(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                    %                         data_counter = data_counter+1;
+                    %                         bar_counter = bar_counter+1;
+                    %                     end
                 end
             end
         end
@@ -165,12 +165,6 @@ else
     layout.showlegend = true;
 end
 
-%layout.showlegend = any(legend);
-%if(layout.showlegend)
-%layout.legend=legend;
-%end
-
-
 % ASSEMBLE AXIS
 % rescale domain of after removal of empty axis (if any - for colorbar)
 if numel(empty_axis)>0
@@ -198,10 +192,10 @@ for i = 1:numel(y_axis)
 end
 
 %INVERT THE ORDER OF THE FIGURES
-data_temp = data; 
+data_temp = data;
 for d = 1:length(data)
-data_temp{d} = data{end-(d-1)};
+    data_temp{d} = data{end-(d-1)};
 end
-data = data_temp; 
+data = data_temp;
 
 end
