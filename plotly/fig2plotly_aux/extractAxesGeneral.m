@@ -26,8 +26,8 @@ xaxes.side = a.XAxisLocation;
 yaxes.side = a.YAxisLocation;
 
 if ~strip_style
-     xaxes.showline = true;
-     yaxes.showline = true;
+    xaxes.showline = true;
+    yaxes.showline = true;
     %TICKS
     if strcmp(a.TickDir, 'in')
         xaxes.ticks = 'inside';
@@ -103,7 +103,25 @@ if strcmp('linear', xaxes.type)
     if numel(a.XTick)>1
         xaxes.tick0 = a.XTick(1);
         xaxes.dtick = a.XTick(2)-a.XTick(1);
-        xaxes.autotick = false;
+        xaxes.autotick = false;   
+      
+        try
+            ah = axhan;
+            xtl = get(ah,'XTickLabel');
+            if(strcmp(get(ah,'XTickLabelMode'),'manual'))
+                if(iscell(xtl))
+                    xaxes.tick0 = str2double(xtl{1});
+                    xaxes.dtick = str2double(xtl{2})-str2double(xtl{1});    
+                end
+                if(ischar(xtl))
+                    xaxes.tick0 = str2double(xtl(1,:));
+                    xaxes.dtick = str2double(xtl(2,:))- str2double(xtl(1,:));
+                end
+                xaxes.autotick = false; 
+                xaxes.autorange = true; 
+            end
+        end
+
     else
         xaxes.autotick = true;
     end

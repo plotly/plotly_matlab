@@ -24,6 +24,26 @@ else
     end
 end
 
+try
+    ah = ancestor(d.Parent,'axes');
+    xtl = get(ah,'XTickLabel');
+    if(strcmp(get(ah,'XTickLabelMode'),'manual'))
+        if(iscell(xtl))
+            data_tempx = data.x;
+            for ind = 1:length(data.x)
+                data_tempx(ind) = str2double(xtl{1+mod(ind-1,length(xtl))});
+            end
+        end
+        if(ischar(xtl))
+            data_tempx = data.x;
+            for ind = 1:length(data.x)
+                data_tempx(ind) = str2double(xtl(1+mod(ind-1,size(xtl,1)),:));
+            end
+        end
+    end
+    data.x = data_tempx; 
+end
+
 if strcmp('on', d.Visible)
     data.visible = true;
 else
@@ -34,11 +54,11 @@ if numel(d.DisplayName)>0
     %  data.name = parseText(d.DisplayName);
     try
         %look for interpreter for data name (tex/latex/none)
-        tempm = findobj('-property','Interpreter'); 
-        interp = get(tempm(1),'Interpreter'); 
-        m.Interpreter = interp; 
+        tempm = findobj('-property','Interpreter');
+        interp = get(tempm(1),'Interpreter');
+        m.Interpreter = interp;
     catch
-        m.Interpreter = 'tex'; 
+        m.Interpreter = 'tex';
     end
     data.name = (parseLatex(d.DisplayName,m));
 else
