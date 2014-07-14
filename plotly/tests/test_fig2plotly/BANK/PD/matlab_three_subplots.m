@@ -16,6 +16,7 @@ xn = (1 + cos(2*pi*fm*nT)).*cos(2*pi*fc*nT);
 fig = figure;
 subplot(2, 2, [1 3]);
 stem(nT,xn);
+axis([0 200e-6 -2 2]);
 xlabel('t');
 ylabel('x[n]');
 title('Sampled Every T=1e-6 ');
@@ -31,6 +32,7 @@ title('AM Modulated Signal');
 % Create the xy plot for the reconstructed signal in position 4 of a 2x2 grid
 subplot(2, 2, 4);
 plot(nT, xn);
+axis([0 200e-6 -2 2]);
 xlabel('t');
 ylabel('x_zoh(t)');
 title('Reconstruction at T=4e-6 ');
