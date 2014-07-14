@@ -1,4 +1,4 @@
-function legend = extractLegend(a)
+function legend = extractLegend(a,ah)
 % extractLegend - create a legend struct
 %   [legend] = extractLegend(a)
 %       a - a data struct from matlab describing an axis used as a legend
@@ -8,8 +8,23 @@ function legend = extractLegend(a)
 
 legend = {};
 
-if strcmp(a.Visible, 'on')
-    
+%try to find the legend peered to the the current axes
+try
+    cf = get(gcf);
+    for i = 1:length(cf.Children)
+        legTemp = getappdata(double(cf.Children(i)),'LegendPeerHandle'); 
+        if (double(legTemp) == double(ah)) %check to see if the LegendPeerHandle for that axis is the Legend axis
+            leg = legTemp; 
+        end
+    end
+    hl = handle(leg);
+    showLegend = isequal(hl.ContentsVisible,'on');
+catch
+    showLegend = strcmp(a.Visible, 'on');
+end
+
+if showLegend
+     
     %legend.traceorder = 'reversed';
     %POSITION
     x_ref = a.Position(1)+a.Position(3)/2;
@@ -40,14 +55,17 @@ if strcmp(a.Visible, 'on')
         legend.yanchor = 'bottom';
     end
     
-    if (strcmp(a.Box,'on'))
+    if (strcmp(a.Box,'on')&&strcmp(a.Visible, 'on'))
         %LEGEND BORDER SIZE
-        legend.borderwidth = a.LineWidth; 
+        legend.borderwidth = a.LineWidth;
         %LEGEND BORDER COLOR
         legend.bordercolor = parseColor(a.EdgeColor);
         %LEGEND COLOR
         legend.bgcolor = parseColor(a.Color);
     end
+    
+    %anchor the legend to the appropriate axis
+    
     
 end
 end
