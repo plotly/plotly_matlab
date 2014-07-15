@@ -25,11 +25,10 @@ function [un, key, domain] = signin(varargin)
             PLOTLY_DOMAIN = config.plotly_domain;
         catch
             % fails cuz either creds haven't been written yet
-            % or because plotly_rest_url wasn't a key in the
+            % or because plotly_domain wasn't a key in the
             % creds file.
             PLOTLY_DOMAIN = 'https://plot.ly';
         end
     end
     domain = PLOTLY_DOMAIN;
-
 end
