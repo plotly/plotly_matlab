@@ -12,6 +12,7 @@ classdef plotly_figure
         PlotOptions; %filename,fileopt,world_readable
         UserData; %credentials/configuration
         State; %state of plot (current axis)
+        URL; 
     end
     
     methods
@@ -43,6 +44,7 @@ classdef plotly_figure
             obj.State.DataHandle(1) = NaN;
             obj.State.CurrentDataHandleIndex = 1;
             obj.State.Data2AxisMap = [];
+            obj.URL = ''; 
             
             for a = 1:2:nargin
                 if(strcmpi(varargin{a},'filename'))
@@ -112,6 +114,11 @@ classdef plotly_figure
             obj.Data = extractPlotData(obj);
             %update layout
             obj.Layout = extractPlotLayout(obj);
+        end
+        
+        function obj = plotly(obj)
+            response = plotly(obj.Data);
+            obj.URL = response.url 
         end
     end
 end
