@@ -1,4 +1,4 @@
-classdef plotly_figure
+classdef plotly_figure < handle
     %plotlyfigure defines an online plotly plot
     %the main difference between this approach
     %and fig2plotly is that using fig2plotly is blind
@@ -6,17 +6,20 @@ classdef plotly_figure
     %TODO: [ADDING PLOT FUNCTION PARSING]
     %TODO: [ADD FIG INPUT];
     
+    %----CLASS PROPERTIES----%
     properties
         Layout; %layout of the plot
         Data; %data of the plot
         PlotOptions; %filename,fileopt,world_readable
         UserData; %credentials/configuration
         State; %state of plot (current axis)
-        URL; 
+        URL;
     end
     
+     %----CLASS METHODS----%
     methods
-        %constructor
+
+       %----CONSTRUCTOR---%
         function obj = plotly_figure(varargin)
             if mod(nargin,2) ~= 0
                 fprintf(['\nSorry! You did not enter the right number of inputs \nto initialize ',...
@@ -25,8 +28,9 @@ classdef plotly_figure
                 return
             end
             
-            %create a plotly figure
+            %create the default Plotly figure
             fig = figure('Name','PLOTLY FIGURE','color',[1 1 1],'NumberTitle','off');
+            %create the default Plotly axes 
             ax = gca;
             
             obj.Layout = {};
@@ -44,7 +48,7 @@ classdef plotly_figure
             obj.State.DataHandle(1) = NaN;
             obj.State.CurrentDataHandleIndex = 1;
             obj.State.Data2AxisMap = [];
-            obj.URL = ''; 
+            obj.URL = '';
             
             for a = 1:2:nargin
                 if(strcmpi(varargin{a},'filename'))
@@ -68,7 +72,7 @@ classdef plotly_figure
             end
         end
         
-        %all plotting functions
+         %----PLOT----%
         function obj = plot(obj,varargin)
             
             try
@@ -86,13 +90,12 @@ classdef plotly_figure
                         end
                     end
                 else
-                    varargin{2:end+1} = varargin{:};
-                    varargin{1} = obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex);
+                    varargin = {obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex),varargin{:}};
                 end
             catch
                 fprintf(['Oops! Something went wrong while looking for the axis handle',...
-                    'associated with this plot. Please make sure the axis handle specified',...
-                    'is a child of the Plotly figure, whose handle is: ' num2str(obj.State.FigureHandle)]);
+                    '\nassociated with this plot. Please make sure the axis handle specified',...
+                    '\nis a child of the Plotly figure, whose handle is: ' num2str(obj.State.FigureHandle)]);
             end
             
             %check for hold to either erase or update
@@ -111,14 +114,15 @@ classdef plotly_figure
             %make the plot and grab the data handle
             obj.State.DataHandle(obj.State.CurrentDataHandleIndex) = plot(varargin{:});
             %update data
-            obj.Data = extractPlotData(obj);
+            obj = extractPlotData(obj);
             %update layout
-            obj.Layout = extractPlotLayout(obj);
+            obj = extractPlotLayout(obj);
         end
         
+        %----SEND PLOT REQUEST----%
         function obj = plotly(obj)
             response = plotly(obj.Data);
-            obj.URL = response.url 
+            obj.URL = response.url; 
         end
     end
 end
