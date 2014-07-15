@@ -45,10 +45,10 @@ end
 
 switch nargin
     case 1
-        config.plotly_rest_url  = plotly_domain;
+        config.plotly_domain = plotly_domain;
     case 2
-        config.plotly_rest_url  = plotly_domain;
-        config.stream_rest_url  = plotly_streaming_domain;
+        config.plotly_domain = plotly_domain;
+        config.plotly_streaming_domain= plotly_streaming_domain;
     otherwise %if neither endpoints are specified, no worries!
 end
 
