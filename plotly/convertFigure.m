@@ -101,7 +101,7 @@ for i=axis_num:-1:1
                         data_counter = data_counter+1;
                     end
                     if strcmp('annotation',data_type)
-                        annot_tmp = extractDataAnnotation(m_data, xid, yid, strip_style);
+                        annot_tmp = extractDataAnnotation(m_data, xid, yid, strip_style,m_axis.Children(j));
                         if numel(annot_tmp)>0
                             annotations{annot_counter} = annot_tmp;
                             annot_counter = annot_counter+1;

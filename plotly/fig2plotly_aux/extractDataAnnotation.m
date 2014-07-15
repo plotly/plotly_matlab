@@ -1,4 +1,4 @@
-function data = extractDataAnnotation(d, xid, yid, strip_style)
+function data = extractDataAnnotation(d, xid, yid, strip_style,dhan)
 % extractDataAnnotation - create a general purpose annotation struct
 %   [data] = extractDataAnnotation(d, xid, yid)
 %       xid,yid - reference axis indices
@@ -43,12 +43,38 @@ end
 
 %POSITION
 %NEW: try bottom left of bounding box as reference. OLD: use center of bounding box as reference
-data.x = d.Extent(1);%+d.Extent(3)/2;
-data.y = d.Extent(2);%+d.Extent(4)/2;
+data.x = d.Position(1);%+d.Extent(3)/2;
+data.y = d.Position(2);%+d.Extent(4)/2;
 data.align = d.HorizontalAlignment;
-data.xanchor = 'left';
-data.yanchor = 'bottom';
+data.xanchor = d.HorizontalAlignment;
+try
+    data.yanchor = d.VerticalAlignment;
+    %remove (cap and baseline - not handled by Plotly)
+    if strcmpi(d.VerticalAlignment,'cap')
+        data.yanchor = 'top';
+    elseif strcmp(d.VerticalAlignment,'baseline')
+        data.yanchor = 'bottom';
+    end
+catch
+    d.yanchor = 'bottom';
+end
 
+%if data.x and data.y are larger than axis bounds. set xref and yref to page.
+try
+    ah = ancestor(d.Parent,'axes');
+    ax = get(ah);
+    xl = ax.XLim;
+    yl = ax.YLim;
+    if (data.x > xl(2) || data.x < xl(1) || data.y > yl(2) || data.y < yl(1))
+        data.xref = 'paper';
+        data.yref = 'paper';
+        set(dhan,'Units','Normalized'); 
+        newPos = get(dhan,'Position'); 
+        data.x = newPos(1);
+        data.y = newPos(2);    
+    end
+catch
+end
 %ARROW (NEED TO ADD ANNOTATION.M SUPPORT)
 data.showarrow = false;
 %TODO: if visible, set ax, ay (if arrow)
