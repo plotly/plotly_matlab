@@ -16,11 +16,7 @@ if strcmp('surface',m_data.Type)
     %heatmap plot
     %test if image plot is the colorbar
     if ~strcmp('Colorbar',m_axis.Tag)
-        if exist(get(m_data.ZData))
-            data_type = 'histogram2d';
-        else
-            data_type = 'heatmap';
-        end
+        data_type = 'heatmap';
     else
         data_type = 'colorbar';
     end
