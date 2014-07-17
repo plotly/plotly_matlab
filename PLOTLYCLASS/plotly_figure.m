@@ -1,8 +1,10 @@
 classdef plotly_figure < handle
-    %plotlyfigure defines an online plotly plot
+    %plotlyfigure defines an online Plotly plot
     %the main difference between this approach
     %and fig2plotly is that using fig2plotly is blind
-    %to whatever functions were called.
+    %to whatever functions were called whereas this
+    %new class structure updates the plotly object 
+    %everytime a plotting function is called. 
     %TODO: [ADDING PLOT FUNCTION PARSING]
     %TODO: [ADD FIG INPUT];
     

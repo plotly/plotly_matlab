@@ -103,32 +103,98 @@ end
 
 %--SCATTER MARKER LINE--%
 
+%--SCATTER MARKER LINE COLOR--%
+
+%TODO 
+
 %--SCATTER MARKER LINE WIDTH--%
 data{obj.State.CurrentDataHandleIndex}.marker.line.width = plot_data.LineWidth;
 
+%--SCATTER MARKER LINE DASH--%
+
+%TODO 
+
+%--SCATTER MARKER LINE OPACITY--%
+
+%TODO 
+
+%--SCATTER MARKER LINE SMOOTHING--%
+
+%TODO 
+
+%--SCATTER MARKER LINE SHAPE--%
+
+%TODO 
+
 %--SCATTER MARKER OPACITY--%
+
+%TODO 
 
 %--SCATTER MARKER COLOR SCALE--%
 
+%TODO 
+
 %--SCATTER MARKER SIZE MODE--%
+
+%TODO 
 
 %--SCATTER MARKER SIZE REF--%
 
+%TODO 
+
 %--SCATTER MARKER MAX DISPLAYED--%
+
+%TODO 
 
 %-SCATTER LINE-%
 
+%-SCATTER LINE COLOR-%
+
+%TODO 
+
+%-SCATTER LINE WIDTH-%
+
+%TODO 
+
+%-SCATTER LINE DASH-%
+
+%TODO 
+
+%-SCATTER LINE OPACITY-%
+
+%TODO 
+
+%-SCATTER LINE SMOOTHING-%
+
+%TODO 
+
+%-SCATTER LINE SHAPE-%
+
+%TODO 
+
 %-SCATTER CONNECTGAPS-%
+
+%TODO 
 
 %-SCATTER FILL-%
 
+%TODO 
+
 %-SCATTER FILLCOLOR-%
+
+%TODO 
 
 %-SCATTER OPACITY-%
 
+%TODO 
+
 %-SCATTER TEXTFONT-%
 
+%TODO 
+
 %-SCATTER TEXTPOSITION-%
+
+%TODO 
 
 %-SCATTER XAXIS-%
 data{obj.State.CurrentDataHandleIndex}.xaxis = ['x' num2str(obj.State.CurrentAxisHandleIndex)];
@@ -137,6 +203,8 @@ data{obj.State.CurrentDataHandleIndex}.xaxis = ['x' num2str(obj.State.CurrentAxi
 data{obj.State.CurrentDataHandleIndex}.yaxis = ['y' num2str(obj.State.CurrentAxisHandleIndex)];
 
 %-SCATTER SHOWLEGEND-%
+
+%TODO 
 
 %-SCATTER STREAM-%
 
