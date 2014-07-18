@@ -1,29 +1,26 @@
-function resp = plotlystream(request,reqStruct)
+function respStruct = plotlystream(request,reqStruct)
 % plotlystream(request,reqStruct)
-% [INPUT]
+%----------------[INPUT]--------------------%
 % request: ['open','write','close']
 % open:
-% reqStruct.tokens = cell('streamtoken1','streamtoken2',...) ;
-% reqStruct.host = 'stream host url' (optional) {default: creds.plotly_stream_domain}
-% reqStruct.port = 'output port' {80} [int] (optional)
+% reqStruct.tokens = cell('strmtkn1','strmtkn2',...) ;
+% reqStruct.host = 'host url' (opt.) {config.plotly_stream_domain}
+% reqStruct.port = 'output port' {80} [int] (opt.)
 % reqStruct.timeout = 'connection timeout' {5s.} [int] (optional)
 % write:
 % reqStruct.stream = cell(java.net.URL object1,java.net.URL object2,...)
 % reqStruct.data = struct('x',xdata,'y',ydata,'marker',struct('color','red',...))
 % close:
 % reqStruct.stream = cell(java.net.URL object1,java.net.URL object2,...)
-% [OUPUT]
+%----------------[OUTPUT]------------------%
 % open:
-% resp.stream = cell(java.net.URL object1,java.net.URL object2,...)
-% resp.error = 'any associated errors' [string]
-% resp.message = 'any associated messages' [string]
+% respStruct.stream = cell(java.net.URL obj1,java.net.URL obj2,...)
+% respStruct.message = 'associated msgs' [string]
 % write:
-% resp.errors= 'any associated errors' [string]
-% resp.message = 'any associated messages' [string]
+% respStruct.message = 'associated msgs' [string]
 % close:
-% resp.error = 'any associated errors' [string]
-% resp.message = 'any associated messages' [string]
-% [INFORMATION]
+% respStruct.message = 'associated msgs' [string]
+%--------------[INFORMATION]---------------%
 % For more information please visit:
 % https://plot.ly/streaming/
 % or contatct chuck@plot.ly
@@ -42,7 +39,8 @@ function resp = plotlystream(request,reqStruct)
 % data{2}.mode = 'markers';
 % %open:
 % reqStruct.tokens = {'xxxyyyxxxi','yyyxxxyyyi'}
-% reqStruct.stream = plotlystream('open', reqStruct);
+% respStruct = plotlystream('open', reqStruct);
+% reqStruct = respStruct; 
 % %write:
 % for i = 1:10
 % data{1}.x = i;
@@ -57,9 +55,8 @@ function resp = plotlystream(request,reqStruct)
 % %close:
 % plotlystream('close',{'stream',stream});
 %------------------------------------------%
-
 %[TODO]: allow for variable endpoint streaming domains
-% to be written to simultaneously. (cell array host/port) 
+% to be written to simultaneously. (cell array host/port)
 
 % check for correct number of inputs
 if nargin ~= 2
@@ -71,11 +68,11 @@ if validRequest(request)
         % parse the request
         switch request
             case 'open'
-                resp = openplotlystream(reqStruct);
+                respStruct = openplotlystream(reqStruct);
             case 'write'
-                resp = writeplotlystream(reqStruct);
+                respStruct = writeplotlystream(reqStruct);
             case 'close'
-                resp = closeplotlystream(reqStruct);
+                respStruct = closeplotlystream(reqStruct);
         end
     else
         error(['Oops! Bad stream request structure: missing required fields. ', ...
@@ -87,56 +84,103 @@ else
 end
 end
 
-function resp = openplotlystream(reqStruct)
+%-----------OPEN STREAM-----------%
+function respStruct = openplotlystream(reqStruct)
 
 %input
-handler = sun.net.www.protocol.http.Handler;
 tokens = reqStruct.tokens;
-numStreams = length(tokens); 
-stream = cell(1,numStreams); 
+
+if (~iscell(tokens))
+    tokens = {tokens};
+end
+
+handler = sun.net.www.protocol.http.Handler;
+numStreams = length(tokens);
+url= cell(1,numStreams);
+conn = cell(1,numStreams); 
+stream = cell(1,numStreams);
+chunklen = 20;
 
 if isfield(reqStruct,'host')
     host = reqStruct.host;
 else
     try
-        creds = loadplotlycredentials;
-        host = creds.plotly_streaming_domain;
+        config = loadplotlyconfig;
+        host = config.plotly_streaming_domain;
     catch
         host = 'http://stream.plot.ly';
     end
 end
+
 if (isfield(reqStruct,'port'))
     port = reqStruct.port;
 else
     port = 80;
 end
 
-%open the connection 
-for s = 1:numStreams; 
-stream{s} = java.net.URL([],host,handler);
-
+if (isfield(reqStruct,'timeout'))
+    timeout = reqStruct.timeout;
+else
+    timeout = 5000;
 end
 
-%ouput 
-resp.stream = stream;
-resp.msg = '';
-resp.error = '';
+%open the connection
+for s = 1:numStreams;
+    url{s} = java.net.URL([],[host ':' num2str(port)],handler);
+    conn{s} = url{s}.openConnection;
+    %[TODO]: handle connection errors
+    conn{s}.setChunkedStreamingMode(chunklen)
+    conn{s}.setRequestMethod('POST');
+    conn{s}.setReadTimeout(timeout);
+    conn{s}.setRequestProperty('plotly-streamtoken', tokens{s});
+    conn{s}.setDoOutput(true);
+    stream{s} = conn{s}.getOutputStream;
 end
 
-function resp = writeplotlystream(reqStruct)
-resp.msg = '';
-resp.error = '';
+%ouput
+respStruct = reqStruct; 
+respStruct.stream = stream;
+respStruct.msg = '';
 end
 
-function resp = closeplotlystream(reqStruct)
+%-----------WRITE STREAM-----------%
+function respStruct = writeplotlystream(reqStruct)
+
+%input
+data = reqStruct.data; 
+if (~iscell(data))
+    data = {data};
+end
+
+stream = reqStruct.stream; 
+body = cell(1,length(data)); 
+
+for s = 1:length(stream)
+body{s} = unicode2native(sprintf([m2json(data{s}) '\n']),''); 
+%write the outputstream to plotly 
+stream{s}.write(body{s});
+end
+respStruct = reqStruct; 
+respStruct.msg = '';
+end
+
+
+%-----------CLOSE STREAM-----------%
+function respStruct = closeplotlystream(reqStruct)
 stream = reqStruct.stream;
 for s = 1:length(stream)
     stream{s}.close;
 end
-resp.msg = '';
-resp.error = '';
+respStruct = reqStruct; 
+respStruct.msg = '';
 end
 
+%-----------VALIDATE REQUEST-----------%
+function isvalid =validRequest(request)
+isvalid = (strcmpi(request,'open') || strcmpi(request,'write') || strcmpi(request,'close'));
+end
+
+%-----------VALIDATE REQSTRUCT-----------%
 function isvalid = validReqStruct(request,reqStruct)
 if ~isstruct(reqStruct)
     isvalid = false;
@@ -151,9 +195,5 @@ else
             isvalid = isfield(reqStruct,'stream');
     end
 end
-end
-
-function isvalid =validRequest(request)
-isvalid = (strcmpi(request,'open') || strcmpi(request,'write') || strcmpi(request,'close'));
 end
 
