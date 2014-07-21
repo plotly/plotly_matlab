@@ -42,27 +42,30 @@ resp.url
 
 %-----connection specs----- %
 host_url= 'http://stream.plot.ly';
+%host_url = 'http://localhost:8080';
 timeout = 5000;
 handler = sun.net.www.protocol.http.Handler;
-chunklen = 14;
+chunklen = 40; %this defaults to 4096 if not specified or chucklen < headerlen
 
 %-----first stream-----%
 url1 = java.net.URL([],host_url,handler);
 urlConnection1 = url1.openConnection;
 urlConnection1.setChunkedStreamingMode(chunklen)
 urlConnection1.setRequestMethod('POST');
-urlConnection1.setReadTimeout(timeout);
-urlConnection1.setRequestProperty('plotly-streamtoken', 'a9ujhngbea');
+urlConnection1.setConnectTimeout(timeout);
+urlConnection1.setRequestProperty('plotly-streamtoken',data{1}.stream.token);
 urlConnection1.setDoOutput(true);
+%urlConnection1.setDoInput(true);
 outputStream1 = urlConnection1.getOutputStream;
+%inputStream1 = urlConnection1.getInputStream;
 
 %-----second stream-----%
 url2 = java.net.URL([],host_url,handler);
 urlConnection2 = url2.openConnection;
 urlConnection2.setChunkedStreamingMode(chunklen)
 urlConnection2.setRequestMethod('POST');
-urlConnection2.setReadTimeout(timeout);
-urlConnection2.setRequestProperty('plotly-streamtoken', 'gcuvbzmvxz');
+urlConnection2.setConnectTimeout(timeout);
+urlConnection2.setRequestProperty('plotly-streamtoken',data{2}.stream.token);
 urlConnection2.setDoOutput(true);
 outputStream2 = urlConnection2.getOutputStream;
 
@@ -71,7 +74,7 @@ pause(3);
 
 %-----signal generation-----%
 n = 1;
-cycles = 1000;
+cycles = 300;
 t = zeros(1,cycles);
 g = zeros(1,cycles);
 
@@ -86,14 +89,21 @@ for n = 1:cycles;
     body2 = unicode2native(body2,'');
     %write to stream.plot.ly
     
-    outputStream1.write(body1);
+    outputStream1.write(body1);   
     outputStream2.write(body2);
-    
     
     %take a breath
     pause(0.05);
+    %if(~isConnected('outputStream'))
+    %getResponse(ouptutStream)); 
+%     inputStream = urlConnection1.getInputStream;
+%     %end
+%     display('here'); 
+   % inputStream = urlConnection1.getErrorStream;
 end
 
+
 %-----close it up-----%
-outputStream.close;
+outputStream1.close;
+outputStream2.close;
 
