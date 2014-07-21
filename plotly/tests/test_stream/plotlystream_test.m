@@ -4,7 +4,7 @@
 data{1}.x = [];
 data{1}.y = [];
 data{1}.name = 'signal1';
-data{1}.stream.token = 'YOUR STREAM TOKEN'; 
+data{1}.stream.token = 'a9ujhngbea'; 
 data{1}.stream.maxpoints = 50;
 data{1}.type = 'scatter';
 data{1}.mode = 'lines+markers';
@@ -18,7 +18,7 @@ data{1}.line.width = 5;
 data{2}.x = [];
 data{2}.y = [];
 data{2}.name = 'signal2';
-data{2}.stream.token = 'ANOTHER STREAM TOKEN'; 
+data{2}.stream.token = 'gcuvbzmvxz'; 
 data{2}.stream.maxpoints = 50;
 data{2}.type = 'scatter';
 data{2}.mode = 'markers';
@@ -60,7 +60,7 @@ for n = 1:cycles;
     data{2}.y = g(n); 
     reqStruct.data = data; 
     reqStruct = plotlystream('write',reqStruct); 
-    pause(0.05);
+    pause(120);
 end
 
 plotlystream('close',reqStruct); 
