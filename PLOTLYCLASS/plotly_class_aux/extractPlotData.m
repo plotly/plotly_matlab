@@ -1,5 +1,49 @@
 function obj = extractPlotData(obj)
 
+%----SCATTER FIELDS----%
+
+% x - [?]
+% y - [?]
+% r - [HANDLED BY SCATTER]
+% t - [HANDLED BY SCATTER]
+% mode - [?]
+% name - [?]
+% text - [HANDLED BY ANNOTATION/TEXT]
+% error_y - [HANDLED BY ERRORBAR] 
+% error_x - [HANDLED BY ERRORBAR] 
+% marler.color - [?]
+% marker.size - [?]
+% marker.line.color ..........................[TODO]
+% mareker.line.width ..........................[TODO]
+% marker.line.dash ..........................[TODO]
+% marker.line.opacity ..........................[TODO]
+% marker.line.smoothing ..........................[TODO]
+% marker.line.shape ..........................[TODO]
+% marker.opacity ..........................[TODO]
+% marker.colorscale ..........................[TODO]
+% marker.sizemode ..........................[TODO]
+% marker.sizeref ..........................[TODO]
+% marker.maxdisplayed ..........................[TODO]
+% line.color ..........................[TODO]
+% line.width ..........................[TODO]
+% line.dash ..........................[TODO]
+% line.opacity ..........................[TODO]
+% line.smoothing ..........................[TODO]
+% line.shape ..........................[TODO]
+% connectgaps..........................[TODO]
+% fill - [HANDLED BY AREA]
+% fillcolor - [HANDLED BY AREA]
+% opacity..........................[TODO]
+% textfont - [HANDLED BY ANNOTATION/TEXT]
+% textposition - [HANDLED BY ANNOTATION/TEXT]
+% xaxis [?]
+% yaxis [?]
+% showlegend..........................[TODO]
+% stream..........................[TODO]
+% visible [?]
+% type [?]
+
+
 %-PLOT AXIS STRUCTURE-%
 
 plot_axis = get(obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex));
@@ -18,11 +62,11 @@ data{obj.State.CurrentDataHandleIndex}.y = plot_data.XData;
 
 %-SCATTER R-%
 
-%TODO 
+%TODO
 
 %-SCATTER T-%
 
-%TODO 
+%TODO
 
 %-SCATTER MODE-%
 
@@ -38,7 +82,7 @@ end
 
 %-SCATTER NAME-%
 
-data{obj.State.CurrentDataHandleIndex}.name = get(plot_axis.YLabel,'string'); 
+data{obj.State.CurrentDataHandleIndex}.name = get(plot_axis.YLabel,'string');
 
 %-SCATTER TEXT-%
 
@@ -50,16 +94,16 @@ data{obj.State.CurrentDataHandleIndex}.name = get(plot_axis.YLabel,'string');
 
 %-SCATTER ERROR_X-%
 
-%TODO 
+%TODO
 
 %-SCATTER MARKER-%
 
 %--SCATTER MARKER COLOR--%
-col = 255*plot_data.Color; 
-data{obj.State.CurrentDataHandleIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']; 
+col = 255*plot_data.Color;
+data{obj.State.CurrentDataHandleIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
 %--SCATTER MARKER SIZE--%
-data{obj.State.CurrentDataHandleIndex}.marker.size = plot_data.MarkerSize; 
+data{obj.State.CurrentDataHandleIndex}.marker.size = plot_data.MarkerSize;
 
 %--SCATTER MARKER SYMBOL--%
 closedMarker = false;
@@ -105,96 +149,149 @@ end
 
 %--SCATTER MARKER LINE COLOR--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER LINE WIDTH--%
 data{obj.State.CurrentDataHandleIndex}.marker.line.width = plot_data.LineWidth;
 
 %--SCATTER MARKER LINE DASH--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER LINE OPACITY--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER LINE SMOOTHING--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER LINE SHAPE--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER OPACITY--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER COLOR SCALE--%
 
-%TODO 
+if strcmpi(plot_data.MarkerFaceColor,'auto')
+elseif strcmpi(plot_data.MarkerFaceColor,'none')
+else
+end
+
+% try
+%     
+%     if isfield(d,'CData')
+%         color_ref = d.CData;
+%     else
+%         color_ref = d.Color;
+%     end
+%     
+%     %MARKER FACE
+%     if isClosed
+%         
+%         color_field = d.MarkerFaceColor;
+%         colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
+%         
+%         if numel(colors)==1
+%             if numel(colors{1})>0
+%                 marker_str.color = colors{1};
+%             end
+%         else
+%             marker_str.color = colors;
+%         end
+%         
+%     end
+% 
+%     %MARKER EDGE
+%     color_field = d.MarkerEdgeColor;
+%     colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
+%     
+%     if numel(colors)==1
+%         if numel(colors{1})>0
+%             if ~closeMarker
+%                 marker_str.color = colors{1};
+%             end
+%             marker_str.line.color = colors{1};
+%         end
+%     else
+%         if ~closeMarker
+%             marker_str.color = colors{1};
+%         end
+%         marker_str.line.color = colors;
+%     end
+%     
+% end
+% 
+
+
+
+
+
 
 %--SCATTER MARKER SIZE MODE--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER SIZE REF--%
 
-%TODO 
+%TODO
 
 %--SCATTER MARKER MAX DISPLAYED--%
 
-%TODO 
+%TODO
 
 %-SCATTER LINE-%
 
 %-SCATTER LINE COLOR-%
 
-%TODO 
+%TODO
 
 %-SCATTER LINE WIDTH-%
 
-%TODO 
+%TODO
 
 %-SCATTER LINE DASH-%
 
-%TODO 
+%TODO
 
 %-SCATTER LINE OPACITY-%
 
-%TODO 
+%TODO
 
 %-SCATTER LINE SMOOTHING-%
 
-%TODO 
+%TODO
 
 %-SCATTER LINE SHAPE-%
 
-%TODO 
+%TODO
 
 %-SCATTER CONNECTGAPS-%
 
-%TODO 
+%TODO
 
 %-SCATTER FILL-%
 
-%TODO 
+%TODO
 
 %-SCATTER FILLCOLOR-%
 
-%TODO 
+%TODO
 
 %-SCATTER OPACITY-%
 
-%TODO 
+%TODO
 
 %-SCATTER TEXTFONT-%
 
-%TODO 
+%TODO
 
 %-SCATTER TEXTPOSITION-%
 
-%TODO 
+%TODO
 
 %-SCATTER XAXIS-%
 data{obj.State.CurrentDataHandleIndex}.xaxis = ['x' num2str(obj.State.CurrentAxisHandleIndex)];
@@ -204,17 +301,17 @@ data{obj.State.CurrentDataHandleIndex}.yaxis = ['y' num2str(obj.State.CurrentAxi
 
 %-SCATTER SHOWLEGEND-%
 
-%TODO 
+%TODO
 
 %-SCATTER STREAM-%
 
-%TODO 
+%TODO
 
 %-SCATTER VISIBLE-%
-data{obj.State.CurrentDataHandleIndex}.type = strcmp(plot_data.Visible,'on'); 
+data{obj.State.CurrentDataHandleIndex}.visible = strcmp(plot_data.Visible,'on');
 
 %-SCATTER TYPE-%
-data{obj.State.CurrentDataHandleIndex}.type = 'scatter'; 
+data{obj.State.CurrentDataHandleIndex}.type = 'scatter';
 
 %-ADD DATA-%
 obj.Data = data;
