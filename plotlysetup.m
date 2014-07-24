@@ -1,4 +1,4 @@
-function plotlysetup(varargin)
+function plotlysetup(un, api_key, varargin)
 % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
 % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
 % [3] calls saveplotlycredentials
@@ -7,16 +7,16 @@ function plotlysetup(varargin)
 % [TODO]: Allow for streaming vars to be passed into plotlysetup 
 
 try %check number of inputs
-    if (nargin<2||nargin>3)
+    if (nargin<2||nargin>4)
         error('plotly:setupInputs',....
             ['\n\nWhoops! Wrong number of inputs. Please setup your Plotly '...
-            '\nMATLAB API by calling >>plotlysetup(' '''user_name''' ',' '''api_key''' ',' '''endpoint domain [optional]'') \n\n']);
+            '\nMATLAB API by calling >>plotlysetup(' '''user_name''' ',' '''api_key''' ',' '''plotly_domain [optional]''' ',' '''plotly_streaming_domain [optional]'') \n\n']);
     end
 catch exception %plotlysetup input problem catch...
     fprintf(['\n\n' exception.identifier exception.message]);
     return
 end
-
+ 
 try %check to see if plotly is in the searchpath
     plotlysetupPath = which('plotlysetup');
     plotlyFolderPath = [plotlysetupPath(1:end-length('plotlysetup.m')) 'plotly']; %there has to be a nicer way of doing this!
@@ -155,7 +155,7 @@ end %end check for matlab...
 
 try %save user credentials
     fprintf('Saving user credentials ... ');
-    saveplotlycredentials(varargin{1:2});
+    saveplotlycredentials(un,api_key);
     %worked!
     fprintf('Done\n');
 catch exception %writing credentials file permission problem catch...
@@ -163,12 +163,23 @@ catch exception %writing credentials file permission problem catch...
 end
 
 %sign in the user
-signin(varargin{1:2});
+signin(un,api_key);
 
 if nargin == 3
     try %save user config
         fprintf('Saving user endpoint configuration ... ');
-        saveplotlyconfig(varargin{3});
+        saveplotlyconfig(varargin{1});
+        %worked!
+        fprintf('Done\n\n');
+    catch exception %writing credentials file permission problem catch...
+        fprintf(['\n\n' exception.identifier exception.message]);
+    end
+end
+
+if nargin == 4
+    try %save user config
+        fprintf('Saving user endpoint configuration ... ');
+        saveplotlyconfig(varargin{1},varargin{2});
         %worked!
         fprintf('Done\n\n');
     catch exception %writing credentials file permission problem catch...
