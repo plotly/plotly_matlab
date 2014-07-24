@@ -16,8 +16,11 @@ classdef plotlystream < handle
     
     properties (Access=private)
         URL
+        ErrorURL
         Connection
+        ErrorConnection
         Stream
+        ErrorStream
     end
     
     %----CLASS METHODS----%
@@ -33,7 +36,7 @@ classdef plotlystream < handle
             obj.Specs.Port = 80;
             obj.Specs.Host = 'http://stream.plot.ly';
             obj.Specs.ReconnectOn = {'','200','408'};
-            obj.Specs.Timeout = 5000;
+            obj.Specs.Timeout = 500;
             obj.Specs.Handler = sun.net.www.protocol.http.Handler;
             obj.Specs.Chunklen = 14;
             obj.Specs.Closed = true;
@@ -107,31 +110,33 @@ classdef plotlystream < handle
         
         %-----------OPEN STREAM-----------%
         function obj = open(obj)
-            try
-                try
-                    obj.URL = java.net.URL([],obj.Specs.Host,obj.Specs.Handler);
-                    obj.Connection = obj.URL.openConnection; %throws an I/O exception
-                catch ME
-                    obj.reconnect(ME);
-                end
-                obj.Connection.setChunkedStreamingMode(obj.Specs.Chunklen)
-                obj.Connection.setRequestMethod('POST');
-                obj.Connection.setReadTimeout(obj.Specs.Timeout);
-                obj.Connection.setRequestProperty('plotly-streamtoken', obj.Specs.Token);
-                obj.Connection.setDoOutput(true);
-                try
-                    obj.Stream = obj.Connection.getOutputStream; %throws an I/O exception
-                catch ME
-                    display(ME.message)
-                end
-
-                %successful connection  - reset the delay/retries
+            
+            try obj.connect;
+                
+                %Connection successful!
+                fprintf('\n[Connection Successful]\n\n');
+                
+                %update state
                 obj.resetretries;
-            catch
-                error(['Oops! An error occured when attempting to open the output stream ',...
-                    'Please check out the online documentation found @ plot.ly/matlab ',...
-                    'for more information or contact chuck@plot.ly']);
+                obj.Specs.Closed = false;
+                
+            catch ME
+                %TODO parse these error messages;
+                display(ME.message);
             end
+        end
+        
+        %-----------CONNECT TO STREAM-----------%
+        function obj = connect(obj)
+            obj.URL = java.net.URL([],obj.Specs.Host,obj.Specs.Handler);
+            obj.Connection = obj.URL.openConnection; %throws an I/O exception
+            obj.Connection.setChunkedStreamingMode(obj.Specs.Chunklen)
+            obj.Connection.setRequestMethod('POST');
+            obj.Connection.setReadTimeout(obj.Specs.Timeout);
+            obj.Connection.setRequestProperty('plotly-streamtoken', obj.Specs.Token);
+            obj.Connection.setDoOutput(true);
+            obj.Connection.setDoInput(true);
+            obj.Stream = obj.Connection.getOutputStream; %throws an I/O exception
         end
         
         %-----------WRITE STREAM-----------%
@@ -148,13 +153,34 @@ classdef plotlystream < handle
                         'Please check out the online documentation found @ plot.ly/matlab ',...
                         'for more information or contact chuck@plot.ly']);
                 end
-                try
-                    body = request;
-                    obj.Stream.write(unicode2native(sprintf([m2json(body) '\n']),''));
-                catch
-                    error(['Oops! An error occured when attempting to write the output stream ',...
-                        'Please check out the online documentation found @ plot.ly/matlab ',...
-                        'for more information or contact chuck@plot.ly']);
+                
+                body = request;
+                
+                %make sure we did not close the stream 
+                if(~obj.Specs.Closed)
+                    try
+                        obj.Stream.write(unicode2native(sprintf([m2json(body) '\n']),''));
+                    catch ME
+                        %error due to stream not being open
+                        if(strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
+                            error(['Oops! A connection has not yet been established. Please open',...
+                                ' a connection by firsting calling the ''open'' method of your',...
+                                ' plotlystream object.']);
+                        else
+                            
+                            %---reconnect---%
+                            obj.getresponse;
+                            if any(strcmp(obj.Specs.ReconnectOn,obj.Response))
+                                obj.reconnect;
+                            else
+                                error(['Oops! The following error occured when trying to write to the stream: ',...
+                                         ME.message '. No attempt to reconnect was made beacause the response code ',...
+                                        'of: ' num2str(obj.Response) ' did not match any of the response codes specified in ',...
+                                        'the obj.Specs.ReconnectOn parameter. Please check out the online documentation ', ...
+                                        'found @ plot.ly/matlab for more information or contact chuck@plot.ly']); 
+                            end    
+                        end
+                    end
                 end
             end
         end
@@ -163,54 +189,56 @@ classdef plotlystream < handle
         function obj = close(obj)
             try
                 obj.Stream.close;
-                obj.Specs.ConnectAttempts = 0;
-                obj.Specs.ConnectDelay = 1;
-                obj.Specs.Closed = true;
-            catch
-                error(['Oops! An error occured when attempting to close the output stream ',...
-                    'Please check out the online documentation found @ plot.ly/matlab ',...
-                    'for more information or contact chuck@plot.ly']);
+            catch ME
+                if(strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
+                    error(['Oops! A connection has not yet been established. Please open',...
+                        ' a connection by firsting calling the ''open'' method of your',...
+                        ' plotlystream object.']);
+                end
             end
+            %update reconnect state
+            obj.resetretries;
+            obj.Specs.Closed = true;
         end
         
         %-----------RECONNECT-----------%
-        function obj = reconnect(obj,ME)
-            if (obj.Specs.ConnectAttempts == 1)
-                display(ME.message);
-                sprintf('\n')
+        function obj = reconnect(obj)
+            try
+                obj.Specs.ConnectAttempts = obj.Specs.ConnectAttempts + 1;
+                obj.connect;
+                
+                %Connection successful!
+                fprintf('\n[Connection Successful]\n\n');
+                
+                %update state
+                obj.resetretries;
+                obj.Specs.Closed = false;
+            catch
+                if(obj.Specs.ConnectAttempts <= obj.Specs.MaxConnectAttempts)
+                    fprintf(['\n[Connection Failed] Attempt:' num2str(obj.Specs.ConnectAttempts) ' to reconnect...'])
+                    pause(obj.Specs.ConnectDelay);
+                    obj.Specs.ConnectDelay = 2*obj.Specs.ConnectDelay; %delay grows by factor of 2
+                    obj.reconnect;
+                else
+                    fprintf('\n');
+                    error(['Oops! All attempts to reconnect were unsuccessful. ',...
+                        'Please check out the online documentation found @ plot.ly/matlab ',...
+                        'for more information or contact chuck@plot.ly']);
+                end
             end
-            obj.Specs.ConnectAttempts = obj.Specs.ConnectAttempts + 1;
-            if(obj.Specs.ConnectAttempts <= obj.Specs.MaxConnectAttempts)
-                sprintf(['[Connection failed] Attempt:' num2str(obj.Specs.ConnectAttempts) ' to reconnect...'])
-                pause(obj.Specs.ConnectDelay);
-                obj.Specs.ConnectDelay = obj.Specs.ConnectDelay + obj.Specs.ConnectDelay; 
-                display(num2str(obj.Specs.ConnectDelay)) 
-                obj.open;
-            else
-                error(['Oops! All attempts to reconnect were unsuccessful. ',...
-                    'Please check out the online documentation found @ plot.ly/matlab ',...
-                    'for more information or contact chuck@plot.ly']);
-            end
-        end
-        
-        %-----------IS CONNECTED-----------%
-        function resp = isconnected(obj)
-            
-            if(obj.Specs.Closed)
-                resp = false;
-                return
-            end
-            
-            if ~exist(object.Stream,'class')
-                resp = false;
-                return
-            end
-            
         end
         
         %-----------GET RESPONSE-----------%
-        function obj = getresponse(obj)
-            obj.Response = obj.Connection.getResponseCode;
+        function resp = getresponse(obj)
+            try
+                obj.Response = num2str(obj.Connection.getResponseCode);
+            catch ME
+                if(strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
+                    error(['Oops! A connection has not yet been established. Please open',...
+                        ' a connection by firsting calling the ''open'' method of your',...
+                        ' plotlystream object.']);
+                end
+            end
         end
         
         %-----------RESET RETRIES-----------%
