@@ -135,7 +135,6 @@ classdef plotlystream < handle
             obj.Connection.setReadTimeout(obj.Specs.Timeout);
             obj.Connection.setRequestProperty('plotly-streamtoken', obj.Specs.Token);
             obj.Connection.setDoOutput(true);
-            obj.Connection.setDoInput(true);
             obj.Stream = obj.Connection.getOutputStream; %throws an I/O exception
         end
         
@@ -156,7 +155,7 @@ classdef plotlystream < handle
                 
                 body = request;
                 
-                %make sure we did not close the stream 
+                %make sure we did not close the stream
                 if(~obj.Specs.Closed)
                     try
                         obj.Stream.write(unicode2native(sprintf([m2json(body) '\n']),''));
@@ -174,13 +173,17 @@ classdef plotlystream < handle
                                 obj.reconnect;
                             else
                                 error(['Oops! The following error occured when trying to write to the stream: ',...
-                                         ME.message '. No attempt to reconnect was made beacause the response code ',...
-                                        'of: ' num2str(obj.Response) ' did not match any of the response codes specified in ',...
-                                        'the obj.Specs.ReconnectOn parameter. Please check out the online documentation ', ...
-                                        'found @ plot.ly/matlab for more information or contact chuck@plot.ly']); 
-                            end    
+                                    ME.message '. No attempt to reconnect was made beacause the response code ',...
+                                    'of: ' num2str(obj.Response) ' did not match any of the response codes specified in ',...
+                                    'the obj.Specs.ReconnectOn parameter. Please check out the online documentation ', ...
+                                    'found @ plot.ly/matlab for more information or contact chuck@plot.ly']);
+                            end
                         end
                     end
+                else
+                    error(['Oops! A connection has already been closed. Please open',...
+                        ' a connection by calling the ''open'' method of your',...
+                        ' plotlystream object.']);
                 end
             end
         end
