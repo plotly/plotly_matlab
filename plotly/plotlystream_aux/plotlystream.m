@@ -2,9 +2,9 @@ classdef plotlystream < handle
     % Interface to Plotly's real-time graphing API.
     % Initialize a Stream object with a stream_id found in
     % {plotly_domain}/settings. Real-time graphs are
-    % initialized with a call to `plot` that embeds your unique
-    % `stream_id`s in each of the graph's traces. The `Stream`
-    % interface plots data to these traces, as identified with the unique
+    % initialized with a call to plotly that embeds your unique
+    % `stream_id`s in each of the graph's traces. The plotlystream
+    % class plots data to these traces, as identified with the unique
     % stream_id, in real-time. Every viewer of the graph sees
     % the same data at the same time.
     
@@ -28,7 +28,7 @@ classdef plotlystream < handle
         
         %----CONSTRUCTOR---%
         function obj = plotlystream(request)
-            
+
             %default stream settings
             obj.Specs.Token = '';
             
@@ -38,12 +38,12 @@ classdef plotlystream < handle
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
             obj.Specs.Handler = sun.net.www.protocol.http.Handler;
-            obj.Specs.Chunklen = 14;
+            obj.Specs.Chunklen = 300;
             obj.Specs.Closed = true;
             obj.Specs.ConnectAttempts = 0;
             obj.Specs.ConnectDelay = 1;
             obj.Specs.MaxConnectAttempts = 5;
-            
+
             %initialize output response
             obj.Response = '';
             
@@ -121,9 +121,12 @@ classdef plotlystream < handle
                 obj.Specs.Closed = false;
                 
             catch ME
-                %TODO parse these error messages;
-                display(ME.message);
+                
+                error(['Oops! The following error occured when trying to write to the stream: ',...
+                    ME.message '. Please check the online documentation ', ...
+                    'found @ plot.ly/matlab for more information or contact chuck@plot.ly']);
             end
+            
         end
         
         %-----------CONNECT TO STREAM-----------%
@@ -132,14 +135,15 @@ classdef plotlystream < handle
             obj.Connection = obj.URL.openConnection; %throws an I/O exception
             obj.Connection.setChunkedStreamingMode(obj.Specs.Chunklen)
             obj.Connection.setRequestMethod('POST');
+            obj.Connection.setDoOutput(true);
             obj.Connection.setReadTimeout(obj.Specs.Timeout);
             obj.Connection.setRequestProperty('plotly-streamtoken', obj.Specs.Token);
-            obj.Connection.setDoOutput(true);
             obj.Stream = obj.Connection.getOutputStream; %throws an I/O exception
         end
         
         %-----------WRITE STREAM-----------%
         function obj = write(obj,request)
+            
             if nargin ~= 2
                 error(['Oops! It appears that not enough input arguments were ',...
                     'specified to the write method of your plotlystream object. ',...
@@ -158,9 +162,11 @@ classdef plotlystream < handle
                 %make sure we did not close the stream
                 if(~obj.Specs.Closed)
                     try
+                        %write to stream 
                         obj.Stream.write(unicode2native(sprintf([m2json(body) '\n']),''));
                     catch ME
-                        %error due to stream not being open
+                        
+                        %error due to stream not being open (creation of Stream object)
                         if(strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
                             error(['Oops! A connection has not yet been established. Please open',...
                                 ' a connection by firsting calling the ''open'' method of your',...
@@ -170,20 +176,28 @@ classdef plotlystream < handle
                             %---reconnect---%
                             obj.getresponse;
                             if any(strcmp(obj.Specs.ReconnectOn,obj.Response))
+                                if~strcmp(obj.Response,'')
+                                    fprintf(['\n[Connection Failed due to HTTP error: ' obj.Response '] Reconnecting...\n\n']);
+                                else
+                                    fprintf('\n[Connection Failed] Reconnecting...\n\n');
+                                end
                                 obj.reconnect;
+                                
+                                %add recursion call to not drop data 
+                                obj.write(body); 
                             else
                                 error(['Oops! The following error occured when trying to write to the stream: ',...
                                     ME.message '. No attempt to reconnect was made beacause the response code ',...
-                                    'of: ' num2str(obj.Response) ' did not match any of the response codes specified in ',...
+                                    'of: ' obj.Response ' did not match any of the response codes specified in ',...
                                     'the obj.Specs.ReconnectOn parameter. Please check out the online documentation ', ...
                                     'found @ plot.ly/matlab for more information or contact chuck@plot.ly']);
                             end
                         end
                     end
                 else
-                    error(['Oops! A connection has already been closed. Please open',...
-                        ' a connection by calling the ''open'' method of your',...
-                        ' plotlystream object.']);
+                    error(['Oops! The connection is closed. Please open ',...
+                            'a connection by calling the ''open'' method of your ',...
+                            'plotlystream object.']);
                 end
             end
         end
@@ -208,7 +222,9 @@ classdef plotlystream < handle
         function obj = reconnect(obj)
             try
                 obj.Specs.ConnectAttempts = obj.Specs.ConnectAttempts + 1;
-                obj.connect;
+                
+                %try to connect
+                obj.connect; 
                 
                 %Connection successful!
                 fprintf('\n[Connection Successful]\n\n');
@@ -232,7 +248,7 @@ classdef plotlystream < handle
         end
         
         %-----------GET RESPONSE-----------%
-        function resp = getresponse(obj)
+        function obj = getresponse(obj)
             try
                 obj.Response = num2str(obj.Connection.getResponseCode);
             catch ME
