@@ -107,9 +107,14 @@ classdef plotlystream < handle
                     'online documentation found @ plot.ly/matlab for more information or contact ',...
                     'chuck@plot.ly']);
             end
+            
+            %add http if not present on host
+            if ~any(strfind(obj.Specs.Host,'http://') == 1)
+                obj.Specs.Host = ['http://' obj.Specs.Host];
+            end
+            
         end
-        
-        
+         
         %-----------OPEN STREAM-----------%
         function obj = open(obj)
             
