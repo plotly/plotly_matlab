@@ -28,13 +28,20 @@ classdef plotlystream < handle
         
         %----CONSTRUCTOR---%
         function obj = plotlystream(request)
-
+            
             %default stream settings
             obj.Specs.Token = '';
             
+            %look for specified streaming domain
+            try
+                config = loadplotlyconfig;
+                obj.Specs.Host  = config.plotly_streaming_domain;
+            catch
+                obj.Specs.Host = 'http://stream.plot.ly';
+            end
+            
             %initialize connection settings
             obj.Specs.Port = 80;
-            obj.Specs.Host = 'http://stream.plot.ly';
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
             obj.Specs.Handler = sun.net.www.protocol.http.Handler;
@@ -43,7 +50,7 @@ classdef plotlystream < handle
             obj.Specs.ConnectAttempts = 0;
             obj.Specs.ConnectDelay = 1;
             obj.Specs.MaxConnectAttempts = 5;
-
+            
             %initialize output response
             obj.Response = '';
             
@@ -65,17 +72,12 @@ classdef plotlystream < handle
                             'chuck@plot.ly']);
                     end
                     
-                    if (isfield(request,'port'))
-                        obj.Specs.Port = request.port;
-                    end
-                    
                     if isfield(request,'host')
                         obj.Specs.Host = request.host;
-                    else
-                        try
-                            config = loadplotlyconfig;
-                            obj.Specs.Host  = config.plotly_streaming_domain;
-                        end
+                    end
+                    
+                    if (isfield(request,'port'))
+                        obj.Specs.Port = request.port;
                     end
                     
                     if obj.Specs.Port ~=80
@@ -162,7 +164,7 @@ classdef plotlystream < handle
                 %make sure we did not close the stream
                 if(~obj.Specs.Closed)
                     try
-                        %write to stream 
+                        %write to stream
                         obj.Stream.write(unicode2native(sprintf([m2json(body) '\n']),''));
                     catch ME
                         
@@ -183,8 +185,8 @@ classdef plotlystream < handle
                                 end
                                 obj.reconnect;
                                 
-                                %add recursion call to not drop data 
-                                obj.write(body); 
+                                %add recursion call to not drop data
+                                obj.write(body);
                             else
                                 error(['Oops! The following error occured when trying to write to the stream: ',...
                                     ME.message '. No attempt to reconnect was made beacause the response code ',...
@@ -196,8 +198,8 @@ classdef plotlystream < handle
                     end
                 else
                     error(['Oops! The connection is closed. Please open ',...
-                            'a connection by calling the ''open'' method of your ',...
-                            'plotlystream object.']);
+                        'a connection by calling the ''open'' method of your ',...
+                        'plotlystream object.']);
                 end
             end
         end
@@ -224,7 +226,7 @@ classdef plotlystream < handle
                 obj.Specs.ConnectAttempts = obj.Specs.ConnectAttempts + 1;
                 
                 %try to connect
-                obj.connect; 
+                obj.connect;
                 
                 %Connection successful!
                 fprintf('\n[Connection Successful]\n\n');
