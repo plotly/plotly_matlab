@@ -45,7 +45,7 @@ classdef plotlystream < handle
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
             obj.Specs.Handler = sun.net.www.protocol.http.Handler;
-            obj.Specs.Chunklen = 300;
+            obj.Specs.Chunklen = 14;
             obj.Specs.Closed = true;
             obj.Specs.ConnectAttempts = 0;
             obj.Specs.ConnectDelay = 1;
