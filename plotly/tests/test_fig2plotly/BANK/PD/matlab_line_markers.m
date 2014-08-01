@@ -1,5 +1,4 @@
-
-% Generate some data using the besselj function
+	% Generate some data using the besselj function
 x = 0:0.2:10;
 y0 = besselj(0,x);
 y1 = besselj(1,x);
