@@ -12,8 +12,8 @@ date_nums = zeros(num_ticks,1);
 dates_registered = 0;
 for i=1:num_ticks
     try
-         n = ticks(i); %assumes datenum 
-        %n=datenum(tick_labels(i,:)); %need to know the dateform to do this properly 
+        %n = ticks(i); %assumes datenum 
+        n=datenum(tick_labels(i,:)); %need to know the dateform to do this properly 
     catch
         n=[];
         if num_ticks==numel(ticks)

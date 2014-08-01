@@ -27,6 +27,7 @@ end
 try
     ah = ancestor(d.Parent,'axes');
     xtl = get(ah,'XTickLabel');
+    xt = get(ah,'XTick'); 
     if(strcmp(get(ah,'XTickLabelMode'),'manual'))
         if(iscell(xtl))
             data_tempx = data.x;
@@ -36,12 +37,27 @@ try
         end
         if(ischar(xtl))
             data_tempx = data.x;
-            for ind = 1:length(data.x)
-                data_tempx(ind) = str2double(xtl(1+mod(ind-1,size(xtl,1)),:));
+            try 
+            [start, finish, t0, tstep] = extractDateTicks(xtl, xt);
+%                 date_nums = datenum(xtl);                
+%                 num_ticks = length(xtl);
+%                 millis_from_epoch = zeros(num_ticks,1);
+%                 for i=1:num_ticks
+%                     millis_from_epoch(i) = (date_nums(i)-datenum(1970,1,1))*1000*60*60*24;
+%                 end
+%                 data_tempx = millis_from_epoch;
+                   data_tempx = start:tstep:finish; 
+            catch
+                for ind = 1:length(data.x)
+                    data_tempx(ind) = str2double(xtl(1+mod(ind-1,size(xtl,1)),:));
+                end
+                if any(isnan(data_tempx))
+                    data_tempx = data.x; %go back to being data.x 
+                end
             end
         end
+        data.x = data_tempx;
     end
-    data.x = data_tempx; 
 end
 
 if strcmp('on', d.Visible)
