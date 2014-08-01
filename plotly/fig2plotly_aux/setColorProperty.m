@@ -11,7 +11,7 @@ end
 
 %if no color
 if strcmp(prop, 'none')
-    color{1} = 'rgba(0,0,0,0)';
+    color{1} = []; 
 end
 
 %if color defined by map
@@ -29,19 +29,19 @@ end
 %if color defined by axes (or figure) (only used with scattergroup)
 %using isfield(get(mh),'CData') to determine if scattergroup
 try
-    if (strcmp(prop, 'auto') && isfield(mh,'CData'))
+    if (strcmpi(prop, 'auto') && isfield(mh,'CData'))
         ah = ancestor(mh.Parent,'axes');
         axCol = get(ah,'Color');
         if(isa(axCol,'double'))
+            color = {};
             color{1} = parseColor(axCol);
         else
             fh = ancestor(mh.Parent,'figure');
             figCol = get(fh,'Color');
+            color = {};
             color{1}  = parseColor(figCol);
         end
     end
-catch
-    color{1} = [0 0 1];
 end
 
 end

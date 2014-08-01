@@ -105,7 +105,7 @@ try
         end
     else
         if ~isClosed
-            marker_str.color = colors{1};
+            marker_str.color = colors;
         end
         marker_str.line.color = colors;
     end
