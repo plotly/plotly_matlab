@@ -9,8 +9,8 @@ function obj = extractPlotData(obj)
 % mode - [?]
 % name - [?]
 % text - [HANDLED BY ANNOTATION/TEXT]
-% error_y - [HANDLED BY ERRORBAR] 
-% error_x - [HANDLED BY ERRORBAR] 
+% error_y - [HANDLED BY ERRORBAR]
+% error_x - [HANDLED BY ERRORBAR]
 % marler.color - [?]
 % marker.size - [?]
 % marker.line.color ..........................[TODO]
@@ -39,7 +39,7 @@ function obj = extractPlotData(obj)
 % xaxis [?]
 % yaxis [?]
 % showlegend..........................[TODO]
-% stream..........................[TODO]
+% stream..........................[HANDLED BY PLOTLYSTREAM]
 % visible [?]
 % type [?]
 
@@ -182,19 +182,19 @@ else
 end
 
 % try
-%     
+%
 %     if isfield(d,'CData')
 %         color_ref = d.CData;
 %     else
 %         color_ref = d.Color;
 %     end
-%     
+%
 %     %MARKER FACE
 %     if isClosed
-%         
+%
 %         color_field = d.MarkerFaceColor;
 %         colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
-%         
+%
 %         if numel(colors)==1
 %             if numel(colors{1})>0
 %                 marker_str.color = colors{1};
@@ -202,13 +202,13 @@ end
 %         else
 %             marker_str.color = colors;
 %         end
-%         
+%
 %     end
-% 
+%
 %     %MARKER EDGE
 %     color_field = d.MarkerEdgeColor;
 %     colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
-%     
+%
 %     if numel(colors)==1
 %         if numel(colors{1})>0
 %             if ~closeMarker
@@ -222,9 +222,9 @@ end
 %         end
 %         marker_str.line.color = colors;
 %     end
-%     
+%
 % end
-% 
+%
 
 
 
@@ -304,8 +304,7 @@ data{obj.State.CurrentDataHandleIndex}.yaxis = ['y' num2str(obj.State.CurrentAxi
 %TODO
 
 %-SCATTER STREAM-%
-
-%TODO
+data.stream = obj.Data.data{obj.State.CurrentDataHandleIndex}.stream; 
 
 %-SCATTER VISIBLE-%
 data{obj.State.CurrentDataHandleIndex}.visible = strcmp(plot_data.Visible,'on');

@@ -3,11 +3,11 @@ classdef plotlyfigure < handle
     % plotlyfigure constructs an online Plotly plot.
     % There are three modes of use. The first is the
     % most base level approach of initializing a
-    % plotlyfigure object and specify the data and layout 
-    % properties using Plotly declarartive syntax. 
-    % The second is a mid level useage which is based on 
-    % overloading the MATLAB plotting commands, such as 
-    % 'plot', 'scatter', 'subplot', ... 
+    % plotlyfigure object and specify the data and layout
+    % properties using Plotly declarartive syntax.
+    % The second is a mid level useage which is based on
+    % overloading the MATLAB plotting commands, such as
+    % 'plot', 'scatter', 'subplot', ...
     % Lastly we have the third level of use
     
     %----CLASS PROPERTIES----%
@@ -18,7 +18,7 @@ classdef plotlyfigure < handle
         UserData; % credentials/configuration
         Response; % response of making post request
         State; % state of plot (current axis)
-        Stream; %stream {'key','handle','maxpoint'} 
+        Stream; %stream {'key','handle','maxpoint'}
     end
     
     %----CLASS METHODS----%
@@ -44,7 +44,7 @@ classdef plotlyfigure < handle
             obj.PlotOptions.Strip = true;
             obj.PlotOptions.Visible = 'on';
             
-            % check for some key/vals  
+            % check for some key/vals
             for a = 1:2:nargin
                 if(strcmpi(varargin{a},'filename'))
                     obj.PlotOptions.Filename = varargin{a+1};
@@ -89,20 +89,22 @@ classdef plotlyfigure < handle
             obj.State.Verbose = false;
             obj.State.FigureHandle = fig;
             obj.State.AxisHandle(1) = ax;
-            obj.State.CurrentAxisHandleIndex = 1;
             obj.State.DataHandle(1) = NaN;
-            obj.State.CurrentDataHandleIndex = 1;
+            obj.State.CurrentAxisHandleIndex = 1;
+            obj.State.CurrentDataHandleIndex = 0;
             obj.State.Data2AxisMap = [];
             
             % plot response
             obj.Response = {};
-              
+            
         end
         
         %----PLOT----%
         function obj = plot(obj,varargin)
             
             try
+                
+                %it is possible that this is an axis handle that does not exist on the plotlyfigure figure
                 if ishandle(varargin{1})
                     if strcmp(get(varargin{1},'type'),'axes')
                         if ~ismember(varargin{1},obj.State.AxisHandle)
@@ -115,9 +117,9 @@ classdef plotlyfigure < handle
                         else
                             obj.State.CurrentAxisHandleIndex = find(varargin{1} == obj.State.AxisHandle);
                         end
+                    else
+                        varargin = {obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex),varargin{:}};
                     end
-                else
-                    varargin = {obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex),varargin{:}};
                 end
             catch
                 error(['Oops! An error occured while looking for the axis handle',...
@@ -125,23 +127,43 @@ classdef plotlyfigure < handle
                     'is a child of the Plotly figure, whose handle is: ' num2str(obj.State.FigureHandle)]);
             end
             
-            %check for hold to either erase or update
-            switch get(obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex),'NextPlot')
-                case 'add'
-                    % Use the existing axes to draw graphics object
-                    obj.State.CurrentDataHandleIndex = obj.State.CurrentDataHandleIndex + 1;
-                case 'replace'
-                    % Reset all axes properties except Position to their defaults and delete all axes children before displaying graphics (equivalent to cla reset)
-                case 'replacechildren'
-                    % Remove all child objects, but do not reset axes properties (equivalent to cla).
+            % update the current data handle index
+            obj.State.CurrentDataHandleIndex = obj.State.CurrentDataHandleIndex + 1;
+            
+            %handle stream setup           
+            if any(strcmp(varargin,'stream'))
+                indStream = find(strcmp(varargin,'stream')); 
+                data{obj.State.CurrentDataHandleIndex}.stream = varargin{indStream+1}; 
+                obj.Data = data; 
+                %delete the stream content 
+                varargin(indStream + 1) = []; 
+                %delete the stream key 
+                varargin(indStream) = []; 
+            end
+            
+            % make the plot and grab the data handle
+            obj.State.DataHandle(obj.State.CurrentDataHandleIndex) = plot(varargin{:}); 
+            
+            % map DataHandle to AxisHandle
+            obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex) = ancestor(obj.State.DataHandle(obj.State.CurrentDataHandleIndex),'axes');
+            
+            % update axis handles 
+            if ~ismember(obj.State.AxisHandle,obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex)) 
+                % if axis not already present add it to the end 
+                obj.State.AxisHandle(end + 1) = obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex); 
+                % and update the AxisHandleIndex
+                obj.State.AxisHandleIndex = length(obj.State.AxisHandle); 
+            else
+                % update the AxisHandleIndex 
+                obj.State.AxisHandleIndex = find(obj.State.AxisHandle == obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex)); 
             end
             
             % map DataHandle to AxisHandle
             obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex) = obj.State.CurrentAxisHandleIndex;
-            % make the plot and grab the data handle
-            obj.State.DataHandle(obj.State.CurrentDataHandleIndex) = plot(varargin{:});
+            
             % update data
             obj = extractPlotData(obj);
+            
             % update layout
             obj = extractPlotLayout(obj);
         end
