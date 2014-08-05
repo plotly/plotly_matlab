@@ -11,7 +11,7 @@ end
 
 %if no color
 if strcmp(prop, 'none')
-    color{1} = []; 
+    color{1} = 'rgba(0,0,0,0)'; 
 end
 
 %if color defined by map
