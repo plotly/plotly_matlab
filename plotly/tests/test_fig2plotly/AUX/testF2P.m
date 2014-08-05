@@ -148,7 +148,7 @@ for localInd = 1:length(scriptInfo);
     sc = scriptInfo(localInd).name;
     %seed rand.num. gen.
     s = RandStream('mcg16807','Seed',0);
-    RandStream.setDefaultStream(s);
+    RandStream.setGlobalStream(s);
     %run the scripts 
     run(fullfile(folderName,sc));
     %getplotlyfig
