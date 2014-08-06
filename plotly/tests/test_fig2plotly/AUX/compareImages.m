@@ -1,10 +1,12 @@
 %HANDLES IMAGE COMPARISON/LOG CREATION 
 function log = compareImages(baseDir,testDir,ext)
 
+un = signin;
 imagesBase = dir([baseDir '/*.' ext]);
 imagesTest = dir([testDir '/*.' ext]);
+
 if(length(imagesBase)~=length(imagesTest))
-    sprintf(['\n\nWARNING: please make suer the same number ', ...
+    fprintf(['\n\nWARNING: please make suer the same number ', ...
         'of images are in both directories and try again!\n\n']);
     return
 end
@@ -21,6 +23,22 @@ for n = 1:length(imagesBase)
         B = imread([testDir '/' imagesTest(n).name]);
         if(~isequal(A,B))
             log{n} = ['TESTED: ' imagesBase(n).name ' RESULT: ---------->FAILED \n'];
+            
+            % take the difference of the two images
+            diffMat = abs(A-B);
+            % plot the second image compared 
+            diffIm = imagesc(diffMat); 
+            % save the diff image 
+            fn = [imagesTest(n).name '_diff']; 
+            % use plotly to create a plot of the image
+            diffImFig = ancestor(diffIm,'figure'); 
+            resp = fig2plotly(diffImFig,'name',fn); 
+            plotly_url_diff = resp.url; 
+            fsIndDiff= strfind(plotly_url_diff,'/');
+            %get the newly created plotly fig 
+            plotlyfigDiff = getplotlyfig(un, plotly_url_diff(fsIndDiff(end)+1:end));
+            %save plotly image
+            saveplotlyfig(plotlyfigDiff,[testDir '/' imagesTest(n).name '_DIFF'],'png');   
         else
             log{n} = ['TESTED: ' imagesBase(n).name ' RESULT: PASSED \n'];
         end
