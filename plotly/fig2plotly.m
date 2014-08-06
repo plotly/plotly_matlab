@@ -20,7 +20,7 @@ function [response] = fig2plotly(varargin)
 %default input
 f = get(gcf);
 plot_name = 'untitled';
-strip_style = false;
+strip_style = true;
 open_browser = false;
 world_readable = true;
 fileopt = '';
