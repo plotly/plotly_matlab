@@ -144,6 +144,9 @@ end
 
 %HANDLES RUNNING OF TESTBANK SCRIPTS
 function runScripts(folderName,scriptInfo,imgDir,ext)
+
+un = signin; 
+
 for localInd = 1:length(scriptInfo);
     sc = scriptInfo(localInd).name;
     %seed rand.num. gen.
@@ -153,7 +156,7 @@ for localInd = 1:length(scriptInfo);
     run(fullfile(folderName,sc));
     %getplotlyfig
     fsInd = findstr(plotly_url,'/');
-    plotlyfig = getplotlyfig('matlab_user_guide',plotly_url(fsInd(end)+1:end));
+    plotlyfig = getplotlyfig(un, plotly_url(fsInd(end)+1:end));
     %save iimage in imgDir
     saveplotlyfig(plotlyfig,[imgDir '/' sc(1:end-2)],ext);
     %close figures as they are generated
@@ -161,7 +164,7 @@ for localInd = 1:length(scriptInfo);
     %display status
     fprintf(['image: ' sc ' saved as: ' ext ' \n'])
     %clear conflicting variables and preserve local variables
-    clearvars -except localInd folderName scriptInfo imgDir ext
+    clearvars -except localInd folderName scriptInfo imgDir ext un 
 end
 end
 
