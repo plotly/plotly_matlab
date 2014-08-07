@@ -24,6 +24,7 @@ rebase = false;
 usePD = ~logical(nargin);
 useMPG = ~logical(nargin); %default to true if no arguments
 ext = 'png';
+strip = true; 
 
 for i = 1:nargin
     
@@ -46,6 +47,11 @@ for i = 1:nargin
         ext = varargin{i+1};
     end
     
+    %CHECK FOR STRIP_STYLE
+    if(strcmpi(varargin{i},'strip'))
+        strip = varargin{i+1};
+    end
+    
     %TODO: HANDLE EXCLUSIVES/EXCEPTIONS
     %-------------------------------------->
     if(strcmpi(varargin{i},'MPGexcept'))
@@ -66,6 +72,13 @@ end
 
 % ----------FOLDER STRUCTURE-------------%
 
+%STRIP KEY
+if(strip)
+    STRIP_KEY = '[STRIP]'; 
+else
+    STRIP_KEY = '[NOSTRIP]'; 
+end
+
 %MAIN F2P TEST DIRECTORY
 testF2PLocation = which('testF2P.m');
 testF2PDir = testF2PLocation(1:strfind(testF2PLocation,'/AUX'));
@@ -77,7 +90,7 @@ MPGDirName = fullfile(testF2PDir,'BANK','MPG');
 PDDirName = fullfile(testF2PDir,'BANK','PD');
 
 %BASE FOLDER
-imgBaseDir = fullfile(testF2PDir,'BASE');
+imgBaseDir = fullfile(testF2PDir,['BASE' STRIP_KEY]);
 
 %MAKE BASE FOLDER DIRECTORY IF REBASE
 if(rebase)
@@ -89,7 +102,7 @@ end
 %TEST FOLDER
 c = clock;
 imgTestDir = fullfile(testF2PDir, ['TEST' '[v.' plotly_version '-' date '-', ...
-    num2str(c(4)) '-' num2str(c(5)) '-' num2str(floor(c(6))) ']']);
+    num2str(c(4)) '-' num2str(c(5)) '-' num2str(floor(c(6))) ']' STRIP_KEY]);
 
 %MAKE TEST FOLDER DIRECTORY IF ~REBASE
 if(~rebase)
@@ -98,7 +111,7 @@ if(~rebase)
             error('NOBASE - MUST REBASE');
         end
     catch
-        fprintf('\n\nWe cannot locate the BASE directory! Please rebase before proceeding\n\n');
+        fprintf('\nWe cannot locate the BASE directory! Please rebase before proceeding.\n\n');
         return
     end
     mkdir(imgTestDir);
