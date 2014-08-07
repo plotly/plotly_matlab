@@ -21,7 +21,7 @@ else
             adAx = get(ad{2});
             m_title.String = adAx.Title;
             data.text = m_title.String;
-        catch exception
+        catch 
             return
         end
     else
