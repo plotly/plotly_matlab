@@ -5,7 +5,7 @@ function [xid, yid, x_axis y_axis] = extractAxes(axhan, a,layout, x_axis, y_axis
 %       layout - a plotly layout strcut
 %       x_axis, y_axis - current cells containing axis objects
 %       xid,yid - reference axis indices
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 
@@ -24,20 +24,26 @@ x_check=0;x_duplicate=0;
 y_check=0;y_duplicate=0;
 for i=1:numel(x_axis)
     if x_bounds(1) == x_axis{i}.domain(1) && x_bounds(2) == x_axis{i}.domain(2)
-        x_check = i;
-        if strcmp(a.XAxisLocation, x_axis{i}.side)
-            if sum(a.XLim == x_axis{i}.range)==2
-                x_duplicate=1;
+        %check for alignment in y
+        if(y_bounds(1) == y_axis{i}.domain(1))
+            x_check = i;
+            if strcmp(a.XAxisLocation, x_axis{i}.side)
+                if sum(a.XLim == x_axis{i}.range)==2
+                    x_duplicate=1;
+                end
             end
         end
     end
 end
 for i=1:numel(y_axis)
     if y_bounds(1) == y_axis{i}.domain(1) && y_bounds(2) == y_axis{i}.domain(2)
-        y_check = i;
-        if strcmp(a.YAxisLocation, y_axis{i}.side)
-            if sum(a.YLim == y_axis{i}.range)==2
-                y_duplicate=1;
+        %check for alignment in x
+        if(x_bounds(1) == x_axis{i}.domain(1))
+            y_check = i;
+            if strcmp(a.YAxisLocation, y_axis{i}.side)
+                if sum(a.YLim == y_axis{i}.range)==2
+                    y_duplicate=1;
+                end
             end
         end
     end
@@ -45,7 +51,7 @@ end
 
 
 if x_check>0 && y_check>0
-       
+    
     %anchors
     ax_num = x_check;
     if x_check==1
@@ -56,7 +62,7 @@ if x_check>0 && y_check>0
         ay_num = [];
     end
     xaxes.overlaying = ['x' num2str(ax_num)];
-    yaxes.overlaying = ['y' num2str(ay_num)]; 
+    yaxes.overlaying = ['y' num2str(ay_num)];
     xaxes.anchor = ['y' num2str(ay_num)];
     yaxes.anchor = ['x' num2str(ax_num)];
     
@@ -78,10 +84,10 @@ if x_check>0 && y_check>0
         y_axis{numel(y_axis)+1} = yaxes;
         yid = numel(y_axis);
     end
-
+    
     
 else
-
+    
     ax_num = numel(x_axis)+1;
     if numel(x_axis)==0
         ax_num = [];
