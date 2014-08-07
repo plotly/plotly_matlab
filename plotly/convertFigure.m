@@ -56,13 +56,17 @@ for i=axis_num:-1:1
         else
             
             %extract axis and add to axis list
-            [xid, yid, x_axis y_axis] = extractAxes(f.Children(i),m_axis, layout, x_axis, y_axis, strip_style);
+            [xid, yid, x_axis,y_axis] = extractAxes(f.Children(i),m_axis, layout, x_axis, y_axis, strip_style);
             %extract title and add to annotations
             m_title = get(m_axis.Title);
             annot_tmp = extractTitle(f.Children(i),m_title, x_axis{xid}, y_axis{yid}, strip_style);
             if numel(annot_tmp)>0
-                annotations{annot_counter} = annot_tmp;
-                annot_counter = annot_counter+1;
+                if (~onePlot(f))
+                    annotations{annot_counter} = annot_tmp;
+                    annot_counter = annot_counter+1;
+                else
+                    layout = setGlobalTitle(annot_tmp,layout);
+                end
                 title =  annot_tmp.text;
             end
             data_num = numel(m_axis.Children);
@@ -96,7 +100,6 @@ for i=axis_num:-1:1
                     end
                     if strcmp('scatter',data_type)
                         data{data_counter} = extractDataScatter(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
-                        %account for datetime
                         data{data_counter} = dateTimeScale(m_axis, x_axis{xid}, y_axis{yid},data{data_counter});
                         data_counter = data_counter+1;
                     end
@@ -124,11 +127,6 @@ for i=axis_num:-1:1
                         data_counter = data_counter+1;
                         bar_counter = bar_counter+1;
                     end
-                    %                     if strcmp('histogram2d',data_type)
-                    %                         [data{data_counter} layout] = extractDataHistogram2d(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
-                    %                         data_counter = data_counter+1;
-                    %                         bar_counter = bar_counter+1;
-                    %                     end
                 end
             end
         end
