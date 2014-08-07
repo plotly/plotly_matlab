@@ -8,14 +8,14 @@ function [xaxes, yaxes] = extractAxesGeneral(axhan, a, layout, xaxes, yaxes, str
 % For full documentation and examples, see https://plot.ly/api
 
 %POSITION
-if ~strip_style
-    xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)];
-    yaxes.domain = [a.Position(2) a.Position(2)+a.Position(4)] ...
-        *(layout.height-layout.margin.t)/layout.height;
-else
-    xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)];
-    yaxes.domain = [a.Position(2) a.Position(2)+a.Position(4)];
-end
+
+%small domain offsets due to top margin (needed for title) 
+deltaYT = onePlot(get(a.Parent))*(layout.margin.t)/layout.height;
+
+%assumes units are normalized!
+xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)]; 
+yaxes.domain = [a.Position(2) a.Position(2)+a.Position(4)+deltaYT];
+
 if yaxes.domain(1)>1
     yaxes.domain(1)=1;
 end
@@ -78,9 +78,6 @@ if ~strip_style
     
 end
 
-
-
-
 %SCALE
 xaxes.type = a.XScale;
 yaxes.type = a.YScale;
@@ -103,25 +100,25 @@ if strcmp('linear', xaxes.type)
     if numel(a.XTick)>1
         xaxes.tick0 = a.XTick(1);
         xaxes.dtick = a.XTick(2)-a.XTick(1);
-        xaxes.autotick = false;   
-      
+        xaxes.autotick = false;
+        
         try
             ah = axhan;
             xtl = get(ah,'XTickLabel');
             if(strcmp(get(ah,'XTickLabelMode'),'manual'))
                 if(iscell(xtl))
                     xaxes.tick0 = str2double(xtl{1});
-                    xaxes.dtick = str2double(xtl{2})-str2double(xtl{1});    
+                    xaxes.dtick = str2double(xtl{2})-str2double(xtl{1});
                 end
                 if(ischar(xtl))
                     xaxes.tick0 = str2double(xtl(1,:));
                     xaxes.dtick = str2double(xtl(2,:))- str2double(xtl(1,:));
                 end
-                xaxes.autotick = false; 
-                xaxes.autorange = true; 
+                xaxes.autotick = false;
+                xaxes.autorange = true;
             end
         end
-
+        
     else
         xaxes.autotick = true;
     end
