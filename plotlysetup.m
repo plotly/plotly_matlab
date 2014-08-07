@@ -2,9 +2,9 @@ function plotlysetup(un, api_key, varargin)
 % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
 % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
 % [3] calls saveplotlycredentials
+% [4] calls saveplotlyconfig
 % [TODO]: Account for octave users
 % [TODO]: Test on windows machine
-% [TODO]: Allow for streaming vars to be passed into plotlysetup 
 
 try %check number of inputs
     if (nargin<2||nargin>4)
@@ -16,7 +16,7 @@ catch exception %plotlysetup input problem catch...
     fprintf(['\n\n' exception.identifier exception.message]);
     return
 end
- 
+
 try %check to see if plotly is in the searchpath
     plotlysetupPath = which('plotlysetup');
     plotlyFolderPath = [plotlysetupPath(1:end-length('plotlysetup.m')) 'plotly']; %there has to be a nicer way of doing this!
@@ -76,13 +76,11 @@ if(~is_octave)%if MATLAB
             
             %check that the folder was created
             if (status == 0)
-                if(~strcmp(messid, 'MATLAB:MKDIR:DirectoryExists'))
-                    error('plotly:savePlotlyAPI',...
-                        ['\n\nShoot! It looks like you might not have write permission ' ...
-                        'for the MATLAB toolbox directory \n' ...
-                        'Please contact your system admin. or chuck@plot.ly for more information. In the ' ...
-                        'mean \ntime you can add the Plotly API to your search path manually whenever you need it! \n\n']);
-                end
+                error('plotly:savePlotlyAPI',...
+                    ['\n\nShoot! It looks like you might not have write permission ' ...
+                    'for the MATLAB toolbox directory \n' ...
+                    'Please contact your system admin. or chuck@plot.ly for more information. In the ' ...
+                    'mean \ntime you can add the Plotly API to your search path manually whenever you need it! \n\n']);
             end
             
             %move a copy of the plotly api to matlab root directory (does not remove files simply overwrites common files!)
@@ -140,7 +138,7 @@ if(~is_octave)%if MATLAB
             if(find(~w))
                 fprintf(warnings{find(~w)});
             end
-            
+                 
         catch exception %writing to startup.m permission problem catch...
             fprintf(['\n\n' exception.identifier exception.message]);
         end
