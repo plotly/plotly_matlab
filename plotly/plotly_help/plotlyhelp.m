@@ -21,14 +21,9 @@ try
                 plotlyref = pr.(lower(varargin{1})); 
             end 
         case 2
-               plotlyref = pr.(lower(varargin{1})).(lower(varargin{2})); 
-        case 3
+                plotlyref = pr.(lower(varargin{1})).(lower(varargin{2})); 
+        case 3 %does the struct nesting ever go beyond 3 ?
                 plotlyref = pr.(lower(varargin{1})).(lower(varargin{2})).(lower(varargin{3})); 
-        case 4
-                plotlyre = pr.(lower(varargin{1})).(lower(varargin{2})).(lower(varargin{3})).(lower(varargin{4})); 
-        %does the struct nesting ever go beyond 5 ?
-        case 5
-                plotlyref = pr.(lower(varargin{1})).(lower(varargin{2})).(lower(varargin{3})).(lower(varargin{4})).(lower(varargin{5})); 
     end
     
 catch exception
