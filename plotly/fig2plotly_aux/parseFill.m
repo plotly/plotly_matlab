@@ -5,7 +5,7 @@ function data = parseFill(d, data, CLim, colormap, strip_style)
 %       data - a plotly annotation struct
 %       CLim - a 1x2 vector of extents of the color map
 %       colormap - a kx3 matrix representing the colormap
-% 
+%
 % For full documentation and examples, see https://plot.ly/api
 
 data.fill = 'tonexty';
@@ -18,8 +18,8 @@ if strcmp(d.Type, 'patch')
     end
 end
 if strcmp(d.Type, 'hggroup')
+    m_data = get(d.Children(1));
     if ~strip_style
-        m_data = get(d.Children(1));
         colors = setColorProperty(m_data.FaceColor,m_data.CData, CLim, colormap,d);
         if numel(colors{1})>0
             data.fillcolor = colors{1};
