@@ -55,7 +55,7 @@ else
         if success
             try
                 if verbose
-                    fprintf(['Searching for instances of old Plotly API Matlab ',...
+                    fprintf(['\nSearching for instances of old Plotly API Matlab ',...
                         'Library v.' pvLocal ' ... ']);
                 end
                 
@@ -67,7 +67,7 @@ else
                 end
                 
                 if verbose
-                    fprintf('Done! \n');
+                    fprintf('Done!');
                 end
                 
             catch
@@ -170,6 +170,7 @@ else
                 % replace the old Plotly with the new Plotly 
                 for d = 1:length(plotlyDirs)
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
+                    %do not copy setup.m and readme.md to toolbox dir. Plotly  
                     if ~strcmp(plotlyDirs{d},plotlyToolboxDir)
                        copyfile(readmeLoc,plotlyDirs{d}(1:end-length('plotly')),'f'); %_ used as generic dir. divide
                        copyfile(setupLoc,plotlyDirs{d}(1:end-length('plotly')),'f'); 
