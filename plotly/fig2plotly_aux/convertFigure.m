@@ -136,7 +136,6 @@ end
 % MODIFY WHEN MULTIPLE BARS
 if bar_counter>1 && strcmp(layout.barmode, 'group')
     layout.bargroupgap = layout.bargap;
-    layout.bargap = 0.3;
 end
 
 % INSERT COLORBAR IN THE FIRST HEATMAP DATA STRUCT
