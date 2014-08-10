@@ -133,9 +133,10 @@ for i=axis_num:-1:1
     end
 end
 
-% MODIFY WHEN MULTIPLE BARS
-if bar_counter>1 && strcmp(layout.barmode, 'group')
+%MODIFY WHEN MULTIPLE BARS 
+if bar_counter>1 && strcmp(layout.barmode, 'group') && bar_counter > axis_num
     layout.bargroupgap = layout.bargap;
+    layout.bargap = 0.3; 
 end
 
 % INSERT COLORBAR IN THE FIRST HEATMAP DATA STRUCT
