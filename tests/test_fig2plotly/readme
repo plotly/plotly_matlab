@@ -1,0 +1,11 @@
+The tests found within test_fig2plotly are not PC compatible and rely on the folder structure remaining intact: 
+
+plotly/tests/test_fig2plotly/AUX
+plotly/tests/test_fig2plotly/BANK	
+plotly/tests/test_fig2plotly/BANK/MPG
+plotly/tests/test_fig2plotly/BANK/PD
+plotly/tests/test_fig2plotly/BASE
+
+Keep this in mind if you want to restructure this diretory/subdirectories. 
+
+
