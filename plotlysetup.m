@@ -36,43 +36,33 @@ end
 if(~is_octave)%if MATLAB
     
     try %embed the api to the matlabroot/toolbox dir.
-        fprintf('\nAdding Plotly to MATLAB toolbox directory ... ');
+        fprintf('\nAdding Plotly to MATLAB toolbox directory ...  ');
         
         %plotly folder in the matlab/toolbox dir.
         plotlyToolboxPath = fullfile(matlabroot,'toolbox','plotly'); %this should work on all platforms
-        overwrite = 'n';
         
         if(exist(plotlyToolboxPath,'dir')) %check for overwrite...
             fprintf(['\n\n[UPDATE]: \n\nHey! We see that a copy of Plotly has previously been added to\n' ...
                 'your Matlab toolboxes. Would you like us to overwrite it with:\n' plotlyFolderPath ' ? \n'...
                 'Careful! You may lose data saved to this folder.\n\n']);
+            
             overwrite = input('Overwrite (y/n) ? : ','s');
+            
             if(strcmpi(overwrite,'y'));
-                fprintf(['\n[OVERWRITE]:\n\nOverwriting Plotly! ... Done \n\n']);
+                fprintf(['\n[OVERWRITE]:\n\nOverwriting Plotly! ... Done \n']);
             else
-                fprintf(['\n[OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n\n']);
+                fprintf(['\n[NO OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n']);
             end
-        end
-        
-        if(~exist(plotlyToolboxPath,'dir')||strcmpi(overwrite,'y'))
+        else %toolbox Plotly not yet created
             
-            if(strcmpi(overwrite,'y'))
-                %remove the older version from matlabs searchpath
-                rmpath(genpath(plotlyToolboxPath));
-                %delete the older version
-                [status, message, messageid] = rmdir(plotlyToolboxPath,'s');
-                %check that the folder was deleted
-                if (status == 0)
-                    error('plotly:deletePlotlyAPI',...
-                        ['\n\nShoot! It looks like something went wrong removing the Plotly API ' ...
-                        'from the MATLAB toolbox directory \n' ...
-                        'Please contact your system admin. or chuck@plot.ly for more information. \n\n']);
-                end
-            end
-            
+            %worked (without interuption)...just a formatting thing!
+            fprintf('Done\n');
             
             %make the plotlyToolboxPath dir.
             [status, mess, messid] = mkdir(plotlyToolboxPath);
+            
+            %set status to overwrite
+            overwrite = 'y';
             
             %check that the folder was created
             if (status == 0)
@@ -82,26 +72,34 @@ if(~is_octave)%if MATLAB
                     'Please contact your system admin. or chuck@plot.ly for more information. In the ' ...
                     'mean \ntime you can add the Plotly API to your search path manually whenever you need it! \n\n']);
             end
-            
-            %move a copy of the plotly api to matlab root directory (does not remove files simply overwrites common files!)
-            [status, mess, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath, 'f');
-            %check that the plotly api was copied to the matlab root toolbox directory
+        end
+        
+        if(strcmpi(overwrite,'y'))
+            %remove the older version from matlabs searchpath
+            rmpath(genpath(plotlyToolboxPath));
+            %delete the older version
+            [status, message, messageid] = rmdir(plotlyToolboxPath,'s');
+            %check that the folder was deleted
             if (status == 0)
-                
-                if(~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
-                    error('plotly:copyPlotlyAPI',...
-                        ['Shoot! It looks like you might not have write permission ' ...
-                        'for the MATLAB toolbox directory \n\t\t\t ' ...
-                        'Please contact your system admin. or chuck@plot.ly for more information. In\n\t\t\tthe ' ...
-                        'mean time you can add the Plotly API to your search path manually whenever you need it! \n']);
-                end
+                error('plotly:deletePlotlyAPI',...
+                    ['\n\nShoot! It looks like something went wrong removing the Plotly API ' ...
+                    'from the MATLAB toolbox directory \n' ...
+                    'Please contact your system admin. or chuck@plot.ly for more information. \n\n']);
             end
+        end
+        
+        %move a copy of the Plotly api to matlab root directory (does not remove files simply overwrites common files!)
+        [status, mess, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath, 'f');
+        %check that the plotly api was copied to the matlab root toolbox directory
+        if (status == 0)
             
-            if(~strcmpi(overwrite,'y'))
-                %worked (without interuption)...just a formatting thing!
-                fprintf('Done\n');
+            if(~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
+                error('plotly:copyPlotlyAPI',...
+                    ['Shoot! It looks like you might not have write permission ' ...
+                    'for the MATLAB toolbox directory \n\t\t\t ' ...
+                    'Please contact your system admin. or chuck@plot.ly for more information. In\n\t\t\tthe ' ...
+                    'mean time you can add the Plotly API to your search path manually whenever you need it! \n']);
             end
-            
         end
         
         %add it to the searchpath (startup.m will handle this next time!)
@@ -138,7 +136,7 @@ if(~is_octave)%if MATLAB
             if(find(~w))
                 fprintf(warnings{find(~w)});
             end
-                 
+            
         catch exception %writing to startup.m permission problem catch...
             fprintf(['\n\n' exception.identifier exception.message]);
         end

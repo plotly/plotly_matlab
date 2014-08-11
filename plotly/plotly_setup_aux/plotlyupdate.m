@@ -8,7 +8,7 @@ function plotlyupdate(varargin)
 % of the Plotly API MATLAB library in the users
 % search path.
 
-%success switch
+%successful update switch
 success = true;
 
 %check for verbose
@@ -22,9 +22,19 @@ nocheck = any(strcmp(varargin,'nocheck'));
 % local version number
 pvLocal = plotly_version;
 
-% remote version number
+% local Plotly API MATLAB Libraries
+plotlyScriptDirs = which('plotly','-all');
+plotlyDirs = cell(1,length(plotlyScriptDirs));
+
+for d = 1:length(plotlyScriptDirs)
+    plotlyDirs{d} = fileparts(plotlyScriptDirs{d});
+end
+
+% remote Plotly API MATLAB library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
     'master/plotly/plotly_aux/plotly_version.m'];
+
+% remote Plotly API MATLAB library
 try
     pvContent = urlread(remote);
 catch
@@ -36,6 +46,7 @@ catch
     return
 end
 
+% remote version number
 pvBounds = strfind(pvContent,'''');
 pvRemote = pvContent(pvBounds(1)+1:pvBounds(2)-1);
 
@@ -52,31 +63,28 @@ else
         fprintf('************************************************\n');
         
         %----find all old plotly instances-----%
-        if success
-            try
-                if verbose
-                    fprintf(['\nSearching for instances of old Plotly API Matlab ',...
-                        'Library v.' pvLocal ' ... ']);
-                end
-                
-                plotlyScriptDirs = which('plotly','-all');
-                plotlyDirs = cell(1,length(plotlyScriptDirs)); 
-                
-                for d = 1:length(plotlyScriptDirs)
-                    plotlyDirs{d} = plotlyScriptDirs{d}(1:end-length('_plotly.m')); % "_" used as generic dir. divider
-                end
-                
-                if verbose
-                    fprintf('Done!');
-                end
-                
-            catch
-                fprintf(['\n\n An error occured while looking for Plotly.',...
-                    'Did you reorganize the Plotly file structure?\n\n']);
-                %update failed
-                success = false;
+        
+        try
+            if verbose
+                fprintf(['\nSearching for instances of old Plotly API Matlab ',...
+                    'Library v.' pvLocal ' ... ']);
             end
+            
+            if isempty(plotlyScriptDirs);
+                error('Plotly:missingfile','No Plotly file found');
+            end
+            
+            if verbose
+                fprintf('Done!');
+            end
+            
+        catch
+            fprintf(['\n\n An error occured while looking for Plotly. ',...
+                'Did you reorganize the Plotly file structure?\n\n']);
+            % update failed
+            success = false;
         end
+        
         
         %----create temporary update folder----%
         try
@@ -85,7 +93,7 @@ else
             plotlyUpdateDir = fullfile(pwd,['plotlyupdate_' pvRemote]);
             
             if verbose
-                fprintf(['\nCreating temporary update directory: plotlyupdate_' pvRemote ' ... ']);
+                fprintf(['\nCreating temporary update directory: ' plotlyUpdateDir ' ... ']);
             end
             
             %----make plotlyUpdateDir----%
@@ -104,7 +112,7 @@ else
             
         catch exception
             fprintf(['\n\n' exception.identifier exception.message]);
-            %update failed
+            % update failed
             success = false;
         end
         
@@ -117,14 +125,16 @@ else
                 
                 newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/master.zip';
                 newPlotlyZip = fullfile(plotlyUpdateDir,['plotlyupdate_' pvRemote '.zip']);
+                
+                %download from url
                 urlwrite(newPlotlyUrl,newPlotlyZip);
                 
                 if verbose
                     fprintf('Done! \n');
                 end
             catch
-                fprintf('\n\n Error occured while downloading the newest version of Plotly');
-                %update failed
+                fprintf('\n\nAn error occured while downloading the newest version of Plotly\n\n');
+                % update failed
                 success = false;
             end
         end
@@ -158,23 +168,37 @@ else
                 % new Plotly directory
                 newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-master','plotly');
                 
-                %readme location
-                readmeLoc = fullfile(plotlyUpdateDir,'Matlab-api-master','readme.md'); 
+                % files in Plotly repo root
+                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-master'));
                 
-                %plotlysetup location 
-                setupLoc = fullfile(plotlyUpdateDir,'Matlab-api-master','plotlysetup.m');
+                % files not to be included
+                repoExclude = {'.','..','.gitignore','plotly'};
                 
-                %plotly toolbox directory 
+                % aux Plotly repo root files
+                d = 1;
+                for r = 1:length(repoRoot);
+                    if(~any(strcmp(repoRoot(r).name,repoExclude)))
+                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-master',repoRoot(r).name);
+                        d = d+1;
+                    end
+                end
+                
+                % plotly toolbox directory
                 plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
                 
-                % replace the old Plotly with the new Plotly 
+                % replace the old Plotly with the new Plotly
                 for d = 1:length(plotlyDirs)
-                    copyfile(newPlotlyDir,plotlyDirs{d},'f');
-                    %do not copy setup.m and readme.md to toolbox dir. Plotly  
+                    % do not copy aux Plotly repo root files to toolbox dir. Plotly
                     if ~strcmp(plotlyDirs{d},plotlyToolboxDir)
-                       copyfile(readmeLoc,plotlyDirs{d}(1:end-length('plotly')),'f'); %_ used as generic dir. divide
-                       copyfile(setupLoc,plotlyDirs{d}(1:end-length('plotly')),'f'); 
+                        % aux Files Destination
+                        auxFileDest = fileparts(plotlyDirs{d});
+                        % copy aux to appropriate destination
+                        for r = 1:length(auxFiles)
+                            copyfile(auxFiles{r},auxFileDest,'f');
+                        end
                     end
+                    %copy actual Plotly API Matlab Library
+                    copyfile(newPlotlyDir,plotlyDirs{d},'f');
                 end
                 
                 if verbose
@@ -186,7 +210,7 @@ else
                     'of Plotly v.' pvRemote '. Please check your write permissions\n',...
                     'for your outdated Plotly directories with your system admin.\n',...
                     'Contact chuck@plot.ly for more information.\n\n']);
-                %update failed
+                % update failed
                 success = false;
             end
         end
@@ -195,10 +219,10 @@ else
         if exist(plotlyUpdateDir,'dir')
             try
                 if verbose
-                    fprintf(['Removing temporary update directory: plotlyupdate_' pvRemote ' ... ']);
+                    fprintf(['Removing temporary update directory: ' plotlyUpdateDir ' ... ']);
                 end
                 
-                %delete temp update dir.
+                % delete temp update dir.
                 rmdir(plotlyUpdateDir,'s');
                 
                 if verbose
@@ -213,19 +237,29 @@ else
         
         %----successful update----%
         if success
-            fprintf('**********************************\n');
-            fprintf('[UPDATE SUCCESSFUL] ----> Plot On!\n');
-            fprintf('**********************************\n\n');
+            fprintf('\n**************************************************\n');
+            fprintf(['[UPDATE SUCCESSFUL] visit: https://plot.ly/matlab \n',...
+                'or contact: chuck@plot.ly for further information. \n']);
+            fprintf('**************************************************\n\n');
         else
-            fprintf('\n*********************\n');
-            fprintf('[UPDATE UNSUCCESSFUL]\n');
-            fprintf('*********************\n\n');
+            fprintf('\n***************************************************\n');
+            fprintf(['[UPDATE UNSUCCESSFUL] visit: https://plot.ly/matlab \n',...
+                'or contact: chuck@plot.ly for further information. \n']);
+            fprintf('***************************************************\n\n');
         end
         
-    else
-        fprintf(['\nYou are about to update your Plotly API MATLAB wrapper. \n',...
-                'This will revert any data you saved to your /plotly \ndirectories.']);
-        overwrite = input('Proceed with update (y/n) ? : ','s');
+    else %check
+        
+        fprintf(['\nYou are about to update your Plotly API MATLAB Library v.' pvLocal ', which will\n',...
+            'revert modifications made to the Plotly scripts in the following directories:\n\n']);
+        
+        % explicitly output directories
+        for d = 1:length(plotlyDirs)
+            fprintf([plotlyDirs{d} '\n']);
+        end
+        
+        overwrite = input('\nProceed with update (y/n) ? : ','s');
+        
         if(strcmpi(overwrite,'y'))
             if verbose
                 plotlyupdate('verbose','nocheck');
@@ -233,9 +267,10 @@ else
                 plotlyupdate('nocheck');
             end
         else
-            fprintf('\n****************\n');
-            fprintf('[UPDATE ABORTED]\n');
-            fprintf('****************\n\n');
+            fprintf('\n***********************************************\n');
+            fprintf(['[UPDATE ABORTED] visit: https://plot.ly/matlab \n',...
+                'or contact: chuck@plot.ly for more information. \n']);
+            fprintf('***********************************************\n\n');
         end
     end
 end
