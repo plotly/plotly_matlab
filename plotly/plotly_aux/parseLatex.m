@@ -6,14 +6,14 @@ function formatStr = parseLatex(inputStr,d)
 %
 % TeX: parses through inputStr for instances of
 % the specials characters: \, _, and ^. Uses whitespace
-% as a delimter for the end of \reservedwords (enforced 
-% if not already present), uses either the enclosing { } 
+% as a delimter for the end of \reservedwords (enforced
+% if not already present), uses either the enclosing { }
 % brackets  as delimeters for _ and ^ or simply the
-% immediately proceeding character if no curly brackets 
-% are present. If the immediately proceeding character 
-% of ^ or _ is a \reservedword, the entire word up to the 
-% next whitespace is taken. All other characters are 
-% contained within \text{ } blocks. Resulting string is 
+% immediately proceeding character if no curly brackets
+% are present. If the immediately proceeding character
+% of ^ or _ is a \reservedword, the entire word up to the
+% next whitespace is taken. All other characters are
+% contained within \text{ } blocks. Resulting string is
 % placed within inline: formatStr = $ ...parsedStr... $ delimeters.
 %
 % LaTeX: parses through inputStr for instances of $
@@ -25,28 +25,37 @@ function formatStr = parseLatex(inputStr,d)
 % within inline: formatStr = $ ...parsedStr...$ delimeters
 % or (if an instance of $$ is present) wihtin block:
 % formatStr $$... parsedStr ... $$ delimeters.
- 
+
 
 try
     istex = false;
     islatex = false;
+    %------- CONVERT CELL ARRAY TO STRING WITH LINE BREAKS -------%
+    if(iscell(inputStr))
+        if(size(inputStr,1)==1)
+            inputStr = strjoin(inputStr, '<br>');
+        else
+            inputStr = strjoin(inputStr', '<br>');
+        end
+    end
+
     %------- PARSE TEX --------%
-    
+
     if(strcmp(d.Interpreter,'tex'));
-        
+
         %add white space after reserved TeX words
         formatStr = formatRW(inputStr);
         %counter to iterate through formatStr
         scount = 1;
         %counter to iterate through formatStrCell
         ccount = 1;
-        
+
         %iterate through formatStr
         while scount <= (length(formatStr))
             switch formatStr(scount)
-                
+
                 %- \words - %
-                
+
                 case '\'
                     istex = true;
                     formatStrCell{ccount} = [];
@@ -60,9 +69,9 @@ try
                         scount = scount + 1;
                     end
                     ccount = ccount + 1;
-                    
+
                     %- _ subscripts -%
-                    
+
                 case '_'
                     istex = true;
                     formatStrCell{ccount} = [];
@@ -100,9 +109,9 @@ try
                         end
                         ccount = ccount + 1;
                     end
-                    
+
                     %- ^ superscripts - %
-                    
+
                 case '^'
                     istex = true;
                     formatStrCell{ccount} = [];
@@ -140,9 +149,9 @@ try
                         end
                         ccount = ccount + 1;
                     end
-                    
+
                     %- \text{ } - %
-                    
+
                 otherwise
                     formatStrCell{ccount} = ['\text{'];
                     while (scount <= length(formatStr))
@@ -157,21 +166,21 @@ try
                     ccount = ccount + 1;
             end
         end
-        
+
         %created parsedStr from formatStrCell
         parsedStr = [ formatStrCell{:} ];
-        
+
         % place in inline: $...parsedStr...$ delimiters
         if(istex)
             formatStr = ['$' parsedStr '$'];
         else
             formatStr = inputStr;
         end
-        
+
         %------- PARSE LATEX --------%
-        
+
     elseif(strcmp(d.Interpreter,'latex'));
-        
+
         formatStr = inputStr;
         %counter to iterate through formatStr
         scount = 1;
@@ -179,20 +188,20 @@ try
         ccount = 1;
         %look for existence of $$
         dsPairs = regexp(formatStr,'\$\$');
-        
+
         %iterate through formatStr
         while scount <= (length(formatStr))
-            
+
             if(strcmp(formatStr(scount),'$'))
                 islatex = true;
-                
+
                 %- $$... $$ -%
                 if any(dsPairs == scount)
                     nextS = regexp(formatStr(scount+1:end),'\$\$','once');
                     formatStrCell{ccount} = formatStr(scount:scount + nextS);
                     scount = scount + nextS + 2;
                     ccount = ccount + 1;
-                    
+
                     %- $ ... $ -%
                 else
                     nextS = regexp(formatStr(scount+1:end),'\$','once');
@@ -200,9 +209,9 @@ try
                     scount = scount + nextS + 1;
                     ccount = ccount + 1;
                 end
-                
+
                 %- \text{ } -%
-                
+
             else
                 formatStrCell{ccount} = ['\text{'];
                 while(scount<= length(formatStr))
@@ -216,11 +225,11 @@ try
                 ccount = ccount + 1;
             end
         end
-        
+
         %remove all instances of $
         parsedStr = [formatStrCell{:}];
         parsedStr(regexp(parsedStr,'\$')) = '';
-        
+
         % place in inline: $...parsedStr...$
         % or $$...parsedStr...$$ delimiters
         if(islatex)
@@ -232,13 +241,13 @@ try
         else
             formatStr = inputStr;
         end
-        
+
         %------- NO PARSE--------%
     else
         %allows for user to specify mathjax format directly
         formatStr = inputStr;
     end
-    
+
     %display error message if parse was not successful
 catch
     formatStr = inputStr;
