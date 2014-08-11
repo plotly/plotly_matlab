@@ -226,7 +226,7 @@ else
                 rmdir(plotlyUpdateDir,'s');
                 
                 if verbose
-                    fprintf('Done! \n\n');
+                    fprintf('Done! \n');
                 end
                 
             catch
