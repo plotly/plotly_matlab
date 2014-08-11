@@ -32,7 +32,7 @@ try
     islatex = false;
     %------- CONVERT CELL ARRAY TO STRING WITH LINE BREAKS -------%
     if(iscell(inputStr))
-        if(isrow(inputStr))
+        if(size(inputStr,1)==1)
             inputStr = strjoin(inputStr, '<br>');
         else
             inputStr = strjoin(inputStr', '<br>');
