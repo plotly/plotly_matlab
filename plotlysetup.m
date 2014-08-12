@@ -1,19 +1,21 @@
-function plotlysetup(un, api_key, varargin)
+function plotlysetup(username, api_key, varargin)
+% CALL: plotlysetup(username,api_key,'kwargs'[optional]);
+% WHERE: kwargs are of the form ..,'property,value,'property',value,...
+% PROPERTIES: 'stream_token', 'plotly_domain', 'plotly_streaming_domain'
 % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
 % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
-% [3] calls saveplotlycredentials
-% [4] calls saveplotlyconfig
-% [TODO]: Account for octave users
-% [TODO]: Test on windows machine
+% [3] calls saveplotlycredentials (using username, api_key and stream_key [optional])
+% [4] calls saveplotlyconfig with ('plotly_domain'[optional], 'plotly_streaming_domain' [optional])
 
 try %check number of inputs
-    if (nargin<2||nargin>4)
+    if (nargin<2||nargin>8)
         error('plotly:setupInputs',....
-            ['\n\nWhoops! Wrong number of inputs. Please setup your Plotly '...
-            '\nMATLAB API by calling >>plotlysetup(' '''user_name''' ',' '''api_key''' ',' '''plotly_domain [optional]''' ',' '''plotly_streaming_domain [optional]'') \n\n']);
+            ['\n\nWhoops! Wrong number of inputs. Please run >> help plotlysetup \n',...
+            'for more information regarding thes setup your Plotly API MATLAB \n',...
+            'Library. Please contact chuck@plot.ly for more information.']);
     end
 catch exception %plotlysetup input problem catch...
-    fprintf(['\n\n' exception.identifier exception.message]);
+    fprintf(['\n\n' exception.identifier exception.message '\n\n']);
     return
 end
 
@@ -29,7 +31,7 @@ try %check to see if plotly is in the searchpath
     end
     addpath(genpath(plotlyFolderPath));
 catch exception %plotly file not found problem catch
-    fprintf(['\n\n' exception.identifier exception.message]);
+    fprintf(['\n\n' exception.identifier exception.message '\n\n']);
     return
 end
 
@@ -48,9 +50,9 @@ if(~is_octave)%if MATLAB
                 'Careful! You may lose data saved to this folder.\n\n']);
             overwrite = input('Overwrite (y/n) ? : ','s');
             if(strcmpi(overwrite,'y'));
-                fprintf(['\n[OVERWRITE]:\n\nOverwriting Plotly! ... Done \n\n']);
+                fprintf('\n[OVERWRITE]:\n\nOverwriting Plotly! ... Done \n');
             else
-                fprintf(['\n[OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n\n']);
+                fprintf('\n[NO OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n');
             end
         end
         
@@ -60,7 +62,7 @@ if(~is_octave)%if MATLAB
                 %remove the older version from matlabs searchpath
                 rmpath(genpath(plotlyToolboxPath));
                 %delete the older version
-                [status, message, messageid] = rmdir(plotlyToolboxPath,'s');
+                status = rmdir(plotlyToolboxPath,'s');
                 %check that the folder was deleted
                 if (status == 0)
                     error('plotly:deletePlotlyAPI',...
@@ -72,7 +74,7 @@ if(~is_octave)%if MATLAB
             
             
             %make the plotlyToolboxPath dir.
-            [status, mess, messid] = mkdir(plotlyToolboxPath);
+            status = mkdir(plotlyToolboxPath);
             
             %check that the folder was created
             if (status == 0)
@@ -84,7 +86,7 @@ if(~is_octave)%if MATLAB
             end
             
             %move a copy of the plotly api to matlab root directory (does not remove files simply overwrites common files!)
-            [status, mess, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath, 'f');
+            [status, ~, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath, 'f');
             %check that the plotly api was copied to the matlab root toolbox directory
             if (status == 0)
                 
@@ -138,13 +140,13 @@ if(~is_octave)%if MATLAB
             if(find(~w))
                 fprintf(warnings{find(~w)});
             end
-                 
+            
         catch exception %writing to startup.m permission problem catch...
-            fprintf(['\n\n' exception.identifier exception.message]);
+            fprintf(['\n\n' exception.identifier exception.message '\n\n']);
         end
         
     catch exception %copying to toolbox permission problem catch...
-        fprintf(['\n\n' exception.identifier exception.message]);
+        fprintf(['\n\n' exception.identifier exception.message '\n\n']);
     end
     
 else %if octave
@@ -152,41 +154,60 @@ else %if octave
 end %end check for matlab...
 
 try %save user credentials
-    fprintf('Saving user credentials ... ');
-    saveplotlycredentials(un,api_key);
+    fprintf('Saving username/api_key credentials ... ');
+    saveplotlycredentials(username,api_key);
     %worked!
     fprintf('Done\n');
 catch exception %writing credentials file permission problem catch...
-    fprintf(['\n\n' exception.identifier exception.message]);
+    fprintf(['\n\n' exception.identifier exception.message '\n\n']);
+end
+
+%----handle varargin----%
+try
+    
+    if mod(numel(varargin),2)~= 0
+        error('plotly:setupInputs',....
+            ['\n\nWhoops! Wrong number of varargin inputs. Please run >> help plotlysetup \n',...
+            'for more information regarding thes setup your Plotly API MATLAB Library. \n',...
+            'Your stream_key, plotly_domain, and plotly_streaming domain were not set. \n',...
+            'Please contact chuck@plot.ly for more information.']);
+    end
+    
+    for n = 1:2:numel(varargin)
+        if strcmp(varargin{n},'stream_key')
+            fprintf('Saving stream_key credentials ... ');
+            saveplotlycredentials(username,api_key,varargin{n+1});
+            %worked!
+            fprintf('Done\n');
+        end
+        if strcmp(varargin{n},'plotly_domain')
+            fprintf('Saving plotly_domain configuration ... ');
+            saveplotlyconfig(varargin{n+1});
+            %worked!
+            fprintf('Done\n');
+        end
+        if strcmp(varargin{n},'plotly_streaming_domain')
+            fprintf('Saving plotly_streaming_domain configuration ... ');
+            try
+                config = loadplotlyconfig;
+            catch
+                config.plotly_domain = '';
+            end
+            saveplotlyconfig(config.plotly_domain,varargin{n+1});
+            %worked!
+            fprintf('Done\n');
+        end
+    end
+    
+catch exception %writing aux kwargs problem catch...
+    fprintf(['\n\n' exception.identifier exception.message '\n\n']);
 end
 
 %sign in the user
-signin(un,api_key);
-
-if nargin == 3
-    try %save user config
-        fprintf('Saving user endpoint configuration ... ');
-        saveplotlyconfig(varargin{1});
-        %worked!
-        fprintf('Done\n\n');
-    catch exception %writing credentials file permission problem catch...
-        fprintf(['\n\n' exception.identifier exception.message]);
-    end
-end
-
-if nargin == 4
-    try %save user config
-        fprintf('Saving user endpoint configuration ... ');
-        saveplotlyconfig(varargin{1},varargin{2});
-        %worked!
-        fprintf('Done\n\n');
-    catch exception %writing credentials file permission problem catch...
-        fprintf(['\n\n' exception.identifier exception.message]);
-    end
-end
+signin(username,api_key);
 
 %greet the people!
-fprintf(['Welcome to Plotly! If you are new to Plotly please enter: >>plotlyhelp to get started!\n\n'])
+fprintf('\nWelcome to Plotly! If you are new to Plotly please enter: >> plotlyhelp to get started!\n\n')
 
 
 
