@@ -205,13 +205,39 @@ else
                     fprintf('Done! \n');
                 end
             catch
-                
                 fprintf(['\n\nAn error occured while updating to the newest version \n',...
                     'of Plotly v.' pvRemote '. Please check your write permissions\n',...
                     'for your outdated Plotly directories with your system admin.\n',...
                     'Contact chuck@plot.ly for more information.\n\n']);
                 % update failed
                 success = false;
+            end
+        end
+        
+        %----clean up old Plotly wrapper scipts----%
+        if success
+            try
+                if verbose
+                    fprintf('Cleaning up outdated Plotly API MATLAB library scripts ... ');
+                end
+                
+                %run cleanup 
+                removed = plotlycleanup;
+                
+                if verbose
+                    fprintf('Done! \n');
+                    if ~isempty(removed)
+                        fprintf('The following Plotly scripts were removed:\n');
+                        % explicitly state the removed files
+                        for r = 1:length(removed)
+                            fprintf([removed{r} '\n']);
+                        end
+                    end
+                end
+            catch
+                fprintf(['\n\nAn error occured while cleaning up the outdated Plotly scripts. Please\n',...
+                    'check your write permissions for your outdated Plotly directories with \n',...
+                    'your system admin. Contact chuck@plot.ly for more information.\n\n']);
             end
         end
         
@@ -251,7 +277,7 @@ else
     else %check
         
         fprintf(['\nYou are about to update your Plotly API MATLAB Library v.' pvLocal ', which will\n',...
-            'revert modifications made to the Plotly scripts in the following directories:\n\n']);
+            'overwrite modifications made to the Plotly scripts in the following directories:\n\n']);
         
         % explicitly output directories
         for d = 1:length(plotlyDirs)
