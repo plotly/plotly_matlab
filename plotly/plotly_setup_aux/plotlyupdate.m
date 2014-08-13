@@ -30,11 +30,11 @@ for d = 1:length(plotlyScriptDirs)
     plotlyDirs{d} = fileparts(plotlyScriptDirs{d});
 end
 
-% remote Plotly API MATLAB library url
+% remote Plotly API MATLAB Library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
     'master/plotly/plotly_aux/plotly_version.m'];
 
-% remote Plotly API MATLAB library
+% remote Plotly API MATLAB Library
 try
     pvContent = urlread(remote);
 catch
