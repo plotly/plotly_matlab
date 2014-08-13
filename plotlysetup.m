@@ -1,7 +1,9 @@
-function plotlysetup(username, api_key, varargin)
+function exception = plotlysetup(username, api_key, varargin)
 % CALL: plotlysetup(username,api_key,'kwargs'[optional]);
 % WHERE: kwargs are of the form ..,'property,value,'property',value,...
-% PROPERTIES: 'stream_token', 'plotly_domain', 'plotly_streaming_domain'
+% VALID PROPERTIES [OPTIONAL]: 'stream_token' -> your stream tokens (found online)
+%                              'plotly_domain' -> your desired REST API enpoint 
+%                              'plotly_streaming_domain'-> your desired Stream API endpoint
 % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
 % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
 % [3] calls saveplotlycredentials (using username, api_key and stream_key [optional])
@@ -19,30 +21,33 @@ catch exception %plotlysetup input problem catch...
     return
 end
 
-try %check to see if plotly is in the searchpath
+try 
+    %check to see if plotly is in the searchpath
     plotlysetupPath = which('plotlysetup');
-    plotlyFolderPath = [plotlysetupPath(1:end-length('plotlysetup.m')) 'plotly']; %there has to be a nicer way of doing this!
+    plotlyFolderPath = fullfile(fileparts(plotlysetupPath),'plotly'); 
     %if it was not found
     if (strcmp(genpath(plotlyFolderPath),''))
-        error('plotly:plotlyFilePath',...
+        error('plotly:notFound',...
             ['\n\nShoot! It looks like MATLAB is having trouble finding the current version '  ...
-            '\nof Plotly. Please make sure that the plotly/ API folder is in the same '  ...
+            '\nof Plotly. Please make sure that the Plotly API folder is in the same '  ...
             '\ndirectory as plotlysetup.m. Contact chuck@plot.ly for more information. \n\n']);
     end
+    %add Plotly API MATLAB Library to search path
     addpath(genpath(plotlyFolderPath));
 catch exception %plotly file not found problem catch
-    fprintf(['\n\n' exception.identifier exception.message '\n\n']);
+    fprintf(['\n\n' exception.identifier exception.message '\n']); 
     return
 end
 
-if(~is_octave)%if MATLAB
+if(~is_octave)
     
-    try %embed the api to the matlabroot/toolbox dir.
+    try 
+        %embed the api to the matlabroot/toolbox dir.
         fprintf('\nAdding Plotly to MATLAB toolbox directory ...  ');
         
         %plotly folder in the matlab/toolbox dir.
-        plotlyToolboxPath = fullfile(matlabroot,'toolbox','plotly'); %this should work on all platforms
-        
+        plotlyToolboxPath = fullfile(matlabroot,'toolbox','plotly');
+      
         if(exist(plotlyToolboxPath,'dir')) %check for overwrite...
             fprintf(['\n\n[UPDATE]: \n\nHey! We see that a copy of Plotly has previously been added to\n' ...
                 'your Matlab toolboxes. Would you like us to overwrite it with:\n' plotlyFolderPath ' ? \n'...
@@ -82,7 +87,6 @@ if(~is_octave)%if MATLAB
             [status, ~, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath, 'f');
             %check that the plotly api was copied to the matlab root toolbox directory
             if (status == 0)
-                
                 if(~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
                     error('plotly:copyPlotlyAPI',...
                         ['Shoot! It looks like you might not have write permission ' ...
