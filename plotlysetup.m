@@ -2,16 +2,20 @@ function exception = plotlysetup(username, api_key, varargin)
 % CALL: plotlysetup(username,api_key,'kwargs'[optional]);
 % WHERE: kwargs are of the form ..,'property,value,'property',value,...
 % VALID PROPERTIES [OPTIONAL]: 'stream_token' -> your stream tokens (found online)
-%                              'plotly_domain' -> your desired REST API enpoint 
+%                              'plotly_domain' -> your desired REST API enpoint
 %                              'plotly_streaming_domain'-> your desired Stream API endpoint
 % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
 % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
 % [3] calls saveplotlycredentials (using username, api_key and stream_key [optional])
 % [4] calls saveplotlyconfig with ('plotly_domain'[optional], 'plotly_streaming_domain' [optional])
 
+%DEFAULT OUTPUT
+exception.message = '';
+exception.identifier = '';
+
 try %check number of inputs
     if (nargin<2||nargin>8)
-        error('plotly:setupInputs',....
+        error('plotly:wrongInput',....
             ['\n\nWhoops! Wrong number of inputs. Please run >> help plotlysetup \n',...
             'for more information regarding the setup your Plotly API MATLAB \n',...
             'Library. Please contact chuck@plot.ly for more information.']);
@@ -21,10 +25,10 @@ catch exception %plotlysetup input problem catch...
     return
 end
 
-try 
+try
     %check to see if plotly is in the searchpath
     plotlysetupPath = which('plotlysetup');
-    plotlyFolderPath = fullfile(fileparts(plotlysetupPath),'plotly'); 
+    plotlyFolderPath = fullfile(fileparts(plotlysetupPath),'plotly');
     %if it was not found
     if (strcmp(genpath(plotlyFolderPath),''))
         error('plotly:notFound',...
@@ -35,19 +39,19 @@ try
     %add Plotly API MATLAB Library to search path
     addpath(genpath(plotlyFolderPath));
 catch exception %plotly file not found problem catch
-    fprintf(['\n\n' exception.identifier exception.message '\n']); 
+    fprintf(['\n\n' exception.identifier exception.message '\n']);
     return
 end
 
 if(~is_octave)
     
-    try 
+    try
         %embed the api to the matlabroot/toolbox dir.
         fprintf('\nAdding Plotly to MATLAB toolbox directory ...  ');
         
         %plotly folder in the matlab/toolbox dir.
         plotlyToolboxPath = fullfile(matlabroot,'toolbox','plotly');
-      
+        
         if(exist(plotlyToolboxPath,'dir')) %check for overwrite...
             fprintf(['\n\n[UPDATE]: \n\nHey! We see that a copy of Plotly has previously been added to\n' ...
                 'your Matlab toolboxes. Would you like us to overwrite it with:\n' plotlyFolderPath ' ? \n'...
@@ -73,26 +77,24 @@ if(~is_octave)
             
             %check that the folder was created
             if (status == 0)
-                error('plotly:savePlotlyAPI',...
-                    ['\n\nShoot! It looks like you might not have write permission ' ...
-                    'for the MATLAB toolbox directory \n' ...
-                    'Please contact your system admin. or chuck@plot.ly for more information. In the ' ...
-                    'mean \ntime you can add the Plotly API to your search path manually whenever you need it! \n\n']);
+                error('plotly:savePlotly',...
+                    ['\n\nShoot! It looks like you might not have write permission for the MATLAB toolbox directory \n' ...
+                    'Please contact your system admin. or chuck@plot.ly for more information. In the mean time\n' ...
+                    'you can add the Plotly API to your search path manually whenever you need it! \n\n']);
             end
         end
         
         if(strcmpi(overwrite,'y'))
             
-            %move a copy of the Plotly api to matlab root directory (does not remove files simply overwrites common files!)
-            [status, ~, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath, 'f');
+            %move a copy of the Plotly api to matlab root directory
+            [status, ~, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath);
             %check that the plotly api was copied to the matlab root toolbox directory
             if (status == 0)
                 if(~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
-                    error('plotly:copyPlotlyAPI',...
-                        ['Shoot! It looks like you might not have write permission ' ...
-                        'for the MATLAB toolbox directory \n\t\t\t ' ...
-                        'Please contact your system admin. or chuck@plot.ly for more information. In\n\t\t\tthe ' ...
-                        'mean time you can add the Plotly API to your search path manually whenever you need it! \n']);
+                    error('plotly:copyPlotly',...
+                        ['\n\nShoot! It looks like you might not have write permission for the MATLAB toolbox directory \n' ...
+                        'Please contact your system admin. or chuck@plot.ly for more information. In the mean time \n' ...
+                        'you can add the Plotly API to your search path manually whenever you need it! \n']);
                 end
             end
         end
@@ -100,43 +102,38 @@ if(~is_octave)
         %add it to the searchpath (startup.m will handle this next time!)
         addpath(genpath(plotlyToolboxPath),'-end');
         
-        try %save plotly api searchpath to startup.m files (only do this if we actually were able to store the api in mtlroot/toolbox!)
-            fprintf('Saving Plotly to MATLAB search path via startup.m ... ');
-            
-            %check for a startup.m file in matlab rootpath (we want to add one here)
-            startupFile = [];
-            startupFileRootPath = fullfile(matlabroot,'toolbox','local','startup.m');
-            if(~exist(startupFileRootPath,'file'))
-                startFileID = fopen(startupFileRootPath, 'w');
-                startupFile = {startupFileRootPath}; %needed because matlab only looks for startup.m when first opened.
-                if(startFileID == -1)
-                    error('plotly:startFileCreation',...
-                        ['Shoot! It looks like you might not have write permission ' ...
-                        'for the MATLAB toolbox directory \n\t\t\t ' ...
-                        'Please contact your system admin. or chuck@plot.ly for more information. In\n\t\t\tthe ' ...
-                        'mean time you can add the Plotly API to your search path manually whenever you need it! \n']);
-                end
+        %save plotly api searchpath to startup.m files (only do this if we actually were able to store the api in mtlroot/toolbox!)
+        fprintf('Saving Plotly to MATLAB search path via startup.m ... ');
+        
+        %check for a startup.m file in matlab rootpath (we want to add one here)
+        startupFile = [];
+        startupFileRootPath = fullfile(matlabroot,'toolbox','local','startup.m');
+        if(~exist(startupFileRootPath,'file'))
+            startFileID = fopen(startupFileRootPath, 'w');
+            startupFile = {startupFileRootPath}; %needed because matlab only looks for startup.m when first opened.
+            if(startFileID == -1)
+                error('plotly:startFileCreation',...
+                    ['Shoot! It looks like you might not have write permission for the MATLAB toolbox directory.\n',...
+                    'Please contact your system admin. or chuck@plot.ly for more information. In the mean time\n' ...
+                    'you can add the Plotly API to your search path manually whenever you need it! \n']);
             end
-            
-            %check for all startup.m file in searchpath
-            startupFile = [startupFile; cell(which('startup.m','-all'))];
-            %write the addpath - plotly api to the startup.m files
-            [warnings] = addplotlystartup(startupFile);
-            
-            %worked!
-            fprintf(' Done\n');
-            
-            %print any addplotlydstatup warnings;
-            w = cellfun(@isempty,warnings);
-            if(find(~w))
-                fprintf(warnings{find(~w)});
-            end
-            
-        catch exception %writing to startup.m permission problem catch...
-            fprintf(['\n\n' exception.identifier exception.message '\n\n']);
         end
         
-    catch exception %copying to toolbox permission problem catch...
+        %check for all startup.m file in searchpath
+        startupFile = [startupFile; cell(which('startup.m','-all'))];
+        %write the addpath - plotly api to the startup.m files
+        [warnings] = addplotlystartup(startupFile);
+        
+        %worked!
+        fprintf(' Done\n');
+        
+        %print any addplotlydstatup warnings;
+        w = cellfun(@isempty,warnings);
+        if(find(~w))
+            fprintf(warnings{find(~w)});
+        end
+        
+    catch exception %copying to toolbox/writing to startup.m permission problem catch...
         fprintf(['\n\n' exception.identifier exception.message '\n\n']);
     end
     
@@ -157,7 +154,7 @@ end
 try
     
     if mod(numel(varargin),2)~= 0
-        error('plotly:setupInputs',....
+        error('plotly:wrontInput',....
             ['\n\nWhoops! Wrong number of varargin inputs. Please run >> help plotlysetup \n',...
             'for more information regarding the setup your Plotly API MATLAB Library. \n',...
             'Your stream_key, plotly_domain, and plotly_streaming domain were not set. \n',...
