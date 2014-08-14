@@ -18,7 +18,7 @@ classdef plotlyfigure < handle
         UserData; % credentials/configuration
         Response; % response of making post request
         State; % state of plot (current axis)
-        Stream; %stream {'key','handle','maxpoint'}
+        %Stream; %stream {'key','handle','maxpoint'}
     end
     
     %----CLASS METHODS----%
@@ -70,14 +70,22 @@ classdef plotlyfigure < handle
                 if(strcmpi(varargin{a},'data'))
                     obj.Data = varargin{a+1};
                 end
-                if(strcmpi(varargin{a},'stream'))
-                    obj.Stream = varargin{a+1};
-                end
+%                 if(strcmpi(varargin{a},'stream'))
+%                     obj.Stream = varargin{a+1};
+%                 end
             end
             
             % user data
-            obj.UserData.Credentials = loadplotlycredentials;
-            obj.UserData.Configuration = loadplotlyconfig;
+            try
+                obj.UserData.Credentials = loadplotlycredentials;
+            catch exception
+                fprintf(['\n\n' exception.identifier exception.message '\n\n']);
+            end
+            try
+                obj.UserData.Configuration = loadplotlyconfig;
+            catch exception
+                fprintf(['\n\n' exception.identifier exception.message '\n\n']);
+            end
             
             % default Plotly figure
             fig = figure('Name','PLOTLY FIGURE','color',[1 1 1],'NumberTitle','off','Visible',obj.PlotOptions.Visible);
@@ -87,12 +95,14 @@ classdef plotlyfigure < handle
             
             % plot state
             obj.State.Verbose = false;
-            obj.State.FigureHandle = fig;
-            obj.State.AxisHandle(1) = ax;
-            obj.State.DataHandle(1) = NaN;
-            obj.State.CurrentAxisHandleIndex = 1;
-            obj.State.CurrentDataHandleIndex = 0;
-            obj.State.Data2AxisMap = [];
+            obj.State.Figure.Handle = fig;
+            obj.State.Figure.NextPlot = 'new';
+            set(obj.State.Figure.Handle,'NextPlot','new'); 
+            obj.State.CurrentAxisIndex = 1;
+            obj.State.CurrentDataIndex = 0; 
+            obj.State.Axis(obj.State.CurrentAxisIndex).Handle = ax;
+            obj.State.Axis(obj.State.CurrentAxisIndex).NextPlot = 'new';
+            set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot','new');
             
             % plot response
             obj.Response = {};
@@ -103,69 +113,63 @@ classdef plotlyfigure < handle
         function obj = plot(obj,varargin)
             
             try
-                
-                %it is possible that this is an axis handle that does not exist on the plotlyfigure figure
+                %it is possible that this is an axis handle that does not exist on obj.FigureHandle 
                 if ishandle(varargin{1})
                     if strcmp(get(varargin{1},'type'),'axes')
-                        if ~ismember(varargin{1},obj.State.AxisHandle)
+                        if ~ismember(varargin{1},[obj.State.Axis(:).Handle])
                             if(obj.State.Verbose)
                                 fprintf(['\nOops! The axis handle specified does not match one recognized',...
                                     '\nwithin the current Plotly figure. The plot will be drawn on the current',...
-                                    '\axis, whose handle is: ' num2str(obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex))]);
+                                    '\axis, whose handle is: ' num2str(obj.State.AxisHandle(obj.State.CurrentAxisIndex))]);
                             end
-                            varargin{1} = obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex);
+                            varargin{1} = obj.State.Axis(obj.State.CurrentAxisIndex).Handle;
                         else
-                            obj.State.CurrentAxisHandleIndex = find(varargin{1} == obj.State.AxisHandle);
+                            obj.State.CurrentAxisIndex = find(varargin{1} == [obj.State.Axis(:).Handle]);
                         end
                     else
-                        varargin = {obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex),varargin{:}};
+                        varargin = {obj.State.Axis(obj.State.CurrentAxisIndex).Handle,varargin{:}};
                     end
+                else
+                  varargin = {obj.State.Axis(obj.State.CurrentAxisIndex).Handle,varargin{:}};  
                 end
             catch
                 error(['Oops! An error occured while looking for the axis handle',...
                     'associated with this plot. Please make sure the axis handle specified',...
-                    'is a child of the Plotly figure, whose handle is: ' num2str(obj.State.FigureHandle)]);
+                    'is a child of the Plotly figure, whose handle is: ' num2str(obj.State.Figure.Handle)]);
             end
+ 
+            % allow the plot to be drawn on obj.State.FigureHandle
+            set(obj.State.Figure.Handle,'NextPlot',obj.State.Figure.NextPlot); 
+            
+            % allow the plot to be drawn on obj.State.AxesHandle(obj.State.CurrentAxisHandleIndex)
+            set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot',obj.State.Axis(obj.State.CurrentAxisIndex).NextPlot); 
             
             % update the current data handle index
-            obj.State.CurrentDataHandleIndex = obj.State.CurrentDataHandleIndex + 1;
-            
-            %handle stream setup           
-            if any(strcmp(varargin,'stream'))
-                indStream = find(strcmp(varargin,'stream')); 
-                data{obj.State.CurrentDataHandleIndex}.stream = varargin{indStream+1}; 
-                obj.Data = data; 
-                %delete the stream content 
-                varargin(indStream + 1) = []; 
-                %delete the stream key 
-                varargin(indStream) = []; 
-            end
+            obj.State.CurrentDataIndex = obj.State.CurrentDataIndex + 1;
             
             % make the plot and grab the data handle
-            obj.State.DataHandle(obj.State.CurrentDataHandleIndex) = plot(varargin{:}); 
+            obj.State.Data(obj.State.CurrentDataIndex).Handle = plot(varargin{:});
             
-            % map DataHandle to AxisHandle
-            obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex) = ancestor(obj.State.DataHandle(obj.State.CurrentDataHandleIndex),'axes');
-            
-            % update axis handles 
-            if ~ismember(obj.State.AxisHandle,obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex)) 
-                % if axis not already present add it to the end 
-                obj.State.AxisHandle(end + 1) = obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex); 
-                % and update the AxisHandleIndex
-                obj.State.AxisHandleIndex = length(obj.State.AxisHandle); 
-            else
-                % update the AxisHandleIndex 
-                obj.State.AxisHandleIndex = find(obj.State.AxisHandle == obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex)); 
-            end
-            
-            % map DataHandle to AxisHandle
-            obj.State.Data2AxisMap(obj.State.CurrentDataHandleIndex) = obj.State.CurrentAxisHandleIndex;
+            % map Data(obj.State.CurrentDataIndex).Handle to Axis(obj.State.CurrentAxisIndex).Handle.
+            obj.State.Data(obj.State.CurrentDataIndex).AxisHandle = obj.State.Axis(obj.State.CurrentAxisIndex).Handle; 
             
             % update data
             obj = extractPlotData(obj);
             
             % update layout
             obj = extractPlotLayout(obj);
+            
+            % prevent generic plots being drawn on obj.State.FigureHandle
+            set(obj.State.Figure.Handle,'NextPlot','new'); 
+            
+            % prevent generic plots being drawn on obj.State.AxesHandle
+            for d = 1:length(obj.State.Axis(obj.State.CurrentAxisIndex).Handle)
+            set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot','new'); 
+            end
+        end
+        
+        %----SET THE HOLD OF THE FIGURE----%
+        function obj = hold(obj,varargin) 
         end
         
         %----SEND PLOT REQUEST----%
