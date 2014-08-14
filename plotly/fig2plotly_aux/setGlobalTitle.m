@@ -17,7 +17,7 @@ try
 end
 
 try
-    layoutret.tiltefont.color = text_prop.font.color;
+    layoutret.titlefont.color = text_prop.font.color;
 end
 
 end
