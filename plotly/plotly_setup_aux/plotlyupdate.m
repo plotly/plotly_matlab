@@ -17,17 +17,19 @@ verbose = any(strcmp(varargin,'verbose'));
 %check for nocheck :)
 nocheck = any(strcmp(varargin,'nocheck'));
 
+%default output
+exception.identifier = '';
+exception.message = '';
+
 %----check for necessary update----%
-
-% local version number
-pvLocal = plotly_version;
-
-% local Plotly API MATLAB Libraries
-plotlyScriptDirs = which('plotly','-all');
-plotlyDirs = cell(1,length(plotlyScriptDirs));
-
-for d = 1:length(plotlyScriptDirs)
-    plotlyDirs{d} = fileparts(plotlyScriptDirs{d});
+try
+    % local version number
+    pvLocal = plotly_version;
+catch
+    exception.identifier = 'plotly:noVersion';
+    fprintf(['\n' exception.identifier '\n\nWe were unable to loacte plotly_version.m. Please Add\n',...
+        'this script to your MATLAB search path and try again.\n\n']);
+    return
 end
 
 % remote Plotly API MATLAB Library url
@@ -50,41 +52,39 @@ end
 pvBounds = strfind(pvContent,'''');
 pvRemote = pvContent(pvBounds(1)+1:pvBounds(2)-1);
 
-%----update if necessary-----%
+%----check for local Plotly instances----%
+try
+    plotlyScriptDirs = which('plotly','-all');
+    
+    if isempty(plotlyScriptDirs);
+        error('plotly:missingScript',...
+            ['\n\nWe were unable to loacte plotly.m. Please Add this\n',...
+            'script to your MATLAB search path and try again.\n\n']);
+    end
+    
+catch exception
+    fprintf(['\n' exception.identifier exception.message]);
+    return
+end
 
+% directory of above libraries
+plotlyDirs = cell(1,length(plotlyScriptDirs));
+for d = 1:length(plotlyScriptDirs)
+    plotlyDirs{d} = fileparts(plotlyScriptDirs{d});
+end
+
+%----update if necessary-----%
 if strcmp(pvLocal,pvRemote)
     fprintf(['\nYour Plotly API MATLAB Library v.' pvRemote ' is already up to date! \n\n'])
+    exception.identifier = 'plotly:alreadyUpdated';
     return
 else
+    
     if nocheck
         
         fprintf('\n************************************************\n');
         fprintf(['[UPDATING] Plotly v.' pvLocal ' ----> Plotly v.' pvRemote ' \n']);
         fprintf('************************************************\n');
-        
-        %----find all old plotly instances-----%
-        
-        try
-            if verbose
-                fprintf(['\nSearching for instances of old Plotly API Matlab ',...
-                    'Library v.' pvLocal ' ... ']);
-            end
-            
-            if isempty(plotlyScriptDirs);
-                error('Plotly:missingfile','No Plotly file found');
-            end
-            
-            if verbose
-                fprintf('Done!');
-            end
-            
-        catch
-            fprintf(['\n\n An error occured while looking for Plotly. ',...
-                'Did you reorganize the Plotly file structure?\n\n']);
-            % update failed
-            success = false;
-        end
-        
         
         %----create temporary update folder----%
         try
@@ -132,6 +132,7 @@ else
                 if verbose
                     fprintf('Done! \n');
                 end
+                
             catch
                 fprintf('\n\nAn error occured while downloading the newest version of Plotly\n\n');
                 % update failed
@@ -151,6 +152,7 @@ else
                 if verbose
                     fprintf('Done! \n');
                 end
+                
             catch
                 fprintf('\n\nAn error occured while unzipping the newest version of Plotly\n\n');
                 %update failed
@@ -204,6 +206,7 @@ else
                 if verbose
                     fprintf('Done! \n');
                 end
+                
             catch
                 fprintf(['\n\nAn error occured while updating to the newest version \n',...
                     'of Plotly v.' pvRemote '. Please check your write permissions\n',...
@@ -221,7 +224,7 @@ else
                     fprintf('Cleaning up outdated Plotly API MATLAB library scripts ... ');
                 end
                 
-                %run cleanup 
+                %run cleanup
                 removed = plotlycleanup;
                 
                 if verbose
@@ -255,7 +258,7 @@ else
                     fprintf('Done! \n');
                 end
                 
-            catch
+            catch exception
                 fprintf(['\n\n An error occured while attempting to remove',...
                     ' the \n temporary update directory. Please remove manually.\n\n']);
             end
@@ -288,9 +291,17 @@ else
         
         if(strcmpi(overwrite,'y'))
             if verbose
-                plotlyupdate('verbose','nocheck');
+                if nargout
+                    exception = plotlyupdate('verbose','nocheck');
+                else
+                    plotlyupdate('verbose','nocheck');
+                end
             else
-                plotlyupdate('nocheck');
+                if nargout
+                    exception = plotlyupdate('nocheck');
+                else
+                    plotlyupdate('nocheck');
+                end
             end
         else
             fprintf('\n***********************************************\n');
