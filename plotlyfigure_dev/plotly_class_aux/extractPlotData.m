@@ -2,87 +2,92 @@ function obj = extractPlotData(obj)
 
 %----SCATTER FIELDS----%
 
-% x - [?]
-% y - [?]
+% x - [DONE]
+% y - [DONE]
 % r - [HANDLED BY SCATTER]
 % t - [HANDLED BY SCATTER]
-% mode - [?]
-% name - [?]
-% text - [HANDLED BY ANNOTATION/TEXT]
+% mode - [DONE]
+% name - [DONE]
+% text - [NOT SUPPORTED IN MATLAB]
 % error_y - [HANDLED BY ERRORBAR]
 % error_x - [HANDLED BY ERRORBAR]
-% marler.color - [?]
-% marker.size - [?]
-% marker.line.color ..........................[TODO]
-% mareker.line.width ..........................[TODO]
-% marker.line.dash ..........................[TODO]
-% marker.line.opacity ..........................[TODO]
-% marker.line.smoothing ..........................[TODO]
-% marker.line.shape ..........................[TODO]
-% marker.opacity ..........................[TODO]
-% marker.colorscale ..........................[TODO]
-% marker.sizemode ..........................[TODO]
-% marker.sizeref ..........................[TODO]
-% marker.maxdisplayed ..........................[TODO]
-% line.color ..........................[TODO]
-% line.width ..........................[TODO]
-% line.dash ..........................[TODO]
-% line.opacity ..........................[TODO]
-% line.smoothing ..........................[TODO]
-% line.shape ..........................[TODO]
-% connectgaps..........................[TODO]
+% marler.color - [DONE]
+% marker.size - [DONE]
+% marker.line.color - [DONE]
+% marker.line.width - [DONE]
+% marker.line.dash - [NOT SUPPORTED IN MATLAB]
+% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
+% marker.line.shape - [NOT SUPPORTED IN MATLAB]
+% marker.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.colorscale - [NOT SUPPORTED IN MATLAB]
+% marker.sizemode - [NOT SUPPORTED IN MATLAB]
+% marker.sizeref - [NOT SUPPORTED IN MATLAB]
+% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
+% line.color - [DONE]
+% line.width - [DONE]
+% line.dash - [DONE]
+% line.opacity - [NOT SUPPORTED IN MATLAB]
+% line.smoothing - [NOT SUPPORTED IN MATLAB]
+% line.shape - [NOT SUPPORTED IN MATLAB]
+% connectgaps - [NOT SUPPORTED IN MATLAB]
 % fill - [HANDLED BY AREA]
 % fillcolor - [HANDLED BY AREA]
-% opacity..........................[TODO]
-% textfont - [HANDLED BY ANNOTATION/TEXT]
-% textposition - [HANDLED BY ANNOTATION/TEXT]
-% xaxis [?]
-% yaxis [?]
-% showlegend..........................[TODO]
-% stream..........................[HANDLED BY PLOTLYSTREAM]
-% visible [?]
-% type [?]
+% opacity - [NOT SUPPORTED IN MATLAB]
+% textfont - [NOT SUPPORTED IN MATLAB]
+% textposition - [NOT SUPPORTED IN MATLAB]
+% xaxis [DONE]
+% yaxis [DONE]
+% showlegend [DONE]
+% stream - [HANDLED BY PLOTLYSTREAM]
+% visible [DONE]
+% type [DONE]
 
+%-PLOT FIGURE STRUCTURE-%
+
+plot_figure = get(obj.State.Figure.Handle);
 
 %-PLOT AXIS STRUCTURE-%
 
-plot_axis = get(obj.State.AxisHandle(obj.State.CurrentAxisHandleIndex));
+plot_axis = get(obj.State.Data(obj.State.CurrentDataIndex).AxisHandle);
 
 %-PLOT DATA STRUCTURE- %
 
-plot_data = get(obj.State.DataHandle(obj.State.CurrentDataHandleIndex));
+plot_data = get(obj.State.Data(obj.State.CurrentDataIndex).Handle);
 
 %-SCATTER X-%
 
-data{obj.State.CurrentDataHandleIndex}.x = plot_data.XData;
+data{obj.State.CurrentDataIndex}.x = plot_data.XData;
 
 %-SCATTER Y-%
 
-data{obj.State.CurrentDataHandleIndex}.y = plot_data.XData;
+data{obj.State.CurrentDataIndex}.y = plot_data.YData;
 
 %-SCATTER R-%
 
-%TODO
+%[HANDLED BY SCATTER]
 
 %-SCATTER T-%
 
-%TODO
+%[HANDLED BY SCATTER]
 
 %-SCATTER MODE-%
 
 if ~strcmpi('none', plot_data.Marker) && ~strcmpi('none', plot_data.LineStyle)
-    data{obj.State.CurrentDataHandleIndex}.mode = 'lines+markers';
+    mode = 'lines+markers';
 elseif ~strcmpi('none', plot_data.Marker)
-    data{obj.State.CurrentDataHandleIndex}.mode = 'markers';
+    mode = 'markers';
 elseif ~strcmpi('none', plot_data.LineStyle)
-    data{obj.State.CurrentDataHandleIndex}.mode = 'lines';
+    mode = 'lines';
 else
-    data{obj.State.CurrentDataHandleIndex}.mode = 'none';
+    mode = 'none';
 end
+
+data{obj.State.CurrentDataIndex}.mode = mode;
 
 %-SCATTER NAME-%
 
-data{obj.State.CurrentDataHandleIndex}.name = get(plot_axis.YLabel,'string');
+data{obj.State.CurrentDataIndex}.name = get(plot_axis.YLabel,'string');
 
 %-SCATTER TEXT-%
 
@@ -90,200 +95,199 @@ data{obj.State.CurrentDataHandleIndex}.name = get(plot_axis.YLabel,'string');
 
 %-SCATTER ERROR_Y-%
 
-%TODO
+%[HANDLED BY ERRORBAR]
 
 %-SCATTER ERROR_X-%
 
-%TODO
+%[HANDLED BY ERRORBAR]
 
 %-SCATTER MARKER-%
 
-%--SCATTER MARKER COLOR--%
-col = 255*plot_data.Color;
-data{obj.State.CurrentDataHandleIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-
 %--SCATTER MARKER SIZE--%
-data{obj.State.CurrentDataHandleIndex}.marker.size = plot_data.MarkerSize;
+data{obj.State.CurrentDataIndex}.marker.size = plot_data.MarkerSize;
 
 %--SCATTER MARKER SYMBOL--%
-closedMarker = false;
+filledMarker = false;
 switch plot_data.Marker
     case '.'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'circle';
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'circle';
     case 'o'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'circle';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'circle';
+        filledMarker = true;
     case 'x'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'x-thin-open';
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'x-thin-open';
     case '+'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'cross-thin-open';
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'cross-thin-open';
     case '*'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'asterisk-open';
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'asterisk-open';
     case {'s','square'}
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'square';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'square';
+        filledMarker = true;
     case {'d','diamond'}
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'diamond';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'diamond';
+        filledMarker = true;
     case 'v'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'triangle-down';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'triangle-down';
+        filledMarker = true;
     case '^'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'triangle-up';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'triangle-up';
+        filledMarker = true;
     case '<'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'triangle-left';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'triangle-left';
+        filledMarker = true;
     case '>'
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'triangle-right';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'triangle-right';
+        filledMarker = true;
     case {'p','pentagram'}
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'star';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'star';
+        filledMarker = true;
     case {'h','hexagram'}
-        data{obj.State.CurrentDataHandleIndex}.marker.symbol = 'hexagram';
-        closedMarker = true;
+        data{obj.State.CurrentDataIndex}.marker.symbol = 'hexagram';
+        filledMarker = true;
+end
+
+%--SCATTER MARKER COLOR--%
+MarkerColor = plot_data.MarkerFaceColor;
+
+if filledMarker
+    if ~ischar(MarkerColor)
+        col = 255*MarkerColor;
+        markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    else
+        switch MarkerColor
+            case 'none'
+                markercolor = 'rgba(0,0,0,0)';
+            case 'auto'
+                if ~strcmp(plot_axis.Color,'none')
+                    col = 255*plot_axis.Color;
+                    markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                else
+                    col = 255*plot_figure.Color;
+                    markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                end 
+        end
+    end
+    data{obj.State.CurrentDataIndex}.marker.color = markercolor;
 end
 
 %--SCATTER MARKER LINE--%
 
 %--SCATTER MARKER LINE COLOR--%
+MarkerLineColor = plot_data.MarkerEdgeColor;
 
-%TODO
+if ~ischar(MarkerLineColor)
+    mlc = 255*MarkerLineColor;
+    markerlinecolor = ['rgb(' num2str(mlc(1)) ',' num2str(mlc(2)) ',' num2str(mlc(3)) ')'];
+else
+    switch MarkerLineColor
+        case 'none'
+            markerlinecolor = 'rgba(0,0,0,0)';
+        case 'auto'
+            col = 255*plot_data.Color;
+            markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    end
+end
+
+data{obj.State.CurrentDataIndex}.marker.line.color = markerlinecolor;
 
 %--SCATTER MARKER LINE WIDTH--%
-data{obj.State.CurrentDataHandleIndex}.marker.line.width = plot_data.LineWidth;
+data{obj.State.CurrentDataIndex}.marker.line.width = plot_data.LineWidth;
 
 %--SCATTER MARKER LINE DASH--%
-
-%TODO
+data{obj.State.CurrentDataIndex}.marker.line.dash = 'solid';
 
 %--SCATTER MARKER LINE OPACITY--%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: setting to 0.9]
+data{obj.State.CurrentDataIndex}.marker.line.opacity = 0.9;
 
 %--SCATTER MARKER LINE SMOOTHING--%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: setting to 1]
+data{obj.State.CurrentDataIndex}.marker.line.smoothing = 1;
 
 %--SCATTER MARKER LINE SHAPE--%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: setting to linear]
+data{obj.State.CurrentDataIndex}.marker.line.shape = 'linear';
 
 %--SCATTER MARKER OPACITY--%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: setting to 0.9]
+data{obj.State.CurrentDataIndex}.marker.opacity = 0.9;
 
 %--SCATTER MARKER COLOR SCALE--%
 
-if strcmpi(plot_data.MarkerFaceColor,'auto')
-elseif strcmpi(plot_data.MarkerFaceColor,'none')
-else
-end
-
-% try
-%
-%     if isfield(d,'CData')
-%         color_ref = d.CData;
-%     else
-%         color_ref = d.Color;
-%     end
-%
-%     %MARKER FACE
-%     if isClosed
-%
-%         color_field = d.MarkerFaceColor;
-%         colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
-%
-%         if numel(colors)==1
-%             if numel(colors{1})>0
-%                 marker_str.color = colors{1};
-%             end
-%         else
-%             marker_str.color = colors;
-%         end
-%
-%     end
-%
-%     %MARKER EDGE
-%     color_field = d.MarkerEdgeColor;
-%     colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
-%
-%     if numel(colors)==1
-%         if numel(colors{1})>0
-%             if ~closeMarker
-%                 marker_str.color = colors{1};
-%             end
-%             marker_str.line.color = colors{1};
-%         end
-%     else
-%         if ~closeMarker
-%             marker_str.color = colors{1};
-%         end
-%         marker_str.line.color = colors;
-%     end
-%
-% end
-%
-
-
-
-
-
+%[NOT SUPPORTED IN MATLAB: left unset]
 
 %--SCATTER MARKER SIZE MODE--%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: left unset]
 
 %--SCATTER MARKER SIZE REF--%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: left unset]
 
 %--SCATTER MARKER MAX DISPLAYED--%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: left unset]
 
-%-SCATTER LINE-%
-
-%-SCATTER LINE COLOR-%
-
-%TODO
-
-%-SCATTER LINE WIDTH-%
-
-%TODO
-
-%-SCATTER LINE DASH-%
-
-%TODO
+if(~strcmp(plot_data.LineStyle,'none'))
+    
+    %-SCATTER LINE-%
+    
+    %-SCATTER LINE COLOR-%
+    col = 255*plot_data.Color; 
+    data{obj.State.CurrentDataIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    
+    %-SCATTER LINE WIDTH-%
+    
+    data{obj.State.CurrentDataIndex}.line.width = plot_data.LineWidth;
+    
+    %-SCATTER LINE DASH-%
+    
+    switch plot_data.LineStyle
+        case '-'
+            LineStyle = 'solid';
+        case '--'
+            LineStyle = 'dash';
+        case ':'
+            LineStyle = 'dot';
+        case '-.'
+            LineStyle = 'dashdot';
+    end
+    
+    data{obj.State.CurrentDataIndex}.line.dash = LineStyle;
+end
 
 %-SCATTER LINE OPACITY-%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: left unset]
 
 %-SCATTER LINE SMOOTHING-%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: left unset]
 
 %-SCATTER LINE SHAPE-%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: left unset]
 
 %-SCATTER CONNECTGAPS-%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: setting to true]
+data{obj.State.CurrentDataIndex}.connectgap = true;
 
 %-SCATTER FILL-%
 
-%TODO
+%[HANDLED BY AREA]
 
 %-SCATTER FILLCOLOR-%
 
-%TODO
+%[HANDLED BY AREA]
 
 %-SCATTER OPACITY-%
 
-%TODO
+%[NOT SUPPORTED IN MATLAB: left unset]
 
 %-SCATTER TEXTFONT-%
 
@@ -294,26 +298,35 @@ end
 %TODO
 
 %-SCATTER XAXIS-%
-data{obj.State.CurrentDataHandleIndex}.xaxis = ['x' num2str(obj.State.CurrentAxisHandleIndex)];
+data{obj.State.CurrentDataIndex}.xaxis = ['x' num2str(obj.State.CurrentAxisIndex)];
 
 %-SCATTER YAXIS-%
-data{obj.State.CurrentDataHandleIndex}.yaxis = ['y' num2str(obj.State.CurrentAxisHandleIndex)];
+data{obj.State.CurrentDataIndex}.yaxis = ['y' num2str(obj.State.CurrentAxisIndex)];
 
 %-SCATTER SHOWLEGEND-%
+leg = get(plot_data.Annotation);
+legInfo = get(leg.LegendInformation);
 
-%TODO
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
+end
+
+data{obj.State.CurrentDataIndex}.showlegend = showleg;
 
 %-SCATTER STREAM-%
-data.stream = obj.Data.data{obj.State.CurrentDataHandleIndex}.stream; 
+
+%[HANDLED BY PLOTLYSTREAM]
 
 %-SCATTER VISIBLE-%
-data{obj.State.CurrentDataHandleIndex}.visible = strcmp(plot_data.Visible,'on');
+data{obj.State.CurrentDataIndex}.visible = strcmp(plot_data.Visible,'on');
 
 %-SCATTER TYPE-%
-data{obj.State.CurrentDataHandleIndex}.type = 'scatter';
+data{obj.State.CurrentDataIndex}.type = 'scatter';
 
 %-ADD DATA-%
 obj.Data = data;
 
 end
-
