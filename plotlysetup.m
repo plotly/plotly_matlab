@@ -110,13 +110,14 @@ if(~is_octave)
         startupFileRootPath = fullfile(matlabroot,'toolbox','local','startup.m');
         if(~exist(startupFileRootPath,'file'))
             startFileID = fopen(startupFileRootPath, 'w');
-            startupFile = {startupFileRootPath}; %needed because matlab only looks for startup.m when first opened.
+            %startup.m does not exist and startupFilePath is non-writable
             if(startFileID == -1)
-                error('plotly:startFileCreation',...
+                error('plotly:rootStartupCreation',...
                     ['Shoot! It looks like you might not have write permission for the MATLAB toolbox directory.\n',...
                     'Please contact your system admin. or chuck@plot.ly for more information. In the mean time\n' ...
                     'you can add the Plotly API to your search path manually whenever you need it! \n']);
             end
+            startupFile = {startupFileRootPath}; %needed because MATLAB only looks for startup.m when first opened.
         end
         
         %check for all startup.m file in searchpath
@@ -130,6 +131,8 @@ if(~is_octave)
         %print any addplotlydstatup warnings;
         w = cellfun(@isempty,warnings);
         if(find(~w))
+            %output warnings
+            exception.warnings = warnings;
             fprintf(warnings{find(~w)});
         end
         
@@ -152,16 +155,24 @@ end
 
 %----handle varargin----%
 try
-    
+    %check for ..,property,value,.. structure
     if mod(numel(varargin),2)~= 0
-        error('plotly:wrontInput',....
+        error('plotly:wrongInputVarargin',....
             ['\n\nWhoops! Wrong number of varargin inputs. Please run >> help plotlysetup \n',...
-            'for more information regarding the setup your Plotly API MATLAB Library. \n',...
+            'for more information regarding the setup of your Plotly API MATLAB Library. \n',...
             'Your stream_key, plotly_domain, and plotly_streaming domain were not set. \n',...
             'Please contact chuck@plot.ly for more information.']);
     end
     
     for n = 1:2:numel(varargin)
+        %check for correct property names 
+        if isempty(intersect(varargin{n},{'stream_key','plotly_domain','plotly_streaming_domain'}))
+            error('plotly:wrongInputPropertyName',....
+            ['\n\nWhoops! The properperty name: ' varargin{n} ' is invalid. \n',...
+            'Please run >> help plotlysetup for more information regarding\n',...
+            'the setup your Plotly API MATLAB Library.']);
+        end
+        
         if strcmp(varargin{n},'stream_key')
             fprintf('Saving stream_key credentials ... ');
             saveplotlycredentials(username,api_key,varargin{n+1});
@@ -187,7 +198,7 @@ try
         end
     end
     
-catch exception %writing aux kwargs problem catch...
+catch exception %writing varargin problem catch...
     fprintf(['\n\n' exception.identifier exception.message '\n\n']);
 end
 
