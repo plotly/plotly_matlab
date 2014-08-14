@@ -179,7 +179,7 @@ else
                 % aux Plotly repo root files
                 d = 1;
                 for r = 1:length(repoRoot);
-                    if(~any(strcmp(repoRoot(r).name,repoExclude)))
+                    if(isempty(intersect(repoRoot(r).name,repoExclude)))
                         auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-master',repoRoot(r).name);
                         d = d+1;
                     end
@@ -192,7 +192,7 @@ else
                 for d = 1:length(plotlyDirs)
                     % do not copy aux Plotly repo root files to toolbox dir. Plotly
                     if ~strcmp(plotlyDirs{d},plotlyToolboxDir)
-                        % aux Files Destination
+                        % aux files destination
                         auxFileDest = fileparts(plotlyDirs{d});
                         % copy aux to appropriate destination
                         for r = 1:length(auxFiles)
