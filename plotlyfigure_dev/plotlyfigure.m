@@ -70,9 +70,9 @@ classdef plotlyfigure < handle
                 if(strcmpi(varargin{a},'data'))
                     obj.Data = varargin{a+1};
                 end
-%                 if(strcmpi(varargin{a},'stream'))
-%                     obj.Stream = varargin{a+1};
-%                 end
+                %                 if(strcmpi(varargin{a},'stream'))
+                %                     obj.Stream = varargin{a+1};
+                %                 end
             end
             
             % user data
@@ -97,9 +97,9 @@ classdef plotlyfigure < handle
             obj.State.Verbose = false;
             obj.State.Figure.Handle = fig;
             obj.State.Figure.NextPlot = 'new';
-            set(obj.State.Figure.Handle,'NextPlot','new'); 
+            set(obj.State.Figure.Handle,'NextPlot','new');
             obj.State.CurrentAxisIndex = 1;
-            obj.State.CurrentDataIndex = 0; 
+            obj.State.CurrentDataIndex = 0;
             obj.State.Axis(obj.State.CurrentAxisIndex).Handle = ax;
             obj.State.Axis(obj.State.CurrentAxisIndex).NextPlot = 'new';
             set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot','new');
@@ -112,8 +112,20 @@ classdef plotlyfigure < handle
         %----PLOT----%
         function obj = plot(obj,varargin)
             
+            % allow the plot to be drawn on obj.State.FigureHandle
+            set(obj.State.Figure.Handle,'NextPlot',obj.State.Figure.NextPlot);
+            
+            % allow the plot to be drawn on obj.State.AxesHandle(obj.State.CurrentAxisHandleIndex)
+            set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot',obj.State.Axis(obj.State.CurrentAxisIndex).NextPlot);
+            
+            %increment current axis if not already accounted for 
+            if(isempty(intersectget(get(obj.State.Figure.Handle,'CurrentAxes'),[obj.State.Axis(:).Handle])))
+                obj.State.CurrentAxisIndex = obj.State.CurrentAxisIndex + 1; 
+                obj.State.Axis(obj.State.CurrentAxisIndex).Handle = get(obj.State.Figure.Handle,'CurrentAxes'); 
+            end
+            
             try
-                %it is possible that this is an axis handle that does not exist on obj.FigureHandle 
+                %it is possible that this is an axis handle that does not exist on obj.FigureHandle
                 if ishandle(varargin{1})
                     if strcmp(get(varargin{1},'type'),'axes')
                         if ~ismember(varargin{1},[obj.State.Axis(:).Handle])
@@ -130,19 +142,13 @@ classdef plotlyfigure < handle
                         varargin = {obj.State.Axis(obj.State.CurrentAxisIndex).Handle,varargin{:}};
                     end
                 else
-                  varargin = {obj.State.Axis(obj.State.CurrentAxisIndex).Handle,varargin{:}};  
+                    varargin = {obj.State.Axis(obj.State.CurrentAxisIndex).Handle,varargin{:}};
                 end
             catch
                 error(['Oops! An error occured while looking for the axis handle',...
                     'associated with this plot. Please make sure the axis handle specified',...
                     'is a child of the Plotly figure, whose handle is: ' num2str(obj.State.Figure.Handle)]);
             end
- 
-            % allow the plot to be drawn on obj.State.FigureHandle
-            set(obj.State.Figure.Handle,'NextPlot',obj.State.Figure.NextPlot); 
-            
-            % allow the plot to be drawn on obj.State.AxesHandle(obj.State.CurrentAxisHandleIndex)
-            set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot',obj.State.Axis(obj.State.CurrentAxisIndex).NextPlot); 
             
             % update the current data handle index
             obj.State.CurrentDataIndex = obj.State.CurrentDataIndex + 1;
@@ -151,7 +157,7 @@ classdef plotlyfigure < handle
             obj.State.Data(obj.State.CurrentDataIndex).Handle = plot(varargin{:});
             
             % map Data(obj.State.CurrentDataIndex).Handle to Axis(obj.State.CurrentAxisIndex).Handle.
-            obj.State.Data(obj.State.CurrentDataIndex).AxisHandle = obj.State.Axis(obj.State.CurrentAxisIndex).Handle; 
+            obj.State.Data(obj.State.CurrentDataIndex).AxisHandle = obj.State.Axis(obj.State.CurrentAxisIndex).Handle;
             
             % update data
             obj = extractPlotData(obj);
@@ -160,16 +166,16 @@ classdef plotlyfigure < handle
             obj = extractPlotLayout(obj);
             
             % prevent generic plots being drawn on obj.State.FigureHandle
-            set(obj.State.Figure.Handle,'NextPlot','new'); 
+            set(obj.State.Figure.Handle,'NextPlot','new');
             
             % prevent generic plots being drawn on obj.State.AxesHandle
             for d = 1:length(obj.State.Axis(obj.State.CurrentAxisIndex).Handle)
-            set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot','new'); 
+                set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot','new');
             end
         end
         
         %----SET THE HOLD OF THE FIGURE----%
-        function obj = hold(obj,varargin) 
+        function obj = hold(obj,varargin)
         end
         
         %----SEND PLOT REQUEST----%
