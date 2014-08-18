@@ -9,7 +9,7 @@ function [response] = fig2plotly(varargin)
 %       f - root figure object in the form of a struct. Use f = get(gcf); to
 %           get the current figure struct.
 %       List of valid properties:
-%           'name' - ('untitled')string, name of the plot
+%           'name' or 'filename' - ('untitled')string, name of the plot
 %           'strip' - (false)boolean, ignores all styling, uses plotly defaults
 %           'open' - (false)boolean, opens a browser window with plot result
 %           'world_readable -(true)boolean, sets the privacy of the plot
@@ -48,7 +48,7 @@ switch numel(varargin)
                 if strcmp('strip', varargin{i})
                     strip_style = varargin{i+1};
                 end
-                if strcmp('name', varargin{i})
+                if any(strcmp({'name','filename'}, varargin{i})) 
                     plot_name = varargin{i+1};
                 end
                 if strcmp('open', varargin{i})
