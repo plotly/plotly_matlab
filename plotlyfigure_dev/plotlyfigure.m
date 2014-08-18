@@ -18,7 +18,6 @@ classdef plotlyfigure < handle
         UserData; % credentials/configuration
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
-        Call; % current MATLAB function call
         Verbose; % output procedural steps
         HandleGen; %object figure handle generator properties
     end
@@ -135,74 +134,20 @@ classdef plotlyfigure < handle
                 end
             end
         end
-        
-        %         %----PLOT----%
-        %         function obj = plot(obj,varargin)
-        %
-        %             %unlock the figure
-        %             obj.State.Figure.Locked = false;
-        %
-        %             % allow the plot to be drawn on obj.State.FigureHandle
-        %             set(obj.State.Figure.Handle,'NextPlot',obj.State.Figure.NextPlot);
-        %
-        %             % allow the plot to be drawn on obj.State.AxesHandle(obj.State.CurrentAxisHandleIndex)
-        %             set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot',obj.State.Axis(obj.getCurrentAxisIndex).NextPlot);
-        %
-        %             try
-        %                 %it is possible that this is an axis handle that does not exist on obj.FigureHandle
-        %                 if ishandle(varargin{1})
-        %                     if strcmp(get(varargin{1},'type'),'axes')
-        %                         if ~ismember(varargin{1},[obj.State.Axis(:).Handle])
-        %                             if(obj.State.Verbose)
-        %                                 fprintf(['\nOops! The axis handle specified does not match one recognized',...
-        %                                     '\nwithin the current Plotly figure. The plot will be drawn on the current',...
-        %                                     '\axis, whose handle is: ' num2str(obj.State.AxisHandle(obj.State.CurrentAxisIndex))]);
-        %                             end
-        %                             varargin{1} = obj.State.Axis(obj.getCurrentAxisIndex).Handle;
-        %                         else
-        %                             obj.State.CurrentAxisIndex = find(varargin{1} == [obj.State.Axis(:).Handle]);
-        %                         end
-        %                     else
-        %                         varargin = {obj.State.Axis(obj.getCurrentAxisIndex).Handle,varargin{:}};
-        %                     end
-        %                 else
-        %                     varargin = {obj.State.Axis(obj.getCurrentAxisIndex).Handle,varargin{:}};
-        %                 end
-        %             catch
-        %                 error(['Oops! An error occured while looking for the axis handle',...
-        %                     'associated with this plot. Please make sure the axis handle specified',...
-        %                     'is a child of the Plotly figure, whose handle is: ' num2str(obj.State.Figure.Handle)]);
-        %             end
-        %
-        %             % update the current data handle index
-        %             obj.State.CurrentDataIndex = obj.State.CurrentDataIndex + 1;
-        %
-        %             % make the plot and grab the data handle
-        %             obj.State.Data(obj.State.CurrentDataIndex).Handle = plot(varargin{:});
-        %
-        %             % map Data(obj.State.CurrentDataIndex).Handle to Axis(obj.State.CurrentAxisIndex).Handle.
-        %             obj.State.Data(obj.State.CurrentDataIndex).AxisHandle = obj.State.Axis(obj.getCurrentAxisIndex).Handle;
-        %
-        %             % update data
-        %             obj = extractPlotData(obj);
-        %
-        %             % update layout
-        %             obj = extractPlotLayout(obj);
-        %
-        %             % store the actual NextPlot setting of the Figure
-        %             obj.State.Figure.NextPlot = get(obj.State.Figure.Handle,'NextPlot');
-        %
-        %             % store the actual NextPlot setting of the Axis
-        %             obj.State.Axis(obj.getCurrentAxisIndex).NextPlot = get(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot');
-        %
-        %             % prevent generic plots being drawn on obj.State.Figure.Handle
-        %             lockFigure(obj);
-        %         end
-        
-        
-        %----GET CURRENT AXIS----%
+
+        %----GET CURRENT AXIS INDEX----%
         function currentAxisIndex = getCurrentAxisIndex(obj)
             currentAxisIndex = find([obj.State.Axis(:).Handle] == get(obj.State.Figure.Handle,'CurrentAxes'));
+        end
+        
+        %----GET CURRENT AXIS HANDLE----%
+        function currentAxisHandle = getCurrentAxisHandle(obj)
+            currentAxisHandle = get(obj.State.Figure.Handle,'CurrentAxes');
+        end
+        
+        %----GET CURRENT PLOT HANDLE----%
+        function currentPlotHandle = getCurrentPlotHandle(obj)
+            currentPlotHandle = obj.State.Plot.Handle;
         end
         
         %----DELETE PLOTLY FIGURE OBJECT----%
@@ -244,33 +189,58 @@ classdef plotlyfigure < handle
         
         %----ADD AXES LISTENERS----%
         function obj = addAxisListeners(obj)
-            %new child added (axes)
-            %addlistener(obj.State.Axis(obj.getCurrentAxisIndex).Handle,'ObjectChildAdded',@obj.axisAddData);
+            %new child added
+            addlistener(obj.getCurrentAxisHandle,'ObjectChildAdded',@(src,event)axisAddPlot(obj,src,event));
+            %old child removed 
+            addlistener(obj.getCurrentAxisHandle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
             %figure field names
-            axisfields = fieldnames(get(obj.State.Axis(obj.getCurrentAxisIndex).Handle));
+            axisfields = fieldnames(get(obj.getCurrentAxisHandle));
             %add listeners to the figure fields
             for n = 1:length(axisfields)
-                addlistener(obj.State.Axis(obj.getCurrentAxisIndex).Handle,axisfields{n},'PreSet',@(src,event,prop)updateAxis(obj,src,event,axisfields{n}));
+                addlistener(obj.getCurrentAxisHandle,axisfields{n},'PreSet',@(src,event,prop)updateAxis(obj,src,event,axisfields{n}));
+            end
+        end
+        
+         %----ADD PLOT LISTENERS----%
+        function obj = addPlotListeners(obj)
+            %new child added
+            addlistener(obj.getCurrentPlotHandle,'ObjectChildAdded',@(src,event)axisAddPlot(obj,src,event));
+            %old child removed 
+            addlistener(obj.getCurrentAxisHandle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
+            %figure field names
+            plotfields = fieldnames(get(obj.getCurrentPlotHandle));
+            %add listeners to the figure fields
+            for n = 1:length(plotfields)
+                addlistener(obj.getCurrentPlotHandle,plotfields{n},'PreSet',@(src,event,prop)updatePlot(obj,src,event,plotfields{n}));
             end
         end
         
         %----CALLBACK FUNCTIONS---%
         
-        %----ADD A NEW AXIS TO THE FIGURE----%
+        %----ADD AN AXIS TO THE FIGURE----%
         function obj = figureAddAxis(obj,~,~)
             obj.State.Figure.NumAxis = obj.State.Figure.NumAxis + 1;
             obj.State.Axis(obj.State.Figure.NumAxis).Handle = get(obj.State.Figure.Handle,'CurrentAxes');
-            %add listeners to the axis
+            % add listeners to the axis
             obj.addAxisListeners;
         end
         
-        %----ADD NEW DATA TO THE CURRENT AXIS----%
-%         function obj = axisAddData(obj,~,~)
-%             obj.State.Figure.NumAxis = obj.State.Figure.NumAxis + 1;
-%             obj.State.Axis(obj.State.Figure.NumAxis).Handle = get(obj.State.Figure.Handle,'CurrentAxes');
-%             %add listeners to the axis
-%             obj.addAxisListeners;
-%         end
+        %----REMOVE AN AXIS FROM THE FIGURE----%
+        function obj = figureRemoveAxis(obj,~,~)
+        end
+
+        %----ADD A PLOT TO AN AXIS----%
+        function obj = axisAddPlot(obj,~,event)
+            % update obj.Data
+            obj.State.Plot.Handle = event.Child;
+            obj.State.Plot.Call = event.Child.classhandle.Name;
+            % add listeners to the plot 
+            obj.addPlotListeners; 
+        end
+                
+        %----REMOVE A PLOT FROM AN AXIS----%
+        function obj = axisRemovePlot(obj,src,event)
+        end
         
         %----UPDATE FIGURE DATA/LAYOUT----%
         function obj = updateFigure(obj,~,~,prop)
@@ -278,7 +248,7 @@ classdef plotlyfigure < handle
                 case 'Name'
                     disp('GOT NAME CHANGE');
                 otherwise
-                  %  disp(prop);
+                    %  disp(prop);
             end
         end
         
@@ -288,64 +258,20 @@ classdef plotlyfigure < handle
                 case 'Color'
                     disp('GOT COLOR CHANGE');
                 otherwise
-                   % disp(prop);
+                    % disp(prop);
             end
         end
         
-        %----UPDATE AXIS DATA/LAYOUT----%
-        function obj = updateData(obj,~,~,prop)
+        %----UPDATE PLOT DATA/STYLE----%
+        function obj = updatePlot(obj,~,~,prop)
             switch prop
                 case 'Color'
                     disp('GOT COLOR CHANGE');
                 otherwise
-                   % disp(prop);
+                    % disp(prop);
             end
         end
+        
     end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%CREATE A PLOTLYFIGURE
-%ADD LISTENER TO EVERY PROPERTY
-%ADD A LISTENER TO THE ADD AXIS
-%ADD A LISTENER TO THAT NEWLY ADDED AXIS FOR FIGURES
-%DETERMINE THE PLOT CALL BY THE FIELDS OF A NEWLY ADDED AXIS CHILD
-%ADD LISTENERS TO ALL THE FIELDS
-%ADD A LISTENER TO ALL CHILDREN
-%ASS CUSTOM TOOLBAR FOR IMAGE SAVING ETC.
-
-%            % default Plotly axes
-%             ax = gca;
-%
-%             % axis state
-%             obj.State.CurrentAxisIndex = 1;
-%             obj.State.CurrentDataIndex = 0;
-%             obj.State.Axis(obj.State.CurrentAxisIndex).Handle = ax;
-%             obj.State.Axis(obj.State.CurrentAxisIndex).NextPlot = 'replace';
-%             set(obj.State.Axis(obj.State.CurrentAxisIndex).Handle,'NextPlot','replace');
-%             obj.State.Axis(obj.State.CurrentAxisIndex).Locked = false;
-%
-%             % add axis listener
-%             addlistener(obj.State.Figure.Handle,'NextPlot','PostSet',@obj.axisNextPlotModified);
-%
-
-%             color = java.awt.Color.white;
-%             hToolbar=findall(gcf,'tag','FigureToolBar');
-%             jToolbar=get(get(hToolbar,'JavaContainer'),'ComponentPeer');
-%             jToolbar.setBackground(color);
