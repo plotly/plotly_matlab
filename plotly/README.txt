@@ -18,6 +18,7 @@ See full documentation and examples at https://plot.ly/matlab
 
 New Features
 ------------
+- plotlyupdate: automatically update the Plotly API Matlab libraries in your MATLAB search path to match the latest release! 
 - getplotlyfig('username','figure_id'): grab the data and layout information from any publicly available graph online! 
 - saveplotlyfig(figure,'image_name','ext'): convert your plotly figure into a high-quality static (png,pdf,svg,jpef) image for your publications!
 - plotlystream: stream your data directly from MATLAB to your plotly account in real-time! 
