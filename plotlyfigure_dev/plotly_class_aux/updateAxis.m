@@ -1,5 +1,5 @@
-function obj = extractAxisLayout(obj)
-
+%----UPDATE AXIS DATA/LAYOUT----%
+function obj = updateAxis(obj,~,~,prop)
 % title: .................[TODO]
 % titlefont:.................[TODO]
 % range:.................[TODO]
@@ -33,14 +33,12 @@ function obj = extractAxisLayout(obj)
 % anchor:.................[TODO]
 % overlaying:.................[TODO]
 % side:.................[TODO]
-% position:.................[TODO] 
+% position:.................[TODO]
+%the current axis data
 
-%the current axis data 
-axis_data = get(obj.State.Axis(obj.getCurrentAxisIndex).Handle); 
-
-
-
-
-
+switch prop
+    case 'Position'
+        obj.notifyNewFigure({'Position'}); 
 end
 
+end
