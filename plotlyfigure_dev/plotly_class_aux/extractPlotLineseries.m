@@ -1,60 +1,13 @@
 function extractPlotLineseries(obj,prop)
 
-%----SCATTER FIELDS----%
-
-% x - [DONE]
-% y - [DONE]
-% r - [HANDLED BY SCATTER]
-% t - [HANDLED BY SCATTER]
-% mode - [DONE]
-% name - [DONE]
-% text - [NOT SUPPORTED IN MATLAB]
-% error_y - [HANDLED BY ERRORBAR]
-% error_x - [HANDLED BY ERRORBAR]
-% marler.color - [DONE]
-% marker.size - [DONE]
-% marker.line.color - [DONE]
-% marker.line.width - [DONE]
-% marker.line.dash - [NOT SUPPORTED IN MATLAB]
-% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
-% marker.line.shape - [NOT SUPPORTED IN MATLAB]
-% marker.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.colorscale - [NOT SUPPORTED IN MATLAB]
-% marker.sizemode - [NOT SUPPORTED IN MATLAB]
-% marker.sizeref - [NOT SUPPORTED IN MATLAB]
-% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
-% line.color - [DONE]
-% line.width - [DONE]
-% line.dash - [DONE]
-% line.opacity - [NOT SUPPORTED IN MATLAB]
-% line.smoothing - [NOT SUPPORTED IN MATLAB]
-% line.shape - [NOT SUPPORTED IN MATLAB]
-% connectgaps - [NOT SUPPORTED IN MATLAB]
-% fill - [HANDLED BY AREA]
-% fillcolor - [HANDLED BY AREA]
-% opacity - [NOT SUPPORTED IN MATLAB]
-% textfont - [NOT SUPPORTED IN MATLAB]
-% textposition - [NOT SUPPORTED IN MATLAB]
-% xaxis [DONE]
-% yaxis [DONE]
-% showlegend [DONE]
-% stream - [HANDLED BY PLOTLYSTREAM]
-% visible [DONE]
-% type [DONE]
-
-
 %-FIGURE STRUCTURE-%
-
 figure_data = get(obj.State.Figure.Handle);
 
 %-AXIS STRUCTURE-%
-
-axis_data = get(obj.getCurrentAxisHandle);
+axis_data = get(obj.State.Axis.Handle);
 
 %-PLOT DATA STRUCTURE- %
-
-plot_data = get(obj.getCurrentPlotHandle);
+plot_data = get(obj.State.Plot.Handle);
 
 %-SCATTER XAXIS-%
 obj.data{obj.getCurrentDataIndex}.xaxis = ['x' num2str(obj.getCurrentAxisIndex)];
@@ -248,4 +201,49 @@ switch prop
         obj.data{obj.getCurrentDataIndex}.visible = strcmp(plot_data.Visible,'on');
 end
 end
+
+
+
+%----SCATTER FIELDS----%
+
+% x - [DONE]
+% y - [DONE]
+% r - [HANDLED BY SCATTER]
+% t - [HANDLED BY SCATTER]
+% mode - [DONE]
+% name - [DONE]
+% text - [NOT SUPPORTED IN MATLAB]
+% error_y - [HANDLED BY ERRORBAR]
+% error_x - [HANDLED BY ERRORBAR]
+% marler.color - [DONE]
+% marker.size - [DONE]
+% marker.line.color - [DONE]
+% marker.line.width - [DONE]
+% marker.line.dash - [NOT SUPPORTED IN MATLAB]
+% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
+% marker.line.shape - [NOT SUPPORTED IN MATLAB]
+% marker.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.colorscale - [NOT SUPPORTED IN MATLAB]
+% marker.sizemode - [NOT SUPPORTED IN MATLAB]
+% marker.sizeref - [NOT SUPPORTED IN MATLAB]
+% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
+% line.color - [DONE]
+% line.width - [DONE]
+% line.dash - [DONE]
+% line.opacity - [NOT SUPPORTED IN MATLAB]
+% line.smoothing - [NOT SUPPORTED IN MATLAB]
+% line.shape - [NOT SUPPORTED IN MATLAB]
+% connectgaps - [NOT SUPPORTED IN MATLAB]
+% fill - [HANDLED BY AREA]
+% fillcolor - [HANDLED BY AREA]
+% opacity - [NOT SUPPORTED IN MATLAB]
+% textfont - [NOT SUPPORTED IN MATLAB]
+% textposition - [NOT SUPPORTED IN MATLAB]
+% xaxis [DONE]
+% yaxis [DONE]
+% showlegend [DONE]
+% stream - [HANDLED BY PLOTLYSTREAM]
+% visible [DONE]
+% type [DONE]
 
