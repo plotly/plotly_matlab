@@ -9,11 +9,11 @@ function [xaxes, yaxes] = extractAxesGeneral(axhan, a, layout, xaxes, yaxes, str
 
 %POSITION
 
-%small domain offsets due to top margin (needed for title) 
+%small domain offsets due to top margin (needed for title)
 deltaYT = onePlot(get(a.Parent))*(layout.margin.t)/layout.height;
 
 %assumes units are normalized!
-xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)]; 
+xaxes.domain = [a.Position(1) a.Position(1)+a.Position(3)];
 yaxes.domain = [a.Position(2) a.Position(2)+a.Position(4)+deltaYT];
 
 if yaxes.domain(1)>1
@@ -50,7 +50,7 @@ if ~strip_style
     
     
     if strcmp(a.FontUnits, 'points')
-        xaxes.tickfont.size = a.FontSize;
+        xaxes.tickfont.size = a. FontSize;
         yaxes.tickfont.size = a.FontSize;
     end
     
@@ -75,6 +75,10 @@ if ~strip_style
     yaxes.linecolor = parseColor(a.YColor);
     yaxes.tickcolor = parseColor(a.YColor);
     yaxes.tickfont.color = parseColor(a.YColor);
+   
+    %FONT NAME
+    xaxes.tickfont.family = extractFont(a.FontName); 
+    yaxes.tickfont.family = extractFont(a.FontName); 
     
 end
 
@@ -164,67 +168,71 @@ if numel(a.YTickLabel)>0
 end
 
 %LABELS
-if numel(a.XLabel)==1
+if ishandle(a.XLabel)
     
     m_title = get(a.XLabel);
+    
+    if ~strip_style
+        if strcmp(m_title.FontUnits, 'points')
+            xaxes.titlefont.size = 1.3*m_title.FontSize;
+        end
+        
+        xaxes.titlefont.color = parseColor(m_title.Color);
+        
+        %FONT TYPE
+        try
+            xaxes.titlefont.family = extractFont(m_title.FontName);
+        catch
+            display(['We could not find the font family you specified.',...
+                'The default font: Open Sans, sans-serif will be used',...
+                'See https://www.plot.ly/matlab for more information.']);
+            xaxes.titlefont.family = 'Open Sans, sans-serif';
+        end
+    end
+    
     if numel(m_title.String)>0
         xaxes.title = parseLatex(m_title.String,m_title);
         %xaxes.title = parseText(m_title.String);
-        if ~strip_style
-            if strcmp(m_title.FontUnits, 'points')
-                xaxes.titlefont.size = 1.3*m_title.FontSize;
-            end
-            xaxes.titlefont.color = parseColor(m_title.Color);
-            
-            %FONT TYPE
-            try
-                data.font.family = extractFont(m_title.FontName);
-            catch
-                display(['We could not find the font family you specified.',...
-                    'The default font: Open Sans, sans-serif will be used',...
-                    'See https://www.plot.ly/matlab for more information.']);
-                data.font.family = 'Open Sans, sans-serif';
-            end
-        end
     else
+        
         if(isappdata(axhan,'MWBYPASS_xlabel')) %look for bypass
             ad = getappdata(axhan,'MWBYPASS_ylabel');
             try
                 adAx = get(ad{2});
                 m_title.String = adAx.XLabel;
                 xaxes.title = parseLatex(m_title.String,m_title);
-            catch exception
-                disp('Had trouble locating XLabel');
-                return
             end
+        end
+    end
+end
+
+
+if ishandle(a.YLabel)
+    
+    m_title = get(a.YLabel);
+    
+    if ~strip_style
+        if strcmp(m_title.FontUnits, 'points')
+            yaxes.titlefont.size = 1.3*m_title.FontSize;
+        end
+        
+        yaxes.titlefont.color = parseColor(m_title.Color);
+        
+        %FONT TYPE
+        try
+            yaxes.titlefont.family = extractFont(m_title.FontName);
+        catch
+            display(['We could not find the font family you specified.',...
+                'The default font: Open Sans, sans-serif will be used',...
+                'See https://www.plot.ly/matlab for more information.']);
+            yaxes.titlefont.family = 'Open Sans, sans-serif';
         end
         
     end
     
-    if numel(a.YLabel)==1
-        
-        m_title = get(a.YLabel);
-    end
     if numel(m_title.String)>0
         yaxes.title = parseLatex(m_title.String,m_title);
         % yaxes.title = parseText(m_title.String);
-        if ~strip_style
-            if strcmp(m_title.FontUnits, 'points')
-                yaxes.titlefont.size = 1.3*m_title.FontSize;
-            end
-            yaxes.titlefont.color = parseColor(m_title.Color);
-            
-            %FONT TYPE
-            try
-                data.font.family = extractFont(m_title.FontName);
-            catch
-                display(['We could not find the font family you specified.',...
-                    'The default font: Open Sans, sans-serif will be used',...
-                    'See https://www.plot.ly/matlab for more information.']);
-                data.font.family = 'Open Sans, sans-serif';
-            end
-            
-        end
     else
         if(isappdata(axhan,'MWBYPASS_ylabel'))
             ad = getappdata(axhan,'MWBYPASS_ylabel');
@@ -232,12 +240,9 @@ if numel(a.XLabel)==1
                 adAx = get(ad{2});
                 m_title.String = adAx.YLabel;
                 yaxes.title = parseLatex(m_title.String,m_title);
-            catch exception
-                disp('Had trouble locating YLabel');
-                return
             end
         end
     end
-    
-    
 end
+
+
