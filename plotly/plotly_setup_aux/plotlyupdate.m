@@ -264,6 +264,19 @@ else
             end
         end
         
+        %----rehash searchpath + toolbox----%
+        if success
+            try
+                if verbose
+                    fprintf('Rehashing MATLAB search path directories...');
+                end
+                rehash toolboxreset
+                if verbose
+                    fprintf('Done! \n');
+                end     
+            end
+        end
+        
         %----successful update----%
         if success
             fprintf('\n**************************************************\n');
