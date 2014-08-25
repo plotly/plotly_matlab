@@ -50,7 +50,7 @@ if ~strip_style
     
     
     if strcmp(a.FontUnits, 'points')
-        xaxes.tickfont.size = a.FontSize;
+        xaxes.tickfont.size = a. FontSize;
         yaxes.tickfont.size = a.FontSize;
     end
     
@@ -164,7 +164,7 @@ if numel(a.YTickLabel)>0
 end
 
 %LABELS
-if numel(a.XLabel)==1
+if ishandle(a.XLabel)
     
     m_title = get(a.XLabel);
     
@@ -201,7 +201,7 @@ if numel(a.XLabel)==1
 end
 
 
-if numel(a.YLabel)==1
+if ishandle(a.YLabel)
     
     m_title = get(a.YLabel);
     
