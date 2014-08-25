@@ -75,6 +75,10 @@ if ~strip_style
     yaxes.linecolor = parseColor(a.YColor);
     yaxes.tickcolor = parseColor(a.YColor);
     yaxes.tickfont.color = parseColor(a.YColor);
+   
+    %FONT NAME
+    xaxes.tickfont.family = extractFont(a.FontName); 
+    yaxes.tickfont.family = extractFont(a.FontName); 
     
 end
 
@@ -168,25 +172,27 @@ if ishandle(a.XLabel)
     
     m_title = get(a.XLabel);
     
+    if ~strip_style
+        if strcmp(m_title.FontUnits, 'points')
+            xaxes.titlefont.size = 1.3*m_title.FontSize;
+        end
+        
+        xaxes.titlefont.color = parseColor(m_title.Color);
+        
+        %FONT TYPE
+        try
+            xaxes.titlefont.family = extractFont(m_title.FontName);
+        catch
+            display(['We could not find the font family you specified.',...
+                'The default font: Open Sans, sans-serif will be used',...
+                'See https://www.plot.ly/matlab for more information.']);
+            xaxes.titlefont.family = 'Open Sans, sans-serif';
+        end
+    end
+    
     if numel(m_title.String)>0
         xaxes.title = parseLatex(m_title.String,m_title);
         %xaxes.title = parseText(m_title.String);
-        if ~strip_style
-            if strcmp(m_title.FontUnits, 'points')
-                xaxes.titlefont.size = 1.3*m_title.FontSize;
-            end
-            xaxes.titlefont.color = parseColor(m_title.Color);
-            
-            %FONT TYPE
-            try
-                xaxes.font.family = extractFont(m_title.FontName);
-            catch
-                display(['We could not find the font family you specified.',...
-                    'The default font: Open Sans, sans-serif will be used',...
-                    'See https://www.plot.ly/matlab for more information.']);
-                xaxes.font.family = 'Open Sans, sans-serif';
-            end
-        end
     else
         
         if(isappdata(axhan,'MWBYPASS_xlabel')) %look for bypass
@@ -205,27 +211,28 @@ if ishandle(a.YLabel)
     
     m_title = get(a.YLabel);
     
+    if ~strip_style
+        if strcmp(m_title.FontUnits, 'points')
+            yaxes.titlefont.size = 1.3*m_title.FontSize;
+        end
+        
+        yaxes.titlefont.color = parseColor(m_title.Color);
+        
+        %FONT TYPE
+        try
+            yaxes.titlefont.family = extractFont(m_title.FontName);
+        catch
+            display(['We could not find the font family you specified.',...
+                'The default font: Open Sans, sans-serif will be used',...
+                'See https://www.plot.ly/matlab for more information.']);
+            yaxes.titlefont.family = 'Open Sans, sans-serif';
+        end
+        
+    end
+    
     if numel(m_title.String)>0
         yaxes.title = parseLatex(m_title.String,m_title);
         % yaxes.title = parseText(m_title.String);
-        if ~strip_style
-            if strcmp(m_title.FontUnits, 'points')
-                yaxes.titlefont.size = 1.3*m_title.FontSize;
-            end
-            
-            yaxes.titlefont.color = parseColor(m_title.Color);
-            
-            %FONT TYPE
-            try
-                yaxes.font.family = extractFont(m_title.FontName);
-            catch
-                display(['We could not find the font family you specified.',...
-                    'The default font: Open Sans, sans-serif will be used',...
-                    'See https://www.plot.ly/matlab for more information.']);
-                yaxes.font.family = 'Open Sans, sans-serif';
-            end
-            
-        end
     else
         if(isappdata(axhan,'MWBYPASS_ylabel'))
             ad = getappdata(axhan,'MWBYPASS_ylabel');
