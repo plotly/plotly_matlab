@@ -1,12 +1,17 @@
 %----UPDATE PLOT DATA/STYLE----%
-function obj = updatePlot(obj,~,~,prop)
+function obj = updatePlot(obj,~,event,prop)
+
+% plot call class
+obj.State.Plot.Call = event.AffectedObject.classhandle.Name;
+
+% plot handle 
+obj.State.Plot.Handle = event.AffectedObject; 
 
 % update plot based on plot call class
 switch obj.State.Plot.Call
     
-    
     % Plotly supported MATLAB core objects
-
+    
     case 'image'
         %updatePlotImage(obj);
     case 'line'
@@ -18,9 +23,7 @@ switch obj.State.Plot.Call
     case 'surface'
         %updatePlotSurface(obj);
     case 'text'
-        %updatePlotText(obj);
-        
-        
+        extractPlotText(obj);
         
         % Plotly supported MATLAB plot objects
         
@@ -44,8 +47,6 @@ switch obj.State.Plot.Call
         %updatePlotStemseries(obj);
     case 'surfaceplot'
         %updatePlotSurfaceplot(obj);
-        
-        
         
         % Plotly supported MATLAB plot objects
         
