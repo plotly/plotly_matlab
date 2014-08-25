@@ -27,7 +27,7 @@ try
     pvLocal = plotly_version;
 catch
     exception.identifier = 'plotly:noVersion';
-    fprintf(['\n' exception.identifier '\n\nWe were unable to loacte plotly_version.m. Please Add\n',...
+    fprintf(['\n' exception.identifier '\n\nWe were unable to locate plotly_version.m. Please Add\n',...
         'this script to your MATLAB search path and try again.\n\n']);
     return
 end
@@ -58,7 +58,7 @@ try
     
     if isempty(plotlyScriptDirs);
         error('plotly:missingScript',...
-            ['\n\nWe were unable to loacte plotly.m. Please Add this\n',...
+            ['\n\nWe were unable to locate plotly.m. Please Add this\n',...
             'script to your MATLAB search path and try again.\n\n']);
     end
     
@@ -73,7 +73,7 @@ for d = 1:length(plotlyScriptDirs)
     plotlyDirs{d} = fileparts(plotlyScriptDirs{d});
 end
 
-%----update if necessary-----%
+%----update if necessary----%
 if strcmp(pvLocal,pvRemote)
     fprintf(['\nYour Plotly API MATLAB Library v.' pvRemote ' is already up to date! \n\n'])
     exception.identifier = 'plotly:alreadyUpdated';

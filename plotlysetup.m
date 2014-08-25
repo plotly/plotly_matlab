@@ -34,7 +34,7 @@ try
         error('plotly:notFound',...
             ['\n\nShoot! It looks like MATLAB is having trouble finding the current version '  ...
             '\nof Plotly. Please make sure that the Plotly API folder is in the same '  ...
-            '\ndirectory as plotlysetup.m. Contact chuck@plot.ly for more information. \n\n']);
+            '\ndirectory as plotlysetup.m. Questions? chuck@plot.ly\n\n']);
     end
     %add Plotly API MATLAB Library to search path
     addpath(genpath(plotlyFolderPath));
@@ -77,10 +77,7 @@ if(~is_octave)
             
             %check that the folder was created
             if (status == 0)
-                error('plotly:savePlotly',...
-                    ['\n\nShoot! It looks like you might not have write permission for the MATLAB toolbox directory \n' ...
-                    'Please contact your system admin. or chuck@plot.ly for more information. In the mean time\n' ...
-                    'you can add the Plotly API to your search path manually whenever you need it! \n\n']);
+                error('plotly:savePlotly', permissionMessage('save the Plotly folder'));
             end
         end
         
@@ -91,10 +88,7 @@ if(~is_octave)
             %check that the plotly api was copied to the matlab root toolbox directory
             if (status == 0)
                 if(~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
-                    error('plotly:copyPlotly',...
-                        ['\n\nShoot! It looks like you might not have write permission for the MATLAB toolbox directory \n' ...
-                        'Please contact your system admin. or chuck@plot.ly for more information. In the mean time \n' ...
-                        'you can add the Plotly API to your search path manually whenever you need it! \n']);
+                    error('plotly:copyPlotly',permissionMessage('copy the Plotly folder'));
                 end
             end
         end
@@ -112,10 +106,7 @@ if(~is_octave)
             startFileID = fopen(startupFileRootPath, 'w');
             %startup.m does not exist and startupFilePath is non-writable
             if(startFileID == -1)
-                error('plotly:rootStartupCreation',...
-                    ['Shoot! It looks like you might not have write permission for the MATLAB toolbox directory.\n',...
-                    'Please contact your system admin. or chuck@plot.ly for more information. In the mean time\n' ...
-                    'you can add the Plotly API to your search path manually whenever you need it! \n']);
+                error('plotly:rootStartupCreation',permissionMessage('write the startup.m script'));
             end
             startupFile = {startupFileRootPath}; %needed because MATLAB only looks for startup.m when first opened.
         end
@@ -161,16 +152,16 @@ try
             ['\n\nWhoops! Wrong number of varargin inputs. Please run >> help plotlysetup \n',...
             'for more information regarding the setup of your Plotly API MATLAB Library. \n',...
             'Your stream_key, plotly_domain, and plotly_streaming domain were not set. \n',...
-            'Please contact chuck@plot.ly for more information.']);
+            'Questions? chuck@plot.ly']);
     end
     
     for n = 1:2:numel(varargin)
-        %check for correct property names 
+        %check for correct property names
         if isempty(intersect(varargin{n},{'stream_key','plotly_domain','plotly_streaming_domain'}))
             error('plotly:wrongInputPropertyName',....
-            ['\n\nWhoops! The properperty name: ' varargin{n} ' is invalid. \n',...
-            'Please run >> help plotlysetup for more information regarding\n',...
-            'the setup your Plotly API MATLAB Library.']);
+                ['\n\nWhoops! The properperty name: ' varargin{n} ' is invalid. \n',...
+                'Please run >> help plotlysetup for more information regarding\n',...
+                'the setup your Plotly API MATLAB Library.']);
         end
         
         if strcmp(varargin{n},'stream_key')
@@ -208,5 +199,16 @@ signin(username,api_key);
 %greet the people!
 fprintf('\nWelcome to Plotly! If you are new to Plotly please enter: >> plotlyhelp to get started!\n\n')
 
+end
 
+%helper message function 
+function message = permissionMessage(spec)
+message = ['\n\nShoot! We tried to ' spec ' to the MATLAB toolbox \n',...
+    'directory, but were denied write permission. You''ll have to add\n',...
+    'the Plotly folder to your MATLAB path manually by running: \n\n',...
+    '>> plotly_path = fullfile(pwd, ''plotly'')\n',...
+    '>> addpath(genpath(plotly_path))\n\n',...
+    'Questions? Chuck@plotly'];
+
+end
 
