@@ -37,14 +37,13 @@ function obj = updateFigure(obj,~,~,prop)
 %-----------------------------------------------%
 
 %-FIGURE STRUCTURE-%
-
 figure_data = get(obj.State.Figure.Handle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 strip = obj.PlotOptions.Strip;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% change the units to pixels to standardize data extraction
+%-STANDARDIZE UNITS-% 
 figunits = figure_data.Units;
 set(obj.State.Figure.Handle,'Units','pixels');
 
@@ -115,7 +114,7 @@ switch prop
         obj.layout.margin.pad = obj.PlotlyDefaults.MarginPad;
 end
 
-% revert modified units
+%-REVERT UNITS-% 
 set(obj.State.Figure.Handle,'Units',figunits);
 
 end
