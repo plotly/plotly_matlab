@@ -1,12 +1,12 @@
 function exception = plotlysetup(username, api_key, varargin)
 % CALL: plotlysetup('username','api_key','kwargs'[optional]);
 % WHERE: kwargs are of the form ..,'property,value,'property',value,...
-% VALID PROPERTIES [OPTIONAL]: 'stream_key' -> your stream keys [cell array] (found online)
+% VALID PROPERTIES [OPTIONAL]: 'stream_ids' -> your stream ids [cell array] (found online)
 %                              'plotly_domain' -> your desired REST API enpoint [string]
 %                              'plotly_streaming_domain'-> your desired Stream API endpoint [string]
 % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
 % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
-% [3] calls saveplotlycredentials (using username, api_key and stream_key [optional])
+% [3] calls saveplotlycredentials (using username, api_key and stream_ids [optional])
 % [4] calls saveplotlyconfig with ('plotly_domain'[optional], 'plotly_streaming_domain' [optional])
 
 %DEFAULT OUTPUT
@@ -151,21 +151,21 @@ try
         error('plotly:wrongInputVarargin',....
             ['\n\nWhoops! Wrong number of varargin inputs. Please run >> help plotlysetup \n',...
             'for more information regarding the setup of your Plotly API MATLAB Library. \n',...
-            'Your stream_key, plotly_domain, and plotly_streaming domain were not set. \n',...
+            'Your stream_ids, plotly_domain, and plotly_streaming domain were not set. \n',...
             'Questions? chuck@plot.ly']);
     end
     
     for n = 1:2:numel(varargin)
         %check for correct property names
-        if isempty(intersect(varargin{n},{'stream_key','plotly_domain','plotly_streaming_domain'}))
+        if isempty(intersect(varargin{n},{'stream_ids','plotly_domain','plotly_streaming_domain'}))
             error('plotly:wrongInputPropertyName',....
                 ['\n\nWhoops! The properperty name: ' varargin{n} ' is invalid. \n',...
                 'Please run >> help plotlysetup for more information regarding\n',...
                 'the setup your Plotly API MATLAB Library.']);
         end
         
-        if strcmp(varargin{n},'stream_key')
-            fprintf('Saving stream_key credentials ... ');
+        if strcmp(varargin{n},'stream_ids')
+            fprintf('Saving stream_ids credentials ... ');
             saveplotlycredentials(username,api_key,varargin{n+1});
             %worked!
             fprintf('Done\n');
