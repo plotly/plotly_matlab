@@ -1,7 +1,7 @@
 function exception = plotlysetup(username, api_key, varargin)
 % CALL: plotlysetup(username,api_key,'kwargs'[optional]);
 % WHERE: kwargs are of the form ..,'property,value,'property',value,...
-% VALID PROPERTIES [OPTIONAL]: 'stream_token' -> your stream tokens (found online)
+% VALID PROPERTIES [OPTIONAL]: 'stream_key' -> your stream keys (found online)
 %                              'plotly_domain' -> your desired REST API enpoint
 %                              'plotly_streaming_domain'-> your desired Stream API endpoint
 % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
