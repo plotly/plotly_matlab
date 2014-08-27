@@ -8,14 +8,14 @@ classdef testplotlysetup < matlab.unittest.TestCase
         config = loadplotlyconfig;
         username = 'test_user_name';
         api_key = 'test_api_keu';
-        stream_key = {'test_stream_key1','test_stream_key2'};
+        stream_ids = {'test_stream_key1','test_stream_key2'};
         plotly_domain = 'test_plotly_domain';
         plotly_streaming_domain = 'test_plotly_streaming_domain';
     end
     
     methods(TestMethodTeardown)
         function setCredentials(testCase)
-            saveplotlycredentials(testCase.creds.username,testCase.creds.api_key,testCase.creds.stream_key);
+            saveplotlycredentials(testCase.creds.username,testCase.creds.api_key,testCase.creds.stream_ids);
         end
         function setConfig(testCase)
             saveplotlyconfig(testCase.config.plotly_domain,testCase.config.plotly_streaming_domain);
@@ -387,8 +387,8 @@ classdef testplotlysetup < matlab.unittest.TestCase
             end
         end
         
-        %test save stream key 
-        function testSaveStreamKey(testCase)
+        %test save stream ids 
+        function testSaveStreamIDS(testCase)
             plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
             if exist(plotlyToolboxDir,'dir')
                 existed = true;
@@ -397,14 +397,14 @@ classdef testplotlysetup < matlab.unittest.TestCase
             else
                 existed = false;
             end
-            plotlysetup(testCase.username,testCase.api_key,'stream_key',testCase.stream_key);
+            plotlysetup(testCase.username,testCase.api_key,'stream_ids',testCase.stream_ids);
             credentials = loadplotlycredentials;
             actual.username = credentials.username;
             actual.api_key = credentials.api_key;
-            actual.stream_key = credentials.stream_key;
+            actual.stream_ids = credentials.stream_ids;
             expected.username = testCase.username;
             expected.api_key = testCase.api_key;
-            expected.stream_key = testCase.stream_key;
+            expected.stream_ids = testCase.stream_ids;
             testCase.verifyEqual(actual,expected);
             if ~existed
                 rmpath(genpath(plotlyToolboxDir))
