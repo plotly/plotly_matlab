@@ -266,10 +266,19 @@ else
         
         %----successful update----%
         if success
-            fprintf('\n**************************************************\n');
-            fprintf(['[UPDATE SUCCESSFUL] visit: https://plot.ly/matlab \n',...
-                'or contact: chuck@plot.ly for further information. \n']);
-            fprintf('**************************************************\n\n');
+            if exist(fullfile(matlabroot,'toolbox','plotly'),'dir')
+                fprintf('\n**************************************************\n');
+                fprintf(['[UPDATE SUCCESSFUL] visit: https://plot.ly/matlab \n',...
+                    'or contact: chuck@plot.ly for further information.\n'...
+                    'Please restart your MATLAB session so that the new\n',...
+                    'Plotly API MATLAB Libary scripts can be recognized.\n']);
+                fprintf('**************************************************\n\n');
+            else
+                fprintf('\n**************************************************\n');
+                fprintf(['[UPDATE SUCCESSFUL] visit: https://plot.ly/matlab \n',...
+                    'or contact: chuck@plot.ly for further information.\n']);
+                fprintf('**************************************************\n\n');
+            end   
         else
             fprintf('\n***************************************************\n');
             fprintf(['[UPDATE UNSUCCESSFUL] visit: https://plot.ly/matlab \n',...

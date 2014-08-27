@@ -1,4 +1,4 @@
-function saveplotlycredentials(username, api_key, stream_key)
+function saveplotlycredentials(username, api_key, stream_ids)
 % Save plotly authentication credentials.
 % Plotly credentials are saved as JSON strings
 % in ~/.plotly/.credentials
@@ -49,7 +49,7 @@ switch nargin
     case 3
         creds.username = username;
         creds.api_key = api_key;
-        creds.stream_key = stream_key;
+        creds.stream_ids = stream_ids;
     otherwise %need to specify both the username and api_key
         error('plotly:savecredentials',...
         'Please specify your username and api_key');   

@@ -5,7 +5,7 @@ function [response] = fig2plotly(varargin)
 %   [response] = fig2plotly(f)
 %   [response] = fig2plotly(gcf, 'property', value, ...)
 %   [response] = fig2plotly(f, 'property', value, ...)
-%       gcf - root figure object in the form of a double.
+%       gcf - root figure object in the form handle.
 %       f - root figure object in the form of a struct. Use f = get(gcf); to
 %           get the current figure struct.
 %       List of valid properties:
