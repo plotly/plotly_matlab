@@ -13,13 +13,8 @@ end
 % Create the .plotly folder
 userhome = getuserdir();
 
-if ispc
-    plotly_config_folder   = fullfile(userhome,'plotly');
-    plotly_config_file = fullfile(plotly_config_folder, 'config');
-else
-    plotly_config_folder   = fullfile(userhome,'.plotly');
-    plotly_config_file = fullfile(plotly_config_folder, '.config');
-end
+plotly_config_folder   = fullfile(userhome,'.plotly');
+plotly_config_file = fullfile(plotly_config_folder, '.config');
 
 [status, mess, messid] = mkdir(plotly_config_folder);
 
