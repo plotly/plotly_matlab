@@ -22,9 +22,9 @@ switch obj.State.Plot.Call
         %updatePlotRectangle(obj);
     case 'surface'
         %updatePlotSurface(obj);
-    case 'text'
-        extractPlotText(obj);
-        
+    case 'text' 
+        %HANDLED BY UPDATETEXT
+
         % Plotly supported MATLAB plot objects
         
     case 'areaseries'
@@ -36,7 +36,7 @@ switch obj.State.Plot.Call
     case 'errorbarseries'
         %updatePlotErrorbarseries(obj);
     case 'lineseries'
-        extractPlotLineseries(obj,prop);
+        extractLineseries(obj,prop);
     case 'quivergroup'
         %updatePlotQuivergroup(obj);
     case 'scattergroup'

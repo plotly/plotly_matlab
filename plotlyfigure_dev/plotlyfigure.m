@@ -23,10 +23,6 @@ classdef plotlyfigure < handle
         HandleGen; %object figure handle generator properties
     end
     
-    events
-        %hiddenText
-    end
-    
     %----CLASS METHODS----%
     methods
         
@@ -131,9 +127,6 @@ classdef plotlyfigure < handle
             obj.State.Figure.NumTexts = 0;
             obj.State.Figure.ListenFields = {'Position','Color'};
             
-            %add hidden text listener
-            %addlistener(obj,'hiddenText',@(src,event)removeHiddenAnnotation(obj,src,event));
-            
             % add figure listeners
             obj.addFigureListeners;
             
@@ -142,17 +135,18 @@ classdef plotlyfigure < handle
             
             % axis state
             obj.State.Axis.ListenFields = {'Box','Position', 'XAxisLocation',...
-                'YAxisLocation', 'TickDir', 'Title',...
+                'YAxisLocation', 'TickDir','Title'...
                 'XColor', 'YColor','FontSize','XGrid',...
                 'XMinorGrid','YGrid','YMinorGrid',...
-                'TickLength','Visible'};
+                'TickLength','Visible','XLabel'};
             
             % text state
             obj.State.Text.ListenFields = {'String','Color','FontName',...
                 'FontSize','BackgroundColor',...
                 'EdgeColor','HorizontalAlignment',...
                 'Interpreter','LineStyle','LineWidth',...
-                'Margin','Position','Visible'};
+                'Margin','Position','Visible','HandleVisibility',...
+                'FontWeight','Extent'};
             
             % check to see if the first argument is a figure
             if nargin > 0
@@ -207,6 +201,8 @@ classdef plotlyfigure < handle
             currentAnnotationIndex = find(cellfun(@(h)eq(h,obj.State.Text.Handle),obj.State.Text.HandleIndexMap));
         end
         
+        
+        
         %----SEND PLOT REQUEST----%
         function obj = fig2plotly(obj)
             %args
@@ -254,7 +250,7 @@ classdef plotlyfigure < handle
             addlistener(obj.State.Axis.Handle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
             %add listeners to the axis fields
             for n = 1:length(obj.State.Axis.ListenFields)
-               addlistener(obj.State.Axis.Handle,obj.State.Axis.ListenFields{n},'PostSet',@(src,event,prop)updateAxis(obj,src,event,obj.State.Axis.ListenFields{n}));
+                addlistener(obj.State.Axis.Handle,obj.State.Axis.ListenFields{n},'PostSet',@(src,event,prop)updateAxis(obj,src,event,obj.State.Axis.ListenFields{n}));
             end
         end
         
@@ -286,9 +282,10 @@ classdef plotlyfigure < handle
             end
         end
         
+        
         %----NOTIFY THE FIGURE PROPERTIES----%
         function obj = notifyNewFigure(obj,prop)
-            %axis field names
+            %figure field names
             figfields = prop;
             %add listeners to the figure fields
             for n = 1:length(figfields)
@@ -302,8 +299,8 @@ classdef plotlyfigure < handle
         
         %----NOTIFY THE AXIS PROPERTIES----%
         function obj = notifyNewAxis(obj,prop)
+            %axis field names
             axisfields = prop;
-            %add listeners to the figure fields
             for n = 1:length(axisfields)
                 axlist = addlistener(obj.State.Axis.Handle,axisfields{n},'PostGet',@(src,event,prop)updateAxis(obj,src,event,axisfields{n}));
                 %notify the listener
@@ -432,8 +429,10 @@ classdef plotlyfigure < handle
         
         %----ADD A PLOT TO AN AXIS----%
         function obj = axisAddPlot(obj,~,event)
+            % ignore tmpty string text
+            %if ~emptyStringText(event.Child);
             % separate text from non-text
-%            if ~strcmp(get(event.Child,'type'),'text')
+            if ~strcmpi(get(event.Child,'Type'),'text')
                 % plot handle
                 obj.State.Plot.Handle = event.Child;
                 % update the plot index
@@ -444,24 +443,41 @@ classdef plotlyfigure < handle
                 obj.addPlotListeners;
                 % notify the creation of the plot
                 obj.notifyNewPlot(fieldnames(get(obj.State.Plot.Handle)));
-%             else
-%                 %text handle
-%                 obj.State.Text.Handle = event.Child;
-%                 % update the text index
-%                 obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + 1;
-%                 % update the HandleIndexMap
-%                 obj.State.Text.HandleIndexMap{obj.State.Figure.NumTexts} = obj.State.Text.Handle;
-%                 % add listeners to the text annotations
-%                 obj.addTextListeners;
-%                 % notify the creation of the text
-%                 obj.notifyNewText(fieldnames(get(obj.State.Text.Handle)));
-%             end
+            else
+                % text handle
+                obj.State.Text.Handle = event.Child;
+                
+                %check for title, xlabel, ylabel, zlabel & emtpy string
+                if    ~(eq(event.Child,get(obj.State.Axis.Handle,'Title'))  || ...
+                        eq(event.Child,get(obj.State.Axis.Handle,'XLabel')) || ...
+                        eq(event.Child,get(obj.State.Axis.Handle,'YLabel')) || ...
+                        eq(event.Child,get(obj.State.Axis.Handle,'ZLabel')) || ...
+                        isempty(get(event.Child,'String')))
+                    
+                    % update the text index
+                    obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + 1;
+                    % update the HandleIndexMap
+                    obj.State.Text.HandleIndexMap{obj.State.Figure.NumTexts} = obj.State.Text.Handle;   
+                else
+                    disp('here'); 
+                end
+                
+                % add listeners to the text object
+                obj.addTextListeners;
+                
+                % notify the creation of the text object
+                obj.notifyNewText(obj.State.Text.ListenFields);
+                
+            end
+            %end
         end
         
         %----REMOVE A PLOT FROM AN AXIS----%
         function obj = axisRemovePlot(obj,~,event)
+            % ignore empty string text
+            %if ~emptyStringText(event.Child)
             % separate text from non-text
-           % if ~strcmp(get(event.Child,'type'),'text')
+            if ~strcmpi(get(event.Child,'Type'),'text')
                 % plot handle
                 obj.State.Plot.Handle = event.Child;
                 % update the plot index
@@ -470,32 +486,27 @@ classdef plotlyfigure < handle
                 obj.data(obj.getCurrentDataIndex) = [];
                 % update the HandleIndexMap
                 obj.State.Plot.HandleIndexMap(obj.getCurrentDataIndex) = [];
-%             else
-%                 %if invisible it was already removed
-%                 if strcmp(get(event.Child,'HandleVisibility'),'on')
-%                     % text handle
-%                     obj.State.Text.Handle = event.Child;
-%                     % update the text index
-%                     obj.State.Figure.NumTexts = obj.State.Figure.NumTexts - 1;
-%                     % update the annotations layout field
-%                     obj.layout.annotations(obj.getCurrentAnnotationIndex) = [];
-%                     % update the HandleIndexMap
-%                     obj.State.Text.HandleIndexMap(obj.getCurrentAnnotationIndex) = [];
-%                 end
-%             end
+                %if title
+            elseif eq(event.Child,get(obj.State.Axis.Handle,'Title')) && obj.State.Figure.NumAxes == 1
+                obj.layout = rmfield(obj.layout,'title');
+                obj.layout = rmfield(obj.layout,'titlefont'); 
+                %if not title and not non-empty annotation 
+            elseif  eq(event.Child,get(obj.State.Axis.Handle,'XLabel'))  || ...
+                    eq(event.Child,get(obj.State.Axis.Handle,'YLabel')) || ...
+                    eq(event.Child,get(obj.State.Axis.Handle,'ZLabel')) || ...
+                    isempty(get(event.Child,'String'))
+            else
+                % plot handle
+                obj.State.Text.Handle = event.Child;
+                % update the text index
+                obj.State.Figure.NumTexts = obj.State.Figure.NumTexts - 1;
+                % update the annotation property
+                obj.layout.annotations(obj.getCurrentAnnotationIndex) = [];
+                % update the HandleIndexMap
+                obj.State.Text.HandleIndexMap(obj.getCurrentAnnotationIndex) = [];
+            end
+            %end
         end
-        
-%         function obj = removeHiddenAnnotation(obj, ~, ~)
-%             % update the text index
-%             obj.State.Figure.NumTexts = obj.State.Figure.NumTexts - 1;
-%             % update the annotations layout field
-%             obj.layout.annotations(obj.getCurrentAnnotationIndex) = [];
-%             if obj.getCurrentAnnotationIndex == 1;
-%                 obj.layout = rmfield(obj.layout,'annotations');
-%             end
-%             % update the HandleIndexMap
-%             obj.State.Text.HandleIndexMap(obj.getCurrentAnnotationIndex) = [];
-%         end
     end
 end
 

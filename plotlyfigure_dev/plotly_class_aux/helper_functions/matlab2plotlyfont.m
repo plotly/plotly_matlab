@@ -1,4 +1,4 @@
-function plotlyFont = extractFont(d)
+function plotlyFont = matlab2plotlyfont(matlabFont)
 
 %Plotly supported fonts
 
@@ -11,7 +11,7 @@ try
 %         'PT Sans Narrow, sans-serif' , 'Raleway, sans-serif',...
 %         'Times New Roman, Times, serif'};
     
-    switch d
+    switch matlabFont
         
         case 'Abadi MT Condensed Extra Bold'
             plotlyFont = 'Arial, sans-serif';
