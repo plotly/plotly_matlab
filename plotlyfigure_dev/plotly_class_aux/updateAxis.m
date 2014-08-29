@@ -188,55 +188,52 @@ switch prop
             yaxis.showgrid = false;
         end
         
-    case {'LineWidth'}
+    case 'LineWidth'
         %-xaxis tick width-%
         xaxis.tickwidth = axis_data.LineWidth;
         %-yaxis tick width-%
         yaxis.tickwidth = axis_data.LineWidth;
         
-     case 'Title'
-%         
-%        if (obj.State.Figure.NumAxes == 1)
-%             if strcmp(event.Type,'PropertyPostSet')
-%                 % add axis title listener
-%                 for n = 1:length(obj.State.Text.ListenFields)
-%                     addlistener(axis_data.Title,obj.State.Text.ListenFields{n},'PostSet',@(src,event,prop)updateAxisTitle(obj,src,event,obj.State.Text.ListenFields{n}));
-%                 end
-%             elseif strcmp(event.Type,'PropertyPostGet')
-%                 %notify the axis title listeners
-%                 textfields = obj.State.Text.ListenFields;
-%                 for n = 1:length(textfields)
-%                     textlist = addlistener(axis_data.Title,textfields{n},'PostGet',@(src,event,prop)updateAxisTitle(obj,src,event,textfields{n}));
-%                     %notify the listener
-%                     get(axis_data.Title,textfields{n});
-%                     %delete the listener
-%                     delete(textlist);
-%                 end
-%             end
-%         else
-%             %create annotation object
-%        end
-%        
-     case 'XLabel'
-%         
-%         if strcmp(event.Type,'PropertyPostSet')
-%             % add axis title listener
-%             for n = 1:length(obj.State.Text.ListenFields)
-%                 addlistener(axis_data.XLabel,obj.State.Text.ListenFields{n},'PostSet',@(src,event,prop)updateAxisXLabel(obj,src,event,obj.State.Text.ListenFields{n}));
-%             end
-%         elseif strcmp(event.Type,'PropertyPostGet')
-%             %notify the axis title listeners
-%             textfields = obj.State.Text.ListenFields;
-%             for n = 1:length(textfields)
-%                 textlist = addlistener(axis_data.XLabel,textfields{n},'PostGet',@(src,event,prop)updateAxisXLabel(obj,src,event,textfields{n}));
-%                 %notify the listener
-%                 get(axis_data.XLabel,textfields{n});
-%                 %delete the listener
-%                 delete(textlist);
-%             end
-%         end
-%         
-     case 'YLabel'
+    case 'Title'
+        %text handle
+        obj.State.Text.Handle = axis_data.Title;
+        %update the text index
+        obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + 1;
+        %update the HandleIndexMap
+        obj.State.Text.HandleIndexMap{obj.State.Figure.NumTexts} = obj.State.Text.Handle;
+        %add to titles list
+        obj.State.Text.Titles{obj.State.Figure.NumTexts} = obj.State.Text.Handle; 
+        % add axis title listener
+        for n = 1:length(obj.State.Text.ListenFields)
+            obj.State.Text.Listeners{obj.getCurrentAnnotationIndex,n} = addlistener(axis_data.Title,obj.State.Text.ListenFields{n},'PostSet',@(src,event,prop)updateText(obj,src,event,obj.State.Text.ListenFields{n}));
+            textlist = addlistener(axis_data.Title,obj.State.Text.ListenFields{n},'PostGet',@(src,event,prop)updateText(obj,src,event,obj.State.Text.ListenFields{n}));
+            %notify the listener
+            get(axis_data.Title,obj.State.Text.ListenFields{n});
+            %delete the listener
+            delete(textlist);
+        end
+        
+        %
+        %     case 'XLabel'
+        %
+        %         if strcmp(event.Type,'PropertyPostSet')
+        %             % add axis title listener
+        %             for n = 1:length(obj.State.Text.ListenFields)
+        %                 addlistener(axis_data.XLabel,obj.State.Text.ListenFields{n},'PostSet',@(src,event,prop)updateAxisXLabel(obj,src,event,obj.State.Text.ListenFields{n}));
+        %             end
+        %         elseif strcmp(event.Type,'PropertyPostGet')
+        %             %notify the axis title listeners
+        %             textfields = obj.State.Text.ListenFields;
+        %             for n = 1:length(textfields)
+        %                 textlist = addlistener(axis_data.XLabel,textfields{n},'PostGet',@(src,event,prop)updateAxisXLabel(obj,src,event,textfields{n}));
+        %                 %notify the listener
+        %                 get(axis_data.XLabel,textfields{n});
+        %                 %delete the listener
+        %                 delete(textlist);
+        %             end
+        %         end
+        %
+        %     case 'YLabel'
         
         
         

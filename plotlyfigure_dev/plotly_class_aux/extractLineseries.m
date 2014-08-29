@@ -1,4 +1,4 @@
-function extractPlotLineseries(obj,prop)
+function extractLineseries(obj,prop)
 
 %-FIGURE STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);

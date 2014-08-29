@@ -4,8 +4,11 @@ function obj = updatePlot(obj,~,event,prop)
 % plot call class
 obj.State.Plot.Call = event.AffectedObject.classhandle.Name;
 
-% plot handle 
+% update plot handle
 obj.State.Plot.Handle = event.AffectedObject; 
+
+% update axis handle
+obj.State.Axis.Handle = event.AffectedObject.Parent; 
 
 % update plot based on plot call class
 switch obj.State.Plot.Call
