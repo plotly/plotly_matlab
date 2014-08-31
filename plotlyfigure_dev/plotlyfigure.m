@@ -58,6 +58,7 @@ classdef plotlyfigure < handle
             obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
             obj.PlotlyDefaults.MarginPad = 0;
             obj.PlotlyDefaults.MaxTickLength = 20;
+            obj.PlotlyDefaults.TitleHeight = 0.03; 
             
             % check for some key/vals
             for a = 1:2:nargin
@@ -109,7 +110,7 @@ classdef plotlyfigure < handle
             obj.State.Figure.NumLegends = 0;
             obj.State.Figure.NumTexts = 0;
             obj.State.Figure.ListenFields = {'Position','Color'};
-            obj.State.Legend.Listeners = {};
+            obj.State.Figure.Listeners = {};
             
             % initialize reference figure
             obj.State.Figure.Reference = [];
@@ -125,7 +126,8 @@ classdef plotlyfigure < handle
                 'YAxisLocation', 'TickDir','Title'...
                 'XColor', 'YColor','FontSize','XGrid',...
                 'XMinorGrid','YGrid','YMinorGrid',...
-                'TickLength','Visible','XLabel'};
+                'TickLength','Visible','XLabel','YLabel',...
+                'LineWidth'};
             obj.State.Axis.Listeners = {};
             obj.State.Axis.HandleIndexMap = {};
             
@@ -140,9 +142,10 @@ classdef plotlyfigure < handle
             obj.State.Text.ListenFields = {'String','Color','FontName',...
                 'FontSize','BackgroundColor',...
                 'EdgeColor','HorizontalAlignment',...
-                'Interpreter','LineStyle','LineWidth',...
-                'Margin','Position','Visible','HandleVisibility',...
-                'FontWeight','Extent'};
+                'Interpreter','LineWidth',...
+                'Margin','Position','Visible',...
+                'FontWeight','Extent','VerticalAlignment',...
+                'Rotation'};
             obj.State.Text.Listeners = {};
             obj.State.Text.Titles = {};
             obj.State.Text.HandleIndexMap = {};
@@ -187,6 +190,8 @@ classdef plotlyfigure < handle
             currentAnnotationIndex = find(cellfun(@(h)eq(h,obj.State.Text.Handle),obj.State.Text.HandleIndexMap));
         end
         
+        
+        
         %-------------------------USER METHODS----------------------------%
         
         %----GET OBJ.STATE.FIGURE.HANDLE ----%
@@ -223,7 +228,8 @@ classdef plotlyfigure < handle
         
         %check for title
         function check = isTitle(obj,child)
-            check = any(find(cellfun(@(h)eq(h,child),obj.State.Text.Titles)));
+            tempTitles = obj.State.Text.Titles(~cellfun('isempty',obj.State.Text.Titles)); 
+            check = any(find(cellfun(@(h)eq(h,child),tempTitles)));
         end
         
         %automatic figure conversion
@@ -244,6 +250,7 @@ classdef plotlyfigure < handle
             end
             delete(tempfig);
         end
+        
         
         %-----------------------ADD OBJECT LISTENERS----------------------%
         
@@ -295,7 +302,7 @@ classdef plotlyfigure < handle
         function obj = addTextListeners(obj)
             %add listeners to the text fields
             for n = 1:length(obj.State.Text.ListenFields)
-                obj.State.Text.Listeners{obj.getCurrentAnnotationIndex,n} = addlistener(obj.State.Text.Handle,obj.State.Text.ListenFields{n},'PostSet',@(src,event,prop)updateText(obj,src,event,obj.State.Text.ListenFields{n}));
+                obj.State.Text.Listeners{obj.getCurrentAnnotationIndex,n} = addlistener(obj.State.Text.Handle,obj.State.Text.ListenFields{n},'PostSet',@(src,event,prop,tag)updateText(obj,src,event,obj.State.Text.ListenFields{n},'Annotation'));
             end
         end
         
@@ -369,7 +376,7 @@ classdef plotlyfigure < handle
             %add/notify/delete listeners to the figure fields
             for n = 1:length(textfields)
                 %add the listener
-                textlist = addlistener(obj.State.Text.Handle,textfields{n},'PostGet',@(src,event,prop)updateText(obj,src,event,textfields{n}));
+                textlist = addlistener(obj.State.Text.Handle,textfields{n},'PostGet',@(src,event,prop,tag)updateText(obj,src,event,textfields{n},'Annotation'));
                 %notify the listener
                 get(obj.State.Text.Handle,textfields{n});
                 %delete the listener
@@ -423,8 +430,10 @@ classdef plotlyfigure < handle
                     obj.State.Text.Handle = event.Child;
                     %update the text index
                     obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + 1;
-                    %update the HandleIndexMap
+                    % update the HandleIndexMap
                     obj.State.Text.HandleIndexMap{obj.State.Figure.NumTexts} = obj.State.Text.Handle;
+                    % update the Titles
+                    obj.State.Text.Titles{obj.State.Figure.NumTexts} = []; 
                     %add listeners to the text object
                     obj.addTextListeners;
                     %notify the creation of the text object
@@ -479,11 +488,23 @@ classdef plotlyfigure < handle
                 % update the HandleIndexMap
                 obj.State.Plot.HandleIndexMap(obj.getCurrentDataIndex) = [];
                 %if title or not label and not non-empty annotation
-            elseif  obj.isTitle(event.Child) || ...
-                    ~(eq(event.Child,get(obj.State.Axis.Handle,'XLabel')) || ...
-                    eq(event.Child,get(obj.State.Axis.Handle,'YLabel'))   || ...
-                    eq(event.Child,get(obj.State.Axis.Handle,'ZLabel'))   || ...
-                    isempty(get(event.Child,'String')))
+            elseif  eq(event.Child,event.Source.XLabel)
+                % update the layout property
+                try
+                    eval(['obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ',''title'');']);
+                end
+                try
+                    eval(['obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ',''titlefont'');']);
+                end
+            elseif  eq(event.Child,event.Source.YLabel)
+                % update the layout property
+                try
+                    eval(['obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ',''title'');']);
+                end
+                try
+                    eval(['obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ',''titlefont'');']);
+                end
+            elseif  obj.isTitle(event.Child) || ~( isempty(get(event.Child,'String')) || eq(event.Child,event.Source.ZLabel))
                 % plot handle
                 obj.State.Text.Handle = event.Child;
                 % update the text index
