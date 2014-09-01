@@ -218,7 +218,10 @@ switch prop
         end
         
     case 'LineWidth'
-        
+        %-xaxis line width-%
+        xaxis.linewidth = axis_data.LineWidth; 
+        %-yaxis line width-%
+        yaxis.linewidth = axis_data.LineWidth;
         %-xaxis tick width-%
         xaxis.tickwidth = axis_data.LineWidth;
         %-yaxis tick width-%

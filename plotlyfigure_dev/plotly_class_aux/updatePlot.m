@@ -20,6 +20,7 @@ switch obj.State.Plot.Call
     case 'line'
         %updatePlotLine(obj);
     case 'patch'
+        %updateHistogram(obj);
         %updatePlotPatch(obj);
     case 'rectangle'
         %updatePlotRectangle(obj);
@@ -33,7 +34,7 @@ switch obj.State.Plot.Call
     case 'areaseries'
         %updatePlotAreaseries(obj);
     case 'barseries'
-        %updatePlotBarseries(obj);
+        extractBarseries(obj,event,prop); 
     case 'contourgroup'
         %updatePlotContourgroup(obj);
     case 'errorbarseries'

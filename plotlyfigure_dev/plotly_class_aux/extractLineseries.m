@@ -29,20 +29,10 @@ switch prop
         %-SCATTER X-%
         obj.data{obj.getCurrentDataIndex}.x = plot_data.XData;
         
-        % check for date
-        if strcmp(xaxis.type,'date')
-        obj.data{obj.getCurrentDataIndex}.x = linspace(xaxis.range(1),xaxis.range(2),xaxis.nticks); 
-        end
-        
     case 'YData'
         
         %-SCATTER Y-%
         obj.data{obj.getCurrentDataIndex}.y = plot_data.YData;
-        
-        % check for date
-        if strcmp(xaxis.type,'date')
-        obj.data{obj.getCurrentDataIndex}.y = linspace(yaxis.range(1),yaxis.range(2),yaxis.nticks); 
-        end
         
     case 'YLabel'
         
