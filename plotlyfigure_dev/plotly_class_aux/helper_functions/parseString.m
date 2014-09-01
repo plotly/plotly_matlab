@@ -247,12 +247,6 @@ try
         %allows for user to specify mathjax format directly
         formatStr = inputStr;
     end
-
-    %display error message if parse was not successful
-catch
-    formatStr = inputStr;
-    display(['Sorry - we could not successfully parse the TeX/LaTeX within your MATLAB string. ', ...
-        'Please consult www.plot.ly/matlab for more information']);
 end
 
 

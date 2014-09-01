@@ -39,7 +39,7 @@ switch obj.State.Plot.Call
     case 'errorbarseries'
         %updatePlotErrorbarseries(obj);
     case 'lineseries'
-        extractLineseries(obj,prop);
+        extractLineseries(obj,event,prop);
     case 'quivergroup'
         %updatePlotQuivergroup(obj);
     case 'scattergroup'

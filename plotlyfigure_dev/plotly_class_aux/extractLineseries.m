@@ -1,4 +1,4 @@
-function extractLineseries(obj,prop)
+function extractLineseries(obj,event,prop)
 
 %-FIGURE STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);
@@ -6,8 +6,12 @@ figure_data = get(obj.State.Figure.Handle);
 %-AXIS STRUCTURE-%
 axis_data = get(obj.State.Axis.Handle);
 
+%-AXIS DATA-%
+eval(['xaxis = obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ';']);
+
 %-PLOT DATA STRUCTURE- %
-plot_data = get(obj.State.Plot.Handle);
+plot_data = event.AffectedObject;
 
 %-SCATTER XAXIS-%
 obj.data{obj.getCurrentDataIndex}.xaxis = ['x' num2str(obj.getCurrentAxisIndex)];
@@ -25,10 +29,20 @@ switch prop
         %-SCATTER X-%
         obj.data{obj.getCurrentDataIndex}.x = plot_data.XData;
         
+        % check for date
+        if strcmp(xaxis.type,'date')
+        obj.data{obj.getCurrentDataIndex}.x = linspace(xaxis.range(1),xaxis.range(2),xaxis.nticks); 
+        end
+        
     case 'YData'
         
         %-SCATTER Y-%
         obj.data{obj.getCurrentDataIndex}.y = plot_data.YData;
+        
+        % check for date
+        if strcmp(xaxis.type,'date')
+        obj.data{obj.getCurrentDataIndex}.y = linspace(yaxis.range(1),yaxis.range(2),yaxis.nticks); 
+        end
         
     case 'YLabel'
         
