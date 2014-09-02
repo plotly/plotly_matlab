@@ -7,6 +7,7 @@ classdef makeplotlygrid < dynamicprops & handle
         UserData;
         PlotOptions;
         Response;
+        Plot; 
     end
     
     %----CLASS METHODS----%
@@ -47,10 +48,12 @@ classdef makeplotlygrid < dynamicprops & handle
             
             % post grid to plotly
             % resp = obj.makecall;
-            resp = data;
+            resp.time = '123AB2'; 
+            resp.power = 'J67003';
             
             % data fields
             datafields = fieldnames(data);
+            
             
             % add dynamic properties
             for n = 1:length(datafields)
@@ -86,8 +89,15 @@ classdef makeplotlygrid < dynamicprops & handle
             
         end
         
+        %---overload plot command---%
         function obj = plot(obj,varargin)
-            
+            obj.Plot = plotlyfigure; 
+            plot(varargin{:}); 
+            col1 = varargin{1};
+            col2 = varargin{2}; 
+            obj.Plot.data{1}.x = col1.ID; 
+            obj.Plot.data{1}.y = col2.ID; 
+            %fig2plotly(p); 
         end 
     end
 end
