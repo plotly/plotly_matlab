@@ -1,24 +1,15 @@
 %----UPDATE PLOT DATA/STYLE----%
-function obj = updatePlot(obj,~,event,prop)
-
-% plot call class
-obj.State.Plot.Call = event.AffectedObject.classhandle.Name;
-
-% update plot handle
-obj.State.Plot.Handle = event.AffectedObject; 
-
-% update axis handle
-obj.State.Axis.Handle = event.AffectedObject.Parent; 
+function obj = updateData(obj, dataIndex)
 
 % update plot based on plot call class
-switch obj.State.Plot.Call
+switch obj.State.Plot(dataIndex).Class
     
     % Plotly supported MATLAB core objects
     
     case 'image'
         %updatePlotImage(obj);
     case 'line'
-        %updatePlotLine(obj);
+        updateLineseries(obj, dataIndex);
     case 'patch'
         %updateHistogram(obj);
         %updatePlotPatch(obj);
@@ -26,21 +17,23 @@ switch obj.State.Plot.Call
         %updatePlotRectangle(obj);
     case 'surface'
         %updatePlotSurface(obj);
-    case 'text' 
+    case 'text'
         %HANDLED BY UPDATETEXT
-
+        
         % Plotly supported MATLAB plot objects
         
     case 'areaseries'
         %updatePlotAreaseries(obj);
     case 'barseries'
-        extractBarseries(obj,event,prop); 
+        updateBarseries(obj, dataIndex);
+    case 'baseline'
+        updateLineseries(obj, dataIndex);
     case 'contourgroup'
         %updatePlotContourgroup(obj);
     case 'errorbarseries'
         %updatePlotErrorbarseries(obj);
     case 'lineseries'
-        extractLineseries(obj,event,prop);
+         updateLineseries(obj, dataIndex)
     case 'quivergroup'
         %updatePlotQuivergroup(obj);
     case 'scattergroup'
@@ -58,7 +51,6 @@ switch obj.State.Plot.Call
         %updatePlotHggroup(obj);
     case 'hgtransorm'
         %updatePlotHgtransform(obj);
-    otherwise
-        
+    otherwise  
 end
 end

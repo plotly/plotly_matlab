@@ -23,12 +23,19 @@ classdef plotlyfigure < handle
         HandleGen; %object figure handle generator properties
     end
     
+    events
+        updateFigure
+        updateAxes
+        updateLegend
+        updateData
+        updateAnnotation
+    end
+    
     %----CLASS METHODS----%
     methods
         
         %----CONSTRUCTOR---%
         function obj = plotlyfigure(varargin)
-            
             %check input structure
             if nargin > 1
                 if mod(nargin,2) ~= 0 && ~ishandle(varargin{1})
@@ -55,10 +62,11 @@ classdef plotlyfigure < handle
             
             % plot option defaults (edit these for custom conversions)
             obj.PlotlyDefaults.MinTitleMargin = 80;
-            obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
+            obj.PlotlyDefaults.FigureIncreaseFactor = 2;
+            obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5;
             obj.PlotlyDefaults.MarginPad = 0;
             obj.PlotlyDefaults.MaxTickLength = 20;
-            obj.PlotlyDefaults.TitleHeight = 0.03; 
+            obj.PlotlyDefaults.TitleHeight = 0.01;
             
             % check for some key/vals
             for a = 1:2:nargin
@@ -108,49 +116,25 @@ classdef plotlyfigure < handle
             obj.State.Figure.NumAxes = 0;
             obj.State.Figure.NumPlots = 0;
             obj.State.Figure.NumLegends = 0;
-            obj.State.Figure.NumTexts = 0;
-            obj.State.Figure.ListenFields = {'Position','Color'};
-            obj.State.Figure.Listeners = {};
-            
-            % initialize reference figure
+            obj.State.Figure.NumAnnotations = 0;
             obj.State.Figure.Reference = [];
             
-            % add figure listeners
-            obj.addFigureListeners;
-            
-            % notify new figure upon creation
-            obj.notifyNewFigure(fieldnames(get(obj.State.Figure.Handle)));
+            % new child added listener (axes)
+            addlistener(obj.State.Figure.Handle,'ObjectChildAdded',@(src,event)figureAddAxis(obj,src,event));
+            % old child removed listener
+            addlistener(obj.State.Figure.Handle,'ObjectChildRemoved',@(src,event)figureRemoveAxis(obj,src,event));
             
             % axis state
-            obj.State.Axis.ListenFields = {'Box','Position', 'XAxisLocation',...
-                'YAxisLocation', 'TickDir','Title'...
-                'XColor', 'YColor','FontSize','XGrid',...
-                'XMinorGrid','YGrid','YMinorGrid',...
-                'TickLength','Visible','XLabel','YLabel',...
-                'LineWidth','XTickLabel','YTickLabel',...
-                'FontName','Color','XLim','XDir','XScale','XTick',...
-                'YLim','YDir','YScale','YTick'};
-            obj.State.Axis.Listeners = {};
-            obj.State.Axis.HandleIndexMap = {};
+            obj.State.Axis = [];
             
             % plot state
-            obj.State.Plot.HandleIndexMap = {};
-            
-            % legend state
-            obj.State.Legend.ListenFields = {'Position'};
-            obj.State.Legend.Listeners = {};
+            obj.State.Plot = [];
             
             % text state
-            obj.State.Text.ListenFields = {'String','Color','FontName',...
-                'FontSize','BackgroundColor',...
-                'EdgeColor','HorizontalAlignment',...
-                'LineWidth','Rotation'...
-                'Margin','Position','Visible',...
-                'FontWeight','VerticalAlignment'};
-            obj.State.Text.Listeners = {};
-            obj.State.Text.Titles = {};
-            obj.State.Text.HandleIndexMap = {};
+            obj.State.Text = [];
             
+            % legend state
+            obj.State.Legend = [];
             
             % check to see if the first argument is a figure
             if nargin > 0
@@ -169,29 +153,29 @@ classdef plotlyfigure < handle
             % plot response
             obj.Response = {};
         end
-    end
-    
-    methods
         
         
         %----------------------EXTRACT PLOTLY INDICES---------------------%
         
         %----GET CURRENT AXIS INDEX ----%
-        function currentAxisIndex = getCurrentAxisIndex(obj)
-            currentAxisIndex = find(cellfun(@(h)eq(h,obj.State.Axis.Handle),obj.State.Axis.HandleIndexMap));
+        function currentAxisIndex = getAxisIndex(obj,axishan)
+            currentAxisIndex = find(arrayfun(@(x)(eq(x.Handle,axishan)),obj.State.Axis));
+        end
+        
+        %----GET CURRENT LEGEND INDEX ----%
+        function currentLegendIndex = getLegendIndex(obj,legendhan)
+            currentLegendIndex = find(arrayfun(@(x)(eq(x.Handle,legendhan)),obj.State.Legend));
         end
         
         %----GET CURRENT DATA INDEX ----%
-        function currentDataIndex = getCurrentDataIndex(obj)
-            currentDataIndex = find(cellfun(@(h)eq(h,obj.State.Plot.Handle),obj.State.Plot.HandleIndexMap));
+        function currentDataIndex = getDataIndex(obj,plothan)
+            currentDataIndex = find(arrayfun(@(x)(eq(x.Handle,plothan)),obj.State.Plot));
         end
         
         %----GET CURRENT ANNOTATION INDEX ----%
-        function currentAnnotationIndex = getCurrentAnnotationIndex(obj)
-            currentAnnotationIndex = find(cellfun(@(h)eq(h,obj.State.Text.Handle),obj.State.Text.HandleIndexMap));
+        function currentAnnotationIndex = getAnnotationIndex(obj,annothan)
+            currentAnnotationIndex = find(arrayfun(@(x)(eq(x.Handle,annothan)),obj.State.Text));
         end
-        
-        
         
         %-------------------------USER METHODS----------------------------%
         
@@ -203,16 +187,24 @@ classdef plotlyfigure < handle
         
         %----SEND PLOT REQUEST----%
         function obj = fig2plotly(obj)
+            
+            %update the figure
+            update(obj); 
+            
             %args
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
             args.world_readable = obj.PlotOptions.WorldReadable;
+            
             %layout
             args.layout = obj.layout;
+            
             %send to plotly
             response = plotly(obj.data,args);
+            
             %update response
             obj.Response = response;
+            
             %ouput url as hyperlink in command window if possible
             try
                 desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
@@ -224,14 +216,17 @@ classdef plotlyfigure < handle
             
         end
         
+        %--------------------------TITLE CHECK----------------------------%
         
-        %----------------------HELPER METHODS-----------------------------%
-        
-        %check for title
-        function check = isTitle(obj,child)
-            tempTitles = obj.State.Text.Titles(~cellfun('isempty',obj.State.Text.Titles)); 
-            check = any(find(cellfun(@(h)eq(h,child),tempTitles)));
+        function check = isTitle(obj,annothan)
+            try
+                check = obj.State.Text(obj.getAnnotationIndex(annothan)).Title; 
+            catch
+                check = false; 
+            end
         end
+
+        %-----------------------FIGURE CONVERSION-------------------------%
         
         %automatic figure conversion
         function obj = convertFigure(obj)
@@ -253,138 +248,29 @@ classdef plotlyfigure < handle
         end
         
         
-        %-----------------------ADD OBJECT LISTENERS----------------------%
+        %----------------------UPDATE PLOTLY FIGURE-----------------------%
         
-        %----ADD FIGURE LISTENERS----%
-        function obj = addFigureListeners(obj)
-            % new child added (axes)
-            obj.State.Figure.Listeners{1} = addlistener(obj.State.Figure.Handle,'ObjectChildAdded',@(src,event)figureAddAxis(obj,src,event));
-            % old child removed
-            obj.State.Figure.Listeners{2} = addlistener(obj.State.Figure.Handle,'ObjectChildRemoved',@(src,event)figureRemoveAxis(obj,src,event));
-            % add listeners to the figure fields
-            for n = 1:length(obj.State.Figure.ListenFields)
-                obj.State.Figure.Listeners{n+2} = addlistener(obj.State.Figure.Handle,obj.State.Figure.ListenFields{n},'PostSet',@(src,event,prop)updateFigure(obj,src,event,obj.State.Figure.ListenFields{n}));
+        function obj = update(obj)
+            
+            %update figure
+            updateFigure(obj);
+            
+            %update axes
+            for n = 1:obj.State.Figure.NumAxes
+                updateAxis(obj,n);
             end
-        end
-        
-        %----ADD AXES LISTENERS----%
-        function obj = addAxisListeners(obj)
-            %new child added
-            obj.State.Axis.Listeners{obj.getCurrentAxisIndex,1} = addlistener(obj.State.Axis.Handle,'ObjectChildAdded',@(src,event)axisAddPlot(obj,src,event));
-            %old child removed
-            obj.State.Axis.Listeners{obj.getCurrentAxisIndex,2} = addlistener(obj.State.Axis.Handle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
-            %add listeners to the axis fields
-            for n = 1:length(obj.State.Axis.ListenFields)
-                obj.State.Axis.Listeners{obj.getCurrentAxisIndex,n+2} = addlistener(obj.State.Axis.Handle,obj.State.Axis.ListenFields{n},'PostSet',@(src,event,prop)updateAxis(obj,src,event,obj.State.Axis.ListenFields{n}));
+            
+            %update plots
+            for n = 1:obj.State.Figure.NumPlots
+                updateData(obj,n); 
             end
-        end
-        
-        %----ADD PLOT LISTENERS----%
-        function obj = addPlotListeners(obj)
-            %plot field names
-            plotfields = fieldnames(get(obj.State.Plot.Handle));
-            %add listeners to the figure fields
-            for n = 1:length(plotfields)
-                obj.State.Plot.Listeners{obj.getCurrentDataIndex,n} = addlistener(obj.State.Plot.Handle,plotfields{n},'PostSet',@(src,event,prop)updatePlot(obj,src,event,plotfields{n}));
+            
+            %update annotations
+            for n = 1:obj.State.Figure.NumAnnotations
+                updateAnnotation(obj,n);
             end
+            
         end
-        
-        %----ADD LEGEND LISTENERS----%
-        function obj = addLegendListeners(obj)
-            %axisfields = fieldnames(get(obj.State.Axis.Handle));
-            obj.State.Legend.Listeners{1} = addlistener(obj.State.Legend.Handle,'Position','PostSet',@(src,event,prop)updateLegend(obj,src,event,'Position'));
-            %             %add listeners to the figure fields
-            %             for n = 1:length(axisfields)
-            %                 addlistener(obj.State.Axis.Handle,axisfields{n},'PostSet',@(src,event,prop)updateAxis(obj,src,event,axisfields{n}));
-            %             end
-        end
-        
-        %----ADD TEXT LISTENERS----%
-        function obj = addTextListeners(obj)
-            %add listeners to the text fields
-            for n = 1:length(obj.State.Text.ListenFields)
-                obj.State.Text.Listeners{obj.getCurrentAnnotationIndex,n} = addlistener(obj.State.Text.Handle,obj.State.Text.ListenFields{n},'PostSet',@(src,event,prop,tag)updateText(obj,src,event,obj.State.Text.ListenFields{n},'Annotation'));
-            end
-        end
-        
-        
-        %-----------EXCTRACT LISTENED FIELDS UPON CREATION----------------%
-        
-        %----NOTIFY THE FIGURE PROPERTIES----%
-        function obj = notifyNewFigure(obj,prop)
-            %figure field names
-            figfields = prop;
-            %add PostGet listeners to the figure fields
-            for n = 1:length(figfields)
-                %add the listener
-                figlist = addlistener(obj.State.Figure.Handle,figfields{n},'PostGet',@(src,event,prop)updateFigure(obj,src,event,figfields{n}));
-                %notify the listener
-                get(obj.State.Figure.Handle,figfields{n});
-                %delete the listener
-                delete(figlist);
-            end
-        end
-        
-        %----NOTIFY THE AXIS PROPERTIES----%
-        function obj = notifyNewAxis(obj,prop)
-            %axis field names
-            axisfields = prop;
-            %add/notify/delete PostGet listeners to the axis fields
-            for n = 1:length(axisfields)
-                %add the listener
-                axislist = addlistener(obj.State.Axis.Handle,axisfields{n},'PostGet',@(src,event,prop)updateAxis(obj,src,event,axisfields{n}));
-                %notify the listener
-                get(obj.State.Axis.Handle,axisfields{n});
-                %delete the listener
-                delete(axislist);
-            end
-        end
-        
-        %----NOTIFY THE PLOT PROPERTIES----%
-        function obj = notifyNewPlot(obj,prop)
-            % plot field names
-            plotfields = prop;
-            %add/notify/delete listeners to the figure fields
-            for n = 1:length(plotfields)
-                %add the listener
-                plotlist = addlistener(obj.State.Plot.Handle,plotfields{n},'PostGet',@(src,event,prop)updatePlot(obj,src,event,plotfields{n}));
-                %notify the listener
-                get(obj.State.Plot.Handle,plotfields{n});
-                %delete the listener
-                delete(plotlist);
-            end
-        end
-        
-        %----NOTIFY THE LEGEND PROPERTIES----%
-        function obj = notifyNewLegend(obj,prop)
-            %axis field names
-            legfields = prop;
-            %add/notify/delete PostGet listeners to the Legend fields
-            for n = 1:length(legfields)
-                %add the listener
-                leglist = addlistener(obj.State.Legend.Handle,legfields{n},'PostGet',@(src,event,prop)updateLegend(obj,src,event,legfields{n}));
-                %notify the listener
-                get(obj.State.Legend.Handle,legfields{n});
-                %delete the listener
-                delete(leglist);
-            end
-        end
-        
-        %----NOTIFY THE TEXT PROPERTIES----%
-        function obj = notifyNewText(obj,prop)
-            %axis field names
-            textfields = prop;
-            %add/notify/delete listeners to the figure fields
-            for n = 1:length(textfields)
-                %add the listener
-                textlist = addlistener(obj.State.Text.Handle,textfields{n},'PostGet',@(src,event,prop,tag)updateText(obj,src,event,textfields{n},'Annotation'));
-                %notify the listener
-                get(obj.State.Text.Handle,textfields{n});
-                %delete the listener
-                delete(textlist);
-            end
-        end
-        
         
         %--------------------CALLBACK FUNCTIONS---------------------------%
         
@@ -396,126 +282,85 @@ classdef plotlyfigure < handle
                 if strcmp(get(event.Child,'Tag'),'legend')
                     %update the number of legends
                     obj.State.Figure.NumLegends = obj.State.Figure.NumLegends + 1;
-                    if obj.State.Figure.NumLegends == 1
-                        %update the legend handle
-                        obj.State.Legend.Handle = event.Child;
-                        %add listeners to the legend
-                        obj.addLegendListeners;
-                        %notify the creation of the legend
-                        obj.notifyNewLegend(fieldnames(get(obj.State.Axis.Handle)));
-                    end
+                    obj.State.Legend(obj.State.Figure.NumLegends).Handle = event.Child;
                 else
-                    %update the axis handle
-                    obj.State.Axis.Handle = event.Child;
                     % update the number of axes
                     obj.State.Figure.NumAxes = obj.State.Figure.NumAxes + 1;
-                    % update the axis HandleIndexMap
-                    obj.State.Axis.HandleIndexMap{obj.State.Figure.NumAxes} = obj.State.Axis.Handle;
-                    % add listeners to the axis
-                    obj.addAxisListeners;
-                    % notify the creation of the axis
-                    obj.notifyNewAxis(obj.State.Axis.ListenFields);
+                    %update the axis handle
+                    obj.State.Axis(obj.State.Figure.NumAxes).Handle = event.Child;
+                    %new child added
+                    addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildAdded',@(src,event)axisAddPlot(obj,src,event));
+                    %old child removed
+                    addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
+                    %update the text index
+                    obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
+                    %add title to annotations
+                    obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.Child.Title;
+                    obj.State.Text(obj.State.Figure.NumAnnotations).Title = true;
+                    obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = obj.State.Axis(obj.State.Figure.NumAxes).Handle;
                 end
             end
         end
         
         %----ADD A PLOT TO AN AXIS----%
         function obj = axisAddPlot(obj,~,event)
-            % update axis handle
-            obj.State.Axis.Handle = event.Source;
             % ignore empty string text
             if ~emptyStringText(event.Child);
                 % separate text from non-text
-                if strcmpi(get(event.Child,'Type'),'text')
-                    %text handle
-                    obj.State.Text.Handle = event.Child;
+               if strcmpi(get(event.Child,'Type'),'text')
                     %update the text index
-                    obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + 1;
-                    % update the HandleIndexMap
-                    obj.State.Text.HandleIndexMap{obj.State.Figure.NumTexts} = obj.State.Text.Handle;
-                    % update the Titles
-                    obj.State.Text.Titles{obj.State.Figure.NumTexts} = []; 
-                    %add listeners to the text object
-                    obj.addTextListeners;
-                    %notify the creation of the text object
-                    obj.notifyNewText(obj.State.Text.ListenFields);
+                    obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
+                    %text handle
+                    obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.Child;
+                    obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = event.Child.Parent;
+                    obj.State.Text(obj.State.Figure.NumAnnotations).Title = false;
                 else
-                    % plot handle
-                    obj.State.Plot.Handle = event.Child;
                     % update the plot index
                     obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
-                    % update the HandleIndexMap
-                    obj.State.Plot.HandleIndexMap{obj.State.Figure.NumPlots} = obj.State.Plot.Handle;
-                    % add listeners to the plot
-                    obj.addPlotListeners;
-                    % notify the creation of the plot
-                    obj.notifyNewPlot(fieldnames(get(obj.State.Plot.Handle)));
-                    
+                    % plot handle
+                    obj.State.Plot(obj.State.Figure.NumPlots).Handle = event.Child;
+                    obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = event.Child.Parent;
+                    obj.State.Plot(obj.State.Figure.NumPlots).Class = event.Child.classhandle.name;
                 end
             end
         end
         
-        
         %----REMOVE AN AXIS FROM THE FIGURE----%
         function obj = figureRemoveAxis(obj,~,event)
-            % update axis handle
-            obj.State.Axis.Handle = event.Child;
-            % check for type axes
-            if strcmp(get(obj.State.Axis.Handle,'Type'),'axes')
+            if strcmp(event.Child.Type,'axes')
+                %get current axis index
+                currentAxis = obj.getAxisIndex(event.Child);
                 % update the number of axes
                 obj.State.Figure.NumAxes = obj.State.Figure.NumAxes - 1;
-                % update the layout property
-                eval(['obj.layout = rmfield(obj.layout,''xaxis' num2str(obj.getCurrentAxisIndex) ''');']);
-                eval(['obj.layout = rmfield(obj.layout,''yaxis' num2str(obj.getCurrentAxisIndex) ''');']);
                 % update the axis HandleIndexMap
-                obj.State.Axis.HandleIndexMap(obj.getCurrentAxisIndex) = [];
+                obj.State.Axis(currentAxis) = [];
             else
-                %HANDLE LEGENDS
+                %get current legend index
+                currentLegend = obj.getLegendIndex(event.Child);
+                % update the number of legends
+                obj.State.Figure.NumLegend = obj.State.Figure.NumLegends - 1;
+                % update the legend HandleIndexMap
+                obj.State.Legend(currentLegend) = [];
             end
         end
         
         %----REMOVE A PLOT FROM AN AXIS----%
         function obj = axisRemovePlot(obj,~,event)
-            % update axis handle
-            obj.State.Axis.Handle = event.Source;
-            % check for text
-            if ~strcmpi(get(event.Child,'Type'),'text')
-                % plot handle
-                obj.State.Plot.Handle = event.Child;
+            if ~strcmpi(event.Child.Type,'text')
+                % get current plot index
+                currentPlot = obj.getDataIndex(event.Child);
                 % update the plot index
                 obj.State.Figure.NumPlots = obj.State.Figure.NumPlots - 1;
-                % update the data property
-                obj.data(obj.getCurrentDataIndex) = [];
                 % update the HandleIndexMap
-                obj.State.Plot.HandleIndexMap(obj.getCurrentDataIndex) = [];
-                %if title or not label and not non-empty annotation
-            elseif  eq(event.Child,event.Source.XLabel)
-                % update the layout property
-                try
-                    eval(['obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ',''title'');']);
-                end
-                try
-                    eval(['obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.xaxis' num2str(obj.getCurrentAxisIndex) ',''titlefont'');']);
-                end
-            elseif  eq(event.Child,event.Source.YLabel)
-                % update the layout property
-                try
-                    eval(['obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ',''title'');']);
-                end
-                try
-                    eval(['obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ' = rmfield(obj.layout.yaxis' num2str(obj.getCurrentAxisIndex) ',''titlefont'');']);
-                end
-            elseif  obj.isTitle(event.Child) || ~( isempty(get(event.Child,'String')) || eq(event.Child,event.Source.ZLabel))
-                % plot handle
-                obj.State.Text.Handle = event.Child;
+                obj.State.Plot(currentPlot) = [];
+                % is a title or not(empty annotation or legend)
+            elseif obj.isTitle(event.Child) || ~(isempty(get(event.Child,'String')) || eq(event.Child,event.Source.ZLabel) || eq(event.Child,event.Source.XLabel) || eq(event.Child,event.Source.YLabel))
+                % get current annotation index
+                currentAnnotation = obj.getAnnotationIndex(event.Child);
                 % update the text index
-                obj.State.Figure.NumTexts = obj.State.Figure.NumTexts - 1;
-                % update the annotation property
-                obj.layout.annotations(obj.getCurrentAnnotationIndex) = [];
-                % update title
-                obj.State.Text.Titles(obj.getCurrentAnnotationIndex) = [];
+                obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations - 1;
                 % update the HandleIndexMap
-                obj.State.Text.HandleIndexMap(obj.getCurrentAnnotationIndex) = [];
+                obj.State.Text(currentAnnotation) = [];
             end
         end
     end
