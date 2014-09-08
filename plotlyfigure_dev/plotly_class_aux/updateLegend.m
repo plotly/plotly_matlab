@@ -1,2 +1,2 @@
-function obj = updateLegend(obj,src,event,prop)
+function obj = updateLegend(obj,legIndex)
 end
