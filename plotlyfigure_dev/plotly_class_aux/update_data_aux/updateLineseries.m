@@ -87,7 +87,7 @@ obj.data{dataIndex}.y = plot_data.YData;
 %-------------------------------------------------------------------------%
 
 %-SCATTER NAME-%
-obj.data{dataIndex}.name = get(axis_data.YLabel,'string');
+obj.data{dataIndex}.name = plot_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
