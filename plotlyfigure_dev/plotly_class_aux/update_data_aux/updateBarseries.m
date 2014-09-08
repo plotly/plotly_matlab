@@ -155,46 +155,42 @@ end
 
 %-bar face color-%
 
+if ~ischar(bar_child_data.FaceColor)
+    
+    %-paper_bgcolor-%
+    col = 255*bar_child_data.FaceColor;
+    obj.data{dataIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    
+else
+    switch bar_child_data.FaceColor
+        case 'none'
+            obj.data{dataIndex}.marker.color = 'rgba(0,0,0,0,)';
+        case 'flat'
+            col = 255*figure_data.Colormap(bar_child_data.CData(1),:);
+            obj.data{dataIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];    
+    end
+end
+
+%-------------------------------------------------------------------------%
+
 %-bar edge color-%
 
-
-
-
-
-
-
-
-%     m_child = get(d.Children(1));
-%     if isfield(m_child, 'CData')
-%         color_ref = m_child.CData;
-%     else
-%         color_ref = m_child.Color;
-%     end
-%
-%     color_field=[];
-%     if isfield(d, 'Color')
-%         color_field = d.Color;
-%     else
-%         if isfield(d, 'EdgeColor')
-%             color_field = d.EdgeColor;
-%         end
-%     end
-%     colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
-%     if numel(colors{1})>0
-%         data.marker.line.color = colors{1};
-%     end
-%
-%     color_field=[];
-%     if isfield(d, 'Color')
-%         color_field = d.Color;
-%     else
-%         if isfield(d, 'FaceColor')
-%             color_field = d.FaceColor;
-%         end
-%     end
-%     colors = setColorProperty(color_field, color_ref, CLim, colormap,d);
-%     if numel(colors{1})>0
-%         data.marker.color = colors{1};
-%     end
+if ~ischar(bar_child_data.EdgeColor)
+    
+    %-paper_bgcolor-%
+    col = 255*bar_child_data.EdgeColor;
+    obj.data{dataIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    
+else
+    switch bar_child_data.EdgeColor
+        case 'none'
+            obj.data{dataIndex}.marker.line.color = 'rgba(0,0,0,0,)';
+        case 'flat'
+            col = 255*figure_data.Colormap(bar_child_data.CData(1),:);
+            obj.data{dataIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];  
+    end
+end
 
 end
+
+
