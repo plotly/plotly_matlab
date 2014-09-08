@@ -61,7 +61,7 @@ end
 %-text-%
 obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
 if obj.State.Text(anIndex).Title && isempty(text_data.String)
-    obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation workaround
+    obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
 end
 
 %-font color-%
