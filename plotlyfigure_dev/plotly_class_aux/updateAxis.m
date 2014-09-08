@@ -129,21 +129,6 @@ yaxis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
 
 %-------------------------------------------------------------------------%
 
-%-margin-%
-templ = axis_data.Position(1)*obj.layout.width;
-obj.layout.margin.l = min(obj.layout.margin.l,templ);
-tempr = obj.layout.width - (axis_data.Position(1) + axis_data.Position(3))*obj.layout.width;
-obj.layout.margin.r = min(obj.layout.margin.r,tempr);
-tempb = axis_data.Position(2)*obj.layout.height;
-obj.layout.margin.b = min(obj.layout.margin.b,tempb);
-tempt = obj.layout.height - (axis_data.Position(2) + axis_data.Position(4))*obj.layout.height;
-obj.layout.margin.t = max(obj.PlotlyDefaults.MinTitleMargin,min(obj.layout.margin.t,tempt));
-
-%-pad-%
-obj.layout.margin.pad = obj.PlotlyDefaults.MarginPad;
-
-%-------------------------------------------------------------------------%
-
 %assumes units are normalized (we force this)
 xaxis.domain = min([axis_data.Position(1) axis_data.Position(1)+axis_data.Position(3)],1);
 yaxis.domain = min([axis_data.Position(2) axis_data.Position(2)+axis_data.Position(4)],1);
@@ -238,7 +223,7 @@ end
 
 %-------------------------------------------------------------------------%
 
-linewidth = axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor;
+linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
 %-xaxis line width-%
 xaxis.linewidth = linewidth;
