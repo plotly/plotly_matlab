@@ -27,7 +27,7 @@ function obj = updateAxis(obj,axIndex)
 % tickfont.size...[DONE]
 % tickfont.color...[DONE]
 % tickfont.outlinecolor...[NOT SUPPORTED IN MATLAB]
-% exponentformat:.................[TODO]
+% exponentformat:...[DONE]
 % showexponent:...[NOT SUPPORTED IN MATLAB]
 % mirror:...[DONE]
 % gridcolor:...[DONE]
@@ -41,7 +41,10 @@ function obj = updateAxis(obj,axIndex)
 % side:...[DONE]
 % position:...[DONE]
 
-% get current axis data
+%-FIGURE DATA-%
+figure_data = get(obj.State.Figure.Handle);
+
+%-AXIS DATA-%
 axis_data = obj.State.Axis(axIndex).Handle;
 
 %-STANDARDIZE UNITS-%
@@ -73,9 +76,11 @@ yaxis.anchor = ['x' num2str(axIndex)];
 %-yaxis zeroline-%
 yaxis.zeroline = false;
 
+%-------------------------------------------------------------------------%
+
 %-exponent format-%
-xaxis.exponentformat = 'none';
-yaxis.exponentformat = 'none';
+xaxis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
+yaxis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
 %-------------------------------------------------------------------------%
 
@@ -94,7 +99,12 @@ end
 %-------------------------------------------------------------------------%
 
 %-layout plot bg color-%
-col = 255*axis_data.Color;
+if ~ischar(axis_data.Color)
+    col = 255*axis_data.Color;
+else
+    col = 255*figure_data.Color;
+end
+
 obj.layout.plot_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
 %-------------------------------------------------------------------------%
@@ -128,6 +138,9 @@ tempb = axis_data.Position(2)*obj.layout.height;
 obj.layout.margin.b = min(obj.layout.margin.b,tempb);
 tempt = obj.layout.height - (axis_data.Position(2) + axis_data.Position(4))*obj.layout.height;
 obj.layout.margin.t = max(obj.PlotlyDefaults.MinTitleMargin,min(obj.layout.margin.t,tempt));
+
+%-pad-%
+obj.layout.margin.pad = obj.PlotlyDefaults.MarginPad;
 
 %-------------------------------------------------------------------------%
 
@@ -225,18 +238,20 @@ end
 
 %-------------------------------------------------------------------------%
 
+linewidth = axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor;
+
 %-xaxis line width-%
-xaxis.linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
+xaxis.linewidth = linewidth;
 %-yaxis line width-%
-yaxis.linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
+yaxis.linewidth = linewidth;
 %-xaxis tick width-%
-xaxis.tickwidth = axis_data.LineWidth;
+xaxis.tickwidth = linewidth;
 %-yaxis tick width-%
-yaxis.tickwidth = axis_data.LineWidth;
+yaxis.tickwidth = linewidth;
 %-xaxis grid width-%
-xaxis.gridwidth = axis_data.LineWidth;
+xaxis.gridwidth = linewidth;
 %-yaxis grid width-%
-yaxis.gridwidth = axis_data.LineWidth;
+yaxis.gridwidth = linewidth;
 
 %-------------------------------------------------------------------------%
 
@@ -259,7 +274,7 @@ if isempty(axis_data.XTick)
     
 else
     
-    %-xaxis tick font size-%
+    %-xaxis tick direction-%
     switch axis_data.TickDir
         case 'in'
             xaxis.ticks = 'inside';
@@ -397,7 +412,7 @@ if isempty(axis_data.YTick)
     
 else
     
-    %-xaxis tick font size-%
+    %-yaxis tick direction-%
     switch axis_data.TickDir
         case 'in'
             yaxis.ticks = 'inside';
