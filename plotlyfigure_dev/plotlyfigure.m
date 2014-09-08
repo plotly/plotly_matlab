@@ -1,15 +1,5 @@
 classdef plotlyfigure < handle
     
-    % plotlyfigure constructs an online Plotly plot.
-    % There are three modes of use. The first is the
-    % most base level approach of initializing a
-    % plotlyfigure object and specify the data and layout
-    % properties using Plotly declarartive syntax.
-    % The second is a mid level useage which is based on
-    % overloading the MATLAB plotting commands, such as
-    % 'plot', 'scatter', 'subplot', ...
-    % Lastly we have the third level of use
-    
     %----CLASS PROPERTIES----%
     properties
         data; % data of the plot
@@ -21,14 +11,6 @@ classdef plotlyfigure < handle
         State; % state of plot (FIGURE/AXIS/PLOTS)
         Verbose; % output procedural steps
         HandleGen; %object figure handle generator properties
-    end
-    
-    events
-        updateFigure
-        updateAxes
-        updateLegend
-        updateData
-        updateAnnotation
     end
     
     %----CLASS METHODS----%
@@ -62,12 +44,13 @@ classdef plotlyfigure < handle
             
             % plot option defaults (edit these for custom conversions)
             obj.PlotlyDefaults.MinTitleMargin = 80;
-            obj.PlotlyDefaults.FigureIncreaseFactor = 2;
+            obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
             obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5;
             obj.PlotlyDefaults.MarginPad = 0;
             obj.PlotlyDefaults.MaxTickLength = 20;
             obj.PlotlyDefaults.TitleHeight = 0.01;
-            
+            obj.PlotlyDefaults.ExponentFormat = 'none';
+                       
             % check for some key/vals
             for a = 1:2:nargin
                 if(strcmpi(varargin{a},'filename'))
@@ -109,15 +92,15 @@ classdef plotlyfigure < handle
             fig = figure;
             
             % default figure
-            set(fig,'Name','PLOTLY FIGURE','color',[1 1 1],'ToolBar','none','NumberTitle','off','Visible',obj.PlotOptions.Visible);
+            set(fig,'Name','PLOTLY FIGURE','Color',[1 1 1],'ToolBar','none','NumberTitle','off','Visible',obj.PlotOptions.Visible);
             
             % figure state
             obj.State.Figure.Handle = fig;
             obj.State.Figure.NumAxes = 0;
             obj.State.Figure.NumPlots = 0;
             obj.State.Figure.NumLegends = 0;
+            obj.State.Figure.NumColorbars = 0;
             obj.State.Figure.NumAnnotations = 0;
-            obj.State.Figure.Reference = [];
             
             % new child added listener (axes)
             addlistener(obj.State.Figure.Handle,'ObjectChildAdded',@(src,event)figureAddAxis(obj,src,event));
@@ -136,10 +119,15 @@ classdef plotlyfigure < handle
             % legend state
             obj.State.Legend = [];
             
+            % colorbar state
+            obj.State.Colorbar = [];
+            
             % check to see if the first argument is a figure
             if nargin > 0
                 if ishandle(varargin{1})
+                    obj.State.Figure.Reference = [];
                     obj.State.Figure.Reference.Handle = varargin{1};
+                    set(obj.State.Figure.Handle,'Color',get(obj.State.Figure.Reference.Handle,'Color'),'Position',get(obj.State.Figure.Reference.Handle,'Position'));
                     obj.convertFigure;
                 else
                     % add default axis
@@ -162,11 +150,6 @@ classdef plotlyfigure < handle
             currentAxisIndex = find(arrayfun(@(x)(eq(x.Handle,axishan)),obj.State.Axis));
         end
         
-        %----GET CURRENT LEGEND INDEX ----%
-        function currentLegendIndex = getLegendIndex(obj,legendhan)
-            currentLegendIndex = find(arrayfun(@(x)(eq(x.Handle,legendhan)),obj.State.Legend));
-        end
-        
         %----GET CURRENT DATA INDEX ----%
         function currentDataIndex = getDataIndex(obj,plothan)
             currentDataIndex = find(arrayfun(@(x)(eq(x.Handle,plothan)),obj.State.Plot));
@@ -184,12 +167,9 @@ classdef plotlyfigure < handle
             plotlyFigureHandle = obj.State.Figure.Handle;
             set(0,'CurrentFigure', plotlyFigureHandle);
         end
-        
-        %----SEND PLOT REQUEST----%
-        function obj = fig2plotly(obj)
-            
-            %update the figure
-            update(obj); 
+
+        %----SEND PLOT REQUEST (NO UPDATE)----%
+        function obj = plotly(obj)
             
             %args
             args.filename = obj.PlotOptions.FileName;
@@ -216,16 +196,21 @@ classdef plotlyfigure < handle
             
         end
         
-        %--------------------------TITLE CHECK----------------------------%
+        %--------------------------TITLE CHECKS---------------------------%
         
         function check = isTitle(obj,annothan)
             try
-                check = obj.State.Text(obj.getAnnotationIndex(annothan)).Title; 
+                check = obj.State.Text(obj.getAnnotationIndex(annothan)).Title;
             catch
-                check = false; 
+                check = false;
             end
         end
-
+        
+        
+        function titleIndex= getTitleIndex(obj,axhan)
+            titleIndex = find(arrayfun(@(x)(eq(x.AssociatedAxis,axhan)&&(x.Title)),obj.State.Text));
+        end
+        
         %-----------------------FIGURE CONVERSION-------------------------%
         
         %automatic figure conversion
@@ -245,6 +230,7 @@ classdef plotlyfigure < handle
                 copyobj(allchild(ax(a)),axnew);
             end
             delete(tempfig);
+            close(obj.State.Figure.Reference.Handle);
         end
         
         
@@ -260,9 +246,19 @@ classdef plotlyfigure < handle
                 updateAxis(obj,n);
             end
             
+            %update legends
+            for n = 1:obj.State.Figure.NumLegends
+                updateLegend(obj,n);
+            end
+            
+            %update colorbars
+            for n = 1:obj.State.Figure.NumColorbars
+                updateColorbar(obj,n);
+            end
+            
             %update plots
             for n = 1:obj.State.Figure.NumPlots
-                updateData(obj,n); 
+                updateData(obj,n);
             end
             
             %update annotations
@@ -278,69 +274,121 @@ classdef plotlyfigure < handle
         function obj = figureAddAxis(obj,~,event)
             % check for type axes
             if strcmp(get(event.Child,'Type'),'axes')
-                %check for legend tag
-                if strcmp(get(event.Child,'Tag'),'legend')
-                    %update the number of legends
-                    obj.State.Figure.NumLegends = obj.State.Figure.NumLegends + 1;
-                    obj.State.Legend(obj.State.Figure.NumLegends).Handle = event.Child;
-                else
-                    % update the number of axes
-                    obj.State.Figure.NumAxes = obj.State.Figure.NumAxes + 1;
-                    %update the axis handle
-                    obj.State.Axis(obj.State.Figure.NumAxes).Handle = event.Child;
-                    %new child added
-                    addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildAdded',@(src,event)axisAddPlot(obj,src,event));
-                    %old child removed
-                    addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
-                    %update the text index
-                    obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
-                    %add title to annotations
-                    obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.Child.Title;
-                    obj.State.Text(obj.State.Figure.NumAnnotations).Title = true;
-                    obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = obj.State.Axis(obj.State.Figure.NumAxes).Handle;
+                %check tag
+                switch lower(event.Child.classhandle.name)
+                    case 'legend'
+                        % update the number of legends
+                        obj.State.Figure.NumLegends = obj.State.Figure.NumLegends + 1;
+                        obj.State.Legend(obj.State.Figure.NumLegends).Handle = event.Child;
+                    case 'colorbar'
+                        % update the number of colorbars
+                        obj.State.Figure.NumColorbars = obj.State.Figure.NumColorbars + 1;
+                        obj.State.Colorbar(obj.State.Figure.NumColorbars).Handle = event.Child;
+                    otherwise
+                        % update the number of axes
+                        obj.State.Figure.NumAxes = obj.State.Figure.NumAxes + 1;
+                        %update the axis handle
+                        obj.State.Axis(obj.State.Figure.NumAxes).Handle = event.Child;
+                        %new child added
+                        addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildAdded',@(src,event)axisAddPlot(obj,src,event));
+                        %old child removed
+                        addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
+                        
+                        %----add title----%
+                        
+                        %update the text index
+                        obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
+                        %text handle
+                        obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.Child.Title;
+                        obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = event.Child;
+                        obj.State.Text(obj.State.Figure.NumAnnotations).Title = true;
+                        %add title listener
+                        addlistener(event.Child,'Title','PostSet',@(src,event)axisAddTitle(obj,src,event));
                 end
             end
         end
         
         %----ADD A PLOT TO AN AXIS----%
+        
         function obj = axisAddPlot(obj,~,event)
-            % ignore empty string text
-            if ~emptyStringText(event.Child);
-                % separate text from non-text
-               if strcmpi(get(event.Child,'Type'),'text')
+            % separate text from non-text
+            if strcmpi(event.Child.Type,'text')
+                % ignore empty string text 
+                if (validText(event.Child));
                     %update the text index
                     obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
                     %text handle
                     obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.Child;
                     obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = event.Child.Parent;
                     obj.State.Text(obj.State.Figure.NumAnnotations).Title = false;
-                else
-                    % update the plot index
-                    obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
-                    % plot handle
-                    obj.State.Plot(obj.State.Figure.NumPlots).Handle = event.Child;
-                    obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = event.Child.Parent;
-                    obj.State.Plot(obj.State.Figure.NumPlots).Class = event.Child.classhandle.name;
                 end
+            else
+                % update the plot index
+                obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
+                % plot handle
+                obj.State.Plot(obj.State.Figure.NumPlots).Handle = event.Child;
+                obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = event.Child.Parent;
+                obj.State.Plot(obj.State.Figure.NumPlots).Class = event.Child.classhandle.name;
             end
         end
         
+        %----ADD TITLE TO AN AXIS----%
+        
+        function obj = axisAddTitle(obj,~,event)
+            
+            %----remove old title---_%
+            
+            % get current title index
+            titleIndex = obj.getTitleIndex(event.AffectedObject);
+            % update the text index
+            obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations - 1;
+            % update the HandleIndexMap
+            obj.State.Text(titleIndex) = [];
+            
+            %----replace with new title----%
+            
+            % update the text index
+            obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
+            % text handle
+            obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.AffectedObject.Title;
+            obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = event.AffectedObject;
+            obj.State.Text(obj.State.Figure.NumAnnotations).Title = true;
+            
+        end
+        
         %----REMOVE AN AXIS FROM THE FIGURE----%
+        
         function obj = figureRemoveAxis(obj,~,event)
+            
             if strcmp(event.Child.Type,'axes')
-                %get current axis index
-                currentAxis = obj.getAxisIndex(event.Child);
-                % update the number of axes
-                obj.State.Figure.NumAxes = obj.State.Figure.NumAxes - 1;
-                % update the axis HandleIndexMap
-                obj.State.Axis(currentAxis) = [];
-            else
-                %get current legend index
-                currentLegend = obj.getLegendIndex(event.Child);
-                % update the number of legends
-                obj.State.Figure.NumLegend = obj.State.Figure.NumLegends - 1;
-                % update the legend HandleIndexMap
-                obj.State.Legend(currentLegend) = [];
+                
+                % check for legends/colorbars
+                switch lower(event.Child.classhandle.name)
+                    case 'legend'
+                        %update the number of legends
+                        obj.State.Legend(obj.State.Figure.NumLegends).Handle = [];
+                        obj.State.Figure.NumLegends = obj.State.Figure.NumLegends - 1;
+                    case 'colorbar'
+                        %update the number of colorbars
+                        obj.State.Colorbar(obj.State.Figure.NumColorbars).Handle = [];
+                        obj.State.Figure.NumColorbars = obj.State.Figure.NumColorbars - 1;
+                    otherwise
+                        %get current axis index
+                        currentAxis = obj.getAxisIndex(event.Child);
+                        % update the number of axes
+                        obj.State.Figure.NumAxes = obj.State.Figure.NumAxes - 1;
+                        % update the axis HandleIndexMap
+                        obj.State.Axis(currentAxis) = [];
+                        
+                        %-----remove title-----%
+                        
+                        % get current title index
+                        titleIndex = obj.getTitleIndex(event.Child);
+                        % update the text index
+                        obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations - 1;
+                        % update the HandleIndexMap
+                        obj.State.Text(titleIndex) = [];
+                end
             end
         end
         
@@ -353,8 +401,10 @@ classdef plotlyfigure < handle
                 obj.State.Figure.NumPlots = obj.State.Figure.NumPlots - 1;
                 % update the HandleIndexMap
                 obj.State.Plot(currentPlot) = [];
-                % is a title or not(empty annotation or legend)
-            elseif obj.isTitle(event.Child) || ~(isempty(get(event.Child,'String')) || eq(event.Child,event.Source.ZLabel) || eq(event.Child,event.Source.XLabel) || eq(event.Child,event.Source.YLabel))
+                % not(empty annotation or title/label)
+            elseif ~(isempty(get(event.Child,'String')) || eq(event.Child,event.Source.Title) || ...
+                    eq(event.Child,event.Source.ZLabel) || eq(event.Child,event.Source.XLabel) || ...
+                    eq(event.Child,event.Source.YLabel))
                 % get current annotation index
                 currentAnnotation = obj.getAnnotationIndex(event.Child);
                 % update the text index
