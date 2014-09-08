@@ -5,12 +5,10 @@ classdef plotlyfigure < handle
         data; % data of the plot
         layout; % layout of the plot
         PlotOptions; % filename,fileopt,world_readable
-        PlotlyDefaults;
-        UserData; % credentials/configuration
+        PlotlyDefaults; % plotly specific conversion defualts
+        UserData; % credentials/configuration/verbose
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
-        Verbose; % output procedural steps
-        HandleGen; %object figure handle generator properties
     end
     
     %----CLASS METHODS----%
@@ -30,9 +28,6 @@ classdef plotlyfigure < handle
             % core Plotly elements
             obj.data = {};
             obj.layout = struct();
-            
-            % user experience
-            obj.Verbose = false;
             
             % plot options
             obj.PlotOptions.FileName = 'PLOTLYFIGURE';
@@ -87,6 +82,9 @@ classdef plotlyfigure < handle
             catch
                 error('Whoops! you must be signed in to initialize a plotlyfigure object!');
             end
+                  
+            % user experience
+            obj.UserData.Verbose = false;
             
             % generate figure and handle
             fig = figure;
@@ -231,6 +229,8 @@ classdef plotlyfigure < handle
             end
             delete(tempfig);
             close(obj.State.Figure.Reference.Handle);
+            %update plotlyfigure object
+            obj.update; 
         end
         
         
@@ -246,6 +246,16 @@ classdef plotlyfigure < handle
                 updateAxis(obj,n);
             end
             
+            %update plots (must update before colorbars) 
+            for n = 1:obj.State.Figure.NumPlots
+                updateData(obj,n);
+            end
+            
+            %update annotations
+            for n = 1:obj.State.Figure.NumAnnotations
+                updateAnnotation(obj,n);
+            end
+            
             %update legends
             for n = 1:obj.State.Figure.NumLegends
                 updateLegend(obj,n);
@@ -254,16 +264,6 @@ classdef plotlyfigure < handle
             %update colorbars
             for n = 1:obj.State.Figure.NumColorbars
                 updateColorbar(obj,n);
-            end
-            
-            %update plots
-            for n = 1:obj.State.Figure.NumPlots
-                updateData(obj,n);
-            end
-            
-            %update annotations
-            for n = 1:obj.State.Figure.NumAnnotations
-                updateAnnotation(obj,n);
             end
             
         end
