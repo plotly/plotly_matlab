@@ -59,11 +59,11 @@ else
     obj.layout.showlegend = false;
 end
 
-%initialize margins to size of figure
-obj.layout.margin.l = figure_data.Position(3);
-obj.layout.margin.r = figure_data.Position(3);
-obj.layout.margin.b = figure_data.Position(4);
-obj.layout.margin.t = figure_data.Position(4);
+%-margins-%
+obj.layout.margin.l = 0;
+obj.layout.margin.r = 0;
+obj.layout.margin.b = 0;
+obj.layout.margin.t = 0;
 
 %-width-%
 obj.layout.width = figure_data.Position(3)*obj.PlotlyDefaults.FigureIncreaseFactor;
