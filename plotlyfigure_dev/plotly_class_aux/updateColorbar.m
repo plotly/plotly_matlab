@@ -25,9 +25,9 @@ function obj = updateColorbar(obj,colorbarIndex)
 % xanchor: ...[DONE]
 % yanchor: ...[DONE]
 % bgcolor: ...[DONE]
-% outlinecolor: ...[DONE] 
+% outlinecolor: ...[DONE]
 % outlinewidth: ...[DONE]
-% borderwidth: ...[NOT SUPPORTED IN MATLAB] 
+% borderwidth: ...[NOT SUPPORTED IN MATLAB]
 % bordercolor: ...[NOT SUPPORTED IN MATLAB]
 % xpad: ...[DONE]
 % ypad: ...[DONE]
@@ -231,7 +231,7 @@ if orientVert
             %-autotick-%
             colorbar.autotick = true;
             %-numticks-%
-            colorbar.nticks = length(colorbar_data.YTick);
+            colorbar.nticks = length(colorbar_data.YTick) + 1; %nticks = max ticks (so + 1)
         else
             %-show tick labels-%
             if isempty(colorbar_data.YTickLabel)
@@ -245,7 +245,7 @@ if orientVert
                 colorbar.dtick = str2double(colorbar_data.YTickLabel(2,:))- str2double(colorbar_data.YtickLabel(1,:));
             end
         end
-    end    
+    end
 else
     if isempty(colorbar_data.XTick)
         %-show tick labels-%
@@ -264,7 +264,7 @@ else
             %-autotick-%
             colorbar.autotick = true;
             %-numticks-%
-            colorbar.nticks = length(colorbar_data.XTick);
+            colorbar.nticks = length(colorbar_data.XTick) + 1;
         else
             %-show tick labels-%
             if isempty(colorbar_data.XTickLabel)
@@ -296,9 +296,13 @@ obj.layout.plot_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2st
 %-ASSOCIATED DATA-%
 if ~isempty(colorbar_data.UserData)
     obj.data{colorbar_data.UserData}.colorbar = colorbar;
+    %-show scale-%
+    obj.data{color_data.UserData}.showscale = true;
 else
     if obj.State.Figure.NumPlots >= colorbarIndex
         obj.data{colorbarIndex}.colorbar = colorbar;
+        %-show scale-%
+        obj.data{colorbarIndex}.showscale = true;
     end
 end
 
