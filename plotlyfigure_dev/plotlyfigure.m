@@ -165,6 +165,12 @@ classdef plotlyfigure < handle
             plotlyFigureHandle = obj.State.Figure.Handle;
             set(0,'CurrentFigure', plotlyFigureHandle);
         end
+        
+        %----STRIP THE STYLE DEFAULTS----%
+        function obj = strip(obj)
+            obj.PlotOptions.Strip = true; 
+            obj.update; 
+        end
 
         %----SEND PLOT REQUEST (NO UPDATE)----%
         function obj = plotly(obj)
@@ -311,6 +317,7 @@ classdef plotlyfigure < handle
         %----ADD A PLOT TO AN AXIS----%
         
         function obj = axisAddPlot(obj,~,event)
+            
             % separate text from non-text
             if strcmpi(event.Child.Type,'text')
                 % ignore empty string text 
@@ -330,6 +337,7 @@ classdef plotlyfigure < handle
                 obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = event.Child.Parent;
                 obj.State.Plot(obj.State.Figure.NumPlots).Class = event.Child.classhandle.name;
             end
+            
         end
         
         %----ADD TITLE TO AN AXIS----%
