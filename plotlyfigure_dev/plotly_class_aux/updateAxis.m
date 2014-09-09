@@ -354,7 +354,7 @@ xaxis.titlefont.family = matlab2plotlyfont(xlabel_data.FontName);
 
 %-y title-%
 if ~isempty(ylabel_data.String)
-    yaxis.title = parseString(text_data.String, ylabel_data.Interpreter);
+    yaxis.title = parseString(ylabel_data.String, ylabel_data.Interpreter);
 end
 
 %-y title font color-%
