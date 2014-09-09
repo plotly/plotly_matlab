@@ -11,11 +11,11 @@ switch obj.State.Plot(dataIndex).Class
     case 'line'
         updateLineseries(obj, dataIndex);
     case 'patch'
-        updatePatch(obj, dataIndex); 
+        %updatePatch(obj, dataIndex); 
     case 'rectangle'
-        updateRectangle(obj,dataIndex);
+        %updateRectangle(obj,dataIndex);
     case 'surface'
-        updateCoreSurface(obj,dataIndex);
+        %updateSurface(obj,dataIndex);
     case 'text'
         %HANDLED BY UPDATETEXT
         
@@ -30,26 +30,26 @@ switch obj.State.Plot(dataIndex).Class
     case 'contourgroup'
         updateContourgroup(obj,dataIndex);
     case 'errorbarseries'
-        updateErrorbarseries(obj,dataIndex);
+        %updateErrorbarseries(obj,dataIndex);
     case 'lineseries'
         updateLineseries(obj, dataIndex);
     case 'quivergroup'
-        updateQuivergroup(obj, dataIndex);
+        %updateQuivergroup(obj, dataIndex);
     case 'scattergroup'
-        updateScattergroup(obj, dataIndex);
+        %updateScattergroup(obj, dataIndex);
     case 'stairseries'
-        updateStairseries(obj, dataIndex);
+        %updateStairseries(obj, dataIndex);
     case 'stemseries'
         updateStemseries(obj, dataIndex);
     case 'surfaceplot'
-        updateSurfaceplot(obj,dataIndex);
+        %updateSurfaceplot(obj,dataIndex);
         
         % Plotly supported MATLAB plot objects
         
     case 'hggroup'
-        updateHggroup(obj,dataIndex);
+        %updateHggroup(obj,dataIndex);
     case 'hgtransorm'
-        updatePlothgtransform(obj,dataIndex);
+        %updatePlothgtransform(obj,dataIndex);
     otherwise
 end
 end
