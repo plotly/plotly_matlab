@@ -180,7 +180,7 @@ if(~strcmp(contour_data.LineStyle,'none'))
         col = 255*contour_data.LineColor;
         obj.data{contourIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']; 
     else
-        %todo: handle auto color 
+        obj.data{contourIndex}.line.color = 'rgba(0,0,0,0)'; 
     end
     
     
@@ -214,7 +214,6 @@ else
     obj.data{contourIndex}.contours.showlines = false; 
     
 end
-
 
 %-------------------------------------------------------------------------%
 
