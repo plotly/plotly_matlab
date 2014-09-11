@@ -1,14 +1,18 @@
 classdef plotlyfigure < handle
     
     %----CLASS PROPERTIES----%
-    properties
+    properties (SetObservable)
         data; % data of the plot
         layout; % layout of the plot
+    end
+    
+    properties
         PlotOptions; % filename,fileopt,world_readable
         PlotlyDefaults; % plotly specific conversion defualts
         UserData; % credentials/configuration/verbose
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
+        LiveEdit;
     end
     
     %----CLASS METHODS----%
@@ -29,6 +33,10 @@ classdef plotlyfigure < handle
             obj.data = {};
             obj.layout = struct();
             
+            % add live edit listeners
+            addlistener(obj,'data','PostSet',@obj.editLive);
+            addlistener(obj,'layout','PostSet',@obj.editLive);
+            
             % plot options
             obj.PlotOptions.FileName = 'PLOTLYFIGURE';
             obj.PlotOptions.FileOpt = 'overwrite';
@@ -45,7 +53,9 @@ classdef plotlyfigure < handle
             obj.PlotlyDefaults.MaxTickLength = 20;
             obj.PlotlyDefaults.TitleHeight = 0.01;
             obj.PlotlyDefaults.ExponentFormat = 'none';
-                       
+            obj.PlotlyDefaults.ErrorbarWidth = 6;
+            obj.PlotlyDefaults.MarkerOpacity = 1;
+            
             % check for some key/vals
             for a = 1:2:nargin
                 if(strcmpi(varargin{a},'filename'))
@@ -82,9 +92,12 @@ classdef plotlyfigure < handle
             catch
                 error('Whoops! you must be signed in to initialize a plotlyfigure object!');
             end
-                  
+            
             % user experience
             obj.UserData.Verbose = false;
+            
+            % live editing
+            obj.LiveEdit = false;
             
             % generate figure and handle
             fig = figure;
@@ -99,11 +112,6 @@ classdef plotlyfigure < handle
             obj.State.Figure.NumLegends = 0;
             obj.State.Figure.NumColorbars = 0;
             obj.State.Figure.NumAnnotations = 0;
-            
-            % new child added listener (axes)
-            addlistener(obj.State.Figure.Handle,'ObjectChildAdded',@(src,event)figureAddAxis(obj,src,event));
-            % old child removed listener
-            addlistener(obj.State.Figure.Handle,'ObjectChildRemoved',@(src,event)figureRemoveAxis(obj,src,event));
             
             % axis state
             obj.State.Axis = [];
@@ -125,16 +133,35 @@ classdef plotlyfigure < handle
                 if ishandle(varargin{1})
                     obj.State.Figure.Reference = [];
                     obj.State.Figure.Reference.Handle = varargin{1};
-                    set(obj.State.Figure.Handle,'Color',get(obj.State.Figure.Reference.Handle,'Color'),'Position',get(obj.State.Figure.Reference.Handle,'Position'));
+                    
+                    %adjust the units
+                    set(obj.State.Figure.Reference.Handle,'Units','pixels')
+                    
+                    set(obj.State.Figure.Handle,'Position',get(obj.State.Figure.Reference.Handle,'Position'));
                     obj.convertFigure;
                 else
+                    
+                    % new child added listener (axes)
+                    addlistener(obj.State.Figure.Handle,'ObjectChildAdded',@(src,event)figureAddAxis(obj,src,event));
+                    
+                    % old child removed listener
+                    addlistener(obj.State.Figure.Handle,'ObjectChildRemoved',@(src,event)figureRemoveAxis(obj,src,event));
+                    
                     % add default axis
                     axes;
                 end
             else
+                
+                % new child added listener (axes)
+                addlistener(obj.State.Figure.Handle,'ObjectChildAdded',@(src,event)figureAddAxis(obj,src,event));
+                
+                % old child removed listener
+                addlistener(obj.State.Figure.Handle,'ObjectChildRemoved',@(src,event)figureRemoveAxis(obj,src,event));
+                
                 % add default axis
                 axes;
             end
+            
             
             % plot response
             obj.Response = {};
@@ -160,6 +187,16 @@ classdef plotlyfigure < handle
         
         %-------------------------USER METHODS----------------------------%
         
+        %----SET LIVE EDIT PROPERTY----%
+        function startlive(obj)
+            obj.LiveEdit = true;
+        end
+        
+        %----SET LIVE EDIT PROPERTY----%
+        function stoplive(obj)
+            obj.LiveEdit = false;
+        end
+        
         %----GET OBJ.STATE.FIGURE.HANDLE ----%
         function plotlyFigureHandle = gpf(obj)
             plotlyFigureHandle = obj.State.Figure.Handle;
@@ -168,12 +205,16 @@ classdef plotlyfigure < handle
         
         %----STRIP THE STYLE DEFAULTS----%
         function obj = strip(obj)
-            obj.PlotOptions.Strip = true; 
-            obj.update; 
+            obj.PlotOptions.Strip = true;
+            obj.update;
         end
-
+        
         %----SEND PLOT REQUEST (NO UPDATE)----%
-        function obj = plotly(obj)
+        function obj = plotly(obj,showlink)
+            
+            if nargin == 1
+                showlink = true;
+            end
             
             %args
             args.filename = obj.PlotOptions.FileName;
@@ -190,14 +231,15 @@ classdef plotlyfigure < handle
             obj.Response = response;
             
             %ouput url as hyperlink in command window if possible
-            try
-                desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
-                editor = desktop.getGroupContainer('Editor');
-                if(~strcmp(response.url,'') && ~isempty(editor));
-                    fprintf(['\nLet''s have a look: <a href="matlab:openurl(''%s'')">' response.url '</a>\n\n'],response.url)
+            if showlink
+                try
+                    desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
+                    editor = desktop.getGroupContainer('Editor');
+                    if(~strcmp(response.url,'') && ~isempty(editor));
+                        fprintf(['\nLet''s have a look: <a href="matlab:openurl(''%s'')">' response.url '</a>\n\n'],response.url)
+                    end
                 end
             end
-            
         end
         
         %--------------------------TITLE CHECKS---------------------------%
@@ -210,7 +252,6 @@ classdef plotlyfigure < handle
             end
         end
         
-        
         function titleIndex= getTitleIndex(obj,axhan)
             titleIndex = find(arrayfun(@(x)(eq(x.AssociatedAxis,axhan)&&(x.Title)),obj.State.Text));
         end
@@ -219,30 +260,66 @@ classdef plotlyfigure < handle
         
         %automatic figure conversion
         function obj = convertFigure(obj)
-            % create temp figure
-            tempfig = figure('Visible','off');
+            
+            % find children
+            figch = get(obj.State.Figure.Reference.Handle,'Children');
+            
+            % copy object
+            copyobj(figch,obj.State.Figure.Handle)
+            
             % find axes of reference figure
             ax = findobj(obj.State.Figure.Reference.Handle,'Type','axes');
+            obj.State.Figure.NumAxes = length(ax);
+            obj.State.Figure.NumAnnotations = length(ax);
+            
+            % find children of reference figure axes
             for a = 1:length(ax)
-                % copy them to tempfigure
-                axtemp = copyobj(ax(a),tempfig);
-                % clear the children
-                cla(axtemp,'reset');
-                % add axtemp to figure
-                axnew = copyobj(axtemp,obj.State.Figure.Handle);
-                % copy ax children to axtemp
-                copyobj(allchild(ax(a)),axnew);
+                obj.State.Axis(a).Handle = ax(a);
+                
+                %add title
+                obj.State.Text(a).Handle = get(ax(a),'Title');
+                obj.State.Text(a).AssociatedAxis = ax(a);
+                obj.State.Text(a).Title = true;
+                
+                axch = get(ax(a),'Children');
+                obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + length(axch);
+                for c = length(axch)
+                    obj.State.Plot(c).Handle = axch(c);
+                    obj.State.Plot(c).AssociatedAxis = ax(a);
+                    plotclass = handle(axch(c));
+                    obj.State.Plot(c).Class = plotclass.classhandle.name;
+                end
             end
-            delete(tempfig);
-            close(obj.State.Figure.Reference.Handle);
+            
+            % find legends of reference figure
+            legs = findobj(obj.State.Figure.Reference.Handle,'Type','legend');
+            obj.State.Figure.NumLegends = length(legs);
+            
+            for g = 1:length(legs)
+                obj.State.Legend(g).Handle = legs(g);
+            end
+            
+            % find colorbar of reference figure
+            cols = findobj(obj.State.Figure.Reference.Handle,'Type','colorbar');
+            obj.State.Figure.NumColorbars = length(cols);
+            
+            for c = 1:length(cols)
+                obj.State.Colorbar(c).Handle = cols(c);
+            end
+            
             %update plotlyfigure object
-            obj.update; 
+            obj.update;  
         end
-        
         
         %----------------------UPDATE PLOTLY FIGURE-----------------------%
         
         function obj = update(obj)
+            
+            %reset data
+            obj.data = {};
+            
+            %reset layout
+            obj.layout = struct();
             
             %update figure
             updateFigure(obj);
@@ -252,7 +329,7 @@ classdef plotlyfigure < handle
                 updateAxis(obj,n);
             end
             
-            %update plots (must update before colorbars) 
+            %update plots (must update before colorbars)
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
             end
@@ -274,29 +351,54 @@ classdef plotlyfigure < handle
             
         end
         
+        
         %--------------------CALLBACK FUNCTIONS---------------------------%
         
+        %----LIVE EDIT----%
+        
+        function obj = editLive(obj,~,~)
+            if obj.LiveEdit
+                % switch off liveedit
+                obj.LiveEdit = false;
+                % send to plotly without link
+                showlink = false;
+                obj.plotly(showlink);
+                % switch on liveedit
+                obj.LiveEdit = true;
+            end
+        end
+        
         %----ADD AN AXIS TO THE FIGURE----%
+        
         function obj = figureAddAxis(obj,~,event)
             % check for type axes
             if strcmp(get(event.Child,'Type'),'axes')
                 %check tag
                 switch lower(event.Child.classhandle.name)
                     case 'legend'
+                        
                         % update the number of legends
                         obj.State.Figure.NumLegends = obj.State.Figure.NumLegends + 1;
                         obj.State.Legend(obj.State.Figure.NumLegends).Handle = event.Child;
+                        
                     case 'colorbar'
+                        
                         % update the number of colorbars
                         obj.State.Figure.NumColorbars = obj.State.Figure.NumColorbars + 1;
                         obj.State.Colorbar(obj.State.Figure.NumColorbars).Handle = event.Child;
+                        obj.State.Colorbar(obj.State.Figure.NumColorbars).AssociatedAxis = get(obj.State.Figure.Handle,'CurrentAxes');
+                        
                     otherwise
+                        
                         % update the number of axes
                         obj.State.Figure.NumAxes = obj.State.Figure.NumAxes + 1;
+                        
                         %update the axis handle
                         obj.State.Axis(obj.State.Figure.NumAxes).Handle = event.Child;
+                        
                         %new child added
                         addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildAdded',@(src,event)axisAddPlot(obj,src,event));
+                        
                         %old child removed
                         addlistener(obj.State.Axis(obj.State.Figure.NumAxes).Handle,'ObjectChildRemoved',@(src,event)axisRemovePlot(obj,src,event));
                         
@@ -304,12 +406,15 @@ classdef plotlyfigure < handle
                         
                         %update the text index
                         obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
+                        
                         %text handle
                         obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.Child.Title;
                         obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = event.Child;
                         obj.State.Text(obj.State.Figure.NumAnnotations).Title = true;
+                        
                         %add title listener
                         addlistener(event.Child,'Title','PostSet',@(src,event)axisAddTitle(obj,src,event));
+                        
                 end
             end
         end
@@ -320,25 +425,140 @@ classdef plotlyfigure < handle
             
             % separate text from non-text
             if strcmpi(event.Child.Type,'text')
-                % ignore empty string text 
+                
+                % ignore empty string text
                 if (validText(event.Child));
+                    
                     %update the text index
                     obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
+                    
                     %text handle
                     obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.Child;
                     obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = event.Child.Parent;
                     obj.State.Text(obj.State.Figure.NumAnnotations).Title = false;
+                    
                 end
             else
+                
                 % update the plot index
                 obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
+                
                 % plot handle
                 obj.State.Plot(obj.State.Figure.NumPlots).Handle = event.Child;
                 obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = event.Child.Parent;
                 obj.State.Plot(obj.State.Figure.NumPlots).Class = event.Child.classhandle.name;
+                
             end
-            
         end
+        
+        
+        %-------------------OVERLOADED FUNCTIONS--------------------------%
+        
+        function han = image(obj, varargin)
+            %call bar
+            han = image(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = imagesc(obj, varargin)
+            %call bar
+            han = imagesc(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = line(obj, varargin)
+            %call bar
+            han = line(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = patch(obj, varargin)
+            %call bar
+            han = patch(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = rectangle(obj, varargin)
+            %call bar
+            han = rectangle(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = area(obj,varargin)
+            %call area
+            han = area(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = bar(obj,varargin)
+            %call bar
+            han = bar(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = contour(obj,varargin)
+            %call plot
+            han = contour(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function obj = plot(obj,varargin)
+            %call plot
+            han = plot(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = errorbar(obj,varargin)
+            %call plot
+            han = errorbar(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = quiver(obj,varargin)
+            %call plot
+            han = quiver(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = scatter(obj, varargin)
+            %call bar
+            han = scatter(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = stairs(obj,varargin)
+            %call plot
+            han = stairs(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = stem(obj,varargin)
+            %call plot
+            han = stem(varargin{:});
+            %update object
+            obj.update;
+        end
+        
+        function han = surf(obj,varargin)
+            %call plot
+            han = surf(varargin{:});
+            %update object
+            obj.update;
+        end
+        
         
         %----ADD TITLE TO AN AXIS----%
         
@@ -348,8 +568,10 @@ classdef plotlyfigure < handle
             
             % get current title index
             titleIndex = obj.getTitleIndex(event.AffectedObject);
+            
             % update the text index
             obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations - 1;
+            
             % update the HandleIndexMap
             obj.State.Text(titleIndex) = [];
             
@@ -357,6 +579,7 @@ classdef plotlyfigure < handle
             
             % update the text index
             obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + 1;
+            
             % text handle
             obj.State.Text(obj.State.Figure.NumAnnotations).Handle = event.AffectedObject.Title;
             obj.State.Text(obj.State.Figure.NumAnnotations).AssociatedAxis = event.AffectedObject;
@@ -373,18 +596,25 @@ classdef plotlyfigure < handle
                 % check for legends/colorbars
                 switch lower(event.Child.classhandle.name)
                     case 'legend'
+                        
                         %update the number of legends
                         obj.State.Legend(obj.State.Figure.NumLegends).Handle = [];
                         obj.State.Figure.NumLegends = obj.State.Figure.NumLegends - 1;
+                        
                     case 'colorbar'
+                        
                         %update the number of colorbars
                         obj.State.Colorbar(obj.State.Figure.NumColorbars).Handle = [];
                         obj.State.Figure.NumColorbars = obj.State.Figure.NumColorbars - 1;
+                        
                     otherwise
+                        
                         %get current axis index
                         currentAxis = obj.getAxisIndex(event.Child);
+                        
                         % update the number of axes
                         obj.State.Figure.NumAxes = obj.State.Figure.NumAxes - 1;
+                        
                         % update the axis HandleIndexMap
                         obj.State.Axis(currentAxis) = [];
                         
@@ -392,16 +622,21 @@ classdef plotlyfigure < handle
                         
                         % get current title index
                         titleIndex = obj.getTitleIndex(event.Child);
+                        
                         % update the text index
                         obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations - 1;
+                        
                         % update the HandleIndexMap
                         obj.State.Text(titleIndex) = [];
+                        
                 end
             end
         end
         
         %----REMOVE A PLOT FROM AN AXIS----%
+        
         function obj = axisRemovePlot(obj,~,event)
+            
             if ~strcmpi(event.Child.Type,'text')
                 % get current plot index
                 currentPlot = obj.getDataIndex(event.Child);
@@ -409,16 +644,18 @@ classdef plotlyfigure < handle
                 obj.State.Figure.NumPlots = obj.State.Figure.NumPlots - 1;
                 % update the HandleIndexMap
                 obj.State.Plot(currentPlot) = [];
+                
                 % not(empty annotation or title/label)
-            elseif ~(isempty(get(event.Child,'String')) || eq(event.Child,event.Source.Title) || ...
-                    eq(event.Child,event.Source.ZLabel) || eq(event.Child,event.Source.XLabel) || ...
-                    eq(event.Child,event.Source.YLabel))
+            elseif ~(isempty(get(event.Child,'String')) || strcmp(get(event.Child,'String'),' ') || ...
+                    eq(event.Child,event.Source.ZLabel) || eq(event.Child,event.Source.XLabel)   || ...
+                    eq(event.Child,event.Source.YLabel) || eq(event.Child,event.Source.Title))
                 % get current annotation index
                 currentAnnotation = obj.getAnnotationIndex(event.Child);
                 % update the text index
                 obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations - 1;
                 % update the HandleIndexMap
                 obj.State.Text(currentAnnotation) = [];
+                
             end
         end
     end
