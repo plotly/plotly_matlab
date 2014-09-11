@@ -126,13 +126,13 @@ obj.data{contourIndex}.zmax = axis_data.CLim(2);
 
 %-------------------------------------------------------------------------%
 
-%-COLORSCALE-%
+%-COLORSCALE (ASSUMES PATCH CDATAMAP IS 'SCALED')-%
 
-colmap = figure_data.Colormap; 
+colormap = figure_data.Colormap; 
 
-for c = 1:length(colmap)
-    col =  255*(colmap(c,:)); 
-    obj.data{contourIndex}.colorscale{c} = {(c-1)/length(colmap) , ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
+for c = 1:length(colormap)
+    col =  255*(colormap(c,:)); 
+    obj.data{contourIndex}.colorscale{c} = {(c-1)/length(colormap), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
 end
 
 %-------------------------------------------------------------------------%

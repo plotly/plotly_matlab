@@ -10,7 +10,7 @@ function updateLineseries(obj,dataIndex)
 % name - [DONE]
 % text - [NOT SUPPORTED IN MATLAB]
 % error_y - [HANDLED BY ERRORBAR]
-% error_x - [HANDLED BY ERRORBAR]
+% error_x - [NOT SUPPORTED IN MATLAB]
 % marler.color - [DONE]
 % marker.size - [DONE]
 % marker.line.color - [DONE]
@@ -183,7 +183,7 @@ filledMarkerSet = {'o','square','s','diamond','d',...
 filledMarker = ismember(plot_data.Marker,filledMarkerSet);
 
 if filledMarker
-    if ~ischar(MarkerColor)
+    if isnumeric(MarkerColor)
         col = 255*MarkerColor;
         markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     else
@@ -215,7 +215,7 @@ filledMarkerSet = {'o','square','s','diamond','d',...
 
 filledMarker = ismember(plot_data.Marker,filledMarkerSet);
 
-if ~ischar(MarkerLineColor)
+if isnumeric(MarkerLineColor)
     col = 255*MarkerLineColor;
     markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 else

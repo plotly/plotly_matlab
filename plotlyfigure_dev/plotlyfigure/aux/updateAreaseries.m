@@ -1,6 +1,6 @@
 function updateAreaseries(obj,dataIndex)
 
-%----SCATTER FIELDS----%
+%----AREA FIELDS----%
 
 % x - [DONE]
 % y - [DONE]
@@ -42,6 +42,7 @@ function updateAreaseries(obj,dataIndex)
 % stream - [HANDLED BY PLOTLYSTREAM]
 % visible [DONE]
 % type [DONE]
+
 
 %-FIGURE STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);
@@ -91,7 +92,11 @@ obj.data{dataIndex}.y = ydata(2:(numel(ydata)-1)/2+1)';
 %-------------------------------------------------------------------------%
 
 %-AREA NAME-%
-obj.data{dataIndex}.name = get(axis_data.YLabel,'string');
+if ~isempty(area_child_data.DisplayName);
+    obj.data{dataIndex}.name = area_child_data.DisplayName;
+else
+    obj.data{dataIndex}.name = area_data.DisplayName;
+end
 
 %-------------------------------------------------------------------------%
 
@@ -146,6 +151,7 @@ if ~strcmp(area_child_data.Marker,'none')
     end
     
     obj.data{dataIndex}.marker.symbol = marksymbol;
+    
 end
 
 %-------------------------------------------------------------------------%
@@ -157,7 +163,7 @@ if(~strcmp(area_child_data.LineStyle,'none'))
     
     %-AREA LINE COLOR-%
     
-    if ~ischar(area_child_data.EdgeColor)
+    if isnumeric(area_child_data.EdgeColor)
         
         col = 255*area_child_data.EdgeColor;
         obj.data{dataIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
@@ -222,12 +228,8 @@ end
 %-MARKER LINE COLOR-%
 
 MarkerLineColor = area_child_data.MarkerEdgeColor;
-filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
 
-filledMarker = ismember(area_child_data.Marker,filledMarkerSet);
-
-if ~ischar(MarkerLineColor)
+if isnumeric(MarkerLineColor)
     col = 255*MarkerLineColor;
     markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 else
@@ -270,8 +272,10 @@ obj.data{dataIndex}.visible = strcmp(area_child_data.Visible,'on');
 %-AREA FILL-%
 obj.data{dataIndex}.fill = 'tonexty';
 
+%-------------------------------------------------------------------------%
+
 %-AREA FILL COLOR-%
-if ~ischar(area_child_data.FaceColor)
+if isnumeric(area_child_data.FaceColor)
     
     col = 255*area_child_data.FaceColor;
     obj.data{dataIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
@@ -284,8 +288,8 @@ else
             switch area_child_data.CDataMapping
                 case 'scaled'
                     mapcol = max(axis_data.CLim(1),area_child_data.CData(1));
-                    mapcol = min(axis_data.CLim(2),mapcol); 
-                    mapcol = axis_data.CLim(1) + floor((length(figure_data.Colormap)-1)/diff(axis_data.CLim))*(mapcol-axis_data.CLim(1)); 
+                    mapcol = min(axis_data.CLim(2),mapcol);
+                    mapcol = axis_data.CLim(1) + floor((length(figure_data.Colormap)-1)/diff(axis_data.CLim))*(mapcol-axis_data.CLim(1));
                     col = 255*figure_data.Colormap(mapcol,:);
                 case 'direct'
                     col = 255*figure_data.Colormap(area_child_data.CData(1),:);

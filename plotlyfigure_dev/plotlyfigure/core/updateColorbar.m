@@ -284,29 +284,33 @@ end
 %-------------------------------------------------------------------------%
 
 %-colorbar bg-color-%
+
 if ~ischar(colorbar_data.Color)
     col = 255*colorbar_data.Color;
 else
     col = 255*figure_data.Color;
 end
+
 obj.layout.plot_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
 %-------------------------------------------------------------------------%
 
 %-ASSOCIATED DATA-%
-if ~isempty(colorbar_data.UserData)
-    obj.data{colorbar_data.UserData}.colorbar = colorbar;
-    %-show scale-%
-    obj.data{color_data.UserData}.showscale = true;
+
+if isfield(colorbar_data.UserData,'dataref')
+    colorbarDataIndex = colorbar_data.UserData.dataref;
 else
-    if obj.State.Figure.NumPlots >= colorbarIndex
-        obj.data{colorbarIndex}.colorbar = colorbar;
-        %-show scale-%
-        obj.data{colorbarIndex}.showscale = true;
-    end
+    colorbarDataIndex = findColorbarData(obj,colorbarIndex);
 end
+
+%-set colorbar-%
+obj.data{colorbarDataIndex}.colorbar = colorbar;
+
+%-show scale-%
+obj.data{colorbarDataIndex}.showscale = true;
 
 %-REVERT UNITS-%
 set(obj.State.Colorbar(colorbarIndex).Handle,'Units',colorbarunits);
+
 end
 

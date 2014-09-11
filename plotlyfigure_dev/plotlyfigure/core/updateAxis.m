@@ -7,7 +7,7 @@ function obj = updateAxis(obj,axIndex)
 % range:...[DONE]
 % domain:...[DONE]
 % type:...[DONE]
-% rangemode:...[NOT HANDLED IN MATLAB]
+% rangemode:...[DONE]
 % autorange:...[DONE]
 % showgrid:...[DONE]
 % zeroline:...[DONE]
@@ -44,14 +44,14 @@ function obj = updateAxis(obj,axIndex)
 %-FIGURE DATA-%
 figure_data = get(obj.State.Figure.Handle);
 
-%-AXIS DATA-%
-axis_data = obj.State.Axis(axIndex).Handle;
+%-AXIS DATA STRUCTURE-%
+axis_data = get(obj.State.Axis(axIndex).Handle);
 
 %-STANDARDIZE UNITS-%
 axisunits = axis_data.Units;
 fontunits = axis_data.FontUnits;
-set(axis_data,'Units','normalized');
-set(axis_data,'FontUnits','points');
+set(obj.State.Axis(axIndex).Handle,'Units','normalized');
+set(obj.State.Axis(axIndex).Handle,'FontUnits','points');
 
 %-CONVERT TO PLOTLY AXIS NOTATION-%
 if isfield(obj.layout,['xaxis' axIndex])
@@ -70,11 +70,17 @@ xaxis.anchor = ['y' num2str(axIndex)];
 %-xaxis zeroline-%
 xaxis.zeroline = false;
 
+%-xaxis autorange-%
+xaxis.autorange = false; 
+
 %-yaxis anchor-%
 yaxis.anchor = ['x' num2str(axIndex)];
 
 %-yaxis zeroline-%
 yaxis.zeroline = false;
+
+%-yaxis autorange-%
+yaxis.autorange = false; 
 
 %-------------------------------------------------------------------------%
 
@@ -325,8 +331,8 @@ end
 
 %-------------------------------------------------------------------------%
 
-xlabel = get(axis_data,'XLabel');
-ylabel = get(axis_data,'YLabel');
+xlabel = axis_data.XLabel;
+ylabel = axis_data.YLabel;
 
 xlabel_data = get(xlabel);
 ylabel_data = get(ylabel);
@@ -467,7 +473,7 @@ obj.layout = setfield(obj.layout,['xaxis' num2str(axIndex)],xaxis);
 obj.layout = setfield(obj.layout,['yaxis' num2str(axIndex)],yaxis);
 
 %-REVERT UNITS-%
-set(axis_data,'Units',axisunits);
-set(axis_data,'FontUnits',fontunits);
+set(obj.State.Axis(axIndex).Handle,'Units',axisunits);
+set(obj.State.Axis(axIndex).Handle,'FontUnits',fontunits);
 
 end

@@ -122,7 +122,7 @@ obj.layout.bargap = 1-bar_data.BarWidth;
 %-------------------------------------------------------------------------%
 
 %-bar line width-%
-bobj.data{dataIndex}.marker.line.width = bar_child_data.LineWidth;
+obj.data{dataIndex}.marker.line.width = bar_child_data.LineWidth;
 
 %-------------------------------------------------------------------------%
 
@@ -155,6 +155,8 @@ end
 
 %-bar face color-%
 
+colormap = figure_data.Colormap;
+
 if ~ischar(bar_child_data.FaceColor)
     
     %-paper_bgcolor-%
@@ -166,8 +168,15 @@ else
         case 'none'
             obj.data{dataIndex}.marker.color = 'rgba(0,0,0,0,)';
         case 'flat'
-            col = 255*figure_data.Colormap(bar_child_data.CData(1),:);
-            obj.data{dataIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];    
+            switch bar_child_data.CDataMapping
+                case 'scaled'
+                    capCD = max(min(bar_child_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
+                    scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
+                    col =  255*(colormap(1+ floor(scalefactor*(length(colormap)-1)),:));
+                case 'direct'
+                    col =  255*(colormap(scatter_child_data(n).FaceVertexCData(1,1),:));
+            end
+            obj.data{dataIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     end
 end
 
@@ -186,11 +195,17 @@ else
         case 'none'
             obj.data{dataIndex}.marker.line.color = 'rgba(0,0,0,0,)';
         case 'flat'
-            col = 255*figure_data.Colormap(bar_child_data.CData(1),:);
-            obj.data{dataIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];  
+            switch bar_child_data.CDataMapping
+                case 'scaled'
+                    capCD = max(min(bar_child_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
+                    scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
+                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
+                case 'direct'
+                    col =  255*(colormap(scatter_child_data(n).FaceVertexCData(1,1),:));
+            end
+            obj.data{dataIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     end
 end
-
 end
 
 
