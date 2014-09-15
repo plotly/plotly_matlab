@@ -1,4 +1,4 @@
-function updateLineseries(obj,dataIndex)
+function updateLineseries(obj,plotIndex)
 
 %----SCATTER FIELDS----%
 
@@ -7,8 +7,8 @@ function updateLineseries(obj,dataIndex)
 % r - [HANDLED BY SCATTER]
 % t - [HANDLED BY SCATTER]
 % mode - [DONE]
-% name - [DONE]
-% text - [NOT SUPPORTED IN MATLAB]
+% name - [NOT SUPPORTED IN MATLAB]
+% text - [DONE]
 % error_y - [HANDLED BY ERRORBAR]
 % error_x - [NOT SUPPORTED IN MATLAB]
 % marler.color - [DONE]
@@ -43,17 +43,11 @@ function updateLineseries(obj,dataIndex)
 % visible [DONE]
 % type [DONE]
 
-%-FIGURE STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
-
-%-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(dataIndex).AssociatedAxis);
-
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
 %-PLOT DATA STRUCTURE- %
-plot_data = get(obj.State.Plot(dataIndex).Handle);
+plot_data = get(obj.State.Plot(plotIndex).Handle);
 
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
@@ -62,199 +56,86 @@ eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
 %-------------------------------------------------------------------------%
 
 %-SCATTER XAXIS-%
-obj.data{dataIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{plotIndex}.xaxis = ['x' num2str(axIndex)];
 
 %-------------------------------------------------------------------------%
 
 %-SCATTER YAXIS-%
-obj.data{dataIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{plotIndex}.yaxis = ['y' num2str(axIndex)];
 
 %-------------------------------------------------------------------------%
 
 %-SCATTER TYPE-%
-obj.data{dataIndex}.type = 'scatter';
-
-%-------------------------------------------------------------------------%
-
-%-SCATTER X-%
-obj.data{dataIndex}.x = plot_data.XData;
-
-%-------------------------------------------------------------------------%
-
-%-SCATTER Y-%
-obj.data{dataIndex}.y = plot_data.YData;
-
-%-------------------------------------------------------------------------%
-
-%-SCATTER NAME-%
-obj.data{dataIndex}.name = plot_data.DisplayName;
-
-%-------------------------------------------------------------------------%
-
-%-MARKER SIZE-%
-obj.data{dataIndex}.marker.size = plot_data.MarkerSize;
-
-%-------------------------------------------------------------------------%
-
-%-SCATTER MODE-%
-if ~strcmpi('none', plot_data.Marker) && ~strcmpi('none', plot_data.LineStyle)
-    mode = 'lines+markers';
-elseif ~strcmpi('none', plot_data.Marker)
-    mode = 'markers';
-elseif ~strcmpi('none', plot_data.LineStyle)
-    mode = 'lines';
-else
-    mode = 'none';
-end
-
-obj.data{dataIndex}.mode = mode;
-
-%-MARKER SYMBOL-%
-if ~strcmp(plot_data.Marker,'none')
-    
-    switch plot_data.Marker
-        case '.'
-            marksymbol = 'circle';
-        case 'o'
-            marksymbol = 'circle';
-        case 'x'
-            marksymbol = 'x-thin-open';
-        case '+'
-            marksymbol = 'cross-thin-open';
-        case '*'
-            marksymbol = 'asterisk-open';
-        case {'s','square'}
-            marksymbol = 'square';
-        case {'d','diamond'}
-            marksymbol = 'diamond';
-        case 'v'
-            marksymbol = 'triangle-down';
-        case '^'
-            marksymbol = 'triangle-up';
-        case '<'
-            marksymbol = 'triangle-left';
-        case '>'
-            marksymbol = 'triangle-right';
-        case {'p','pentagram'}
-            marksymbol = 'star';
-        case {'h','hexagram'}
-            marksymbol = 'hexagram';
-    end
-    
-    obj.data{dataIndex}.marker.symbol = marksymbol;
-end
-
-%-------------------------------------------------------------------------%
-
-%-MARKER LINE WIDTH-%
-obj.data{dataIndex}.marker.line.width = plot_data.LineWidth;
-
-if(~strcmp(plot_data.LineStyle,'none'))
-    
-    %-SCATTER LINE COLOR-%
-    col = 255*plot_data.Color;
-    obj.data{dataIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-    %-SCATTER LINE WIDTH-%
-    obj.data{dataIndex}.line.width = plot_data.LineWidth;
-    
-    %-SCATTER LINE DASH-%
-    switch plot_data.LineStyle
-        case '-'
-            LineStyle = 'solid';
-        case '--'
-            LineStyle = 'dash';
-        case ':'
-            LineStyle = 'dot';
-        case '-.'
-            LineStyle = 'dashdot';
-    end
-    obj.data{dataIndex}.line.dash = LineStyle;
-end
-
-%-------------------------------------------------------------------------%
-
-%--MARKER FILL COLOR--%
-
-MarkerColor = plot_data.MarkerFaceColor;
-filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
-
-filledMarker = ismember(plot_data.Marker,filledMarkerSet);
-
-if filledMarker
-    if isnumeric(MarkerColor)
-        col = 255*MarkerColor;
-        markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    else
-        switch MarkerColor
-            case 'none'
-                markercolor = 'rgba(0,0,0,0)';
-            case 'auto'
-                if ~strcmp(axis_data.Color,'none')
-                    col = 255*axis_data.Color;
-                    markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                else
-                    col = 255*figure_data.Color;
-                    markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                end
-        end
-    end
-    
-    obj.data{dataIndex}.marker.color = markercolor;
-    
-end
-
-%-------------------------------------------------------------------------%
-
-%-MARKER LINE COLOR-%
-
-MarkerLineColor = plot_data.MarkerEdgeColor;
-filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
-
-filledMarker = ismember(plot_data.Marker,filledMarkerSet);
-
-if isnumeric(MarkerLineColor)
-    col = 255*MarkerLineColor;
-    markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-else
-    switch MarkerLineColor
-        case 'none'
-            markerlinecolor = 'rgba(0,0,0,0)';
-        case 'auto'
-            col = 255*plot_data.Color;
-            markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    end
-end
-
-if filledMarker
-    obj.data{dataIndex}.marker.line.color = markerlinecolor;
-else
-    obj.data{dataIndex}.marker.color = markerlinecolor;
-end
-
-%-------------------------------------------------------------------------%
-
-%-SCATTER SHOWLEGEND-%
-leg = get(plot_data.Annotation);
-legInfo = get(leg.LegendInformation);
-
-switch legInfo.IconDisplayStyle
-    case 'on'
-        showleg = true;
-    case 'off'
-        showleg = false;
-end
-
-obj.data{dataIndex}.showlegend = showleg;
+obj.data{plotIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
 %-SCATTER VISIBLE-%
-obj.data{dataIndex}.visible = strcmp(plot_data.Visible,'on');
+obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
+
+%-------------------------------------------------------------------------%
+
+%-SCATTER X-%
+obj.data{plotIndex}.x = plot_data.XData;
+
+%-------------------------------------------------------------------------%
+
+%-SCATTER Y-%
+obj.data{plotIndex}.y = plot_data.YData;
+
+%-------------------------------------------------------------------------%
+
+%-SCATTER NAME-%
+obj.data{plotIndex}.name = plot_data.DisplayName;
+
+%-----------------------------!STYLE!-------------------------------------%
+
+if ~obj.PlotOptions.Strip
+    
+    %-SCATTER MODE (STYLE)-%
+    if ~strcmpi('none', plot_data.Marker) ...
+            && ~strcmpi('none', plot_data.LineStyle)
+        mode = 'lines+markers';
+    elseif ~strcmpi('none', plot_data.Marker)
+        mode = 'markers';
+    elseif ~strcmpi('none', plot_data.LineStyle)
+        mode = 'lines';
+    else
+        mode = 'none';
+    end
+    
+    obj.data{plotIndex}.mode = mode;
+    
+    %---------------------------------------------------------------------%
+    
+    %-LINE AND MARKER STYLE-%
+    [line, marker] = extractLineMarker(plot_data);
+    
+    % line style
+    obj.data{plotIndex}.line = line;
+    
+    % marker style
+    obj.data{plotIndex}.marker = marker;
+    
+    %---------------------------------------------------------------------%
+    
+    %-SCATTER SHOWLEGEND (STYLE)-%
+    leg = get(plot_data.Annotation);
+    legInfo = get(leg.LegendInformation);
+    
+    switch legInfo.IconDisplayStyle
+        case 'on'
+            showleg = true;
+        case 'off'
+            showleg = false;
+    end
+    
+    obj.data{plotIndex}.showlegend = showleg;
+    
+end
 
 end
 
+%-------------------------------------------------------------------------%
 
 
