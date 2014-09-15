@@ -41,17 +41,18 @@ function obj = updateAxis(obj,axIndex)
 % side:...[DONE]
 % position:...[DONE]
 
+
+%-STANDARDIZE UNITS-%
+axisunits = get(obj.State.Axis(axIndex).Handle,'Units');
+fontunits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
+set(obj.State.Axis(axIndex).Handle,'Units','normalized');
+set(obj.State.Axis(axIndex).Handle,'FontUnits','points');
+
 %-FIGURE DATA-%
 figure_data = get(obj.State.Figure.Handle);
 
 %-AXIS DATA STRUCTURE-%
 axis_data = get(obj.State.Axis(axIndex).Handle);
-
-%-STANDARDIZE UNITS-%
-axisunits = axis_data.Units;
-fontunits = axis_data.FontUnits;
-set(obj.State.Axis(axIndex).Handle,'Units','normalized');
-set(obj.State.Axis(axIndex).Handle,'FontUnits','points');
 
 %-CONVERT TO PLOTLY AXIS NOTATION-%
 if isfield(obj.layout,['xaxis' axIndex])
@@ -71,7 +72,7 @@ xaxis.anchor = ['y' num2str(axIndex)];
 xaxis.zeroline = false;
 
 %-xaxis autorange-%
-xaxis.autorange = false; 
+xaxis.autorange = false;
 
 %-yaxis anchor-%
 yaxis.anchor = ['x' num2str(axIndex)];
@@ -80,7 +81,7 @@ yaxis.anchor = ['x' num2str(axIndex)];
 yaxis.zeroline = false;
 
 %-yaxis autorange-%
-yaxis.autorange = false; 
+yaxis.autorange = false;
 
 %-------------------------------------------------------------------------%
 
@@ -95,8 +96,7 @@ switch axis_data.Box
         %-xaxis mirror-%
         xaxis.mirror = true;
         %-yaxis mirror-%
-        yaxis.mirror = true;
-        
+        yaxis.mirror = true;    
     case 'off'
         xaxis.mirror = false;
         yaxis.mirror = false;
@@ -299,11 +299,12 @@ else
             if isempty(axis_data.XTickLabel)
                 xaxis.showticklabels = false;
             else
-                try datenum(axis_data.XTickLabel(1,:));
+                try datevec(axis_data.XTickLabel(1,:),axis_data.UserData.plotly.xdateformat);
                     %-xaxis type date-%
                     xaxis.type = 'date';
                     %-range (overwrite)-%
-                    xaxis.range = [convertDate(datenum(axis_data.XTickLabel(1,:))) convertDate(datenum(axis_data.XTickLabel(end,:)))];
+                    xaxis.range = [convertDate(datenum(axis_data.XTickLabel(1,:),axis_data.UserData.plotly.xdateformat)), ...
+                        convertDate(datenum(axis_data.XTickLabel(end,:),axis_data.UserData.plotly.xdateformat))];
                     %-xaxis autotick-%
                     xaxis.autotick = true;
                     %-xaxis numticks-%
@@ -314,7 +315,7 @@ else
                     %-xaxis tick0-%
                     xaxis.tick0 = str2double(axis_data.XTickLabel(1,:));
                     %-xaxis dtick-%
-                    xaxis.dtick = str2double(axis_data.XTickLabel(2,:))- str2double(axis_data.XtickLabel(1,:));
+                    xaxis.dtick = str2double(axis_data.XTickLabel(2,:))- str2double(axis_data.XTickLabel(1,:));
                     %-xaxis autotick-%
                     xaxis.autotick = false;
                 end
@@ -436,11 +437,12 @@ else
             if isempty(axis_data.YTickLabel)
                 yaxis.showticklabels = false;
             else
-                try datenum(axis_data.YTickLabel(1,:));
+                try datevec(axis_data.YTickLabel(1,:),axis_data.UserData.plotly.ydateformat);
                     %-yaxis type date-%
                     yaxis.type = 'date';
                     %-range (overwrite)-%
-                    yaxis.range = [convertDate(datenum(axis_data.YTickLabel(1,:))) convertDate(datenum(axis_data.YTickLabel(end,:)))];
+                    yaxis.range = [convertDate(datenum(axis_data.YTickLabel(1,:),axis_data.UserData.plotly.ydateformat)), ...
+                        convertDate(datenum(axis_data.YTickLabel(end,:),axis_data.UserData.plotly.ydateformat))];
                     %-yaxis autotick-%
                     yaxis.autotick = true;
                     %-yaxis numticks-%
