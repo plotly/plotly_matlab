@@ -1,4 +1,4 @@
-function updateAreaseries(obj,dataIndex)
+function updateAreaseries(obj,areaIndex)
 
 %----AREA FIELDS----%
 
@@ -11,25 +11,6 @@ function updateAreaseries(obj,dataIndex)
 % text - [NOT SUPPORTED IN MATLAB]
 % error_y - [HANDLED BY ERRORBAR]
 % error_x - [HANDLED BY ERRORBAR]
-% marler.color - [DONE]
-% marker.size - [DONE]
-% marker.line.color - [DONE]
-% marker.line.width - [DONE]
-% marker.line.dash - [NOT SUPPORTED IN MATLAB]
-% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
-% marker.line.shape - [NOT SUPPORTED IN MATLAB]
-% marker.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.colorscale - [NOT SUPPORTED IN MATLAB]
-% marker.sizemode - [NOT SUPPORTED IN MATLAB]
-% marker.sizeref - [NOT SUPPORTED IN MATLAB]
-% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
-% line.color - [DONE]
-% line.width - [DONE]
-% line.dash - [DONE]
-% line.opacity - [NOT SUPPORTED IN MATLAB]
-% line.smoothing - [NOT SUPPORTED IN MATLAB]
-% line.shape - [NOT SUPPORTED IN MATLAB]
 % connectgaps - [NOT SUPPORTED IN MATLAB]
 % fill - [HANDLED BY AREA]
 % fillcolor - [HANDLED BY AREA]
@@ -43,18 +24,43 @@ function updateAreaseries(obj,dataIndex)
 % visible [DONE]
 % type [DONE]
 
+% MARKER
+% marker.color - [DONE]
+% marker.size - [DONE]
+% marker.line.color - [DONE]
+% marker.line.width - [DONE]
+% marker.line.dash - [NOT SUPPORTED IN MATLAB]
+% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
+% marker.line.shape - [NOT SUPPORTED IN MATLAB]
+% marker.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.colorscale - [NOT SUPPORTED IN MATLAB]
+% marker.sizemode - [NOT SUPPORTED IN MATLAB]
+% marker.sizeref - [NOT SUPPORTED IN MATLAB]
+% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
+
+% LINE
+
+% line.color - [DONE]
+% line.width - [DONE]
+% line.dash - [DONE]
+% line.opacity ------------------------------------------> [TODO]
+% line.smoothing - [NOT SUPPORTED IN MATLAB]
+% line.shape - [NOT SUPPORTED IN MATLAB]
+
+
 
 %-FIGURE STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);
 
 %-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(dataIndex).AssociatedAxis);
+axis_data = get(obj.State.Plot(areaIndex).AssociatedAxis);
 
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
 
 %-AREA DATA STRUCTURE- %
-area_data = get(obj.State.Plot(dataIndex).Handle);
+area_data = get(obj.State.Plot(areaIndex).Handle);
 
 %-AREA CHILD DATA STRUCTURE- %
 area_child_data = get(area_data.Children(1));
@@ -66,42 +72,38 @@ eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
 %-------------------------------------------------------------------------%
 
 %-AREA XAXIS-%
-obj.data{dataIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{areaIndex}.xaxis = ['x' num2str(axIndex)];
 
 %-------------------------------------------------------------------------%
 
 %-AREA YAXIS-%
-obj.data{dataIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{areaIndex}.yaxis = ['y' num2str(axIndex)];
 
 %-------------------------------------------------------------------------%
 
 %-AREA TYPE-%
-obj.data{dataIndex}.type = 'scatter';
+obj.data{areaIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
 %-AREA X-%
-obj.data{dataIndex}.x = area_data.XData;
+obj.data{areaIndex}.x = area_data.XData;
 
 %-------------------------------------------------------------------------%
 
 %-AREA Y-%
 ydata = area_child_data.YData;
-obj.data{dataIndex}.y = ydata(2:(numel(ydata)-1)/2+1)';
+obj.data{areaIndex}.y = ydata(2:(numel(ydata)-1)/2+1)';
 
 %-------------------------------------------------------------------------%
 
 %-AREA NAME-%
-if ~isempty(area_child_data.DisplayName);
-    obj.data{dataIndex}.name = area_child_data.DisplayName;
-else
-    obj.data{dataIndex}.name = area_data.DisplayName;
-end
+obj.data{areaIndex}.name = area_child_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
 %-MARKER SIZE-%
-obj.data{dataIndex}.marker.size = area_child_data.MarkerSize;
+obj.data{areaIndex}.marker.size = area_child_data.MarkerSize;
 
 %-------------------------------------------------------------------------%
 
@@ -116,7 +118,7 @@ else
     mode = 'none';
 end
 
-obj.data{dataIndex}.mode = mode;
+obj.data{areaIndex}.mode = mode;
 
 %-MARKER SYMBOL-%
 if ~strcmp(area_child_data.Marker,'none')
@@ -150,37 +152,36 @@ if ~strcmp(area_child_data.Marker,'none')
             marksymbol = 'hexagram';
     end
     
-    obj.data{dataIndex}.marker.symbol = marksymbol;
+    obj.data{areaIndex}.marker.symbol = marksymbol;
     
 end
 
 %-------------------------------------------------------------------------%
 
 %-MARKER LINE WIDTH-%
-obj.data{dataIndex}.marker.line.width = area_child_data.LineWidth;
+obj.data{areaIndex}.marker.line.width = area_child_data.LineWidth;
 
 if(~strcmp(area_child_data.LineStyle,'none'))
     
     %-AREA LINE COLOR-%
-    
     if isnumeric(area_child_data.EdgeColor)
         
         col = 255*area_child_data.EdgeColor;
-        obj.data{dataIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+        obj.data{areaIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
         
     else
         switch area_child_data.FaceColor
             case 'none'
-                obj.data{dataIndex}.line.color = 'rgba(0,0,0,0,)';
+                obj.data{areaIndex}.line.color = 'rgba(0,0,0,0,)';
             case 'flat'
                 col = 255*figure_data.Colormap(area_child_data.CData(1),:);
-                obj.data{dataIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                obj.data{areaIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
         end
     end
     
     
     %-AREA LINE WIDTH-%
-    obj.data{dataIndex}.line.width = area_child_data.LineWidth;
+    obj.data{areaIndex}.line.width = area_child_data.LineWidth;
     
     %-AREA LINE DASH-%
     switch area_child_data.LineStyle
@@ -193,7 +194,7 @@ if(~strcmp(area_child_data.LineStyle,'none'))
         case '-.'
             LineStyle = 'dashdot';
     end
-    obj.data{dataIndex}.line.dash = LineStyle;
+    obj.data{areaIndex}.line.dash = LineStyle;
 end
 
 %-------------------------------------------------------------------------%
@@ -215,11 +216,11 @@ if filledMarker
             case 'none'
                 markercolor = 'rgba(0,0,0,0)';
             case 'auto'
-                markercolor = obj.data{dataIndex}.line.color;
+                markercolor = obj.data{areaIndex}.line.color;
         end
     end
     
-    obj.data{dataIndex}.marker.color = markercolor;
+    obj.data{areaIndex}.marker.color = markercolor;
     
 end
 
@@ -237,14 +238,14 @@ else
         case 'none'
             markerlinecolor = 'rgba(0,0,0,0)';
         case 'auto'
-            markerlinecolor = obj.data{dataIndex}.line.color;
+            markerlinecolor = obj.data{areaIndex}.line.color;
     end
 end
 
 if filledMarker
-    obj.data{dataIndex}.marker.line.color = markerlinecolor;
+    obj.data{areaIndex}.marker.line.color = markerlinecolor;
 else
-    obj.data{dataIndex}.marker.color = markerlinecolor;
+    obj.data{areaIndex}.marker.color = markerlinecolor;
 end
 
 %-------------------------------------------------------------------------%
@@ -260,17 +261,17 @@ switch legInfo.IconDisplayStyle
         showleg = false;
 end
 
-obj.data{dataIndex}.showlegend = showleg;
+obj.data{areaIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
 %-AREA VISIBLE-%
-obj.data{dataIndex}.visible = strcmp(area_child_data.Visible,'on');
+obj.data{areaIndex}.visible = strcmp(area_child_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
 %-AREA FILL-%
-obj.data{dataIndex}.fill = 'tonexty';
+obj.data{areaIndex}.fill = 'tozeroy';
 
 %-------------------------------------------------------------------------%
 
@@ -278,12 +279,12 @@ obj.data{dataIndex}.fill = 'tonexty';
 if isnumeric(area_child_data.FaceColor)
     
     col = 255*area_child_data.FaceColor;
-    obj.data{dataIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    obj.data{areaIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     
 else
     switch area_child_data.FaceColor
         case 'none'
-            obj.data{dataIndex}.fillcolor = 'rgba(0,0,0,0,)';
+            obj.data{areaIndex}.fillcolor = 'rgba(0,0,0,0,)';
         case 'flat'
             switch area_child_data.CDataMapping
                 case 'scaled'
@@ -295,7 +296,7 @@ else
                     col = 255*figure_data.Colormap(area_child_data.CData(1),:);
             end
             
-            obj.data{dataIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+            obj.data{areaIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     end
 end
 
