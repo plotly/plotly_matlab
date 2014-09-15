@@ -79,21 +79,21 @@ obj.data{contourIndex}.name = contour_data.DisplayName;
 %-CONTOUR X DATA-%
 if isvector(contour_data.XData)
     obj.data{contourIndex}.xtype = 'array';
-    obj.data{contourIndex}.x = contour_data.XData;
+    obj.data{contourIndex}.x = contour_data.XData(1):contour_data.XData(end);
 else
     obj.data{contourIndex}.xtype = 'scaled';
     minx = min(min(contour_data.XData));
     maxx = max(max(contour_data.XData));
     obj.data{contourIndex}.x0 = minx;
     obj.data{contourIndex}.dx = (maxx-minx)/size(contour_data.ZData,1);
-    
 end
+
 %-------------------------------------------------------------------------%
 
 %-CONTOUR Y DATA-%
 if isvector(contour_data.YData)
     obj.data{contourIndex}.ytype = 'array';
-    obj.data{contourIndex}.y = contour_data.YData;
+    obj.data{contourIndex}.y = contour_data.YData(1):contour_data.YData(end);
 else
     obj.data{contourIndex}.ytype = 'scaled';
     miny = min(min(contour_data.YData));
@@ -137,11 +137,12 @@ end
 
 %-------------------------------------------------------------------------%
 
+%-CONTOUR REVERSE SCALE-%
 obj.data{contourIndex}.reversescale = false; 
 
 %-------------------------------------------------------------------------%
 
-% %-AUTO CONTOUR-%
+%-AUTO CONTOUR-%
  
 obj.data{contourIndex}.autocontour = false;
 
@@ -204,13 +205,11 @@ if(~strcmp(contour_data.LineStyle,'none'))
     obj.data{contourIndex}.line.dash = LineStyle;
     
     %-CONTOURS SMOOTHING-%
-    
     obj.data{contourIndex}.line.smoothing = 0; 
     
 else
   
     %-CONTOURS SHOWLINES-%
-    
     obj.data{contourIndex}.contours.showlines = false; 
     
 end
