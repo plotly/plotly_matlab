@@ -1,152 +1,147 @@
-function obj = updateImage(obj, dataIndex)
+function obj = updateImage(obj, imageIndex)
+
+% HEATMAPS
+% z: ...[DONE]
+% x: ...[DONE]
+% y: ...[DONE]
+% name: ...[DONE]
+% zauto: ...[DONE]
+% zmin: ...[DONE]
+% zmax: ...[DONE]
+% colorscale: ...[DONE]
+% reversescale: ...[DONE]
+% showscale: ...[DONE]
+% colorbar: ...[HANDLED BY COLORBAR]
+% zsmooth: ...[NOT HANDLED BY MATLAB]
+% opacity: -----------------------------------> [TODO]
+% xaxis: ...[DONE]
+% yaxis: ...[DONE]
+% showlegend: ...[DONE]
+% stream: ...[HANDLED BY PLOTLYSTREAM]
+% visible: ...[DONE]
+% x0: ...[NOT SUPPORTED IN MATLAB]
+% dx: ...[NOT SUPPORTED IN MATLAB]
+% y0: ...[NOT SUPPORTED IN MATLAB]
+% dy: ...[NOT SUPPORTED IN MATLAB]
+% xtype: ...[NOT SUPPORTED IN MATLAB]
+% ytype: ...[NOT SUPPORTED IN MATLAB]
+% type: ...[DONE]
 
 %-FIGURE STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);
 
 %-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(dataIndex).AssociatedAxis);
+axis_data = get(obj.State.Plot(imageIndex).AssociatedAxis);
 
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+axIndex = obj.getAxisIndex(obj.State.Plot(imageIndex).AssociatedAxis);
 
 %-IMAGE DATA STRUCTURE- %
-image_data = get(obj.State.Plot(dataIndex).Handle);
+image_data = get(obj.State.Plot(imageIndex).Handle);
 
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
 eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
 
-% HEATMAPS
-% z: ....................[TODO]
-% x: ....................[TODO]
-% y: ....................[TODO]
-% name: ....................[TODO]
-% zauto: ....................[TODO]
-% zmin: ....................[TODO]
-% zmax: ....................[TODO]
-% colorscale: ....................[TODO]
-% reversescale: ....................[TODO]
-% showscale: ....................[TODO]
-% colorbar: ....................[TODO]
-% zsmooth: ....................[TODO]
-% opacity: ....................[TODO]
-% xaxis: ....................[TODO]
-% yaxis: ....................[TODO]
-% showlegend: ....................[TODO]
-% stream: ....................[TODO]
-% visible: ....................[TODO]
-% x0: ....................[TODO]
-% dx: ....................[TODO]
-% y0: ....................[TODO]
-% dy: ....................[TODO]
-% xtype: ....................[TODO]
-% ytype: ....................[TODO]
-% type: ....................[TODO]
+%-------------------------------------------------------------------------%
 
+%-IMAGE XAXIS-%
+obj.data{imageIndex}.xaxis = ['x' num2str(axIndex)];
 
-%
-% function data = extractDataHeatMap(d, xid, yid, CLim, colormap, strip_style)
-% % extractDataHeatMap - create a data struct for heat maps
-% %   data = extractDataHeatMap(d, xid, yid, CLim, colormap)
-% %       d - a data struct from matlab describing a scatter plot
-% %       xid,yid - reference axis indices
-% %       CLim - a 1x2 vector of extents of the color map
-% %       colormap - a kx3 matrix representing the colormap
-% %
-% % For full documentation and examples, see https://plot.ly/api
-%
-% data = {};
-%
-% % copy general
-% if strcmp('on', d.Visible)
-%     data.visible = true;
-% else
-%     data.visible = false;
-% end
-%
-% if numel(d.DisplayName)>0
-%     data.name = parseText(d.DisplayName);
-% else
-%     data.showlegend = false;
-% end
-%
-% % copy in data type and values
-% data.type = 'heatmap';
-% data.showscale = false;
-%
-% % set reference axis
-% if xid==1
-%     xid=[];
-% end
-% if yid==1
-%     yid=[];
-% end
-% data.xaxis = ['x' num2str(xid)];
-% data.yaxis = ['y' num2str(yid)];
-%
-%
-% %other attributes
-%
-% data.z = d.CData;
-% if(size(d.XData,2) == 2)
-%     data.x = d.XData(1):d.XData(2);
-% else
-%     data.x = d.XData;
-% end
-% if(size(d.YData,2) == 2)
-%     data.y = d.YData(1):d.YData(2);
-% else
-%     data.y = d.YData;
-% end
-% data.zmin = CLim(1);
-% data.zmax = CLim(2);
-% data.zauto = false;
-%
-% if ~strip_style
-%
-%     data.scl = {};
-%     for i=1:size(colormap,1)
-%         data.scl{i} = {(i-1)/(size(colormap,1)-1), parseColor(colormap(i,:))};
-%     end
-%
-% end
-%
-% end
-%
-%
-%
+%-------------------------------------------------------------------------%
 
+%-IMAGE YAXIS-%
+obj.data{imageIndex}.yaxis = ['y' num2str(axIndex)];
 
+%-------------------------------------------------------------------------%
 
+obj.data{imageIndex}.type = 'heatmap';
 
+%-------------------------------------------------------------------------%
 
-% AlphaData = [1]
-% AlphaDataMapping = none
-% Annotation = [ (1 by 1) hg.Annotation array]
-% CData = [ (50 by 50) double array]
-% CDataMapping = scaled
-% DisplayName =
-% XData = [1 50]
-% YData = [1 50]
-%
-% BeingDeleted = off
-% ButtonDownFcn =
-% Children = []
-% Clipping = on
-% CreateFcn =
-% DeleteFcn =
-% BusyAction = queue
-% HandleVisibility = on
-% HitTest = on
-% Interruptible = on
-% Parent = [0.0107422]
-% Selected = off
-% SelectionHighlight = on
-% Tag =
-% Type = image
-% UIContextMenu = []
-% UserData = []
-% Visible = on
+if (size(image_data.XData,2) == 2)
+    obj.data{imageIndex}.x = image_data.XData(1):image_data.XData(2);
+else
+    obj.data{imageIndex}.x = image_data.XData;
+end
+
+%-------------------------------------------------------------------------%
+
+if (size(image_data.YData,2) == 2)
+    obj.data{imageIndex}.y = image_data.YData(1):image_data.YData(2);
+else
+    obj.data{imageIndex}.y = image_data.YData;
+end
+
+%-------------------------------------------------------------------------%
+
+obj.data{imageIndex}.z = image_data.CData;
+
+%-------------------------------------------------------------------------%
+
+%-IMAGE REVERSE SCALE-%
+
+obj.data{imageIndex}.reversecale = false; 
+
+%-------------------------------------------------------------------------%
+
+%-ZAUTO-%
+
+obj.data{imageIndex}.zauto = false; 
+
+%-------------------------------------------------------------------------%
+
+%-ZMIN-%
+
+obj.data{imageIndex}.zmin = axis_data.CLim(1); 
+
+%-------------------------------------------------------------------------%
+
+%-ZMAX-%
+
+obj.data{imageIndex}.zmax = axis_data.CLim(2); 
+
+%-------------------------------------------------------------------------%
+
+%-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
+
+colormap = figure_data.Colormap; 
+
+for c = 1:length(colormap)
+    col =  255*(colormap(c,:)); 
+    obj.data{imageIndex}.colorscale{c} = {(c-1)/length(colormap), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
+end
+
+%-------------------------------------------------------------------------%
+
+obj.data{imageIndex}.name = image_data.DisplayName;
+
+%-------------------------------------------------------------------------%
+
+%-IMAGE SHOWLEGEND-%
+leg = get(image_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
+end
+
+obj.data{imageIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
+%-IMAGE SHOWSCALE-%
+obj.data{imageIndex}.showscale = false;
+
+%-------------------------------------------------------------------------%
+
+%-IMAGE VISIBLE-%
+obj.data{imageIndex}.visible = strcmp(image_data.Visible,'on');
+
+%-------------------------------------------------------------------------%
 
 end
 
