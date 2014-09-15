@@ -3,11 +3,11 @@ function obj = updateBarseries(obj,dataIndex)
 % x: ...[DONE]
 % y: ...[DONE]
 % name: ...[DONE]
-% orientation: ...[NOT SUPPORTED IN MATLAB]
+% orientation: ...[DONE]
 % text: ...[NOT SUPPORTED IN MATLAB]
 % error_y: ...[HANDLED BY ERRORBAR]
 % error_x: ...[HANDLED BY ERRORBAR]
-% opacity: ...[DONE]
+% opacity: ------------------------------------------> [TODO]
 % xaxis: ...[DONE]
 % yaxis: ...[DONE]
 % showlegend: ...[DONE]
@@ -19,7 +19,7 @@ function obj = updateBarseries(obj,dataIndex)
 % textfont: ...[NA]
 
 % MARKER:
-% color: .............[TODO]
+% color: ...DONE]
 % size: ...[NA]
 % symbol: ...[NA]
 % opacity: ...[NA]
@@ -36,7 +36,7 @@ function obj = updateBarseries(obj,dataIndex)
 % color: ........[TODO]
 % width: ...[DONE]
 % dash: ...[NA]
-% opacity: ...[NA]
+% opacity: ------------------------------------------> [TODO]
 % shape: ...[NA]
 % smoothing: ...[NA]
 % outliercolor: ...[NA]
@@ -91,16 +91,6 @@ obj.data{dataIndex}.type = 'bar';
 
 %-------------------------------------------------------------------------%
 
-%-bar x data-%
-obj.data{dataIndex}.x = bar_data.XData;
-
-%-------------------------------------------------------------------------%
-
-%-bar y data-%
-obj.data{dataIndex}.y = bar_data.YData;
-
-%-------------------------------------------------------------------------%
-
 %-bar name-%
 obj.data{dataIndex}.name = bar_data.DisplayName;
 
@@ -112,6 +102,33 @@ switch bar_data.BarLayout
         obj.layout.barmode = 'group';
     case 'stacked'
         obj.layout.barmode = 'stack';
+end
+
+%-------------------------------------------------------------------------%
+
+%-bar orientation-%
+switch bar_data.Horizontal
+   
+    case 'off'
+        
+        obj.data{dataIndex}.orientation = 'v';
+        
+        %-bar x data-%
+        obj.data{dataIndex}.x = bar_data.XData;
+       
+        %-bar y data-%
+        obj.data{dataIndex}.y = bar_data.YData;
+        
+        
+    case 'on'
+        
+        obj.data{dataIndex}.orientation = 'h';
+        
+        %-bar x data-%
+        obj.data{dataIndex}.x = bar_data.YData;
+       
+        %-bar y data-%
+        obj.data{dataIndex}.y = bar_data.XData;
 end
 
 %-------------------------------------------------------------------------%
@@ -206,6 +223,7 @@ else
             obj.data{dataIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     end
 end
+
 end
 
 
