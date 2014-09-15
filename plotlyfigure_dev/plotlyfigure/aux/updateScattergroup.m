@@ -11,6 +11,17 @@ function updateScattergroup(obj,scatterIndex)
 % text - [NOT SUPPORTED IN MATLAB]
 % error_y - [HANDLED BY ERRORBAR]
 % error_x - [NOT SUPPORTED IN MATLAB]
+% textfont - [NOT SUPPORTED IN MATLAB]
+% textposition - [NOT SUPPORTED IN MATLAB]
+% xaxis [DONE]
+% yaxis [DONE]
+% showlegend [DONE]
+% stream - [HANDLED BY PLOTLYSTREAM]
+% visible [DONE]
+% type [DONE]
+% opacity ------------------------------------------> [TODO]
+
+% MARKER 
 % marler.color - [DONE]
 % marker.size - [DONE]
 % marker.line.color - [DONE]
@@ -21,27 +32,20 @@ function updateScattergroup(obj,scatterIndex)
 % marker.line.shape - [NOT SUPPORTED IN MATLAB]
 % marker.opacity - [NOT SUPPORTED IN MATLAB]
 % marker.colorscale - [NOT SUPPORTED IN MATLAB]
-% marker.sizemode - [NOT SUPPORTED IN MATLAB]
-% marker.sizeref - [NOT SUPPORTED IN MATLAB]
+% marker.sizemode - [DONE]
+% marker.sizeref - [DONE]
 % marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
+
+% LINE 
 % line.color - [DONE]
 % line.width - [DONE]
 % line.dash - [DONE]
-% line.opacity - [NOT SUPPORTED IN MATLAB]
+% line.opacity ------------------------------------------> [TODO]
 % line.smoothing - [NOT SUPPORTED IN MATLAB]
 % line.shape - [NOT SUPPORTED IN MATLAB]
 % connectgaps - [NOT SUPPORTED IN MATLAB]
 % fill - [HANDLED BY AREA]
 % fillcolor - [HANDLED BY AREA]
-% opacity - [NOT SUPPORTED IN MATLAB]
-% textfont - [NOT SUPPORTED IN MATLAB]
-% textposition - [NOT SUPPORTED IN MATLAB]
-% xaxis [DONE]
-% yaxis [DONE]
-% showlegend [DONE]
-% stream - [HANDLED BY PLOTLYSTREAM]
-% visible [DONE]
-% type [DONE]
 
 %-FIGURE STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);
@@ -82,16 +86,6 @@ obj.data{scatterIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER X-%
-obj.data{scatterIndex}.x = scatter_data.XData;
-
-%-------------------------------------------------------------------------%
-
-%-SCATTER Y-%
-obj.data{scatterIndex}.y = scatter_data.YData;
-
-%-------------------------------------------------------------------------%
-
 %-SCATTER MODE-%
 obj.data{scatterIndex}.mode = 'markers';
 
@@ -127,14 +121,38 @@ obj.data{scatterIndex}.opacity = obj.PlotlyDefaults.MarkerOpacity;
 
 %-------------------------------------------------------------------------%
 
+%-MARKER SIZEREF-%
+obj.data{scatterIndex}.marker.sizeref = 1;
+
+%-------------------------------------------------------------------------%
+
+%-MARKER SIZEMODE-%
+obj.data{scatterIndex}.marker.sizemode = 'diameter';
+
+%-------------------------------------------------------------------------%
+
+
 %-SCATTER PATCH DATA-%
 
-for n = 1:length(scatter_child_data)
+for m = 1:length(scatter_child_data)
+    
+    %reverse counter
+    n = length(scatter_child_data) - m + 1; 
+    
+    %-------------------------------------------------------------------------%
+    
+    %-SCATTER X-%
+    obj.data{scatterIndex}.x(m) = scatter_child_data(n).XData;
+    
+    %-------------------------------------------------------------------------%
+    
+    %-SCATTER Y-%
+    obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
     
     %-------------------------------------------------------------------------%
     
     %-MARKER SIZE-%
-    obj.data{scatterIndex}.marker.size(n) = scatter_child_data(n).MarkerSize;
+    obj.data{scatterIndex}.marker.size(m) = scatter_child_data(n).MarkerSize;
     
     %-------------------------------------------------------------------------%
     
@@ -170,18 +188,18 @@ for n = 1:length(scatter_child_data)
                 marksymbol = 'hexagram';
         end
         
-        obj.data{scatterIndex}.marker.symbol{n} = marksymbol;
+        obj.data{scatterIndex}.marker.symbol{m} = marksymbol;
     end
     
     %-------------------------------------------------------------------------%
     
     %-MARKER LINE WIDTH-%
-    obj.data{scatterIndex}.marker.line.width(n) = scatter_child_data(n).LineWidth;
+    obj.data{scatterIndex}.marker.line.width(m) = scatter_child_data(n).LineWidth;
     
     %-------------------------------------------------------------------------%
     
     %-MARKER OPACITY-%
-    obj.data{scatterIndex}.marker.opacity(n) = obj.PlotlyDefaults.MarkerOpacity;
+    obj.data{scatterIndex}.marker.opacity(m) = obj.PlotlyDefaults.MarkerOpacity;
     
     %-------------------------------------------------------------------------%
     
@@ -232,7 +250,7 @@ for n = 1:length(scatter_child_data)
             end
         end
         
-        obj.data{scatterIndex}.marker.color{n} = markercolor;
+        obj.data{scatterIndex}.marker.color{m} = markercolor;
         
     end
     
@@ -296,9 +314,9 @@ for n = 1:length(scatter_child_data)
     end
     
     if filledMarker
-        obj.data{scatterIndex}.marker.line.color{n} = markerlinecolor;
+        obj.data{scatterIndex}.marker.line.color{m} = markerlinecolor;
     else
-        obj.data{scatterIndex}.marker.color{n} = markerlinecolor;
+        obj.data{scatterIndex}.marker.color{m} = markerlinecolor;
     end
     
     %-------------------------------------------------------------------------%
