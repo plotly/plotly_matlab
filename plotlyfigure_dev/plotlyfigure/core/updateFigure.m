@@ -35,47 +35,75 @@ function obj = updateFigure(obj, ~, ~)
 % orientation ..........[HANDLED BY updatePolar]
 % hidesources ..........[NOT SUPPORTED IN MATLAB]
 
-%-----------------------------------------------%
+%-------------------------------------------------------------------------%
+
+%-STANDARDIZE UNITS-%
+figunits = get(obj.State.Figure.Handle,'Units');
+set(obj.State.Figure.Handle,'Units','pixels');
 
 %figure data
 figure_data = get(obj.State.Figure.Handle); 
 
-%-STANDARDIZE UNITS-%
-figunits = figure_data.Units;
-set(obj.State.Figure.Handle,'Units','pixels');
-
-%-MATLAB-PLOTLY DEFAULTS (NEED TO MODIFY SO THAT THESE UPDATE)-%
+%-------------------------------------------------------------------------%
 
 %-autosize-%
+
 obj.layout.autosize = obj.PlotOptions.Strip;
 
+%-------------------------------------------------------------------------%
+
 %-margin pad-%
+
 obj.layout.margin.pad = obj.PlotlyDefaults.MarginPad;
 
+%-------------------------------------------------------------------------%
+
 %-show legend-%
+
 if(obj.State.Figure.NumLegends > 1)
     obj.layout.showlegend = true;
 else
     obj.layout.showlegend = false;
 end
 
+%-------------------------------------------------------------------------%
+
 %-margins-%
+
 obj.layout.margin.l = 0;
 obj.layout.margin.r = 0;
 obj.layout.margin.b = 0;
 obj.layout.margin.t = 0;
 
+%-------------------------------------------------------------------------%
+
 %-width-%
+
 obj.layout.width = figure_data.Position(3)*obj.PlotlyDefaults.FigureIncreaseFactor;
 
+%-------------------------------------------------------------------------%
+
 %-height-%
+
 obj.layout.height = figure_data.Position(4)*obj.PlotlyDefaults.FigureIncreaseFactor;
 
+%-------------------------------------------------------------------------%
+
 %-paper_bgcolor-%
+
 col = 255*figure_data.Color;
 obj.layout.paper_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
+%-------------------------------------------------------------------------%
+
+%-hovermode-%
+
+obj.layout.hovermode = 'closest'; 
+
+%-------------------------------------------------------------------------%
+
 %-REVERT UNITS-%
+
 set(obj.State.Figure.Handle,'Units',figunits);
 
 end

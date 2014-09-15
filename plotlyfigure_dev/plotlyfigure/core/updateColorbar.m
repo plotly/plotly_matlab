@@ -49,14 +49,22 @@ colorbar.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
 %-------------------------------------------------------------------------%
 
-%-x/y anchor-%
+%-x anchor-%
 colorbar.xanchor = 'left';
+
+%-------------------------------------------------------------------------%
+
+%-y anchor-%
 colorbar.yanchor = 'bottom';
 
 %-------------------------------------------------------------------------%
 
-%-position-%
+%-x position-%
 colorbar.x = colorbar_data.Position(1);
+
+%-------------------------------------------------------------------------%
+
+%-y position-%
 colorbar.y = colorbar_data.Position(2);
 
 %-------------------------------------------------------------------------%
