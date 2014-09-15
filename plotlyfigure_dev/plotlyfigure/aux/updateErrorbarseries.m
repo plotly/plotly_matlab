@@ -12,8 +12,7 @@ function obj = updateErrorbarseries(obj, dataIndex)
 % opacity: ...[NOT SUPPORTED IN MATLAB]
 % visible: ...[DONE]
 
-%-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(dataIndex).AssociatedAxis);
+%-------------------------------------------------------------------------%
 
 %-ERRORBAR STRUCTURE-%
 errorbar_data = get(obj.State.Plot.Handle); 
@@ -24,7 +23,9 @@ errorbar_child = get(obj.State.Plot.Handle,'Children');
 %-ERROR BAR LINE CHILD-%
 errorbar_line_child_data = get(errorbar_child(2)); 
 
-%-update lineseries-%
+%-------------------------------------------------------------------------%
+
+%-UPDATE LINESERIES-%
 updateLineseries(obj, dataIndex); 
 
 %-------------------------------------------------------------------------%
@@ -69,5 +70,7 @@ col = 255*errorbar_line_child_data.Color;
 obj.data{dataIndex}.error_y.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];  
 
 %-------------------------------------------------------------------------%
+
+
 
 end
