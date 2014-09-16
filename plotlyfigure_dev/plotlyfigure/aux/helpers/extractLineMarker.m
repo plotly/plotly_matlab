@@ -1,13 +1,18 @@
-function [line, marker] = extractLineMarker(line_data)
+function marker = extractLineMarker(line_data)
+
+% EXTRACTS THE MARKER STYLE USED FOR MATLAB OBJECTS 
+% OF TYPE "LINE". THESE OBJECTS ARE USED IN LINESERIES, 
+% STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
+
+%-------------------------------------------------------------------------%
 
 %-AXIS STRUCTURE-%
-axis_data = get(line_data.Parent);
+axis_data = get(ancestor(line_data.Parent,'axes'));
 
 %-FIGURE STRUCTURE-%
-figure_data = get(axis_data.Parent);
+figure_data = get(ancestor(line_data.Parent,'figure'));
 
 %-INITIALIZE OUTPUT-%
-line = struct(); 
 marker = struct(); 
 
 %-------------------------------------------------------------------------%
@@ -16,7 +21,6 @@ marker = struct();
 marker.size = line_data.MarkerSize;
 
 %-------------------------------------------------------------------------%
-
 
 %-MARKER SYMBOL (STYLE)-%
 if ~strcmp(line_data.Marker,'none')
@@ -51,6 +55,7 @@ if ~strcmp(line_data.Marker,'none')
     end
     
     marker.symbol = marksymbol;
+    
 end
 
 %-------------------------------------------------------------------------%
@@ -58,38 +63,18 @@ end
 %-MARKER LINE WIDTH (STYLE)-%
 marker.line.width = line_data.LineWidth;
 
-if(~strcmp(line_data.LineStyle,'none'))
-    
-    %-SCATTER LINE COLOR (STYLE)-%
-    col = 255*line_data.Color;
-    line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-    %-SCATTER LINE WIDTH (STYLE)-%
-    line.width = line_data.LineWidth;
-    
-    %-SCATTER LINE DASH (STYLE)-%
-    switch line_data.LineStyle
-        case '-'
-            LineStyle = 'solid';
-        case '--'
-            LineStyle = 'dash';
-        case ':'
-            LineStyle = 'dot';
-        case '-.'
-            LineStyle = 'dashdot';
-    end
-    line.dash = LineStyle;
-end
+%-------------------------------------------------------------------------%
+
+filledMarkerSet = {'o','square','s','diamond','d',...
+    'v','^', '<','>','hexagram','pentagram'};
+
+filledMarker = ismember(line_data.Marker,filledMarkerSet);
 
 %-------------------------------------------------------------------------%
 
 %--MARKER FILL COLOR (STYLE)--%
 
 MarkerColor = line_data.MarkerFaceColor;
-filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
-
-filledMarker = ismember(line_data.Marker,filledMarkerSet);
 
 if filledMarker
     if isnumeric(MarkerColor)
@@ -119,10 +104,6 @@ end
 %-MARKER LINE COLOR (STYLE)-%
 
 MarkerLineColor = line_data.MarkerEdgeColor;
-filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
-
-filledMarker = ismember(line_data.Marker,filledMarkerSet);
 
 if isnumeric(MarkerLineColor)
     col = 255*MarkerLineColor;
@@ -142,4 +123,5 @@ if filledMarker
 else
     marker.color = markerlinecolor;
 end
+
 end
