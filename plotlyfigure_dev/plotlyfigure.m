@@ -17,7 +17,7 @@ classdef plotlyfigure < handle
     
     %---CLASS EVENTS---%
     events
-        liveedit; 
+        liveedit;
     end
     
     %----CLASS METHODS----%
@@ -44,7 +44,7 @@ classdef plotlyfigure < handle
             addlistener(obj,'layout','PostSet',@obj.editLive);
             
             % plot options
-            obj.PlotOptions.FileName = 'PLOTLYFIGURE';
+            obj.PlotOptions.FileName = 'PlotlyFigure';
             obj.PlotOptions.FileOpt = 'overwrite';
             obj.PlotOptions.WorldReadable = true;
             obj.PlotOptions.Open_URL = false;
@@ -145,7 +145,7 @@ classdef plotlyfigure < handle
             end
             
             % plotly figure default style
-            set(fig,'Name','PLOTLY FIGURE','Color',[1 1 1],'ToolBar','none','NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
+            set(fig,'Name','Plotly Figure','Color',[1 1 1],'ToolBar','none','NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
             
             % figure state
             obj.State.Figure.Handle = fig;
@@ -179,50 +179,57 @@ classdef plotlyfigure < handle
             obj.update;
         end
         
+        %----GET PLOTLY FIGURE-----%
+        function obj = grab(obj, file_owner, file_id)
+            plotlyfig = getplotlyfig(file_owner, file_id);
+            obj.data = plotlyfig.data; 
+            obj.layout = plotlyfig.layout; 
+        end
+        
         %----SAVE STATIC PLOTLY IMAGE-----%
-        function obj = save(obj, filename, ext)
+        function obj = saveas(obj, filename, varargin)
             
             % create image figure
             imgfig.data = obj.data;
             imgfig.layout = obj.layout;
             
             % save image
-            saveplotlyfig(imgfig, filename, ext);
+            saveplotlyfig(imgfig, filename, varargin{:});
         end
         
         %----SAVE STATIC JPEG IMAGE-----%
         function obj = jpeg(obj, filename)
             if nargin > 1
-                obj.save(filename,'jpeg');
+                obj.saveas(filename,'jpeg');
             else
-                obj.save(obj.PlotOptions.FileName,'jpeg');
+                obj.saveas(obj.PlotOptions.FileName,'jpeg');
             end
         end
         
         %----SAVE STATIC PDF IMAGE-----%
         function obj = pdf(obj, filename)
             if nargin > 1
-                obj.save(filename,'pdf');
+                obj.saveas(filename,'pdf');
             else
-                obj.save(obj.PlotOptions.FileName,'pdf');
+                obj.saveas(obj.PlotOptions.FileName,'pdf');
             end
         end
         
         %----SAVE STATIC PNG IMAGE-----%
         function obj = png(obj, filename)
             if nargin > 1
-                obj.save(filename,'png');
+                obj.saveas(filename,'png');
             else
-                obj.save(obj.PlotOptions.FileName,'png');
+                obj.saveas(obj.PlotOptions.FileName,'png');
             end
         end
         
         %----SAVE STATIC SVG IMAGE-----%
         function obj = svg(obj, filename)
             if nargin > 1
-                obj.save(filename,'svg');
+                obj.saveas(filename,'svg');
             else
-                obj.save(obj.PlotOptions.FileName,'svg');
+                obj.saveas(obj.PlotOptions.FileName,'svg');
             end
         end
         
@@ -425,6 +432,8 @@ classdef plotlyfigure < handle
             han = image(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = imagesc(obj, varargin)
@@ -432,6 +441,8 @@ classdef plotlyfigure < handle
             han = imagesc(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = line(obj, varargin)
@@ -439,6 +450,8 @@ classdef plotlyfigure < handle
             han = line(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = patch(obj, varargin)
@@ -453,6 +466,8 @@ classdef plotlyfigure < handle
             han = rectangle(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = area(obj,varargin)
@@ -460,6 +475,8 @@ classdef plotlyfigure < handle
             han = area(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = bar(obj,varargin)
@@ -467,6 +484,8 @@ classdef plotlyfigure < handle
             han = bar(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = contour(obj,varargin)
@@ -474,6 +493,8 @@ classdef plotlyfigure < handle
             han = contour(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = plot(obj,varargin)
@@ -481,6 +502,8 @@ classdef plotlyfigure < handle
             han = plot(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = errorbar(obj,varargin)
@@ -488,6 +511,8 @@ classdef plotlyfigure < handle
             han = errorbar(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = quiver(obj,varargin)
@@ -502,6 +527,8 @@ classdef plotlyfigure < handle
             han = scatter(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = stairs(obj,varargin)
@@ -509,6 +536,8 @@ classdef plotlyfigure < handle
             han = stairs(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = stem(obj,varargin)
@@ -516,13 +545,8 @@ classdef plotlyfigure < handle
             han = stem(varargin{:});
             %update object
             obj.update;
-        end
-        
-        function han = surf(obj,varargin)
-            %call plot
-            han = surf(varargin{:});
-            %update object
-            obj.update;
+            %send to plotly
+            obj.plotly;
         end
         
         function han = boxplot(obj,varargin)
@@ -530,6 +554,8 @@ classdef plotlyfigure < handle
             han = boxplot(varargin{:});
             %update object
             obj.update;
+            %send to plotly
+            obj.plotly;
         end
     end
 end
