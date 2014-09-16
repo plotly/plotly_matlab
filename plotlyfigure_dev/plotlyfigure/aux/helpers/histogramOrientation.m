@@ -1,5 +1,8 @@
 function orientation = histogramOrientation(hist_data)
 
+%initialize output
+orientation = [];
+
 try
     %check to see if patch is in the shape of "vertical" rectangles :)
     if  size(hist_data.XData,1)==4 && ...
@@ -16,8 +19,4 @@ try
             all(hist_data.XData(2,:)==hist_data.XData(3,:));
         orientation = 'h'; 
     end
-catch
-    orientation = [];
-end
-
 end
