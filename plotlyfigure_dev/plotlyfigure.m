@@ -1,5 +1,5 @@
 classdef plotlyfigure < handle
-
+    
     %----CLASS PROPERTIES----%
     properties (SetObservable)
         data; % data of the plot
@@ -12,7 +12,7 @@ classdef plotlyfigure < handle
         UserData; % credentials/configuration/verbose
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
-        LiveEdit; 
+        LiveEdit;
     end
     
     %---CLASS EVENTS---%
@@ -25,7 +25,7 @@ classdef plotlyfigure < handle
         
         %----CONSTRUCTOR---%
         function obj = plotlyfigure(varargin)
-           
+            
             %check input structure
             if nargin > 1
                 if mod(nargin,2) ~= 0 && ~ishandle(varargin{1})
@@ -61,7 +61,7 @@ classdef plotlyfigure < handle
             obj.PlotlyDefaults.ExponentFormat = 'none';
             obj.PlotlyDefaults.ErrorbarWidth = 6;
             obj.PlotlyDefaults.MarkerOpacity = 1;
-            obj.PlotlyDefaults.ShowBaselineLegend = false; 
+            obj.PlotlyDefaults.ShowBaselineLegend = false;
             
             % check for some key/vals
             for a = 1:2:nargin
@@ -179,6 +179,53 @@ classdef plotlyfigure < handle
             obj.update;
         end
         
+        %----SAVE STATIC PLOTLY IMAGE-----%
+        function obj = save(obj, filename, ext)
+            
+            % create image figure
+            imgfig.data = obj.data;
+            imgfig.layout = obj.layout;
+            
+            % save image
+            saveplotlyfig(imgfig, filename, ext);
+        end
+        
+        %----SAVE STATIC JPEG IMAGE-----%
+        function obj = jpeg(obj, filename)
+            if nargin > 1
+                obj.save(filename,'jpeg');
+            else
+                obj.save(obj.PlotOptions.FileName,'jpeg');
+            end
+        end
+        
+        %----SAVE STATIC PDF IMAGE-----%
+        function obj = pdf(obj, filename)
+            if nargin > 1
+                obj.save(filename,'pdf');
+            else
+                obj.save(obj.PlotOptions.FileName,'pdf');
+            end
+        end
+        
+        %----SAVE STATIC PNG IMAGE-----%
+        function obj = png(obj, filename)
+            if nargin > 1
+                obj.save(filename,'png');
+            else
+                obj.save(obj.PlotOptions.FileName,'png');
+            end
+        end
+        
+        %----SAVE STATIC SVG IMAGE-----%
+        function obj = svg(obj, filename)
+            if nargin > 1
+                obj.save(filename,'svg');
+            else
+                obj.save(obj.PlotOptions.FileName,'svg');
+            end
+        end
+        
         %----SEND PLOT REQUEST (NO UPDATE)----%
         function obj = plotly(obj,showlink)
             
@@ -246,15 +293,15 @@ classdef plotlyfigure < handle
                 
                 % add baseline objects
                 baselines = findobj(ax(a),'-property','BaseLine');
-                baselinehan = cell2mat(get(baselines,'BaseLine')); 
-                plots = [baselinehan ; plots]; 
+                baselinehan = cell2mat(get(baselines,'BaseLine'));
+                plots = [baselinehan ; plots];
                 
-               for np = length(plots):-1:1
-                    % update the plot fields 
-                    obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1; 
+                for np = length(plots):-1:1
+                    % update the plot fields
+                    obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
                     obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(np));
                     obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(a));
-                    obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(np)).classhandle.name;   
+                    obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(np)).classhandle.name;
                 end
             end
             
