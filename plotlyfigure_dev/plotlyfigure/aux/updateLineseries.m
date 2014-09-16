@@ -11,6 +11,20 @@ function updateLineseries(obj,plotIndex)
 % text - [DONE]
 % error_y - [HANDLED BY ERRORBAR]
 % error_x - [NOT SUPPORTED IN MATLAB]
+% connectgaps - [NOT SUPPORTED IN MATLAB]
+% fill - [HANDLED BY AREA]
+% fillcolor - [HANDLED BY AREA]
+% opacity - [NOT SUPPORTED IN MATLAB]
+% textfont - [NOT SUPPORTED IN MATLAB]
+% textposition - [NOT SUPPORTED IN MATLAB]
+% xaxis [DONE]
+% yaxis [DONE]
+% showlegend [DONE]
+% stream - [HANDLED BY PLOTLYSTREAM]
+% visible [DONE]
+% type [DONE]
+
+% MARKER 
 % marler.color - [DONE]
 % marker.size - [DONE]
 % marker.line.color - [DONE]
@@ -24,24 +38,17 @@ function updateLineseries(obj,plotIndex)
 % marker.sizemode - [NOT SUPPORTED IN MATLAB]
 % marker.sizeref - [NOT SUPPORTED IN MATLAB]
 % marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
+
+% LINE
+
 % line.color - [DONE]
 % line.width - [DONE]
 % line.dash - [DONE]
 % line.opacity - [NOT SUPPORTED IN MATLAB]
 % line.smoothing - [NOT SUPPORTED IN MATLAB]
 % line.shape - [NOT SUPPORTED IN MATLAB]
-% connectgaps - [NOT SUPPORTED IN MATLAB]
-% fill - [HANDLED BY AREA]
-% fillcolor - [HANDLED BY AREA]
-% opacity - [NOT SUPPORTED IN MATLAB]
-% textfont - [NOT SUPPORTED IN MATLAB]
-% textposition - [NOT SUPPORTED IN MATLAB]
-% xaxis [DONE]
-% yaxis [DONE]
-% showlegend [DONE]
-% stream - [HANDLED BY PLOTLYSTREAM]
-% visible [DONE]
-% type [DONE]
+
+%-------------------------------------------------------------------------%
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
@@ -108,14 +115,13 @@ if ~obj.PlotOptions.Strip
     
     %---------------------------------------------------------------------%
     
-    %-LINE AND MARKER STYLE-%
-    [line, marker] = extractLineMarker(plot_data);
+    %-LINE STYLE-%
+    obj.data{plotIndex}.line = extractLineLine(plot_data);
     
-    % line style
-    obj.data{plotIndex}.line = line;
+    %---------------------------------------------------------------------%
     
-    % marker style
-    obj.data{plotIndex}.marker = marker;
+    %-MARKER STYLE-%
+    obj.data{plotIndex}.marker = extractLineMarker(plot_data); 
     
     %---------------------------------------------------------------------%
     
@@ -132,10 +138,9 @@ if ~obj.PlotOptions.Strip
     
     obj.data{plotIndex}.showlegend = showleg;
     
+    %---------------------------------------------------------------------%
+end
 end
 
-end
-
-%-------------------------------------------------------------------------%
 
 

@@ -57,17 +57,17 @@ obj.data{rectIndex}.type = 'scatter';
 
 %-RECTANGLE X-%
 obj.data{rectIndex}.x = [rect_data.Position(1) rect_data.Position(1) ...
-                         rect_data.Position(1) + rect_data.Position(3) ...
-                         rect_data.Position(1) + rect_data.Position(3) ...
-                         rect_data.Position(1)]; 
+    rect_data.Position(1) + rect_data.Position(3) ...
+    rect_data.Position(1) + rect_data.Position(3) ...
+    rect_data.Position(1)];
 
 %-------------------------------------------------------------------------%
 
 %-RECTANGLE X-%
 obj.data{rectIndex}.y = [rect_data.Position(2) rect_data.Position(2) + rect_data.Position(4) ...
-                         rect_data.Position(2) + rect_data.Position(4) ...
-                         rect_data.Position(2) ...
-                         rect_data.Position(2)]; 
+    rect_data.Position(2) + rect_data.Position(4) ...
+    rect_data.Position(2) ...
+    rect_data.Position(2)];
 
 %-------------------------------------------------------------------------%
 
@@ -81,84 +81,44 @@ obj.data{rectIndex}.mode = 'lines';
 
 %-------------------------------------------------------------------------%
 
-%-MARKER LINE WIDTH-%
-obj.data{rectIndex}.marker.line.width = rect_data.LineWidth;
+%-RECTANGLE VISIBLE-%
+obj.data{rectIndex}.visible = strcmp(rect_data.Visible,'on');
 
-if(~strcmp(rect_data.LineStyle,'none'))
-    
-    %-RECTANGLE LINE COLOR-%
-    
-    if isnumeric(rect_data.EdgeColor)
-        
-        col = 255*rect_data.EdgeColor;
-        obj.data{rectIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        
-    else
-        switch rect_data.FaceColor
-            case 'none'
-                obj.data{rectIndex}.line.color = 'rgba(0,0,0,0,)';
-        end
-    end
-    
-    
-    %-RECTANGLE LINE WIDTH-%
-    obj.data{rectIndex}.line.width = rect_data.LineWidth;
-    
-    %-RECTANGLE LINE DASH-%
-    switch rect_data.LineStyle
-        case '-'
-            LineStyle = 'solid';
-        case '--'
-            LineStyle = 'dash';
-        case ':'
-            LineStyle = 'dot';
-        case '-.'
-            LineStyle = 'dashdot';
-    end
-    
-    obj.data{rectIndex}.line.dash = LineStyle;
-    
-end
 
 %-------------------------------------------------------------------------%
 
 %-RECTANGLE FILL-%
 obj.data{rectIndex}.fill = 'tonexty';
 
-%-------------------------------------------------------------------------%
+%------------------------------!STYLE!------------------------------------%
 
-%-RECTANGLE FILL COLOR-%
-if isnumeric(rect_data.FaceColor)
+if ~obj.PlotOptions.Strip
     
-    col = 255*rect_data.FaceColor;
-    obj.data{rectIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    %-RECTANGLE LINE STYLE-%
+    obj.data{rectIndex}.line = extractPatchLine(rect_data);
     
-else
-    switch rect_data.FaceColor
-        case 'none'
-            obj.data{rectIndex}.fillcolor = 'rgba(0,0,0,0,)';
+    %---------------------------------------------------------------------%
+    
+    %-RECTANGLE FILL COLOR-%
+    fill = extractPatchFace(rect_data);
+    obj.data{rectIndex}.fillcolor = fill.color;
+    
+    %---------------------------------------------------------------------%
+    
+    %-RECTANGLE SHOWLEGEND-%
+    leg = get(rect_data.Annotation);
+    legInfo = get(leg.LegendInformation);
+    
+    switch legInfo.IconDisplayStyle
+        case 'on'
+            showleg = true;
+        case 'off'
+            showleg = false;
     end
+    
+    obj.data{rectIndex}.showlegend = showleg;
+    
+    %---------------------------------------------------------------------%
+    
 end
-
-%-------------------------------------------------------------------------%
-
-%-RECTANGLE SHOWLEGEND-%
-leg = get(rect_data.Annotation);
-legInfo = get(leg.LegendInformation);
-
-switch legInfo.IconDisplayStyle
-    case 'on'
-        showleg = true;
-    case 'off'
-        showleg = false;
-end
-
-obj.data{rectIndex}.showlegend = showleg;
-
-%-------------------------------------------------------------------------%
-
-%-RECTANGLE VISIBLE-%
-obj.data{rectIndex}.visible = strcmp(rect_data.Visible,'on');
-
-
 end

@@ -33,7 +33,7 @@ function obj = updateBarseries(obj,dataIndex)
 % maxdisplayed: ...[NA]
 
 % MARKER LINE:
-% color: ........[TODO]
+% color: ...[DONE]
 % width: ...[DONE]
 % dash: ...[NA]
 % opacity: ------------------------------------------> [TODO]
@@ -86,17 +86,22 @@ obj.data{dataIndex}.yaxis = ['y' num2str(axIndex)];
 
 %-------------------------------------------------------------------------%
 
+%-BAR VISIBLE-%
+obj.data{dataIndex}.visible = strcmp(bar_data.Visible,'on');
+
+%-------------------------------------------------------------------------%
+
 %-BAR TYPE-%
 obj.data{dataIndex}.type = 'bar';
 
 %-------------------------------------------------------------------------%
 
-%-bar name-%
+%-BAR NAME-%
 obj.data{dataIndex}.name = bar_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-layout barmode-%
+%-LAYOUT BARMODE-%
 switch bar_data.BarLayout
     case 'grouped'
         obj.layout.barmode = 'group';
@@ -106,16 +111,16 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-bar orientation-%
+%-BAR ORIENTATION-%
 switch bar_data.Horizontal
-   
+    
     case 'off'
         
         obj.data{dataIndex}.orientation = 'v';
         
         %-bar x data-%
         obj.data{dataIndex}.x = bar_data.XData;
-       
+        
         %-bar y data-%
         obj.data{dataIndex}.y = bar_data.YData;
         
@@ -126,104 +131,48 @@ switch bar_data.Horizontal
         
         %-bar x data-%
         obj.data{dataIndex}.x = bar_data.YData;
-       
+        
         %-bar y data-%
         obj.data{dataIndex}.y = bar_data.XData;
 end
 
-%-------------------------------------------------------------------------%
+%-----------------------------!STYLE!-------------------------------------%
 
-%-layout bargap-%
-obj.layout.bargap = 1-bar_data.BarWidth;
-
-%-------------------------------------------------------------------------%
-
-%-bar line width-%
-obj.data{dataIndex}.marker.line.width = bar_child_data.LineWidth;
-
-%-------------------------------------------------------------------------%
-
-%-BAR SHOWLEGEND-%
-leg = get(bar_data.Annotation);
-legInfo = get(leg.LegendInformation);
-
-switch legInfo.IconDisplayStyle
-    case 'on'
-        showleg = true;
-    case 'off'
-        showleg = false;
-end
-
-obj.data{dataIndex}.showlegend = showleg;
-
-%-------------------------------------------------------------------------%
-
-%-bar visible-%
-obj.data{dataIndex}.visible = strcmp(bar_data.Visible,'on');
-
-%-------------------------------------------------------------------------%
-
-%-bar opacity-%
-if ~ischar(bar_child_data.FaceAlpha)
-    obj.data{dataIndex}.opacity = bar_child_data.FaceAlpha;
-end
-
-%-------------------------------------------------------------------------%
-
-%-bar face color-%
-
-colormap = figure_data.Colormap;
-
-if ~ischar(bar_child_data.FaceColor)
+if ~obj.PlotOptions.Strip 
     
-    %-paper_bgcolor-%
-    col = 255*bar_child_data.FaceColor;
-    obj.data{dataIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    %-LAYOUT BARGAP-%
+    obj.layout.bargap = 1-bar_data.BarWidth;
     
-else
-    switch bar_child_data.FaceColor
-        case 'none'
-            obj.data{dataIndex}.marker.color = 'rgba(0,0,0,0,)';
-        case 'flat'
-            switch bar_child_data.CDataMapping
-                case 'scaled'
-                    capCD = max(min(bar_child_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                    scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
-                    col =  255*(colormap(1+ floor(scalefactor*(length(colormap)-1)),:));
-                case 'direct'
-                    col =  255*(colormap(scatter_child_data(n).FaceVertexCData(1,1),:));
-            end
-            obj.data{dataIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    %---------------------------------------------------------------------%
+    
+    %-BAR SHOWLEGEND-%
+    leg = get(bar_data.Annotation);
+    legInfo = get(leg.LegendInformation);
+    
+    switch legInfo.IconDisplayStyle
+        case 'on'
+            showleg = true;
+        case 'off'
+            showleg = false;
     end
-end
-
-%-------------------------------------------------------------------------%
-
-%-bar edge color-%
-
-if ~ischar(bar_child_data.EdgeColor)
     
-    %-paper_bgcolor-%
-    col = 255*bar_child_data.EdgeColor;
-    obj.data{dataIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    obj.data{dataIndex}.showlegend = showleg;
     
-else
-    switch bar_child_data.EdgeColor
-        case 'none'
-            obj.data{dataIndex}.marker.line.color = 'rgba(0,0,0,0,)';
-        case 'flat'
-            switch bar_child_data.CDataMapping
-                case 'scaled'
-                    capCD = max(min(bar_child_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                    scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
-                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
-                case 'direct'
-                    col =  255*(colormap(scatter_child_data(n).FaceVertexCData(1,1),:));
-            end
-            obj.data{dataIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    %---------------------------------------------------------------------%
+    
+    %-BAR OPACITY-%
+    if ~ischar(bar_child_data.FaceAlpha)
+        obj.data{dataIndex}.opacity = bar_child_data.FaceAlpha;
     end
+    
+    %---------------------------------------------------------------------%
+    
+    %-BAR MARKER-%
+    obj.data{dataIndex}.marker = extractPatchFace(bar_child_data); 
+    
+    %---------------------------------------------------------------------%
+    
 end
-
 end
 
 

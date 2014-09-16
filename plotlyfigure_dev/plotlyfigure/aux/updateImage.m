@@ -55,10 +55,12 @@ obj.data{imageIndex}.yaxis = ['y' num2str(axIndex)];
 
 %-------------------------------------------------------------------------%
 
+%-IMAGE TYPE-%
 obj.data{imageIndex}.type = 'heatmap';
 
 %-------------------------------------------------------------------------%
 
+%-IMAGE X-%
 if (size(image_data.XData,2) == 2)
     obj.data{imageIndex}.x = image_data.XData(1):image_data.XData(2);
 else
@@ -67,6 +69,7 @@ end
 
 %-------------------------------------------------------------------------%
 
+%-IMAGE Y-%
 if (size(image_data.YData,2) == 2)
     obj.data{imageIndex}.y = image_data.YData(1):image_data.YData(2);
 else
@@ -75,46 +78,63 @@ end
 
 %-------------------------------------------------------------------------%
 
-obj.data{imageIndex}.z = image_data.CData;
+%-IMAGE Z-%
+if(size(image_data.CData,3) > 1)
+    % TODO: FIX THIS TO ALLOW FOR TRUE COLOUR SPECS. 
+    obj.data{imageIndex}.z = image_data.CData(:,:,1);   
+else
+    obj.data{imageIndex}.z = image_data.CData;
+end
+
+%-------------------------------------------------------------------------%
+
+%-IMAGE NAME-%
+obj.data{imageIndex}.name = image_data.DisplayName;
+
+%-------------------------------------------------------------------------%
+
+%-IMAGE SHOWSCALE-%
+obj.data{imageIndex}.showscale = false;
+
+%-------------------------------------------------------------------------%
+
+%-IMAGE VISIBLE-%
+obj.data{imageIndex}.visible = strcmp(image_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
 %-IMAGE REVERSE SCALE-%
 
-obj.data{imageIndex}.reversecale = false; 
+obj.data{imageIndex}.reversecale = false;
 
 %-------------------------------------------------------------------------%
 
 %-ZAUTO-%
 
-obj.data{imageIndex}.zauto = false; 
+obj.data{imageIndex}.zauto = false;
 
 %-------------------------------------------------------------------------%
 
 %-ZMIN-%
 
-obj.data{imageIndex}.zmin = axis_data.CLim(1); 
+obj.data{imageIndex}.zmin = axis_data.CLim(1);
 
 %-------------------------------------------------------------------------%
 
 %-ZMAX-%
 
-obj.data{imageIndex}.zmax = axis_data.CLim(2); 
+obj.data{imageIndex}.zmax = axis_data.CLim(2);
 
 %-------------------------------------------------------------------------%
 
 %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
 
-colormap = figure_data.Colormap; 
+colormap = figure_data.Colormap;
 
 for c = 1:length(colormap)
-    col =  255*(colormap(c,:)); 
+    col =  255*(colormap(c,:));
     obj.data{imageIndex}.colorscale{c} = {(c-1)/length(colormap), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
 end
-
-%-------------------------------------------------------------------------%
-
-obj.data{imageIndex}.name = image_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
@@ -130,16 +150,6 @@ switch legInfo.IconDisplayStyle
 end
 
 obj.data{imageIndex}.showlegend = showleg;
-
-%-------------------------------------------------------------------------%
-
-%-IMAGE SHOWSCALE-%
-obj.data{imageIndex}.showscale = false;
-
-%-------------------------------------------------------------------------%
-
-%-IMAGE VISIBLE-%
-obj.data{imageIndex}.visible = strcmp(image_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 

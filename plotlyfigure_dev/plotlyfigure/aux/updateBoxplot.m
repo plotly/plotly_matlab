@@ -36,7 +36,6 @@ function obj = updateBoxplot(obj, boxIndex)
 % shape: ...[DONE]
 % smoothing: ...[NOT SUPPORTED IN MATLAB]
 
-
 %-------------------------------------------------------------------------%
 
 %-AXIS INDEX-%
@@ -190,8 +189,7 @@ for bp = bpnum:-1:1
                         col = 255*box_child_data.Color;
                         obj.data{boxIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                     else
-                        line = extractLineMarker(box_child_data);
-                        obj.data{boxIndex}.line = line;
+                        obj.data{boxIndex}.line = extractLineLine(box_child_data);
                     end
                 end
                 
@@ -202,8 +200,7 @@ for bp = bpnum:-1:1
                     outliers = box_child_data.YData;
                     if ~obj.PlotOptions.Strip
                         %-outlier marker style-%
-                        [~, marker] = extractLineMarker(box_child_data);
-                        obj.data{boxIndex}.marker = marker;
+                        obj.data{boxIndex}.marker = extractLineMarker(box_child_data);
                     end
                 end
                 
@@ -212,8 +209,7 @@ for bp = bpnum:-1:1
                 
                 if ~obj.PlotOptions.Strip
                     %-boxplot line style-%
-                    line = extractLineMarker(box_child_data);
-                    obj.data{boxIndex}.line = line;
+                    obj.data{boxIndex}.line = extractLineLine(box_child_data);
                     
                     %-boxplot whisker width-%
                     obj.data{boxIndex}.whiskerwidth = 0;

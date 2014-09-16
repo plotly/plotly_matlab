@@ -49,7 +49,6 @@ function updateAreaseries(obj,areaIndex)
 % line.shape - [NOT SUPPORTED IN MATLAB]
 
 
-
 %-FIGURE STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);
 
@@ -86,6 +85,11 @@ obj.data{areaIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
+%-AREA VISIBLE-%
+obj.data{areaIndex}.visible = strcmp(area_child_data.Visible,'on');
+
+%-------------------------------------------------------------------------%
+
 %-AREA X-%
 obj.data{areaIndex}.x = area_data.XData;
 
@@ -102,11 +106,18 @@ obj.data{areaIndex}.name = area_child_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-MARKER SIZE-%
-obj.data{areaIndex}.marker.size = area_child_data.MarkerSize;
+%-AREA FILL-%
+obj.data{areaIndex}.fill = 'tozeroy';
+
+%-----------------------------!STYLE!-------------------------------------%
+
+if ~obj.PlotOptions.Strip
+    
+%-AREA LINE STYLE-%
+obj.data{areaIndex}.line = extractPatchLine(area_child_data); 
 
 %-------------------------------------------------------------------------%
-
+    
 %-AREA MODE-%
 if ~strcmpi('none', area_child_data.Marker) && ~strcmpi('none', area_child_data.LineStyle)
     mode = 'lines+markers';
@@ -120,133 +131,10 @@ end
 
 obj.data{areaIndex}.mode = mode;
 
-%-MARKER SYMBOL-%
-if ~strcmp(area_child_data.Marker,'none')
-    
-    switch area_child_data.Marker
-        case '.'
-            marksymbol = 'circle';
-        case 'o'
-            marksymbol = 'circle';
-        case 'x'
-            marksymbol = 'x-thin-open';
-        case '+'
-            marksymbol = 'cross-thin-open';
-        case '*'
-            marksymbol = 'asterisk-open';
-        case {'s','square'}
-            marksymbol = 'square';
-        case {'d','diamond'}
-            marksymbol = 'diamond';
-        case 'v'
-            marksymbol = 'triangle-down';
-        case '^'
-            marksymbol = 'triangle-up';
-        case '<'
-            marksymbol = 'triangle-left';
-        case '>'
-            marksymbol = 'triangle-right';
-        case {'p','pentagram'}
-            marksymbol = 'star';
-        case {'h','hexagram'}
-            marksymbol = 'hexagram';
-    end
-    
-    obj.data{areaIndex}.marker.symbol = marksymbol;
-    
-end
-
 %-------------------------------------------------------------------------%
 
-%-MARKER LINE WIDTH-%
-obj.data{areaIndex}.marker.line.width = area_child_data.LineWidth;
-
-if(~strcmp(area_child_data.LineStyle,'none'))
-    
-    %-AREA LINE COLOR-%
-    if isnumeric(area_child_data.EdgeColor)
-        
-        col = 255*area_child_data.EdgeColor;
-        obj.data{areaIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        
-    else
-        switch area_child_data.FaceColor
-            case 'none'
-                obj.data{areaIndex}.line.color = 'rgba(0,0,0,0,)';
-            case 'flat'
-                col = 255*figure_data.Colormap(area_child_data.CData(1),:);
-                obj.data{areaIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        end
-    end
-    
-    
-    %-AREA LINE WIDTH-%
-    obj.data{areaIndex}.line.width = area_child_data.LineWidth;
-    
-    %-AREA LINE DASH-%
-    switch area_child_data.LineStyle
-        case '-'
-            LineStyle = 'solid';
-        case '--'
-            LineStyle = 'dash';
-        case ':'
-            LineStyle = 'dot';
-        case '-.'
-            LineStyle = 'dashdot';
-    end
-    obj.data{areaIndex}.line.dash = LineStyle;
-end
-
-%-------------------------------------------------------------------------%
-
-%--MARKER FILL COLOR--%
-
-MarkerColor = area_child_data.MarkerFaceColor;
-filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
-
-filledMarker = ismember(area_child_data.Marker,filledMarkerSet);
-
-if filledMarker
-    if ~ischar(MarkerColor)
-        col = 255*MarkerColor;
-        markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    else
-        switch MarkerColor
-            case 'none'
-                markercolor = 'rgba(0,0,0,0)';
-            case 'auto'
-                markercolor = obj.data{areaIndex}.line.color;
-        end
-    end
-    
-    obj.data{areaIndex}.marker.color = markercolor;
-    
-end
-
-%-------------------------------------------------------------------------%
-
-%-MARKER LINE COLOR-%
-
-MarkerLineColor = area_child_data.MarkerEdgeColor;
-
-if isnumeric(MarkerLineColor)
-    col = 255*MarkerLineColor;
-    markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-else
-    switch MarkerLineColor
-        case 'none'
-            markerlinecolor = 'rgba(0,0,0,0)';
-        case 'auto'
-            markerlinecolor = obj.data{areaIndex}.line.color;
-    end
-end
-
-if filledMarker
-    obj.data{areaIndex}.marker.line.color = markerlinecolor;
-else
-    obj.data{areaIndex}.marker.color = markerlinecolor;
-end
+%-AREA MARKER STYLE-%
+obj.data{areaIndex}.marker = extractPatchMarker(area_child_data); 
 
 %-------------------------------------------------------------------------%
 
@@ -265,41 +153,13 @@ obj.data{areaIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
-%-AREA VISIBLE-%
-obj.data{areaIndex}.visible = strcmp(area_child_data.Visible,'on');
-
-%-------------------------------------------------------------------------%
-
-%-AREA FILL-%
-obj.data{areaIndex}.fill = 'tozeroy';
-
-%-------------------------------------------------------------------------%
-
 %-AREA FILL COLOR-%
-if isnumeric(area_child_data.FaceColor)
-    
-    col = 255*area_child_data.FaceColor;
-    obj.data{areaIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-else
-    switch area_child_data.FaceColor
-        case 'none'
-            obj.data{areaIndex}.fillcolor = 'rgba(0,0,0,0,)';
-        case 'flat'
-            switch area_child_data.CDataMapping
-                case 'scaled'
-                    mapcol = max(axis_data.CLim(1),area_child_data.CData(1));
-                    mapcol = min(axis_data.CLim(2),mapcol);
-                    mapcol = axis_data.CLim(1) + floor((length(figure_data.Colormap)-1)/diff(axis_data.CLim))*(mapcol-axis_data.CLim(1));
-                    col = 255*figure_data.Colormap(mapcol,:);
-                case 'direct'
-                    col = 255*figure_data.Colormap(area_child_data.CData(1),:);
-            end
-            
-            obj.data{areaIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    end
-end
+fill = extractPatchFace(area_child_data); 
+obj.data{areaIndex}.fillcolor = fill.color; 
 
+%-------------------------------------------------------------------------%
+
+end
 end
 
 
