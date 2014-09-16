@@ -1,6 +1,5 @@
-
 classdef plotlyfigure < handle
-    
+
     %----CLASS PROPERTIES----%
     properties (SetObservable)
         data; % data of the plot
@@ -13,7 +12,12 @@ classdef plotlyfigure < handle
         UserData; % credentials/configuration/verbose
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
-        LiveEdit;
+        LiveEdit; 
+    end
+    
+    %---CLASS EVENTS---%
+    events
+        liveedit; 
     end
     
     %----CLASS METHODS----%
@@ -21,6 +25,7 @@ classdef plotlyfigure < handle
         
         %----CONSTRUCTOR---%
         function obj = plotlyfigure(varargin)
+           
             %check input structure
             if nargin > 1
                 if mod(nargin,2) ~= 0 && ~ishandle(varargin{1})
@@ -48,14 +53,15 @@ classdef plotlyfigure < handle
             
             % plot option defaults (edit these for custom conversions)
             obj.PlotlyDefaults.MinTitleMargin = 80;
+            obj.PlotlyDefaults.TitleHeight = 0.01;
             obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
             obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5;
             obj.PlotlyDefaults.MarginPad = 0;
             obj.PlotlyDefaults.MaxTickLength = 20;
-            obj.PlotlyDefaults.TitleHeight = 0.01;
             obj.PlotlyDefaults.ExponentFormat = 'none';
             obj.PlotlyDefaults.ErrorbarWidth = 6;
             obj.PlotlyDefaults.MarkerOpacity = 1;
+            obj.PlotlyDefaults.ShowBaselineLegend = false; 
             
             % check for some key/vals
             for a = 1:2:nargin
@@ -139,7 +145,7 @@ classdef plotlyfigure < handle
             end
             
             % plotly figure default style
-            set(fig,'Name','PLOTLY FIGURE','Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
+            set(fig,'Name','PLOTLY FIGURE','Color',[1 1 1],'ToolBar','none','NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
             
             % figure state
             obj.State.Figure.Handle = fig;
@@ -240,16 +246,15 @@ classdef plotlyfigure < handle
                 
                 % add baseline objects
                 baselines = findobj(ax(a),'-property','BaseLine');
-                plots = [plots get(baselines,'BaseLine')']; 
+                baselinehan = cell2mat(get(baselines,'BaseLine')); 
+                plots = [baselinehan ; plots]; 
                 
-               for np = 1:length(plots) 
-                    
+               for np = length(plots):-1:1
                     % update the plot fields 
                     obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1; 
                     obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(np));
                     obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(a));
-                    obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(np)).classhandle.name;
-                    
+                    obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(np)).classhandle.name;   
                 end
             end
             
@@ -272,7 +277,7 @@ classdef plotlyfigure < handle
                 obj.State.Legend(g).Handle = handle(legs(g));
                 
                 % find associated axis
-                legendAxis = findLegendAxis(obj, handle(legs(np)));
+                legendAxis = findLegendAxis(obj, handle(legs(g)));
                 
                 % update colorbar associated axis
                 obj.State.Legend(g).AssociatedAxis = legendAxis;
@@ -285,13 +290,13 @@ classdef plotlyfigure < handle
             for c = 1:length(cols)
                 
                 % update colorbar handle
-                obj.State.Colorbar(np).Handle = handle(cols(np));
+                obj.State.Colorbar(c).Handle = handle(cols(c));
                 
                 % find associated axis
-                colorbarAxis = findColorbarAxis(obj, handle(cols(np)));
+                colorbarAxis = findColorbarAxis(obj, handle(cols(c)));
                 
                 % update colorbar associated axis
-                obj.State.Colorbar(np).AssociatedAxis = colorbarAxis;
+                obj.State.Colorbar(c).AssociatedAxis = colorbarAxis;
                 
             end
             
