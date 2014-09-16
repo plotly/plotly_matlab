@@ -113,7 +113,7 @@ if ~obj.PlotOptions.Strip
     switch text_data.FontWeight
         case {'bold','demi'}
             %-bold text-%
-            obj.layout.annotations{anIndex}.text = ['<b>' text_data.String '</b>'];
+            obj.layout.annotations{anIndex}.text = ['<b>' obj.layout.annotations{anIndex}.text '</b>'];
         otherwise
     end
     

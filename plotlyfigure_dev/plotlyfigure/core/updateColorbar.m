@@ -84,13 +84,13 @@ colorbar_ylabel_data = get(colorbar_ylabel);
 %-colorbar title-%
 if ~isempty(colorbar_title_data.String)
     %-colorbar title-%
-    colorbar.title = colorbar_title_data.String;
+    colorbar.title = parseString(colorbar_title_data.String,colorbar_title_data.Interpreter);
 elseif ~isempty(colorbar_xlabel_data.String)
     %-colorbar title-%
-    colorbar.title = colorbar_xlabel_data.String;
+    colorbar.title = parseString(colorbar_xlabel_data.String,colorbar_xlabel_data.Interpreter);
 elseif ~isempty(colorbar_ylabel_data.String)
     %-colorbar title-%
-    colorbar.title = colorbar_ylabel_data.String;
+    colorbar.title = parseString(colorbar_ylabel_data.String,colorbar_ylabel_data.Interpreter);
     
 end
 
