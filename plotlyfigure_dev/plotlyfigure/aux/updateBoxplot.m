@@ -110,6 +110,7 @@ for bp = bpnum:-1:1
     
     %-------------------------------------------------------------------------%
     
+    %-box fillcolor-%
     if ~obj.PlotOptions.Strip
         obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
     end
@@ -133,7 +134,6 @@ for bp = bpnum:-1:1
         
     end
     
-    
     %-boxplot components-%
     Q1 = [];
     Q3 = [];
@@ -145,11 +145,16 @@ for bp = bpnum:-1:1
     % iterate through boxplot components
     for bpc = 1:bpcompnum
         
+        %get box child data
         box_child_data = get(box_child(bp+bpnum*(bpc-1)));
         
-        %check for text
+        %box name
         if strcmp(box_child_data.Type,'text')
-            obj.data{boxIndex}.name =  box_child_data.String;
+            if iscell(box_child_data.String)
+                obj.data{boxIndex}.name =  box_child_data.String{1};
+            else
+                obj.data{boxIndex}.name =  box_child_data.String;
+            end
         end
         
         % parse boxplot tags
