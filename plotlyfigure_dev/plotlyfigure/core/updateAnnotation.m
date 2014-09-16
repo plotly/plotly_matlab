@@ -31,7 +31,7 @@ function obj = updateAnnotation(obj,anIndex)
 % bgcolor: ...[DONE]
 % opacity: ...[NOT SUPPORTED IN MATLAB]
 
-% update axis handle
+%-TEXT DATA STRUCTURE-%
 text_data = get(obj.State.Text(anIndex).Handle);
 
 %-STANDARDIZE UNITS-%
@@ -40,10 +40,12 @@ fontunits = text_data.FontUnits;
 set(obj.State.Text(anIndex).Handle,'Units','data');
 set(obj.State.Text(anIndex).Handle,'FontUnits','points');
 
-%-MATLAB-PLOTLY DEFAULTS-%
+%-------------------------------------------------------------------------%
 
-%-hide arrow-%
+%-show arrow-%
 obj.layout.annotations{anIndex}.showarrow = false;
+
+%-------------------------------------------------------------------------%
 
 %-anchor title to paper-%
 if obj.State.Text(anIndex).Title
@@ -58,53 +60,17 @@ else
     obj.layout.annotations{anIndex}.yref = ['y' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis))];
 end
 
-%-text-%
-obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
-if obj.State.Text(anIndex).Title && isempty(text_data.String)
-    obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
-end
-
-%-font color-%
-col = 255*text_data.Color;
-obj.layout.annotations{anIndex}.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-
-%-font family-%
-obj.layout.annotations{anIndex}.font.family = matlab2plotlyfont(text_data.FontName);
-
-%-font size-%
-obj.layout.annotations{anIndex}.font.size = text_data.FontSize;
-
-%-background color-%
-if ~ischar(text_data.BackgroundColor)
-    switch text_data.BackgroundColor
-        
-        case 'ne'
-            obj.layout.annotations{anIndex}.bgcolor = 'rgba(0,0,0,0)';
-        otherwise
-            
-    end
-end
-
-%-border color-%
-if ~ischar(text_data.EdgeColor)
-    col = 255*text_data.EdgeColora;
-    obj.layout.annotations{anIndex}.bordercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-else
-    %-none-%
-    obj.layout.annotations{anIndex}.bordercolor = 'rgba(0,0,0,0)';
-end
-
-switch text_data.FontWeight
-    case {'bold','demi'}
-        %-bold text-%
-        obj.layout.annotations{anIndex}.text = ['<b>' text_data.String '</b>'];
-    otherwise
-end
+%-------------------------------------------------------------------------%
 
 %-xanchor-%
 obj.layout.annotations{anIndex}.xanchor = text_data.HorizontalAlignment;
+
+%-------------------------------------------------------------------------%
+
 %-align-%
 obj.layout.annotations{anIndex}.align = text_data.HorizontalAlignment;
+
+%-------------------------------------------------------------------------%
 
 switch text_data.VerticalAlignment
     %-yanchor-%
@@ -116,33 +82,104 @@ switch text_data.VerticalAlignment
         obj.layout.annotations{anIndex}.yanchor = 'bottom';
 end
 
-%-textangle-%
-obj.layout.annotations{anIndex}.textangle = text_data.Rotation;
-if text_data.Rotation > 180
-    obj.layout.annotations{anIndex}.textangle = text_data.Rotation - 360;
+%-------------------------------------------------------------------------%
+
+%-text-%
+obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
+if obj.State.Text(anIndex).Title && isempty(text_data.String)
+    obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
 end
 
-%-borderpad-%
-obj.layout.annotations{anIndex}.borderwidth = text_data.LineWidth;
+%-------------------------------!STYLE!-----------------------------------%
 
-%-borderpad-%
-obj.layout.annotations{anIndex}.borderpad = text_data.Margin;
-
-if obj.State.Text(anIndex).Title
+if ~obj.PlotOptions.Strip
     
-    %-AXIS DATA-%
-    eval(['xaxis = obj.layout.xaxis' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis)) ';']);
-    eval(['yaxis = obj.layout.yaxis' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis)) ';']);
+    %-font color-%
+    col = 255*text_data.Color;
+    obj.layout.annotations{anIndex}.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     
-    %-x position-%
-    obj.layout.annotations{anIndex}.x = mean(xaxis.domain);
-    %-y position-%
-    obj.layout.annotations{anIndex}.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
-else
-    %-x position-%
-    obj.layout.annotations{anIndex}.x = text_data.Position(1);
-    %-y position-%
-    obj.layout.annotations{anIndex}.y = text_data.Position(2);
+    %---------------------------------------------------------------------%
+    
+    %-font family-%
+    obj.layout.annotations{anIndex}.font.family = matlab2plotlyfont(text_data.FontName);
+    
+    %---------------------------------------------------------------------%
+    
+    %-font size-%
+    obj.layout.annotations{anIndex}.font.size = text_data.FontSize;
+    
+    %---------------------------------------------------------------------%
+    
+    switch text_data.FontWeight
+        case {'bold','demi'}
+            %-bold text-%
+            obj.layout.annotations{anIndex}.text = ['<b>' text_data.String '</b>'];
+        otherwise
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-background color-%
+    if ~ischar(text_data.BackgroundColor)
+        switch text_data.BackgroundColor
+            
+            case 'ne'
+                obj.layout.annotations{anIndex}.bgcolor = 'rgba(0,0,0,0)';
+            otherwise
+                
+        end
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-border color-%
+    if ~ischar(text_data.EdgeColor)
+        col = 255*text_data.EdgeColora;
+        obj.layout.annotations{anIndex}.bordercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    else
+        %-none-%
+        obj.layout.annotations{anIndex}.bordercolor = 'rgba(0,0,0,0)';
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-textangle-%
+    obj.layout.annotations{anIndex}.textangle = text_data.Rotation;
+    if text_data.Rotation > 180
+        obj.layout.annotations{anIndex}.textangle = text_data.Rotation - 360;
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-borderpad-%
+    obj.layout.annotations{anIndex}.borderwidth = text_data.LineWidth;
+    
+    %---------------------------------------------------------------------%
+    
+    %-borderpad-%
+    obj.layout.annotations{anIndex}.borderpad = text_data.Margin;
+    
+    %---------------------------------------------------------------------%
+    
+    if obj.State.Text(anIndex).Title
+        
+        %-AXIS DATA-%
+        eval(['xaxis = obj.layout.xaxis' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis)) ';']);
+        eval(['yaxis = obj.layout.yaxis' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis)) ';']);
+        
+        %-x position-%
+        obj.layout.annotations{anIndex}.x = mean(xaxis.domain);
+        %-y position-%
+        obj.layout.annotations{anIndex}.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
+    else
+        %-x position-%
+        obj.layout.annotations{anIndex}.x = text_data.Position(1);
+        %-y position-%
+        obj.layout.annotations{anIndex}.y = text_data.Position(2);
+    end
+    
+    %---------------------------------------------------------------------%
+    
 end
 
 %hide text (a workaround)
@@ -152,8 +189,12 @@ else
     obj.layout.annotations{anIndex}.text = obj.layout.annotations{anIndex}.text;
 end
 
+%-------------------------------------------------------------------------%
+
 %-REVERT UNITS-%
 set(obj.State.Text(anIndex).Handle,'Units',textunits);
 set(obj.State.Text(anIndex).Handle,'FontUnits',fontunits);
+
+%-------------------------------------------------------------------------%
 
 end

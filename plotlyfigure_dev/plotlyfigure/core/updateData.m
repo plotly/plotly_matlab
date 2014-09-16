@@ -20,15 +20,15 @@ switch obj.State.Plot(dataIndex).Class
     case 'rectangle'
         updateRectangle(obj,dataIndex);
     case 'surface'
-        %updateSurface(obj,dataIndex); 
-
+        %updateSurface(obj,dataIndex);
+        
         %-GROUP PLOT OBJECTS-%
     case 'areaseries';
         updateAreaseries(obj, dataIndex);
     case 'barseries'
         updateBarseries(obj, dataIndex);
     case 'baseline'
-        updateLineseries(obj, dataIndex);
+        updateBaseline(obj, dataIndex);
     case 'contourgroup'
         updateContourgroup(obj,dataIndex);
     case 'errorbarseries'
@@ -56,23 +56,26 @@ end
 
 %----------------------------DATA CLEAN UP--------------------------------%
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-
-%-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
-
-%-FIX X/Y DATA-%
-
-% check for xaxis dates
-if strcmpi(xaxis.type, 'date')
-    obj.data{dataIndex}.x =  convertDate(obj.data{dataIndex}.x);
+if ~obj.PlotOptions.Strip
+    
+    %-AXIS INDEX-%
+    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+    
+    %-AXIS DATA-%
+    eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
+    eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+    
+    %-FIX X/Y DATA-%
+    
+    % check for xaxis dates
+    if strcmpi(xaxis.type, 'date')
+        obj.data{dataIndex}.x =  convertDate(obj.data{dataIndex}.x);
+    end
+    
+    % check for yaxis dates
+    if strcmpi(yaxis.type, 'date')
+        obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
+    end    
+    
 end
-
-% check for yaxis dates
-if strcmpi(yaxis.type, 'date')
-    obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
-end
-
 end
