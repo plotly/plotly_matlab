@@ -26,6 +26,10 @@ classdef plotlycolumn < double
             end
         end
         
+        %----overload plot commands----%
+        % plot(col1,col2,varargin)
+        % pass column to ploltyfigure
+        
         %---display---%
         function obj = disp(obj)
             disp(double(obj));

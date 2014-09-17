@@ -7,6 +7,7 @@ classdef makeplotlygrid < dynamicprops & handle
         UserData;
         PlotOptions;
         Response;
+        Raw; 
         Plot; 
     end
     
@@ -29,7 +30,7 @@ classdef makeplotlygrid < dynamicprops & handle
             end
             
             % update UserData
-            obj.UserData.username = un;
+            obj.UserData.Username = un;
             obj.UserData.Key = key;
             obj.UserData.Domain = domain;
             
@@ -38,22 +39,23 @@ classdef makeplotlygrid < dynamicprops & handle
                 error('must be key value');
             end
             
+            % defaults
+            obj.PlotOptions.Filename = 'untitled'; 
+            obj.PlotOptions.WorldReadable = true; 
+            
             %parse variable arguments
             for n = 1:2:length(varargin)
                 switch varargin{n}
                     case 'filename'
-                        obj.PlotOptions.filename = varargin{n+1};
+                        obj.PlotOptions.Filename = varargin{n+1};
                 end
             end
             
             % post grid to plotly
-            % resp = obj.makecall;
-            resp.time = '123AB2'; 
-            resp.power = 'J67003';
-            
+            resp = obj.makecall(data);
+             
             % data fields
             datafields = fieldnames(data);
-            
             
             % add dynamic properties
             for n = 1:length(datafields)
@@ -67,26 +69,25 @@ classdef makeplotlygrid < dynamicprops & handle
             
         end
         
-        function obj = makecall(obj)
+        function obj = makecall(obj, data)
             
-            platform = 'MATLAB';
-            url = [domain '/v1/grid/'];
-            % payload = {'platform', platform, 'version', plotly_version, 'args', args, 'un', un, 'key', key, 'origin', origin, 'kwargs', kwargs};
+            querystring = ['?fn=' obj.PlotOptions.Filename '&ftreq=grid' '&world_readable=true']; 
+            url = [obj.UserData.Domain '/v0.1/grids/' querystring];
+            body.data = data;
+            payload = m2json(body); 
+            headers(1).name = 'x-plotly-username'; 
+            headers(1).value = obj.UserData.Username; 
+            headers(2).name = 'x-plotly-apikey'; 
+            headers(2).value = obj.UserData.Key; 
             
-            if (is_octave)
-                % use octave super_powers
-                resp = urlread(url, 'post', payload);
-            else
-                % do it matlab way
-                resp = urlread(url, 'Post', payload);
-            end
+            %make post request
+            resp = urlread2(url, 'Post', payload , headers);
             
             % check response
             response_handler(resp);
             
             % add to PlotOption
-            obj.PlotOptions = resp;
-            
+            obj.Response = resp;   
         end
         
         %---overload plot command---%
