@@ -51,24 +51,27 @@ axis_data = get(obj.State.Plot(contourIndex).AssociatedAxis);
 %-PLOT DATA STRUCTURE- %
 contour_data = get(obj.State.Plot(contourIndex).Handle);
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+
+%-------------------------------------------------------------------------%
+
+%-contour xaxis-%
+obj.data{contourIndex}.xaxis = ['x' num2str(xsource)];
+
+%-------------------------------------------------------------------------%
+
+%-contour yaxis-%
+obj.data{contourIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
 %-contour type-%
 obj.data{contourIndex}.type = 'contour';
-
-%-------------------------------------------------------------------------%
-
-%-contour xaxis-%
-obj.data{contourIndex}.xaxis = ['x' num2str(axIndex)];
-
-%-------------------------------------------------------------------------%
-
-%-contour yaxis-%
-obj.data{contourIndex}.yaxis = ['y' num2str(axIndex)];
 
 %-------------------------------------------------------------------------%
 

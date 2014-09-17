@@ -55,12 +55,6 @@ function obj = updateBarseries(obj,dataIndex)
 
 %-------------------------------------------------------------------------%
 
-%-FIGURE STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
-
-%-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(dataIndex).AssociatedAxis);
-
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
 
@@ -70,19 +64,22 @@ bar_data = get(obj.State.Plot(dataIndex).Handle);
 %-BAR CHILD (PATCH) DATA STRUCTURE- %
 bar_child_data = get(bar_data.Children(1));
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
 %-BAR XAXIS-%
-obj.data{dataIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{dataIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
 %-BAR YAXIS-%
-obj.data{dataIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{dataIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
@@ -138,7 +135,7 @@ end
 
 %-----------------------------!STYLE!-------------------------------------%
 
-if ~obj.PlotOptions.Strip 
+if ~obj.PlotOptions.Strip
     
     %-LAYOUT BARGAP-%
     obj.layout.bargap = 1-bar_data.BarWidth;
@@ -168,7 +165,7 @@ if ~obj.PlotOptions.Strip
     %---------------------------------------------------------------------%
     
     %-BAR MARKER-%
-    obj.data{dataIndex}.marker = extractPatchFace(bar_child_data); 
+    obj.data{dataIndex}.marker = extractPatchFace(bar_child_data);
     
     %---------------------------------------------------------------------%
     

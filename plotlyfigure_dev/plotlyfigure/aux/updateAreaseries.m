@@ -48,13 +48,6 @@ function updateAreaseries(obj,areaIndex)
 % line.smoothing - [NOT SUPPORTED IN MATLAB]
 % line.shape - [NOT SUPPORTED IN MATLAB]
 
-
-%-FIGURE STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
-
-%-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(areaIndex).AssociatedAxis);
-
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
 
@@ -64,19 +57,22 @@ area_data = get(obj.State.Plot(areaIndex).Handle);
 %-AREA CHILD DATA STRUCTURE- %
 area_child_data = get(area_data.Children(1));
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
 %-AREA XAXIS-%
-obj.data{areaIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{areaIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
 %-AREA YAXIS-%
-obj.data{areaIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{areaIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 

@@ -84,31 +84,34 @@ obj.layout.groupgap = 1/bpnum;
 % iterate through box plot children in reverse order
 for bp = bpnum:-1:1
     
-    %-AXIS DATA-%
-    eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-    eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+    %-CHECK FOR MULTIPLE AXES-%
+    [xsource, ysource] = findSourceAxis(obj,axIndex);
     
-    %-------------------------------------------------------------------------%
+    %-AXIS DATA-%
+    eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+    eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+    
+    %---------------------------------------------------------------------%
     
     %-box xaxis-%
-    obj.data{boxIndex}.xaxis = ['x' num2str(axIndex)];
+    obj.data{boxIndex}.xaxis = ['x' num2str(xsource)];
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-box yaxis-%
-    obj.data{boxIndex}.yaxis = ['y' num2str(axIndex)];
+    obj.data{boxIndex}.yaxis = ['y' num2str(ysource)];
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-box type-%
     obj.data{boxIndex}.type = 'box';
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-box visible-%
     obj.data{boxIndex}.visible = strcmp(box_data.Visible,'on');
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-box fillcolor-%
     if ~obj.PlotOptions.Strip
@@ -295,7 +298,7 @@ xaxis.autorange = true;
 %-------------------------------------------------------------------------%
 
 %-set the layout axis field-%
-obj.layout = setfield(obj.layout,['xaxis' num2str(axIndex)],xaxis);
+obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
 
 %-------------------------------------------------------------------------%
 

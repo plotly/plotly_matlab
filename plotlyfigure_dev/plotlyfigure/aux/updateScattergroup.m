@@ -1,5 +1,7 @@
 function updateScattergroup(obj,scatterIndex)
 
+%check: http://undocumentedmatlab.com/blog/undocumented-scatter-plot-behavior
+
 %----SCATTER FIELDS----%
 
 % x - [DONE]
@@ -61,19 +63,22 @@ scatter_child = get(obj.State.Plot(scatterIndex).Handle,'Children');
 %-SCATTER CHILDREN DATA-%
 scatter_child_data = get(scatter_child);
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
 %-SCATTER XAXIS-%
-obj.data{scatterIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{scatterIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
 %-SCATTER YAXIS-%
-obj.data{scatterIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{scatterIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
@@ -106,12 +111,21 @@ for m = 1:length(scatter_child_data)
     %---------------------------------------------------------------------%
     
     %-SCATTER X-%
-    obj.data{scatterIndex}.x(m) = scatter_child_data(n).XData;
+    if length(scatter_child_data) > 1 
+        obj.data{scatterIndex}.x(m) = scatter_child_data(n).XData;
+    else
+        obj.data{scatterIndex}.x = scatter_child_data(n).XData;
+    end
     
     %---------------------------------------------------------------------%
     
     %-SCATTER Y-%
-    obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
+    if length(scatter_child_data) > 1
+        obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
+    else
+        obj.data{scatterIndex}.y = scatter_child_data(n).YData;
+        
+    end
     
     %-----------------------------!STRIP!---------------------------------%
     

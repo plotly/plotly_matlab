@@ -70,19 +70,22 @@ axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
 %-HIST DATA STRUCTURE- %
 hist_data = get(obj.State.Plot(histIndex).Handle);
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
 %-HIST XAXIS-%
-obj.data{histIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{histIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
 %-HIST YAXIS-%
-obj.data{histIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{histIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 

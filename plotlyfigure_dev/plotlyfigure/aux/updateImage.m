@@ -36,22 +36,25 @@ axis_data = get(obj.State.Plot(imageIndex).AssociatedAxis);
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(imageIndex).AssociatedAxis);
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-IMAGE DATA STRUCTURE- %
 image_data = get(obj.State.Plot(imageIndex).Handle);
 
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
 %-IMAGE XAXIS-%
-obj.data{imageIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{imageIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
 %-IMAGE YAXIS-%
-obj.data{imageIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{imageIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 

@@ -34,19 +34,22 @@ axIndex = obj.getAxisIndex(obj.State.Plot(rectIndex).AssociatedAxis);
 %-RECTANGLE DATA STRUCTURE- %
 rect_data = get(obj.State.Plot(rectIndex).Handle);
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
 %-RECTANGLE XAXIS-%
-obj.data{rectIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{rectIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
 %-RECTANGLE YAXIS-%
-obj.data{rectIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{rectIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 

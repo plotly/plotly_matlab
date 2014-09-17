@@ -51,19 +51,22 @@ axIndex = obj.getAxisIndex(obj.State.Plot(patchIndex).AssociatedAxis);
 %-PATCH DATA STRUCTURE- %
 patch_data = get(obj.State.Plot(patchIndex).Handle);
 
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(axIndex) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(axIndex) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
 %-PATCH XAXIS-%
-obj.data{patchIndex}.xaxis = ['x' num2str(axIndex)];
+obj.data{patchIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
 %-PATCH YAXIS-%
-obj.data{patchIndex}.yaxis = ['y' num2str(axIndex)];
+obj.data{patchIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
