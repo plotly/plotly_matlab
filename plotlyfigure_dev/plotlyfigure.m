@@ -182,8 +182,8 @@ classdef plotlyfigure < handle
         %----GET PLOTLY FIGURE-----%
         function obj = grab(obj, file_owner, file_id)
             plotlyfig = getplotlyfig(file_owner, file_id);
-            obj.data = plotlyfig.data; 
-            obj.layout = plotlyfig.layout; 
+            obj.data = plotlyfig.data;
+            obj.layout = plotlyfig.layout;
         end
         
         %----SAVE STATIC PLOTLY IMAGE-----%
@@ -256,13 +256,7 @@ classdef plotlyfigure < handle
             
             %ouput url as hyperlink in command window if possible
             if showlink
-                try
-                    desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
-                    editor = desktop.getGroupContainer('Editor');
-                    if(~strcmp(response.url,'') && ~isempty(editor));
-                        fprintf(['\nLet''s have a look: <a href="matlab:openurl(''%s'')">' response.url '</a>\n\n'],response.url)
-                    end
-                end
+                openurl(response.url); 
             end
         end
         
@@ -288,6 +282,7 @@ classdef plotlyfigure < handle
             % find children of figure axes
             for a = 1:length(ax)
                 
+                %set axis handle field 
                 obj.State.Axis(a).Handle = ax(a);
                 
                 %add title
