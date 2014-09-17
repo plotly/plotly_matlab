@@ -2,11 +2,7 @@ function config = loadplotlyconfig()
 
 userhome = getuserdir();
 
-if ispc
-    plotly_config_file = fullfile(userhome,'plotly','config');
-else
-    plotly_config_file = fullfile(userhome,'.plotly','.config');
-end
+plotly_config_file = fullfile(userhome,'.plotly','.config');
 
 % check if config exist
 if ~exist(plotly_config_file, 'file')

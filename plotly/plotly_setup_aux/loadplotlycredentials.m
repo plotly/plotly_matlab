@@ -2,12 +2,7 @@ function creds = loadplotlycredentials()
 
 userhome = getuserdir();
 
-if ispc
-    plotly_credentials_file = fullfile(userhome,'plotly','credentials');
-else
-    plotly_credentials_file = fullfile(userhome,'.plotly','.credentials');
-end
-
+plotly_credentials_file = fullfile(userhome,'.plotly','.credentials');
 
 % check if credentials exist
 if ~exist(plotly_credentials_file, 'file')
