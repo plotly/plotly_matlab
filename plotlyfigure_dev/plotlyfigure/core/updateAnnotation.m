@@ -90,6 +90,32 @@ if obj.State.Text(anIndex).Title && isempty(text_data.String)
     obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
 end
 
+%-------------------------------------------------------------------------%
+
+if obj.State.Text(anIndex).Title
+    
+    %-AXIS INDEX-%
+    axIndex = obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis); 
+    
+    %-CHECK FOR MULTIPLE AXES-%
+    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    
+    %-AXIS DATA-%
+    eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+    eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+    
+    %-x position-%
+    obj.layout.annotations{anIndex}.x = mean(xaxis.domain);
+    %-y position-%
+    obj.layout.annotations{anIndex}.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
+else
+    %-x position-%
+    obj.layout.annotations{anIndex}.x = text_data.Position(1);
+    %-y position-%
+    obj.layout.annotations{anIndex}.y = text_data.Position(2);
+end
+
+
 %-------------------------------!STYLE!-----------------------------------%
 
 if ~obj.PlotOptions.Strip
@@ -158,27 +184,6 @@ if ~obj.PlotOptions.Strip
     
     %-borderpad-%
     obj.layout.annotations{anIndex}.borderpad = text_data.Margin;
-    
-    %---------------------------------------------------------------------%
-    
-    if obj.State.Text(anIndex).Title
-        
-        %-AXIS DATA-%
-        eval(['xaxis = obj.layout.xaxis' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis)) ';']);
-        eval(['yaxis = obj.layout.yaxis' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis)) ';']);
-        
-        %-x position-%
-        obj.layout.annotations{anIndex}.x = mean(xaxis.domain);
-        %-y position-%
-        obj.layout.annotations{anIndex}.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
-    else
-        %-x position-%
-        obj.layout.annotations{anIndex}.x = text_data.Position(1);
-        %-y position-%
-        obj.layout.annotations{anIndex}.y = text_data.Position(2);
-    end
-    
-    %---------------------------------------------------------------------%
     
 end
 

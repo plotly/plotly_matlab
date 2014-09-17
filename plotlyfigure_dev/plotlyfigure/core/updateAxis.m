@@ -53,25 +53,6 @@ figure_data = get(obj.State.Figure.Handle);
 %-AXIS DATA STRUCTURE-%
 axis_data = get(obj.State.Axis(axIndex).Handle);
 
-%-CONVERT TO PLOTLY AXIS NOTATION-%
-if isfield(obj.layout,['xaxis' axIndex])
-    xaxis = getfield(obj.layout,['xaxis' axIndex]);
-end
-
-if isfield(obj.layout,['yaxis' axIndex])
-    yaxis = getfield(obj.layout,['yaxis' axIndex]);
-end
-
-%-------------------------------------------------------------------------%
-
-%-xaxis anchor-%
-xaxis.anchor = ['y' num2str(axIndex)];
-
-%-------------------------------------------------------------------------%
-
-%-yaxis anchor-%
-yaxis.anchor = ['x' num2str(axIndex)];
-
 %-------------------------------------------------------------------------%
 
 %-xaxis domain-%
@@ -96,38 +77,10 @@ yaxis.side = axis_data.YAxisLocation;
 
 if ~obj.PlotOptions.Strip
     
-    %-xaxis zeroline-%
-    xaxis.zeroline = false;
-    
-    %-------------------------------------------------------------------------%
-    
-    %-xaxis autorange-%
-    xaxis.autorange = false;
-    
-    %-------------------------------------------------------------------------%
-    
-    %-yaxis zeroline-%
-    yaxis.zeroline = false;
-    
-    %-------------------------------------------------------------------------%
-    
-    %-yaxis autorange-%
-    yaxis.autorange = false;
-    
-    %-------------------------------------------------------------------------%
-    
-    %-xaxis exponent format-%
-    xaxis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
-    
-    %-------------------------------------------------------------------------%
-    
-    %-yaxis exponent format-%
-    yaxis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
-    
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-layout plot bg color-%
-    if ~ischar(axis_data.Color)
+    if isnumeric(axis_data.Color)
         col = 255*axis_data.Color;
     else
         col = 255*figure_data.Color;
@@ -135,27 +88,57 @@ if ~obj.PlotOptions.Strip
     
     obj.layout.plot_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
+    
+    %-xaxis zeroline-%
+    xaxis.zeroline = false;
+    
+    %---------------------------------------------------------------------%
+    
+    %-xaxis autorange-%
+    xaxis.autorange = false;
+    
+    %---------------------------------------------------------------------%
+    
+    %-yaxis zeroline-%
+    yaxis.zeroline = false;
+    
+    %---------------------------------------------------------------------%
+    
+    %-yaxis autorange-%
+    yaxis.autorange = false;
+    
+    %---------------------------------------------------------------------%
+    
+    %-xaxis exponent format-%
+    xaxis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
+    
+    %---------------------------------------------------------------------%
+    
+    %-yaxis exponent format-%
+    yaxis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
+    
+    %---------------------------------------------------------------------%
     
     %-xaxis tick font size-%
     xaxis.tickfont.size = axis_data.FontSize;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-yaxis tick font size-%
     yaxis.tickfont.size = axis_data.FontSize;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-xaxis tick font family-%
     xaxis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-yaxis tick font family-%
     yaxis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
     
-    %-------------------------------------------------------------------------%
+    %----------------------------------------------------------------------%
     
     ticklength = min(obj.PlotlyDefaults.MaxTickLength,...
         max(axis_data.TickLength(1)*axis_data.Position(3)*obj.layout.width,...
@@ -165,7 +148,7 @@ if ~obj.PlotOptions.Strip
     %-yaxis ticklen-%
     yaxis.ticklen = ticklength;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     col = 255*axis_data.XColor;
     xaxiscol = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
@@ -179,7 +162,7 @@ if ~obj.PlotOptions.Strip
     %-xaxis grid color-%
     xaxis.gridcolor = xaxiscol;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     col = 255*axis_data.XColor;
     yaxiscol = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
@@ -193,7 +176,7 @@ if ~obj.PlotOptions.Strip
     %-yaxis grid color-%
     yaxis.gridcolor = yaxiscol;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     if strcmp(axis_data.Visible,'on')
         %-xaxis showline-%
@@ -215,7 +198,7 @@ if ~obj.PlotOptions.Strip
         yaxis.showticklabels = false;
     end
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     if strcmp(axis_data.XGrid, 'on') || strcmp(axis_data.XMinorGrid, 'on')
         %-xaxis show grid-%
@@ -224,7 +207,7 @@ if ~obj.PlotOptions.Strip
         xaxis.showgrid = false;
     end
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     if strcmp(axis_data.YGrid,'on') || strcmp(axis_data.YMinorGrid,'on')
         %yaxis show grid-%
@@ -233,7 +216,7 @@ if ~obj.PlotOptions.Strip
         yaxis.showgrid = false;
     end
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
     
@@ -250,12 +233,12 @@ if ~obj.PlotOptions.Strip
     %-yaxis grid width-%
     yaxis.gridwidth = linewidth;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-xaxis type-%
     xaxis.type = axis_data.XScale;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-xaxis showtick labels / ticks-%
     if isempty(axis_data.XTick)
@@ -347,13 +330,13 @@ if ~obj.PlotOptions.Strip
         end
     end
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     if strcmp(axis_data.XDir,'reverse')
         xaxis.range = [xaxis.range(2) xaxis.range(1)];
     end
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     xlabel = axis_data.XLabel;
     ylabel = axis_data.YLabel;
@@ -370,6 +353,8 @@ if ~obj.PlotOptions.Strip
     %-x title-%
     if ~isempty(xlabel_data.String)
         xaxis.title = parseString(xlabel_data.String,xlabel_data.Interpreter);
+    else
+        xaxis.title = ' ';
     end
     
     %-x title font color-%
@@ -385,6 +370,8 @@ if ~obj.PlotOptions.Strip
     %-y title-%
     if ~isempty(ylabel_data.String)
         yaxis.title = parseString(ylabel_data.String, ylabel_data.Interpreter);
+    else
+        yaxis.title = ' ';
     end
     
     %-y title font color-%
@@ -401,12 +388,12 @@ if ~obj.PlotOptions.Strip
     set(xlabel,'FontUnits',xfontunits);
     set(ylabel,'FontUnits',yfontunits);
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-yaxis type-%
     yaxis.type = axis_data.YScale;
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-yaxis range-%
     yaxis.range = axis_data.YLim;
@@ -506,19 +493,68 @@ if ~obj.PlotOptions.Strip
         end
     end
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     if strcmp(axis_data.YDir,'reverse')
         yaxis.range = [yaxis.range(2) yaxis.range(1)];
     end
     
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
 end
 
-%SET AXES USING PLOTLY SYNTAX
-obj.layout = setfield(obj.layout,['xaxis' num2str(axIndex)],xaxis);
-obj.layout = setfield(obj.layout,['yaxis' num2str(axIndex)],yaxis);
+%-------------------------HANDLE MULTIPLE AXES----------------------------%
+
+overlapping = isOverlapping(obj, axIndex);
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
+%-------------------------------------------------------------------------%
+
+%-xaxis anchor-%
+xaxis.anchor = ['y' num2str(ysource)];
+
+%-------------------------------------------------------------------------%
+
+%-yaxis anchor-%
+yaxis.anchor = ['x' num2str(xsource)];
+
+%-------------------------------------------------------------------------%
+
+% make overlap specific style modifications
+if overlapping
+    
+    % fix x mirror
+    if xsource == axIndex
+        xaxis.mirror = false;
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    % fix y mirror
+    if ysource == axIndex && overlapping
+        yaxis.mirror = false;
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-layout plot bg color-%
+    obj.layout.plot_bgcolor = 'rgba(0,0,0,0)';
+    
+    %---------------------------------------------------------------------%
+    
+end
+
+%-------------------------------------------------------------------------%
+
+% update the layout field (overites source)
+obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
+
+%-------------------------------------------------------------------------%
+
+% update the layout field (overwrites source)
+obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
+
+%-------------------------------------------------------------------------%
 
 %-REVERT UNITS-%
 set(obj.State.Axis(axIndex).Handle,'Units',axisunits);
