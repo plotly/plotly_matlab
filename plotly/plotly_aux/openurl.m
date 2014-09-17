@@ -1,7 +1,9 @@
-function  openurl (url)
-status = dos(['open ' url ' > nul 2> nul']);
-if status==1
-     dos(['start ' url ' > nul 2> nul']);
+function openurl(url)
+try
+    desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
+    editor = desktop.getGroupContainer('Editor');
+    if(~isempty(url) && ~isempty(editor));
+        fprintf(['\nLet''s have a look: <a href="matlab:web(''%s'', ''-browser'');">' url '</a>\n\n'], url)
+    end
 end
 end
-
