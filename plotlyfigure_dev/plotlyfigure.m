@@ -12,16 +12,10 @@ classdef plotlyfigure < handle
         UserData; % credentials/configuration/verbose
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
-        LiveEdit;
-    end
-    
-    %---CLASS EVENTS---%
-    events
-        liveedit;
     end
     
     %----CLASS METHODS----%
-    methods
+    methods 
         
         %----CONSTRUCTOR---%
         function obj = plotlyfigure(varargin)
@@ -38,13 +32,9 @@ classdef plotlyfigure < handle
             % core Plotly elements
             obj.data = {};
             obj.layout = struct();
-            
-            % add live edit listeners
-            addlistener(obj,'data','PostSet',@obj.editLive);
-            addlistener(obj,'layout','PostSet',@obj.editLive);
-            
+           
             % plot options
-            obj.PlotOptions.FileName = 'PlotlyFigure';
+            obj.PlotOptions.FileName = 'myplotlyfigure';
             obj.PlotOptions.FileOpt = 'overwrite';
             obj.PlotOptions.WorldReadable = true;
             obj.PlotOptions.Open_URL = false;
@@ -62,6 +52,7 @@ classdef plotlyfigure < handle
             obj.PlotlyDefaults.ErrorbarWidth = 6;
             obj.PlotlyDefaults.MarkerOpacity = 1;
             obj.PlotlyDefaults.ShowBaselineLegend = false;
+            obj.PlotlyDefaults.Bargap = 0; 
             
             % check for some key/vals
             for a = 1:2:nargin
@@ -103,9 +94,6 @@ classdef plotlyfigure < handle
             % user experience
             obj.UserData.Verbose = false;
             
-            % live editing
-            obj.LiveEdit = false;
-            
             % figure state
             obj.State.Figure = [];
             
@@ -145,7 +133,7 @@ classdef plotlyfigure < handle
             end
             
             % plotly figure default style
-            set(fig,'Name','Plotly Figure','Color',[1 1 1],'ToolBar','none','NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
+            set(fig,'Name','Plotly Figure','Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
             
             % figure state
             obj.State.Figure.Handle = fig;
@@ -157,16 +145,6 @@ classdef plotlyfigure < handle
         
         %-------------------------USER METHODS----------------------------%
         
-        %----SET LIVE EDIT PROPERTY----%
-        function startlive(obj)
-            obj.LiveEdit = true;
-        end
-        
-        %----SET LIVE EDIT PROPERTY----%
-        function stoplive(obj)
-            obj.LiveEdit = false;
-        end
-        
         %----GET OBJ.STATE.FIGURE.HANDLE ----%
         function plotlyFigureHandle = gpf(obj)
             plotlyFigureHandle = obj.State.Figure.Handle;
@@ -177,6 +155,14 @@ classdef plotlyfigure < handle
         function obj = strip(obj)
             obj.PlotOptions.Strip = true;
             obj.update;
+        end
+        
+        %----GET THE FIELDS OF TYPE DATA----%
+        function datafields = getdata(obj)
+            pr = loadjson(fileread('graph_objs_meta.json'));
+            datafields = obj.data; 
+            % remove style / plot_info types 
+            datafields = stripdata(datafields, pr); 
         end
         
         %----GET PLOTLY FIGURE-----%
@@ -256,7 +242,7 @@ classdef plotlyfigure < handle
             
             %ouput url as hyperlink in command window if possible
             if showlink
-                openurl(response.url); 
+                openurl(response.url);
             end
         end
         
@@ -264,7 +250,7 @@ classdef plotlyfigure < handle
         
         %automatic figure conversion
         function obj = update(obj)
-            
+
             % reset figure object count
             obj.State.Figure.NumAxes = 0;
             obj.State.Figure.NumPlots = 0;
@@ -282,41 +268,54 @@ classdef plotlyfigure < handle
             % find children of figure axes
             for a = 1:length(ax)
                 
-                %set axis handle field 
-                obj.State.Axis(a).Handle = ax(a);
+                %reverse axes
+                axrev = length(ax) - a + 1; 
+  
+                %set axis handle field
+                obj.State.Axis(a).Handle = ax(axrev);
                 
                 %add title
-                obj.State.Text(a).Handle = get(ax(a),'Title');
-                obj.State.Text(a).AssociatedAxis = handle(ax(a));
+                obj.State.Text(a).Handle = get(ax(axrev),'Title');
+                obj.State.Text(a).AssociatedAxis = handle(ax(axrev));
                 obj.State.Text(a).Title = true;
                 
                 % find plots of figure
-                plots = findobj(ax(a),'-not','Type','Text','-not','Type','axes','-depth',1);
+                plots = findobj(ax(axrev),'-not','Type','Text','-not','Type','axes','-depth',1);
                 
                 % add baseline objects
-                baselines = findobj(ax(a),'-property','BaseLine');
-                baselinehan = cell2mat(get(baselines,'BaseLine'));
-                plots = [baselinehan ; plots];
+                baselines = findobj(ax(axrev),'-property','BaseLine');
                 
-                for np = length(plots):-1:1
+                % get baseline handles
+                baselinehan = get(baselines,'BaseLine');
+                
+                if iscell(baselinehan)
+                    baselinehan = cell2mat(baselinehan);
+                end
+                
+                %update plots
+                plots = [plots ; baselinehan];
+                
+                for np = 1:length(plots)
                     % update the plot fields
                     obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
                     obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(np));
-                    obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(a));
+                    obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
                     obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(np)).classhandle.name;
                 end
+                
+                % find text of figure
+                texts = findobj(ax(axrev),'Type','text','-depth',1);
+                
+                for t = 1:length(texts)
+                    obj.State.Text(obj.State.Figure.NumAnnotations + t).Handle = handle(texts(t));
+                    obj.State.Text(obj.State.Figure.NumAnnotations + t).Title = false;
+                    obj.State.Text(obj.State.Figure.NumAnnotations + t).AssociatedAxis = handle(ax(axrev));
+                end
+                
+                % update number of annotations
+                obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + length(texts);
+                
             end
-            
-            % find text of figure
-            texts = findobj(ax(a),'Type','text','-depth',1);
-            obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + length(texts);
-            
-            for t = 1:length(texts)
-                obj.State.Text(t).Handle = handle(texts(t));
-                obj.State.Text(t).Title = false;
-                obj.State.Text(t).AssociatedAxis = handle(ax(a));
-            end
-            
             
             % find legends of figure
             legs = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','legend');
@@ -365,7 +364,7 @@ classdef plotlyfigure < handle
                 updateAxis(obj,n);
             end
             
-            %update plots (must update before colorbars)
+            %update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
             end
@@ -385,22 +384,12 @@ classdef plotlyfigure < handle
                 updateColorbar(obj,n);
             end
             
-        end
-        
-        %--------------------CALLBACK FUNCTIONS---------------------------%
-        
-        %----LIVE EDIT (NOT USED FOR NOW)----%
-        
-        function obj = editLive(obj,~,~)
-            if obj.LiveEdit
-                % switch off liveedit
-                obj.LiveEdit = false;
-                % send to plotly without link
-                showlink = false;
-                obj.plotly(showlink);
-                % switch on liveedit
-                obj.LiveEdit = true;
-            end
+            %-----------------------FLIP DATA-----------------------------%
+            
+            % reverse plot order to preserve layout
+            obj.data = fliplr(obj.data); 
+            
+            %-------------------------------------------------------------%
         end
         
         %----------------------EXTRACT PLOTLY INDICES---------------------%
@@ -419,6 +408,7 @@ classdef plotlyfigure < handle
         function currentAnnotationIndex = getAnnotationIndex(obj,annothan)
             currentAnnotationIndex = find(arrayfun(@(x)(eq(x.Handle,annothan)),obj.State.Text));
         end
+       
         
         %-------------------OVERLOADED FUNCTIONS--------------------------%
         
@@ -547,6 +537,15 @@ classdef plotlyfigure < handle
         function han = boxplot(obj,varargin)
             %call plot
             han = boxplot(varargin{:});
+            %update object
+            obj.update;
+            %send to plotly
+            obj.plotly;
+        end
+        
+        function han = mesh(obj,varargin)
+            %call plot
+            han = mesh(varargin{:});
             %update object
             obj.update;
             %send to plotly
