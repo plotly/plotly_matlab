@@ -44,7 +44,7 @@ function updateScattergroup(obj,scatterIndex)
 % line.color - [NA]
 % line.width - [NA]
 % line.dash - [NA]
-% line.opacity ------------------------------------------> [TODO]
+% line.opacity [NA]
 % line.smoothing - [NOT SUPPORTED IN MATLAB]
 % line.shape - [NOT SUPPORTED IN MATLAB]
 % connectgaps - [NOT SUPPORTED IN MATLAB]
@@ -111,10 +111,10 @@ for m = 1:length(scatter_child_data)
     %---------------------------------------------------------------------%
     
     %-SCATTER X-%
-    if length(scatter_child_data) > 1 
+    if length(scatter_child_data) > 1
         obj.data{scatterIndex}.x(m) = scatter_child_data(n).XData;
     else
-        obj.data{scatterIndex}.x = scatter_child_data(n).XData;
+        obj.data{scatterIndex}.x = scatter_child_data.XData;
     end
     
     %---------------------------------------------------------------------%
@@ -123,8 +123,7 @@ for m = 1:length(scatter_child_data)
     if length(scatter_child_data) > 1
         obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
     else
-        obj.data{scatterIndex}.y = scatter_child_data(n).YData;
-        
+        obj.data{scatterIndex}.y = scatter_child_data.YData;
     end
     
     %-----------------------------!STRIP!---------------------------------%
@@ -152,7 +151,36 @@ for m = 1:length(scatter_child_data)
         %-----------------------------------------------------------------%
         
         %-SCATTER MARKER-%
-        obj.data{scatterIndex}.marker = extractPatchMarker(scatter_child_data(n));
+        childmarker = extractPatchMarker(scatter_child_data(n));
+        
+        %-sizeref-%
+        obj.data{scatterIndex}.marker.sizeref = childmarker.sizeref;
+        
+        %-sizemode-%
+        obj.data{scatterIndex}.marker.sizemode = childmarker.sizemode;
+        
+        %-size-%
+        obj.data{scatterIndex}.marker.size(m) = childmarker.size;
+        
+        %-symbol-%
+        obj.data{scatterIndex}.marker.symbol = childmarker.symbol;
+        
+        %-line width-%
+        obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
+        
+        %-line color-%
+        if length(scatter_child_data) > 1
+            obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
+        else
+            obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
+        end
+        
+        %-marker color-%
+        if length(scatter_child_data) > 1
+            obj.data{scatterIndex}.marker.color{m} = childmarker.color{1};
+        else
+            obj.data{scatterIndex}.marker.color = childmarker.color;
+        end
         
         %-----------------------------------------------------------------%
         
