@@ -151,7 +151,7 @@ for bp = bpnum:-1:1
         %get box child data
         box_child_data = get(box_child(bp+bpnum*(bpc-1)));
         
-        %box name
+        %box name 
         if strcmp(box_child_data.Type,'text')
             if iscell(box_child_data.String)
                 obj.data{boxIndex}.name =  box_child_data.String{1};

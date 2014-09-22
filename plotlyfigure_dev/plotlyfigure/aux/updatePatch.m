@@ -78,7 +78,7 @@ obj.data{patchIndex}.type = 'scatter';
 %-PATCH X-%
 xdata = patch_data.XData;
 if isvector(xdata)
-    obj.data{patchIndex}.x = xdata;
+    obj.data{patchIndex}.x = [xdata' xdata(1)];
 else
     xtemp = reshape(xdata,[],1);
     xnew = [];
@@ -93,7 +93,7 @@ end
 %-PATCH Y-%
 ydata = patch_data.YData;
 if isvector(ydata)
-    obj.data{patchIndex}.y = ydata(2:(numel(ydata)-1)/2+1)';
+    obj.data{patchIndex}.y = [ydata' ydata(1)];
 else
     ytemp = reshape(ydata,[],1);
     ynew = [];
