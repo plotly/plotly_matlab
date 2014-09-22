@@ -15,7 +15,7 @@ classdef plotlyfigure < handle
     end
     
     %----CLASS METHODS----%
-    methods 
+    methods
         
         %----CONSTRUCTOR---%
         function obj = plotlyfigure(varargin)
@@ -32,7 +32,7 @@ classdef plotlyfigure < handle
             % core Plotly elements
             obj.data = {};
             obj.layout = struct();
-           
+            
             % plot options
             obj.PlotOptions.FileName = 'myplotlyfigure';
             obj.PlotOptions.FileOpt = 'overwrite';
@@ -52,7 +52,7 @@ classdef plotlyfigure < handle
             obj.PlotlyDefaults.ErrorbarWidth = 6;
             obj.PlotlyDefaults.MarkerOpacity = 1;
             obj.PlotlyDefaults.ShowBaselineLegend = false;
-            obj.PlotlyDefaults.Bargap = 0; 
+            obj.PlotlyDefaults.Bargap = 0;
             
             % check for some key/vals
             for a = 1:2:nargin
@@ -153,16 +153,34 @@ classdef plotlyfigure < handle
         
         %----STRIP THE STYLE DEFAULTS----%
         function obj = strip(obj)
-            obj.PlotOptions.Strip = true;
+            
+            %load the plotly reference
+            pr = loadjson(fileread('graph_objs_meta.json'));
+            
+            %update the data/layout
             obj.update;
+            
+            %strip the style keys from data            
+            for d = 1:length(obj.data)
+               obj.data{d} = stripkeys(obj.data{d}, obj.data{d}.type, 'style', pr);
+            end
+            
+            %strip the style keys from layout            
+            obj.layout = stripkeys(obj.layout, 'layout', 'style', pr);
+            
         end
         
         %----GET THE FIELDS OF TYPE DATA----%
-        function datafields = getdata(obj)
+        function datafield = getdata(obj)
+            
+            %load the plotly reference
             pr = loadjson(fileread('graph_objs_meta.json'));
-            datafields = obj.data; 
-            % remove style / plot_info types 
-            datafields = stripdata(datafields, pr); 
+            
+            % remove style / plot_info types in data
+            for d = 1:length(obj.data)
+                datafield = stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'}, pr);
+            end
+            
         end
         
         %----GET PLOTLY FIGURE-----%
@@ -250,7 +268,7 @@ classdef plotlyfigure < handle
         
         %automatic figure conversion
         function obj = update(obj)
-
+            
             % reset figure object count
             obj.State.Figure.NumAxes = 0;
             obj.State.Figure.NumPlots = 0;
@@ -269,8 +287,8 @@ classdef plotlyfigure < handle
             for a = 1:length(ax)
                 
                 %reverse axes
-                axrev = length(ax) - a + 1; 
-  
+                axrev = length(ax) - a + 1;
+                
                 %set axis handle field
                 obj.State.Axis(a).Handle = ax(axrev);
                 
@@ -387,7 +405,7 @@ classdef plotlyfigure < handle
             %-----------------------FLIP DATA-----------------------------%
             
             % reverse plot order to preserve layout
-            obj.data = fliplr(obj.data); 
+            obj.data = fliplr(obj.data);
             
             %-------------------------------------------------------------%
         end
@@ -408,7 +426,7 @@ classdef plotlyfigure < handle
         function currentAnnotationIndex = getAnnotationIndex(obj,annothan)
             currentAnnotationIndex = find(arrayfun(@(x)(eq(x.Handle,annothan)),obj.State.Text));
         end
-       
+        
         
         %-------------------OVERLOADED FUNCTIONS--------------------------%
         
