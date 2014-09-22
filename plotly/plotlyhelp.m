@@ -1,15 +1,10 @@
 function plotlyref = plotlyhelp(varargin)
 % [EX]: plotlyhelp('scatter','fill'); 
-% [TODO]: make graph objects separate classes (a la Python API) 
-% [TODO]: better graph object descriptions 
- 
+
 %converts graph_obj_meta.json to struct/cell array and outputs key
 pr = loadjson(fileread('graph_objs_meta.json'));
 pr.online = 'Access the online docs!'; 
-%only display relevant fields. 
-%plotlyref = struct('scatter',plotlyref.scatter,'bar',plotlyref.bar,...
-                %'box',plotlyref.box, 'histogram',plotlyref.histogram, 'heatmap',plotlyref.heatmap, 'contour',plotlyref.contour,... 
-                %'layout',plotlyref.layout,'online','Access the online docs!');
+
 try
     switch length(varargin)
         case 0
