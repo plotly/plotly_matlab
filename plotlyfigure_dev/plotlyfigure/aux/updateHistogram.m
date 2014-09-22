@@ -124,7 +124,7 @@ switch obj.data{histIndex}.orientation
         %-------------------------------------------------------------------------%
         
         %-HIST NBINSX-%
-        obj.data{histIndex}.nbinsx = length(xdata);
+        obj.data{histIndex}.nbinsx = length(xdata) + 1; %(+1 for max #)
        
         %-------------------------------------------------------------------------%
         
