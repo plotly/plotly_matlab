@@ -24,7 +24,7 @@ rebase = false;
 usePD = ~logical(nargin);
 useMPG = ~logical(nargin); %default to true if no arguments
 ext = 'png';
-strip = true; 
+strip = true;
 
 for i = 1:nargin
     
@@ -35,6 +35,10 @@ for i = 1:nargin
     
     if(strcmpi(varargin{i},'PD'))
         usePD = true;
+    end
+    
+    if(strcmpi(varargin{i},'PD_PC'))
+        usePD_PC = true;
     end
     
     %CHECK FOR REBASE OF TESTS
@@ -74,9 +78,9 @@ end
 
 %STRIP KEY
 if(strip)
-    STRIP_KEY = '[STRIP]'; 
+    STRIP_KEY = '[STRIP]';
 else
-    STRIP_KEY = '[NOSTRIP]'; 
+    STRIP_KEY = '[NOSTRIP]';
 end
 
 %MAIN F2P TEST DIRECTORY
@@ -88,6 +92,9 @@ MPGDirName = fullfile(testF2PDir,'BANK','MPG');
 
 %MATLAB PLOTLY DOCS
 PDDirName = fullfile(testF2PDir,'BANK','PD');
+
+%MATLAB PLOTLY DOCS + PLOTLY CLASS
+PDDirName = fullfile(testF2PDir,'BANK','PD_PC');
 
 %BASE FOLDER
 imgBaseDir = fullfile(testF2PDir,['BASE' STRIP_KEY]);
@@ -101,7 +108,7 @@ end
 
 %RESULTS FOLDER
 c = clock;
-resultsDir = fullfile(testF2PDir,'RESULTS'); 
+resultsDir = fullfile(testF2PDir,'RESULTS');
 imgTestDir = fullfile(resultsDir, ['TEST' '[v.' plotly_version '-' date '-', ...
     num2str(c(4)) '-' num2str(c(5)) '-' num2str(floor(c(6))) ']' STRIP_KEY]);
 
@@ -138,7 +145,7 @@ end
 % end
 
 %USING THE PLOTLY DOCS SET
-if(usePD)
+if(usePD || usePD_PC)
     %get all .m files from PDDir
     PDDir = dir([PDDirName '/*.m']);
     %run all .m files from PDDir not in PDexcept (or just in PDexclusive) [TODO]
@@ -159,14 +166,14 @@ end
 %HANDLES RUNNING OF TESTBANK SCRIPTS
 function runScripts(folderName,scriptInfo,imgDir,ext)
 
-un = signin; 
+un = signin;
 
 for localInd = 1:length(scriptInfo);
     sc = scriptInfo(localInd).name;
     %seed rand.num. gen.
     s = RandStream('mcg16807','Seed',0);
     RandStream.setGlobalStream(s);
-    %run the scripts 
+    %run the scripts
     run(fullfile(folderName,sc));
     %getplotlyfig
     fsInd = findstr(plotly_url,'/');
@@ -178,7 +185,7 @@ for localInd = 1:length(scriptInfo);
     %display status
     fprintf(['image: ' sc ' saved as: ' ext ' \n'])
     %clear conflicting variables and preserve local variables
-    clearvars -except localInd folderName scriptInfo imgDir ext un 
+    clearvars -except localInd folderName scriptInfo imgDir ext un
 end
 end
 
