@@ -81,6 +81,11 @@ obj.layout.groupgap = 1/bpnum;
 
 %-------------------------------------------------------------------------%
 
+%-box name-%
+obj.data{boxIndex}.name = box_data.DisplayName;
+
+%-------------------------------------------------------------------------%
+
 % iterate through box plot children in reverse order
 for bp = bpnum:-1:1
     
@@ -151,12 +156,12 @@ for bp = bpnum:-1:1
         %get box child data
         box_child_data = get(box_child(bp+bpnum*(bpc-1)));
         
-        %box name 
+        %box name
         if strcmp(box_child_data.Type,'text')
             if iscell(box_child_data.String)
-                obj.data{boxIndex}.name =  box_child_data.String{1};
+                boxname =  box_child_data.String{1};
             else
-                obj.data{boxIndex}.name =  box_child_data.String;
+                boxname =  box_child_data.String;
             end
         end
         
@@ -203,6 +208,7 @@ for bp = bpnum:-1:1
                 
                 %-outliers-%
             case 'Outliers'
+                
                 if ~isnan(box_child_data.YData)
                     %-outlier marker data-%
                     outliers = box_child_data.YData;
@@ -244,7 +250,7 @@ for bp = bpnum:-1:1
     %-boxplot x-data-%
     if (bpnum > 1)
         for n = (length(ydata)+1):(length(ydata)+length(gendata))
-            obj.data{boxIndex}.x{n} = obj.data{boxIndex}.name;
+            obj.data{boxIndex}.x{n} = boxname;
         end
     end
     
