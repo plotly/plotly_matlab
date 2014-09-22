@@ -83,7 +83,7 @@ obj.data{contourIndex}.name = contour_data.DisplayName;
 %-contour x data-%
 if isvector(contour_data.XData)
     obj.data{contourIndex}.xtype = 'array';
-    obj.data{contourIndex}.x = contour_data.XData(1):contour_data.XData(end);
+    obj.data{contourIndex}.x = linspace(contour_data.XData(1),contour_data.XData(end),length(contour_data.XData));
 else
     obj.data{contourIndex}.xtype = 'scaled';
     minx = min(min(contour_data.XData));
@@ -97,7 +97,7 @@ end
 %-contour y data-%
 if isvector(contour_data.YData)
     obj.data{contourIndex}.ytype = 'array';
-    obj.data{contourIndex}.y = contour_data.YData(1):contour_data.YData(end);
+    obj.data{contourIndex}.y = linspace(contour_data.YData(1),contour_data.YData(end),length(contour_data.YData));
 else
     obj.data{contourIndex}.ytype = 'scaled';
     miny = min(min(contour_data.YData));
@@ -143,9 +143,9 @@ if ~obj.PlotOptions.Strip
     %-colorscale (ASSUMES PATCH CDATAMAP IS 'SCALED')-%
     colormap = figure_data.Colormap;
     
-    for c = 1:length(colormap)
+    for c = 1:size((colormap),1)
         col =  255*(colormap(c,:));
-        obj.data{contourIndex}.colorscale{c} = {(c-1)/length(colormap), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
+        obj.data{contourIndex}.colorscale{c} = {(c-1)/(size(colormap,1)-1), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
     end
     
     %---------------------------------------------------------------------%
@@ -173,11 +173,11 @@ if ~obj.PlotOptions.Strip
     %-start-%
     obj.data{contourIndex}.contours.start = contour_data.TextList(1);
     
-    %-step-%
-    obj.data{contourIndex}.contours.size = contour_data.LevelStep;
-    
-    %-ebd-%
+    %-end-%
     obj.data{contourIndex}.contours.end = contour_data.TextList(end);
+    
+    %-step-%
+    obj.data{contourIndex}.contours.size = diff(contour_data.TextList(1:2));
     
     %---------------------------------------------------------------------%
     
