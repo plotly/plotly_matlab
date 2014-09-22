@@ -31,6 +31,12 @@ function obj = updateAnnotation(obj,anIndex)
 % bgcolor: ...[DONE]
 % opacity: ...[NOT SUPPORTED IN MATLAB]
 
+%-AXIS INDEX-%
+axIndex = obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis);
+
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
 %-TEXT DATA STRUCTURE-%
 text_data = get(obj.State.Text(anIndex).Handle);
 
@@ -55,9 +61,9 @@ if obj.State.Text(anIndex).Title
     obj.layout.annotations{anIndex}.yref = 'paper';
 else
     %-xref-%
-    obj.layout.annotations{anIndex}.xref = ['x' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis))];
+    obj.layout.annotations{anIndex}.xref = ['x' num2str(xsource)];
     %-yref-%
-    obj.layout.annotations{anIndex}.yref = ['y' num2str(obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis))];
+    obj.layout.annotations{anIndex}.yref = ['y' num2str(ysource)];
 end
 
 %-------------------------------------------------------------------------%
@@ -93,12 +99,6 @@ end
 %-------------------------------------------------------------------------%
 
 if obj.State.Text(anIndex).Title
-    
-    %-AXIS INDEX-%
-    axIndex = obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis); 
-    
-    %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
     
     %-AXIS DATA-%
     eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
