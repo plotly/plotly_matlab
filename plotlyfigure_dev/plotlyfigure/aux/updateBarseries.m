@@ -137,8 +137,13 @@ end
 
 if ~obj.PlotOptions.Strip
     
+    %-LAYOUT BARGROUPGAP-%
+    obj.layout.bargroupgap = 1-bar_data.BarWidth;
+    
+    %---------------------------------------------------------------------%
+    
     %-LAYOUT BARGAP-%
-    obj.layout.bargap = 1-bar_data.BarWidth;
+    obj.layout.bargap = obj.PlotlyDefaults.Bargap;
     
     %---------------------------------------------------------------------%
     
