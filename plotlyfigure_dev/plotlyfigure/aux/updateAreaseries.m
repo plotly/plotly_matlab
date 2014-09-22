@@ -103,7 +103,7 @@ obj.data{areaIndex}.name = area_child_data.DisplayName;
 %-------------------------------------------------------------------------%
 
 %-AREA FILL-%
-obj.data{areaIndex}.fill = 'tozeroy';
+obj.data{areaIndex}.fill = 'tonexty';
 
 %-----------------------------!STYLE!-------------------------------------%
 
