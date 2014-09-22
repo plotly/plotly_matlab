@@ -13,7 +13,7 @@ axis_data = get(ancestor(patch_data.Parent,'axes'));
 figure_data = get(ancestor(patch_data.Parent,'figure'));
 
 %-INITIALIZE OUTPUT-%
-marker = struct(); 
+marker = struct();
 
 %-------------------------------------------------------------------------%
 
@@ -79,6 +79,7 @@ marker.line.width = patch_data.LineWidth;
 %-figure colormap-%
 colormap = figure_data.Colormap;
 
+% marker face color
 MarkerColor = patch_data.MarkerFaceColor;
 
 filledMarkerSet = {'o','square','s','diamond','d',...
@@ -86,115 +87,138 @@ filledMarkerSet = {'o','square','s','diamond','d',...
 
 filledMarker = ismember(patch_data.Marker,filledMarkerSet);
 
-if filledMarker
-    if isnumeric(MarkerColor)
-        col = 255*MarkerColor;
-        markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    else
-        switch MarkerColor
-            
-            case 'none'
-                markercolor = 'rgba(0,0,0,0)';
-            
-            case 'auto'
-                if ~strcmp(axis_data.Color,'none')
-                    col = 255*axis_data.Color;
-                else
-                    col = 255*figure_data.Color;
-                end
-                
-                markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                
-                
-            case 'flat'
-                switch patch_data.CDataMapping
-                    
-                    case 'scaled'
-                        capCD = max(min(patch_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                        scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                        col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
-                    case 'direct'
-                        col =  255*(colormap(patch_data.FaceVertexCData(1,1),:));
-                end
-                
-                markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                
-        end
-    end
-    
-    marker.color = markercolor;
-    
-end
+% initialize markercolor output
+markercolor = cell(1,length(patch_data.FaceVertexCData));
 
+for n = 1:length(patch_data.FaceVertexCData)
+    
+    if filledMarker
+        
+        if isnumeric(MarkerColor)
+            col = 255*MarkerColor;
+            markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+        else
+            switch MarkerColor
+                
+                case 'none'
+                    
+                    markercolor{n} = 'rgba(0,0,0,0)';
+                    
+                case 'auto'
+                    
+                    if ~strcmp(axis_data.Color,'none')
+                        col = 255*axis_data.Color;
+                    else
+                        col = 255*figure_data.Color;
+                    end
+                    
+                    markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                    
+                    
+                case 'flat'
+                    
+                    switch patch_data.CDataMapping
+                        
+                        case 'scaled'
+                            capCD = max(min(patch_data.FaceVertexCData(n,1),axis_data.CLim(2)),axis_data.CLim(1));
+                            scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
+                            col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
+                        case 'direct'
+                            col =  255*(colormap(patch_data.FaceVertexCData(n,1),:));
+                    end
+                    
+                    markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                    
+            end
+        end
+        
+        marker.color = markercolor;
+        
+    end
+end
 
 
 %-------------------------------------------------------------------------%
 
 %-MARKER LINE COLOR (STYLE)-%
 
+% marker edge color
 MarkerLineColor = patch_data.MarkerEdgeColor;
 
 filledMarker = ismember(patch_data.Marker,filledMarkerSet);
 
-if isnumeric(MarkerLineColor)
-    col = 255*MarkerLineColor;
-    markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-else
-    switch MarkerLineColor
-        
-        case 'none'
-            markerlinecolor = 'rgba(0,0,0,0)';
-            
-        case 'auto'
-            EdgeColor = patch_data.EdgeColor;
-            
-            if isnumeric(EdgeColor)
-                col = 255*EdgeColor;
-                markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-            else
-                
-                switch EdgeColor
-                    
-                    case 'none'
-                        markerlinecolor = 'rgba(0,0,0,0)';
-                        
-                    case {'flat', 'interp'}
-                        switch patch_data.CDataMapping
-                           
-                            case 'scaled'
-                                capCD = max(min(patch_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                                scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                                col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
-                            case 'direct'
-                                
-                                col =  255*(colormap(patch_data.FaceVertexCData(1,1),:));
-                        end
-                        
-                        markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                end
-            end
-            
-        case 'flat'
-            switch patch_data.CDataMapping
-                
-                case 'scaled'   
-                    capCD = max(min(patch_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                    scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
-                    
-                case 'direct'
-                    col =  255*(colormap(patch_data.FaceVertexCData(1,1),:));
-                    
-            end
-            
-            markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    end
-end
+% initialize marker line color
+markerlinecolor = cell(1,length(patch_data.FaceVertexCData));
 
-if filledMarker
-    marker.line.color = markerlinecolor;
-else
-    marker.color = markerlinecolor;
+for n = 1:length(patch_data.FaceVertexCData)
+    
+    if isnumeric(MarkerLineColor)
+        col = 255*MarkerLineColor;
+        markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    else
+        switch MarkerLineColor
+            
+            case 'none'
+                
+                markerlinecolor{n} = 'rgba(0,0,0,0)';
+                
+            case 'auto'
+                
+                EdgeColor = patch_data.EdgeColor;
+                
+                if isnumeric(EdgeColor)
+                    col = 255*EdgeColor;
+                    markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                else
+                    
+                    switch EdgeColor
+                        
+                        case 'none'
+                            
+                            markerlinecolor{n} = 'rgba(0,0,0,0)';
+                            
+                        case {'flat', 'interp'}
+                            
+                            switch patch_data.CDataMapping
+                                
+                                case 'scaled'
+                                    capCD = max(min(patch_data.FaceVertexCData(n,1),axis_data.CLim(2)),axis_data.CLim(1));
+                                    scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
+                                    col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
+                                    
+                                case 'direct'
+                                    col =  255*(colormap(patch_data.FaceVertexCData(n,1),:));
+                                    
+                            end
+                            
+                            markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                            
+                    end
+                end
+                
+            case 'flat'
+                
+                switch patch_data.CDataMapping
+                    
+                    case 'scaled'
+                        capCD = max(min(patch_data.FaceVertexCData(n,1),axis_data.CLim(2)),axis_data.CLim(1));
+                        scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
+                        col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
+                    case 'direct'
+                        col =  255*(colormap(patch_data.FaceVertexCData(n,1),:));
+                        
+                end
+                
+                markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                
+        end
+    end
+    
+    if filledMarker
+        marker.line.color = markerlinecolor;
+    else
+        marker.color = markerlinecolor;
+    end   
 end
 
 %-------------------------------------------------------------------------%
