@@ -47,9 +47,6 @@ fontunits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
 set(obj.State.Axis(axIndex).Handle,'Units','normalized');
 set(obj.State.Axis(axIndex).Handle,'FontUnits','points');
 
-%-FIGURE DATA-%
-figure_data = get(obj.State.Figure.Handle);
-
 %-AXIS DATA STRUCTURE-%
 axis_data = get(obj.State.Axis(axIndex).Handle);
 
@@ -73,22 +70,15 @@ xaxis.side = axis_data.XAxisLocation;
 %-yaxis-side-%
 yaxis.side = axis_data.YAxisLocation;
 
+%-------------------------------------------------------------------------%
+
+%-layout plot bg color-%
+obj.layout.plot_bgcolor = 'rgba(0,0,0,0)';
+
+
 %-------------------------------!STYLE!-----------------------------------%
 
 if ~obj.PlotOptions.Strip
-    
-    %---------------------------------------------------------------------%
-    
-    %-layout plot bg color-%
-    if isnumeric(axis_data.Color)
-        col = 255*axis_data.Color;
-    else
-        col = 255*figure_data.Color;
-    end
-    
-    obj.layout.plot_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-    %---------------------------------------------------------------------%
     
     %-xaxis zeroline-%
     xaxis.zeroline = false;
@@ -164,7 +154,7 @@ if ~obj.PlotOptions.Strip
     
     %---------------------------------------------------------------------%
     
-    col = 255*axis_data.XColor;
+    col = 255*axis_data.YColor;
     yaxiscol = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     
     %-yaxis linecolor-%
@@ -285,21 +275,13 @@ if ~obj.PlotOptions.Strip
             
             %-xaxis range-%
             xaxis.range = log10(axis_data.XLim);
-            %-xaxis autotick-%
-            xaxis.autotick = true;
-            %-xaxis nticks-%
-            xaxis.nticks = length(axis_data.XTick) + 1;
             
         elseif strcmp(xaxis.type,'linear')
             
-            %-xaxis range-%
-            xaxis.range = axis_data.XLim;
-            
             if strcmp(axis_data.XTickLabelMode,'auto')
-                %-xaxis autotick-%
-                xaxis.autotick = true;
-                %-xaxis numticks-%
-                xaxis.nticks = length(axis_data.XTick) + 1;
+                %-xaxis range-%
+                xaxis.range = axis_data.XLim;
+                
             else
                 %-xaxis show tick labels-%
                 if isempty(axis_data.XTickLabel)
@@ -311,23 +293,21 @@ if ~obj.PlotOptions.Strip
                         %-range (overwrite)-%
                         xaxis.range = [convertDate(datenum(axis_data.XTickLabel(1,:),axis_data.UserData.plotly.xdateformat)), ...
                             convertDate(datenum(axis_data.XTickLabel(end,:),axis_data.UserData.plotly.xdateformat))];
-                        %-xaxis autotick-%
-                        xaxis.autotick = true;
-                        %-xaxis numticks-%
-                        xaxis.nticks = length(axis_data.XTick) + 1;
                     catch
                         %-xaxis type category-%
                         xaxis.type = 'category';
-                        %-xaxis tick0-%
-                        xaxis.tick0 = str2double(axis_data.XTickLabel(1,:));
-                        %-xaxis dtick-%
-                        xaxis.dtick = str2double(axis_data.XTickLabel(2,:))- str2double(axis_data.XTickLabel(1,:));
-                        %-xaxis autotick-%
-                        xaxis.autotick = false;
+                        %-range (overwrite)-%
+                        xaxis.range = [str2double(axis_data.XTickLabel(1,:)) str2double(axis_data.XTickLabel(end,:))];
                     end
                 end
             end
         end
+        
+        %-xaxis autotick-%
+        xaxis.autotick = true;
+        %-xaxis numticks-%
+        xaxis.nticks = length(axis_data.XTick) + 1;
+        
     end
     
     %---------------------------------------------------------------------%
@@ -336,7 +316,7 @@ if ~obj.PlotOptions.Strip
         xaxis.range = [xaxis.range(2) xaxis.range(1)];
     end
     
-    %---------------------------------------------------------------------%
+    %-----------------------------LABELS----------------------------------%
     
     xlabel = axis_data.XLabel;
     ylabel = axis_data.YLabel;
@@ -353,8 +333,6 @@ if ~obj.PlotOptions.Strip
     %-x title-%
     if ~isempty(xlabel_data.String)
         xaxis.title = parseString(xlabel_data.String,xlabel_data.Interpreter);
-    else
-        xaxis.title = ' ';
     end
     
     %-x title font color-%
@@ -370,8 +348,6 @@ if ~obj.PlotOptions.Strip
     %-y title-%
     if ~isempty(ylabel_data.String)
         yaxis.title = parseString(ylabel_data.String, ylabel_data.Interpreter);
-    else
-        yaxis.title = ' ';
     end
     
     %-y title font color-%
@@ -448,9 +424,11 @@ if ~obj.PlotOptions.Strip
         
         if strcmp(yaxis.type,'log')
             
-            %-yaxis autotick-%
+            %-xaxis range-%
+            yaxis.range = log10(axis_data.YLim);
+            %-xaxis autotick-%
             yaxis.autotick = true;
-            %-yaxis nticks-%
+            %-xaxis nticks-%
             yaxis.nticks = length(axis_data.YTick) + 1;
             
         elseif strcmp(yaxis.type,'linear')
@@ -459,9 +437,9 @@ if ~obj.PlotOptions.Strip
             yaxis.range = axis_data.YLim;
             
             if strcmp(axis_data.YTickLabelMode,'auto')
-                %-xaxis autotick-%
+                %-yaxis autotick-%
                 yaxis.autotick = true;
-                %-xaxis numticks-%
+                %-yaxis numticks-%
                 yaxis.nticks = length(axis_data.YTick) + 1;
             else
                 %-yaxis show tick labels-%
@@ -481,12 +459,12 @@ if ~obj.PlotOptions.Strip
                     catch
                         %-yaxis type category-%
                         yaxis.type = 'category';
-                        %-yaxis tick0-%
-                        yaxis.tick0 = str2double(axis_data.YTickLabel(1,:));
-                        %-yaxis dtick-%
-                        yaxis.dtick = str2double(axis_data.YTickLabel(2,:))- str2double(axis_data.YTickLabel(1,:));
+                        %-range (overwrite)-%
+                        yaxis.range = [str2double(axis_data.YTickLabel(1,:)) str2double(axis_data.YTickLabel(end,:))];
                         %-yaxis autotick-%
-                        yaxis.autotick = false;
+                        yaxis.autotick = true;
+                        %-yaxis numticks-%
+                        yaxis.nticks = length(axis_data.YTick) + 1;
                     end
                 end
             end
@@ -537,23 +515,20 @@ if overlapping
     
     %---------------------------------------------------------------------%
     
-    %-layout plot bg color-%
-    obj.layout.plot_bgcolor = 'rgba(0,0,0,0)';
-    
-    %---------------------------------------------------------------------%
-    
 end
 
 %-------------------------------------------------------------------------%
 
-% update the layout field (overites source)
-obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
-
+% update the layout field (do not overwrite source)
+if xsource == axIndex
+    obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
+end
 %-------------------------------------------------------------------------%
 
-% update the layout field (overwrites source)
-obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
-
+% update the layout field (do not overwrite source)
+if ysource == axIndex
+    obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
+end
 %-------------------------------------------------------------------------%
 
 %-REVERT UNITS-%
