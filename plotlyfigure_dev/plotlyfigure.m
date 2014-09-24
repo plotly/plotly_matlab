@@ -12,6 +12,7 @@ classdef plotlyfigure < handle
         UserData; % credentials/configuration/verbose
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
+        PlotlyReference; %load the plotly reference 
     end
     
     %----CLASS METHODS----%
@@ -33,11 +34,14 @@ classdef plotlyfigure < handle
             obj.data = {};
             obj.layout = struct();
             
+            % plotly reference 
+            obj.PlotlyReference = []; 
+            
             % plot options
             obj.PlotOptions.FileName = 'myplotlyfigure';
             obj.PlotOptions.FileOpt = 'overwrite';
             obj.PlotOptions.WorldReadable = true;
-            obj.PlotOptions.Open_URL = false;
+            obj.PlotOptions.OpenURL = false;
             obj.PlotOptions.Strip = false;
             obj.PlotOptions.Visible = 'on';
             
@@ -62,11 +66,11 @@ classdef plotlyfigure < handle
                 if(strcmpi(varargin{a},'fileopt'))
                     obj.PlotOptions.Fileopt= varargin{a+1};
                 end
-                if(strcmpi(varargin{a},'World_readable'))
-                    obj.PlotOptions.World_readable = varargin{a+1};
+                if(strcmpi(varargin{a},'world_readable'))
+                    obj.PlotOptions.WorldReadable = varargin{a+1};
                 end
                 if(strcmpi(varargin{a},'open'))
-                    obj.PlotOptions.Open_URL = varargin{a+1};
+                    obj.PlotOptions.OpenURL = varargin{a+1};
                 end
                 if(strcmpi(varargin{a},'strip'))
                     obj.PlotOptions.Strip = varargin{a+1};
@@ -151,44 +155,70 @@ classdef plotlyfigure < handle
             set(0,'CurrentFigure', plotlyFigureHandle);
         end
         
+        %----LOAD PLOTLY REFERENCE-----%
+        function obj = loadplotlyref(obj)
+            if isempty(obj.PlotlyReference)
+                % plotly reference
+                obj.PlotlyReference = loadjson(fileread('plotly_reference.json'));
+            end
+        end
+        
         %----STRIP THE STYLE DEFAULTS----%
         function obj = strip(obj)
             
-            %load the plotly reference
-            pr = loadjson(fileread('graph_objs_meta.json'));
+            % load plotly reference
+            obj.loadplotlyref;
             
-            %update the data/layout
+            % update the data/layout
             obj.update;
             
-            %strip the style keys from data            
+            % strip the style keys from data
             for d = 1:length(obj.data)
-               obj.data{d} = stripkeys(obj.data{d}, obj.data{d}.type, 'style', pr);
+                obj.data{d} = stripkeys(obj, obj.data{d}, obj.data{d}.type, 'style');
             end
             
-            %strip the style keys from layout            
-            obj.layout = stripkeys(obj.layout, 'layout', 'style', pr);
+            % strip the style keys from layout
+            obj.layout = stripkeys(obj, obj.layout, 'layout', 'style');
             
         end
         
         %----GET THE FIELDS OF TYPE DATA----%
         function datafield = getdata(obj)
             
-            %load the plotly reference
-            pr = loadjson(fileread('graph_objs_meta.json'));
+            % load plotly reference
+            obj.loadplotlyref;
             
             % remove style / plot_info types in data
             for d = 1:length(obj.data)
-                datafield = stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'}, pr);
+                datafield = stripkeys(obj, obj.data{d}, obj.data{d}.type, {'style','plot_info'});
             end
             
         end
         
+        %----VALIDATE THE DATA/LAYOUT KEYS----%
+        function validate(obj)
+            
+            % load plotly reference
+            obj.loadplotlyref;
+            
+            % validate data fields
+            for d = 1:length(obj.data)
+                stripkeys(obj, obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+            end
+            
+            % validate layout fields
+            stripkeys(obj, obj.layout, 'layout', 'style');
+            
+        end
+              
         %----GET PLOTLY FIGURE-----%
         function obj = grab(obj, file_owner, file_id)
             plotlyfig = getplotlyfig(file_owner, file_id);
             obj.data = plotlyfig.data;
             obj.layout = plotlyfig.layout;
         end
+        
+        %---------------------STATIC IMAGE METHODS------------------------%
         
         %----SAVE STATIC PLOTLY IMAGE-----%
         function obj = saveas(obj, filename, varargin)
@@ -237,12 +267,19 @@ classdef plotlyfigure < handle
             end
         end
         
+        
+        %------------------------REST API CALL----------------------------%
+        
         %----SEND PLOT REQUEST (NO UPDATE)----%
         function obj = plotly(obj,showlink)
             
+            % display hyperlink in command window
             if nargin == 1
                 showlink = true;
             end
+            
+            % validate keys
+            validate(obj); 
             
             %args
             args.filename = obj.PlotOptions.FileName;
@@ -259,7 +296,7 @@ classdef plotlyfigure < handle
             obj.Response = response;
             
             %ouput url as hyperlink in command window if possible
-            if showlink
+            if obj.PlotOptions.OpenURL
                 openurl(response.url);
             end
         end
@@ -286,13 +323,13 @@ classdef plotlyfigure < handle
             % find children of figure axes
             for a = 1:length(ax)
                 
-                %reverse axes
+                % reverse axes
                 axrev = length(ax) - a + 1;
                 
-                %set axis handle field
+                % set axis handle field
                 obj.State.Axis(a).Handle = ax(axrev);
                 
-                %add title
+                % add title
                 obj.State.Text(a).Handle = get(ax(axrev),'Title');
                 obj.State.Text(a).AssociatedAxis = handle(ax(axrev));
                 obj.State.Text(a).Title = true;
@@ -310,15 +347,19 @@ classdef plotlyfigure < handle
                     baselinehan = cell2mat(baselinehan);
                 end
                 
-                %update plots
+                % update plots
                 plots = [plots ; baselinehan];
                 
                 for np = 1:length(plots)
+                    
+                    % reverse plots
+                    nprev = length(plots) - np + 1; 
+                    
                     % update the plot fields
                     obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
-                    obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(np));
+                    obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
                     obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
-                    obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(np)).classhandle.name;
+                    obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(nprev)).classhandle.name;
                 end
                 
                 % find text of figure
@@ -368,46 +409,40 @@ classdef plotlyfigure < handle
             
             %--------------------UPDATE PLOTLY FIGURE---------------------%
             
-            %reset dataget(obj.State.Figure.Handle,'Children')
+            % reset dataget(obj.State.Figure.Handle,'Children')
             obj.data = {};
             
-            %reset layout
+            % reset layout
             obj.layout = struct();
             
-            %update figure
+            % update figure
             updateFigure(obj);
             
-            %update axes
+            % update axes
             for n = 1:obj.State.Figure.NumAxes
                 updateAxis(obj,n);
             end
             
-            %update plots
+             % update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
             end
             
-            %update annotations
+            % update annotations
             for n = 1:obj.State.Figure.NumAnnotations
                 updateAnnotation(obj,n);
             end
             
-            %update legends
+            % update legends
             for n = 1:obj.State.Figure.NumLegends
                 updateLegend(obj,n);
             end
             
-            %update colorbars
+            % update colorbars
             for n = 1:obj.State.Figure.NumColorbars
                 updateColorbar(obj,n);
             end
             
-            %-----------------------FLIP DATA-----------------------------%
-            
-            % reverse plot order to preserve layout
-            obj.data = fliplr(obj.data);
-            
-            %-------------------------------------------------------------%
         end
         
         %----------------------EXTRACT PLOTLY INDICES---------------------%
@@ -431,7 +466,7 @@ classdef plotlyfigure < handle
         %-------------------OVERLOADED FUNCTIONS--------------------------%
         
         function han = image(obj, varargin)
-            %call bar
+            %call image
             han = image(varargin{:});
             %update object
             obj.update;
@@ -440,7 +475,7 @@ classdef plotlyfigure < handle
         end
         
         function han = imagesc(obj, varargin)
-            %call bar
+            %call imagesc
             han = imagesc(varargin{:});
             %update object
             obj.update;
@@ -449,7 +484,7 @@ classdef plotlyfigure < handle
         end
         
         function han = line(obj, varargin)
-            %call bar
+            %call line
             han = line(varargin{:});
             %update object
             obj.update;
@@ -458,14 +493,14 @@ classdef plotlyfigure < handle
         end
         
         function han = patch(obj, varargin)
-            %call bar
+            %call patch
             han = patch(varargin{:});
             %update object
             obj.update;
         end
         
         function han = rectangle(obj, varargin)
-            %call bar
+            %call rectangle
             han = rectangle(varargin{:});
             %update object
             obj.update;
@@ -492,7 +527,7 @@ classdef plotlyfigure < handle
         end
         
         function han = contour(obj,varargin)
-            %call plot
+            %call contour
             han = contour(varargin{:});
             %update object
             obj.update;
@@ -510,7 +545,7 @@ classdef plotlyfigure < handle
         end
         
         function han = errorbar(obj,varargin)
-            %call plot
+            %call errorbar
             han = errorbar(varargin{:});
             %update object
             obj.update;
@@ -519,7 +554,7 @@ classdef plotlyfigure < handle
         end
         
         function han = quiver(obj,varargin)
-            %call plot
+            %call quiver
             han = quiver(varargin{:});
             %update object
             obj.update;
@@ -535,7 +570,7 @@ classdef plotlyfigure < handle
         end
         
         function han = stairs(obj,varargin)
-            %call plot
+            %call stairs
             han = stairs(varargin{:});
             %update object
             obj.update;
@@ -544,7 +579,7 @@ classdef plotlyfigure < handle
         end
         
         function han = stem(obj,varargin)
-            %call plot
+            %call stem
             han = stem(varargin{:});
             %update object
             obj.update;
@@ -553,7 +588,7 @@ classdef plotlyfigure < handle
         end
         
         function han = boxplot(obj,varargin)
-            %call plot
+            %call boxplot
             han = boxplot(varargin{:});
             %update object
             obj.update;
@@ -562,7 +597,7 @@ classdef plotlyfigure < handle
         end
         
         function han = mesh(obj,varargin)
-            %call plot
+            %call mesh
             han = mesh(varargin{:});
             %update object
             obj.update;
