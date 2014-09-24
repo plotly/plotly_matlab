@@ -2,7 +2,7 @@ function plotlyref = plotlyhelp(varargin)
 % [EX]: plotlyhelp('scatter','fill');
 
 %converts graph_obj_meta.json to struct/cell array and outputs key
-pr = loadjson(fileread('graph_objs_meta.json'));
+pr = loadjson(fileread('plotly_reference.json'));
 pr.online = 'Access the online docs!';
 
 try
