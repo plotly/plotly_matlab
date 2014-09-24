@@ -27,13 +27,4 @@ end
 
 response = makecall(args, origin, structargs);
 
-%TODO: improve conditions for url display
-% try
-%     robj = get(0); 
-%     g = robj.ScreenSize; 
-%     if(~strcmp(response.url,'') && any(g~=1));
-%         fprintf(['\nLet''s have a look: <a href="matlab:openurl(''%s'')">' response.url '</a>\n\n'],response.url)
-%     end
-% end
-
 end
