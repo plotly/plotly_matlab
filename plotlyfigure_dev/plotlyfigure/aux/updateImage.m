@@ -13,7 +13,7 @@ function obj = updateImage(obj, imageIndex)
 % showscale: ...[DONE]
 % colorbar: ...[HANDLED BY COLORBAR]
 % zsmooth: ...[NOT SUPPORTED BY MATLAB]
-% opacity: -----------------------------------> [TODO]
+% opacity: ---[TODO]
 % xaxis: ...[DONE]
 % yaxis: ...[DONE]
 % showlegend: ...[DONE]
@@ -48,22 +48,22 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE XAXIS-%
+%-image xaxis-%
 obj.data{imageIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE YAXIS-%
+%-image yaxis-%
 obj.data{imageIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE TYPE-%
+%-image type-%
 obj.data{imageIndex}.type = 'heatmap';
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE X-%
+%-image x-%
 if (size(image_data.XData,2) == 2)
     obj.data{imageIndex}.x = image_data.XData(1):image_data.XData(2);
 else
@@ -72,7 +72,7 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE Y-%
+%-image y-%
 if (size(image_data.YData,2) == 2)
     obj.data{imageIndex}.y = image_data.YData(1):image_data.YData(2);
 else
@@ -81,9 +81,9 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE Z-%
+%-image z-%
 if(size(image_data.CData,3) > 1)
-    % TODO: FIX THIS TO ALLOW FOR TRUE COLOUR SPECS.
+    % TODO: ALLOW FOR TRUE COLOUR SPECS.
     obj.data{imageIndex}.z = image_data.CData(:,:,1);
 else
     obj.data{imageIndex}.z = image_data.CData;
@@ -91,74 +91,67 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE NAME-%
+%-image name-%
 obj.data{imageIndex}.name = image_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-IMAGE VISIBLE-%
+%-image visible-%
 obj.data{imageIndex}.visible = strcmp(image_data.Visible,'on');
 
-%------------------------------!STYLE!------------------------------------%
+%-------------------------------------------------------------------------%
 
-if ~obj.PlotOptions.Strip
-    
-    
-    %-IMAGE SHOWSCALE-%
-    obj.data{imageIndex}.showscale = false;
-    
-    %---------------------------------------------------------------------%
-    
-    %-IMAGE REVERSE SCALE-%
-    
-    obj.data{imageIndex}.reversecale = false;
-    
-    %---------------------------------------------------------------------%
-    
-    %-ZAUTO-%
-    
-    obj.data{imageIndex}.zauto = false;
-    
-    %---------------------------------------------------------------------%
-    
-    %-ZMIN-%
-    
-    obj.data{imageIndex}.zmin = axis_data.CLim(1);
-    
-    %---------------------------------------------------------------------%
-    
-    %-ZMAX-%
-    
-    obj.data{imageIndex}.zmax = axis_data.CLim(2);
-    
-    %---------------------------------------------------------------------%
-    
-    %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
-    
-    colormap = figure_data.Colormap;
-    
-    for c = 1:length(colormap)
-        col =  255*(colormap(c,:));
-        obj.data{imageIndex}.colorscale{c} = {(c-1)/length(colormap), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-IMAGE SHOWLEGEND-%
-    leg = get(image_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-    
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
-    end
-    
-    obj.data{imageIndex}.showlegend = showleg;
-    
-    %---------------------------------------------------------------------%
-    
+%-image showscale-%
+obj.data{imageIndex}.showscale = false;
+
+%-------------------------------------------------------------------------%
+
+%-image reversescale-%
+obj.data{imageIndex}.reversecale = false;
+
+%-------------------------------------------------------------------------%
+
+%-image zauto-%
+obj.data{imageIndex}.zauto = false;
+
+%-------------------------------------------------------------------------%
+
+%-image zmin-%
+obj.data{imageIndex}.zmin = axis_data.CLim(1);
+
+%-------------------------------------------------------------------------%
+
+%-image zmax-%
+obj.data{imageIndex}.zmax = axis_data.CLim(2);
+
+%-------------------------------------------------------------------------%
+
+%-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
+
+%-image colorscale-%
+colormap = figure_data.Colormap;
+
+for c = 1:length(colormap)
+    col =  255*(colormap(c,:));
+    obj.data{imageIndex}.colorscale{c} = {(c-1)/length(colormap), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
 end
+
+%-------------------------------------------------------------------------%
+
+%-image showlegend-%
+leg = get(image_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
+end
+
+obj.data{imageIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
 end
 

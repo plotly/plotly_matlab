@@ -59,52 +59,50 @@ obj.layout.legend.yref = 'paper';
 %-legend yanchor-%
 obj.layout.legend.yanchor = 'bottom';
 
-%------------------------------!STYLE!------------------------------------%
+%-------------------------------------------------------------------------%
 
-if ~obj.PlotOptions.Strip
+if (strcmp(legend_data.Box,'on') && strcmp(legend_data.Visible, 'on'))
     
-    if (strcmp(legend_data.Box,'on') && strcmp(legend_data.Visible, 'on'))
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend traceorder-%
-        obj.layout.legend.traceorder = 'normal';
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend borderwidth-%
-        obj.layout.legend.borderwidth = legend_data.LineWidth;
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend bordercolor-%
-        col = 255*legend_data.EdgeColor;
-        obj.layout.legend.bordercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend bgcolor-%
-        col = 255*legend_data.Color;
-        obj.layout.legend.bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font size-%
-        obj.layout.legend.font.size = legend_data.FontSize;
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font family-%
-        obj.layout.legend.font.family = matlab2plotlyfont(legend_data.FontName);
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font colour-%
-        col = 255*legend_data.TextColor;
-        obj.layout.legend.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) '_)'];
-        
-    end
+    %---------------------------------------------------------------------%
+    
+    %-legend traceorder-%
+    obj.layout.legend.traceorder = 'normal';
+    
+    %---------------------------------------------------------------------%
+    
+    %-legend borderwidth-%
+    obj.layout.legend.borderwidth = legend_data.LineWidth;
+    
+    %---------------------------------------------------------------------%
+    
+    %-legend bordercolor-%
+    col = 255*legend_data.EdgeColor;
+    obj.layout.legend.bordercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    
+    %---------------------------------------------------------------------%
+    
+    %-legend bgcolor-%
+    col = 255*legend_data.Color;
+    obj.layout.legend.bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    
+    %---------------------------------------------------------------------%
+    
+    %-legend font size-%
+    obj.layout.legend.font.size = legend_data.FontSize;
+    
+    %---------------------------------------------------------------------%
+    
+    %-legend font family-%
+    obj.layout.legend.font.family = matlab2plotlyfont(legend_data.FontName);
+    
+    %---------------------------------------------------------------------%
+    
+    %-legend font colour-%
+    col = 255*legend_data.TextColor;
+    obj.layout.legend.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) '_)'];
+    
 end
+
 %-------------------------------------------------------------------------%
 
 %-REVERT UNITS-%

@@ -1,8 +1,5 @@
 function obj = updateSurfaceplot(obj, surfaceIndex)
 
-%-FIGURE STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
-
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
@@ -18,22 +15,22 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE XAXIS-%
+%-surface xaxis-%
 obj.data{surfaceIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE YAXIS-%
+%-surface yaxis-%
 obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE TYPE-%
+%-surface type-%
 obj.data{surfaceIndex}.type = 'scatter3d';
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE X-%
+%-surface x-%
 if isvector(image_data.XData)
     obj.data{surfaceIndex}.x = repmat(image_data.XData,size(image_data.ZData,1),1);
 else
@@ -44,7 +41,7 @@ obj.data{surfaceIndex}.x = reshape(obj.data{surfaceIndex}.x,1,size(obj.data{surf
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE Y-%
+%-surface y-%
 if isvector(image_data.YData)
     obj.data{surfaceIndex}.y = repmat(image_data.YData,size(image_data.ZData,2),1);
 else
@@ -56,34 +53,34 @@ obj.data{surfaceIndex}.y = reshape(obj.data{surfaceIndex}.y,1,size(obj.data{surf
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE Z-%
+%-surface z-%
 obj.data{surfaceIndex}.z = reshape(image_data.ZData,1,size(image_data.ZData,1)*size(image_data.ZData,2));
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE NAME-%
+%-surface name-%
 obj.data{surfaceIndex}.name = image_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE SHOWSCALE-%
+%-surface showscale-%
 obj.data{surfaceIndex}.showscale = false;
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE VISIBLE-%
+%-surface visible-%
 obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-SURFACE REVERSE SCALE-%
+%-surface reversescale-%
 obj.data{surfaceIndex}.reversecale = false;
 
 %-------------------------------------------------------------------------%
 
+%-surface showlegend-%
 if ~ obj.PlotOptions.Strip
-    
-    %-SURFACE SHOWLEGEND-%
+   
     leg = get(image_data.Annotation);
     legInfo = get(leg.LegendInformation);
     

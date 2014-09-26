@@ -21,7 +21,7 @@ function updateScattergroup(obj,scatterIndex)
 % stream - [HANDLED BY PLOTLYSTREAM]
 % visible [DONE]
 % type [DONE]
-% opacity ------------------------------------------> [TODO]
+% opacity ---[TODO]
 
 % MARKER
 % marler.color - [DONE]
@@ -72,37 +72,37 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER XAXIS-%
+%-scatter xaxis-%
 obj.data{scatterIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER YAXIS-%
+%-scatter yaxis-%
 obj.data{scatterIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER TYPE-%
+%-scatter type-%
 obj.data{scatterIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER MODE-%
+%-scatter mode-%
 obj.data{scatterIndex}.mode = 'markers';
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER VISIBLE-%
+%-scatter visible-%
 obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER NAME-%
+%-scatter name-%
 obj.data{scatterIndex}.name = scatter_child_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER PATCH DATA-%
+%-scatter patch data-%
 for m = 1:length(scatter_child_data)
     
     %reverse counter
@@ -110,7 +110,7 @@ for m = 1:length(scatter_child_data)
     
     %---------------------------------------------------------------------%
     
-    %-SCATTER X-%
+    %-scatter x-%
     if length(scatter_child_data) > 1
         obj.data{scatterIndex}.x(m) = scatter_child_data(n).XData;
     else
@@ -119,72 +119,84 @@ for m = 1:length(scatter_child_data)
     
     %---------------------------------------------------------------------%
     
-    %-SCATTER Y-%
+    %-scatter y-%
     if length(scatter_child_data) > 1
         obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
     else
         obj.data{scatterIndex}.y = scatter_child_data.YData;
     end
     
-    %-----------------------------!STRIP!---------------------------------%
+    %---------------------------------------------------------------------%
     
-    if ~obj.PlotOptions.Strip
-        
-        %-SCATTER SHOWLEGEND-%
-        leg = get(scatter_data.Annotation);
-        legInfo = get(leg.LegendInformation);
-        
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
-        end
-        
-        obj.data{scatterIndex}.showlegend = showleg;
-        
-        %-----------------------------------------------------------------%
-        
-        %-SCATTER OPACITY-%
-        obj.data{scatterIndex}.opacity = obj.PlotlyDefaults.MarkerOpacity;
-        
-        %-----------------------------------------------------------------%
-        
-        %-SCATTER MARKER-%
-        childmarker = extractPatchMarker(scatter_child_data(n));
-        
-        %-sizeref-%
-        obj.data{scatterIndex}.marker.sizeref = childmarker.sizeref;
-        
-        %-sizemode-%
-        obj.data{scatterIndex}.marker.sizemode = childmarker.sizemode;
-        
-        %-size-%
-        obj.data{scatterIndex}.marker.size(m) = childmarker.size;
-        
-        %-symbol-%
-        obj.data{scatterIndex}.marker.symbol = childmarker.symbol;
-        
-        %-line width-%
-        obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
-        
-        %-line color-%
-        if length(scatter_child_data) > 1
-            obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
-        else
-            obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
-        end
-        
-        %-marker color-%
-        if length(scatter_child_data) > 1
-            obj.data{scatterIndex}.marker.color{m} = childmarker.color{1};
-        else
-            obj.data{scatterIndex}.marker.color = childmarker.color;
-        end
-        
-        %-----------------------------------------------------------------%
-        
+    %-scatter showlegend-%
+    leg = get(scatter_data.Annotation);
+    legInfo = get(leg.LegendInformation);
+    
+    switch legInfo.IconDisplayStyle
+        case 'on'
+            showleg = true;
+        case 'off'
+            showleg = false;
     end
+    
+    obj.data{scatterIndex}.showlegend = showleg;
+    
+    %---------------------------------------------------------------------%
+    
+    %-scatter opacity-%
+    obj.data{scatterIndex}.opacity = obj.PlotlyDefaults.MarkerOpacity;
+    
+    %---------------------------------------------------------------------%
+    
+    %-scatter marker-%
+    childmarker = extractPatchMarker(scatter_child_data(n));
+    
+    %---------------------------------------------------------------------%
+    
+    %-sizeref-%
+    obj.data{scatterIndex}.marker.sizeref = childmarker.sizeref;
+    
+    %---------------------------------------------------------------------%
+    
+    %-sizemode-%
+    obj.data{scatterIndex}.marker.sizemode = childmarker.sizemode;
+    
+    %---------------------------------------------------------------------%
+    
+    %-size-%
+    obj.data{scatterIndex}.marker.size(m) = childmarker.size;
+    
+    %---------------------------------------------------------------------%
+    
+    %-symbol-%
+    obj.data{scatterIndex}.marker.symbol = childmarker.symbol;
+    
+    %---------------------------------------------------------------------%
+    
+    %-line width-%
+    obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
+    
+    %---------------------------------------------------------------------%
+    
+    %-line color-%
+    if length(scatter_child_data) > 1
+        obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
+    else
+        obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-marker color-%
+    if length(scatter_child_data) > 1
+        obj.data{scatterIndex}.marker.color{m} = childmarker.color{1};
+    else
+        obj.data{scatterIndex}.marker.color = childmarker.color;
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    
 end
 end
 

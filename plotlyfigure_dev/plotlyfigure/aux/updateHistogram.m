@@ -13,7 +13,7 @@ function obj = updateHistogram(obj,histIndex)
 % text:...[NOT SUPPORTED IN MATLAB]
 % error_y:...[HANDLED BY ERRORBARSERIES]
 % error_x:...[HANDLED BY ERRORBARSERIES]
-% opacity: -----------------------------------> TODO
+% opacity: --- [TODO]
 % xaxis:...[DONE]
 % yaxis:...[DONE]
 % showlegend:...[DONE]
@@ -23,10 +23,10 @@ function obj = updateHistogram(obj,histIndex)
 % orientation:...[DONE]
 
 % MARKER:
-% color: .............[TODO]
+% color: ...[DONE]
 % size: ...[NA]
 % symbol: ...[NA]
-% opacity: ...[NA]
+% opacity: ...[TODO]
 % sizeref: ...[NA]
 % sizemode: ...[NA]
 % colorscale: ...[NA]
@@ -37,32 +37,16 @@ function obj = updateHistogram(obj,histIndex)
 % maxdisplayed: ...[NA]
 
 % MARKER LINE:
-% color: ........[TODO]
+% color: ...[DONE]
 % width: ...[DONE]
 % dash: ...[NA]
-% opacity: ...[NA]
-% shape: ...[NA]
-% smoothing: ...[NA]
-% outliercolor: ...[NA]
-% outlierwidth: ...[NA]
-
-% LINE:
-% color: ........[N/A]
-% width: ...[NA]
-% dash: ...[NA]
-% opacity: ...[NA]
+% opacity: ...[TODO]
 % shape: ...[NA]
 % smoothing: ...[NA]
 % outliercolor: ...[NA]
 % outlierwidth: ...[NA]
 
 %-------------------------------------------------------------------------%
-
-%-FIGURE STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
-
-%-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(histIndex).AssociatedAxis);
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
@@ -79,17 +63,17 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-HIST XAXIS-%
+%-hist xaxis-%
 obj.data{histIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-HIST YAXIS-%
+%-hist yaxis-%
 obj.data{histIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-HIST TYPE-%
+%-hist type-%
 obj.data{histIndex}.type = 'histogram';
 
 %-------------------------------------------------------------------------%
@@ -118,12 +102,12 @@ switch obj.data{histIndex}.orientation
         
         %-------------------------------------------------------------------------%
         
-        %-HIST AUTOBINX-%
+        %-hist autobinx-%
         obj.data{histIndex}.autobinx = true;
         
         %-------------------------------------------------------------------------%
         
-        %-HIST NBINSX-%
+        %-hist nbinsx-%
         obj.data{histIndex}.nbinsx = length(xdata) + 1; %(+1 for max #)
        
         %-------------------------------------------------------------------------%
@@ -145,12 +129,12 @@ switch obj.data{histIndex}.orientation
         
         %-------------------------------------------------------------------------%
         
-        %-HIST AUTOBINX-%
+        %-hist autobiny-%
         obj.data{histIndex}.autobiny = true;
         
         %-------------------------------------------------------------------------%
         
-        %-HIST NBINSX-%
+        %-hist nbinsy-%
         obj.data{histIndex}.nbinsy = length(ydata);
        
         %-------------------------------------------------------------------------%
@@ -186,59 +170,8 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-hist face color-%
-
-colormap = figure_data.Colormap;
-
-if ~ischar(hist_data.FaceColor)
-    
-    %-paper_bgcolor-%
-    col = 255*hist_data.FaceColor;
-    obj.data{histIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-else
-    switch hist_data.FaceColor
-        case 'none'
-            obj.data{histIndex}.marker.color = 'rgba(0,0,0,0,)';
-        case 'flat'
-            switch hist_data.CDataMapping
-                case 'scaled'
-                    capCD = max(min(hist_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                    scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
-                    col =  255*(colormap(1+ floor(scalefactor*(length(colormap)-1)),:));
-                case 'direct'
-                    col =  255*(colormap(scatter_child_data(n).FaceVertexCData(1,1),:));
-            end
-            obj.data{histIndex}.marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    end
-end
-
-%-------------------------------------------------------------------------%
-
-%-hist edge color-%
-
-if ~ischar(hist_data.EdgeColor)
-    
-    %-paper_bgcolor-%
-    col = 255*hist_data.EdgeColor;
-    obj.data{histIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-else
-    switch hist_data.EdgeColor
-        case 'none'
-            obj.data{histIndex}.marker.line.color = 'rgba(0,0,0,0,)';
-        case 'flat'
-            switch hist_data.CDataMapping
-                case 'scaled'
-                    capCD = max(min(hist_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                    scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
-                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
-                case 'direct'
-                    col =  255*(colormap(scatter_child_data(n).FaceVertexCData(1,1),:));
-            end
-            obj.data{histIndex}.marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    end
-end
+%-hist marker-%
+obj.data{histIndex}.marker = extractPatchFace(hist_data);
 
 %-------------------------------------------------------------------------%
 
@@ -247,7 +180,7 @@ obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-HIST SHOWLEGEND-%
+%-hist showlegend-%
 leg = get(hist_data.Annotation);
 legInfo = get(leg.LegendInformation);
 

@@ -1,6 +1,4 @@
-
 function obj = updatePatch(obj, patchIndex)
-
 
 %----PATCH FIELDS----%
 
@@ -18,7 +16,7 @@ function obj = updatePatch(obj, patchIndex)
 % marker.line.color - [DONE]
 % marker.line.width - [DONE]
 % marker.line.dash - [NOT SUPPORTED IN MATLAB]
-% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.line.opacity --- [TODO]
 % marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
 % marker.line.shape - [NOT SUPPORTED IN MATLAB]
 % marker.opacity - [NOT SUPPORTED IN MATLAB]
@@ -29,13 +27,13 @@ function obj = updatePatch(obj, patchIndex)
 % line.color - [DONE]
 % line.width - [DONE]
 % line.dash - [DONE]
-% line.opacity - [NOT SUPPORTED IN MATLAB]
+% line.opacity --- [TODO]
 % line.smoothing - [NOT SUPPORTED IN MATLAB]
 % line.shape - [NOT SUPPORTED IN MATLAB]
 % connectgaps - [NOT SUPPORTED IN MATLAB]
 % fill - [HANDLED BY PATCH]
 % fillcolor - [HANDLED BY PATCH]
-% opacity - [NOT SUPPORTED IN MATLAB]
+% opacity --- [TODO]
 % textfont - [NOT SUPPORTED IN MATLAB]
 % textposition - [NOT SUPPORTED IN MATLAB]
 % xaxis [DONE]
@@ -60,22 +58,22 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-PATCH XAXIS-%
+%-patch xaxis-%
 obj.data{patchIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-PATCH YAXIS-%
+%-patch yaxis-%
 obj.data{patchIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-PATCH TYPE-%
+%-patch type-%
 obj.data{patchIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
-%-PATCH X-%
+%-patch x-%
 xdata = patch_data.XData;
 if isvector(xdata)
     obj.data{patchIndex}.x = [xdata' xdata(1)];
@@ -90,7 +88,7 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-PATCH Y-%
+%-patch y-%
 ydata = patch_data.YData;
 if isvector(ydata)
     obj.data{patchIndex}.y = [ydata' ydata(1)];
@@ -105,7 +103,7 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-PATCH NAME-%
+%-patch name-%
 if ~isempty(patch_data.DisplayName);
     obj.data{patchIndex}.name = patch_data.DisplayName;
 else
@@ -114,63 +112,58 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-PATCH VISIBLE-%
+%-patch visible-%
 obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-PATCH FILL-%
+%-patch fill-%
 obj.data{patchIndex}.fill = 'tonexty';
 
-%-------------------------------!STYLE!-----------------------------------%
-
-if ~obj.PlotOptions.Strip
-
-    %-PATCH MODE-%
-    if ~strcmpi('none', patch_data.Marker) && ~strcmpi('none', patch_data.LineStyle)
-        mode = 'lines+markers';
-    elseif ~strcmpi('none', patch_data.Marker)
-        mode = 'markers';
-    elseif ~strcmpi('none', patch_data.LineStyle)
-        mode = 'lines';
-    else
-        mode = 'none';
-    end
-
-    obj.data{patchIndex}.mode = mode;
-
-    %---------------------------------------------------------------------%
-
-    %-PATCH MARKER STYLE-%
-    obj.data{patchIndex}.marker = extractPatchMarker(patch_data);
-
-    %---------------------------------------------------------------------%
-
-    %-PATCH LINE STYLE-%
-    obj.data{patchIndex}.line = extractPatchLine(patch_data);
-
-    %---------------------------------------------------------------------%
-
-    %-PATCH FILL COLOR-%
-    fill = extractPatchFace(patch_data);
-    obj.data{patchIndex}.fillcolor = fill.color;
-
-    %---------------------------------------------------------------------%
-
-    %-PATCH SHOWLEGEND-%
-    leg = get(patch_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
-    end
-
-    obj.data{patchIndex}.showlegend = showleg;
-
-    %---------------------------------------------------------------------%
-
+%-PATCH MODE-%
+if ~strcmpi('none', patch_data.Marker) && ~strcmpi('none', patch_data.LineStyle)
+    mode = 'lines+markers';
+elseif ~strcmpi('none', patch_data.Marker)
+    mode = 'markers';
+elseif ~strcmpi('none', patch_data.LineStyle)
+    mode = 'lines';
+else
+    mode = 'none';
 end
+
+obj.data{patchIndex}.mode = mode;
+
+%-------------------------------------------------------------------------%
+
+%-patch marker-%
+obj.data{patchIndex}.marker = extractPatchMarker(patch_data);
+
+%-------------------------------------------------------------------------%
+
+%-patch line-%
+obj.data{patchIndex}.line = extractPatchLine(patch_data);
+
+%-------------------------------------------------------------------------%
+
+%-patch fillcolor-%
+fill = extractPatchFace(patch_data);
+obj.data{patchIndex}.fillcolor = fill.color;
+
+%-------------------------------------------------------------------------%
+
+%-patch showlegend-%
+leg = get(patch_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
+end
+
+obj.data{patchIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
 end

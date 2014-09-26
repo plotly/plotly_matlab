@@ -1,4 +1,4 @@
-function obj = updateBarseries(obj,dataIndex)
+function obj = updateBarseries(obj,barIndex)
 
 % x: ...[DONE]
 % y: ...[DONE]
@@ -7,7 +7,7 @@ function obj = updateBarseries(obj,dataIndex)
 % text: ...[NOT SUPPORTED IN MATLAB]
 % error_y: ...[HANDLED BY ERRORBAR]
 % error_x: ...[HANDLED BY ERRORBAR]
-% opacity: ------------------------------------------> [TODO]
+% opacity: ...[DONE]
 % xaxis: ...[DONE]
 % yaxis: ...[DONE]
 % showlegend: ...[DONE]
@@ -36,7 +36,7 @@ function obj = updateBarseries(obj,dataIndex)
 % color: ...[DONE]
 % width: ...[DONE]
 % dash: ...[NA]
-% opacity: ------------------------------------------> [TODO]
+% opacity: ---[TODO]
 % shape: ...[NA]
 % smoothing: ...[NA]
 % outliercolor: ...[NA]
@@ -56,10 +56,10 @@ function obj = updateBarseries(obj,dataIndex)
 %-------------------------------------------------------------------------%
 
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
 
 %-BAR DATA STRUCTURE- %
-bar_data = get(obj.State.Plot(dataIndex).Handle);
+bar_data = get(obj.State.Plot(barIndex).Handle);
 
 %-BAR CHILD (PATCH) DATA STRUCTURE- %
 bar_child_data = get(bar_data.Children(1));
@@ -73,32 +73,32 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-BAR XAXIS-%
-obj.data{dataIndex}.xaxis = ['x' num2str(xsource)];
+%-bar xaxis-%
+obj.data{barIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-BAR YAXIS-%
-obj.data{dataIndex}.yaxis = ['y' num2str(ysource)];
+%-bar yaxis-%
+obj.data{barIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-BAR VISIBLE-%
-obj.data{dataIndex}.visible = strcmp(bar_data.Visible,'on');
+%-bar visible-%
+obj.data{barIndex}.visible = strcmp(bar_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-BAR TYPE-%
-obj.data{dataIndex}.type = 'bar';
+%-bar type-%
+obj.data{barIndex}.type = 'bar';
 
 %-------------------------------------------------------------------------%
 
-%-BAR NAME-%
-obj.data{dataIndex}.name = bar_data.DisplayName;
+%-bar name-%
+obj.data{barIndex}.name = bar_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-LAYOUT BARMODE-%
+%-layout barmode-%
 switch bar_data.BarLayout
     case 'grouped'
         obj.layout.barmode = 'group';
@@ -108,73 +108,78 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-BAR ORIENTATION-%
+%-layout bargroupgap-%
+obj.layout.bargroupgap = 1-bar_data.BarWidth;
+
+%---------------------------------------------------------------------%
+
+%-layout bargap-%
+obj.layout.bargap = obj.PlotlyDefaults.Bargap;
+
+%-------------------------------------------------------------------------%
+
+%-bar orientation-%
 switch bar_data.Horizontal
     
     case 'off'
         
-        obj.data{dataIndex}.orientation = 'v';
+        obj.data{barIndex}.orientation = 'v';
         
         %-bar x data-%
-        obj.data{dataIndex}.x = bar_data.XData;
+        obj.data{barIndex}.x = bar_data.XData;
         
         %-bar y data-%
-        obj.data{dataIndex}.y = bar_data.YData;
+        obj.data{barIndex}.y = bar_data.YData;
         
         
     case 'on'
         
-        obj.data{dataIndex}.orientation = 'h';
+        obj.data{barIndex}.orientation = 'h';
         
         %-bar x data-%
-        obj.data{dataIndex}.x = bar_data.YData;
+        obj.data{barIndex}.x = bar_data.YData;
         
         %-bar y data-%
-        obj.data{dataIndex}.y = bar_data.XData;
+        obj.data{barIndex}.y = bar_data.XData;
 end
 
-%-----------------------------!STYLE!-------------------------------------%
+%-layout bargroupgap-%
+obj.layout.bargroupgap = 1-bar_data.BarWidth;
 
-if ~obj.PlotOptions.Strip
-    
-    %-LAYOUT BARGROUPGAP-%
-    obj.layout.bargroupgap = 1-bar_data.BarWidth;
-    
-    %---------------------------------------------------------------------%
-    
-    %-LAYOUT BARGAP-%
-    obj.layout.bargap = obj.PlotlyDefaults.Bargap;
-    
-    %---------------------------------------------------------------------%
-    
-    %-BAR SHOWLEGEND-%
-    leg = get(bar_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-    
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
-    end
-    
-    obj.data{dataIndex}.showlegend = showleg;
-    
-    %---------------------------------------------------------------------%
-    
-    %-BAR OPACITY-%
-    if ~ischar(bar_child_data.FaceAlpha)
-        obj.data{dataIndex}.opacity = bar_child_data.FaceAlpha;
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-BAR MARKER-%
-    obj.data{dataIndex}.marker = extractPatchFace(bar_child_data);
-    
-    %---------------------------------------------------------------------%
-    
+%---------------------------------------------------------------------%
+
+%-layout bargap-%
+obj.layout.bargap = obj.PlotlyDefaults.Bargap;
+
+%---------------------------------------------------------------------%
+
+%-bar showlegend-%
+leg = get(bar_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
 end
+
+obj.data{barIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
+%-bar opacity-%
+if ~ischar(bar_child_data.FaceAlpha)
+    obj.data{barIndex}.opacity = bar_child_data.FaceAlpha;
+end
+
+%-------------------------------------------------------------------------%
+
+%-bar marker-%
+obj.data{barIndex}.marker = extractPatchFace(bar_child_data);
+
+%-------------------------------------------------------------------------%
+
 end
 
 

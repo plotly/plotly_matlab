@@ -14,7 +14,7 @@ function obj = updateContourgroup(obj,contourIndex)
 % reversescale: ...[DONE]
 % showscale: ...[DONE]
 % colorbar: ...[DONE]
-% opacity: ...[NOT SUPPORTED IN MATLAB]
+% opacity: ---[TODO]
 % xaxis: ...[DONE]
 % yaxis: ...[DONE]
 % showlegend: ...[DONE]
@@ -33,7 +33,7 @@ function obj = updateContourgroup(obj,contourIndex)
 % color: ...[DONE]
 % width: ...[DONE]
 % dash: ...[DONE]
-% opacity: ...[NOT SUPPORTED IN MATLAB]
+% opacity: ---[TODO]
 % shape: ...[NOT SUPPORTED IN MATLAB]
 % smoothing: ...[DONE]
 % outliercolor: ...[N/A]
@@ -116,124 +116,121 @@ obj.data{contourIndex}.z = contour_data.ZData;
 
 obj.data{contourIndex}.visible = strcmp(contour_data.Visible,'on');
 
-%---------------------------------------------------------------------%
+%-------------------------------------------------------------------------%
 
 %-contour showscale-%
 obj.data{contourIndex}.showscale = false;
 
-%------------------------------!STYLE!------------------------------------%
 
-if ~obj.PlotOptions.Strip
-    
-    %-zauto-%
-    obj.data{contourIndex}.zauto = false;
-    
-    %---------------------------------------------------------------------%
-    
-    %-zmin-%
-    obj.data{contourIndex}.zmin = axis_data.CLim(1);
-    
-    %---------------------------------------------------------------------%
-    
-    %-zmax-%
-    obj.data{contourIndex}.zmax = axis_data.CLim(2);
-    
-    %---------------------------------------------------------------------%
-    
-    %-colorscale (ASSUMES PATCH CDATAMAP IS 'SCALED')-%
-    colormap = figure_data.Colormap;
-    
-    for c = 1:size((colormap),1)
-        col =  255*(colormap(c,:));
-        obj.data{contourIndex}.colorscale{c} = {(c-1)/(size(colormap,1)-1), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-contour reverse scale-%
-    obj.data{contourIndex}.reversescale = false;
-    
-    %---------------------------------------------------------------------%
-    
-    %-autocontour-%
-    obj.data{contourIndex}.autocontour = false;
-    
-    %---------------------------------------------------------------------%
-    
-    %-CONTOUR CONTOURS-%
-    
-    %-coloring-%
-    switch contour_data.Fill
-        case 'off'
-            obj.data{contourIndex}.contours.coloring = 'lines';
-        case 'on'
-            obj.data{contourIndex}.contours.coloring = 'fill';
-    end
-    
-    %-start-%
-    obj.data{contourIndex}.contours.start = contour_data.TextList(1);
-    
-    %-end-%
-    obj.data{contourIndex}.contours.end = contour_data.TextList(end);
-    
-    %-step-%
-    obj.data{contourIndex}.contours.size = diff(contour_data.TextList(1:2));
-    
-    %---------------------------------------------------------------------%
-    
-    if(~strcmp(contour_data.LineStyle,'none'))
-        
-        %-contour line colour-%
-        if isnumeric(contour_data.LineColor)
-            col = 255*contour_data.LineColor;
-            obj.data{contourIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        else
-            obj.data{contourIndex}.line.color = 'rgba(0,0,0,0)';
-        end
-        
-        %-contour line width-%
-        obj.data{contourIndex}.line.width = contour_data.LineWidth;
-        
-        %-contour line dash-%
-        switch contour_data.LineStyle
-            case '-'
-                LineStyle = 'solid';
-            case '--'
-                LineStyle = 'dash';
-            case ':'
-                LineStyle = 'dot';
-            case '-.'
-                LineStyle = 'dashdot';
-        end
-        
-        obj.data{contourIndex}.line.dash = LineStyle;
-        
-        %-contour smoothing-%
-        obj.data{contourIndex}.line.smoothing = 0;
-        
-    else
-        
-        %-contours showlines-%
-        obj.data{contourIndex}.contours.showlines = false;
-        
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-contour showlegend-%
-    
-    leg = get(contour_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-    
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
-    end
-    
-    obj.data{contourIndex}.showlegend = showleg;
-    
-    %---------------------------------------------------------------------%
+%-zauto-%
+obj.data{contourIndex}.zauto = false;
+
+%-------------------------------------------------------------------------%
+
+%-zmin-%
+obj.data{contourIndex}.zmin = axis_data.CLim(1);
+
+%-------------------------------------------------------------------------%
+
+%-zmax-%
+obj.data{contourIndex}.zmax = axis_data.CLim(2);
+
+%-------------------------------------------------------------------------%
+
+%-colorscale (ASSUMES PATCH CDATAMAP IS 'SCALED')-%
+colormap = figure_data.Colormap;
+
+for c = 1:size((colormap),1)
+    col =  255*(colormap(c,:));
+    obj.data{contourIndex}.colorscale{c} = {(c-1)/(size(colormap,1)-1), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
 end
+
+%-------------------------------------------------------------------------%
+
+%-contour reverse scale-%
+obj.data{contourIndex}.reversescale = false;
+
+%-------------------------------------------------------------------------%
+
+%-autocontour-%
+obj.data{contourIndex}.autocontour = false;
+
+%-------------------------------------------------------------------------%
+
+%-contour contours-%
+
+%-coloring-%
+switch contour_data.Fill
+    case 'off'
+        obj.data{contourIndex}.contours.coloring = 'lines';
+    case 'on'
+        obj.data{contourIndex}.contours.coloring = 'fill';
+end
+
+%-start-%
+obj.data{contourIndex}.contours.start = contour_data.TextList(1);
+
+%-end-%
+obj.data{contourIndex}.contours.end = contour_data.TextList(end);
+
+%-step-%
+obj.data{contourIndex}.contours.size = diff(contour_data.TextList(1:2));
+
+%-------------------------------------------------------------------------%
+
+if(~strcmp(contour_data.LineStyle,'none'))
+    
+    %-contour line colour-%
+    if isnumeric(contour_data.LineColor)
+        col = 255*contour_data.LineColor;
+        obj.data{contourIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    else
+        obj.data{contourIndex}.line.color = 'rgba(0,0,0,0)';
+    end
+    
+    %-contour line width-%
+    obj.data{contourIndex}.line.width = contour_data.LineWidth;
+    
+    %-contour line dash-%
+    switch contour_data.LineStyle
+        case '-'
+            LineStyle = 'solid';
+        case '--'
+            LineStyle = 'dash';
+        case ':'
+            LineStyle = 'dot';
+        case '-.'
+            LineStyle = 'dashdot';
+    end
+    
+    obj.data{contourIndex}.line.dash = LineStyle;
+    
+    %-contour smoothing-%
+    obj.data{contourIndex}.line.smoothing = 0;
+    
+else
+    
+    %-contours showlines-%
+    obj.data{contourIndex}.contours.showlines = false;
+    
+end
+
+%-------------------------------------------------------------------------%
+
+%-contour showlegend-%
+
+leg = get(contour_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
+end
+
+obj.data{contourIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
 end

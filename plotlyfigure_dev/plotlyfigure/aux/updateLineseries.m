@@ -14,7 +14,7 @@ function updateLineseries(obj,plotIndex)
 % connectgaps - [NOT SUPPORTED IN MATLAB]
 % fill - [HANDLED BY AREA]
 % fillcolor - [HANDLED BY AREA]
-% opacity - [NOT SUPPORTED IN MATLAB]
+% opacity --- [TODO]
 % textfont - [NOT SUPPORTED IN MATLAB]
 % textposition - [NOT SUPPORTED IN MATLAB]
 % xaxis [DONE]
@@ -24,7 +24,7 @@ function updateLineseries(obj,plotIndex)
 % visible [DONE]
 % type [DONE]
 
-% MARKER 
+% MARKER
 % marler.color - [DONE]
 % marker.size - [DONE]
 % marker.line.color - [DONE]
@@ -33,7 +33,7 @@ function updateLineseries(obj,plotIndex)
 % marker.line.opacity - [NOT SUPPORTED IN MATLAB]
 % marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
 % marker.line.shape - [NOT SUPPORTED IN MATLAB]
-% marker.opacity - [NOT SUPPORTED IN MATLAB]
+% marker.opacity --- [TODO]
 % marker.colorscale - [NOT SUPPORTED IN MATLAB]
 % marker.sizemode - [NOT SUPPORTED IN MATLAB]
 % marker.sizeref - [NOT SUPPORTED IN MATLAB]
@@ -44,7 +44,7 @@ function updateLineseries(obj,plotIndex)
 % line.color - [DONE]
 % line.width - [DONE]
 % line.dash - [DONE]
-% line.opacity - [NOT SUPPORTED IN MATLAB]
+% line.opacity --- [TODO]
 % line.smoothing - [NOT SUPPORTED IN MATLAB]
 % line.shape - [NOT SUPPORTED IN MATLAB]
 
@@ -65,84 +65,82 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER XAXIS-%
+%-scatter xaxis-%
 obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER YAXIS-%
+%-scatter yaxis-%
 obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER TYPE-%
+%-scatter type-%
 obj.data{plotIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER VISIBLE-%
+%-scatter visible-%
 obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER X-%
+%-scatter x-%
 obj.data{plotIndex}.x = plot_data.XData;
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER Y-%
+%-scatter y-%
 obj.data{plotIndex}.y = plot_data.YData;
 
 %-------------------------------------------------------------------------%
 
-%-SCATTER NAME-%
+%-scatter name-%
 obj.data{plotIndex}.name = plot_data.DisplayName;
 
-%-----------------------------!STYLE!-------------------------------------%
+%-------------------------------------------------------------------------%
 
-if ~obj.PlotOptions.Strip
-    
-    %-SCATTER MODE (STYLE)-%
-    if ~strcmpi('none', plot_data.Marker) ...
-            && ~strcmpi('none', plot_data.LineStyle)
-        mode = 'lines+markers';
-    elseif ~strcmpi('none', plot_data.Marker)
-        mode = 'markers';
-    elseif ~strcmpi('none', plot_data.LineStyle)
-        mode = 'lines';
-    else
-        mode = 'none';
-    end
-    
-    obj.data{plotIndex}.mode = mode;
-    
-    %---------------------------------------------------------------------%
-    
-    %-LINE STYLE-%
-    obj.data{plotIndex}.line = extractLineLine(plot_data);
-    
-    %---------------------------------------------------------------------%
-    
-    %-MARKER STYLE-%
-    obj.data{plotIndex}.marker = extractLineMarker(plot_data); 
-    
-    %---------------------------------------------------------------------%
-    
-    %-SCATTER SHOWLEGEND (STYLE)-%
-    leg = get(plot_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-    
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
-    end
-    
-    obj.data{plotIndex}.showlegend = showleg;
-    
-    %---------------------------------------------------------------------%
+%-scatter mode-%
+if ~strcmpi('none', plot_data.Marker) ...
+        && ~strcmpi('none', plot_data.LineStyle)
+    mode = 'lines+markers';
+elseif ~strcmpi('none', plot_data.Marker)
+    mode = 'markers';
+elseif ~strcmpi('none', plot_data.LineStyle)
+    mode = 'lines';
+else
+    mode = 'none';
 end
+
+obj.data{plotIndex}.mode = mode;
+
+%-------------------------------------------------------------------------%
+
+%-scatter line-%
+obj.data{plotIndex}.line = extractLineLine(plot_data);
+
+%-------------------------------------------------------------------------%
+
+%-scatter marker-%
+obj.data{plotIndex}.marker = extractLineMarker(plot_data);
+
+%-------------------------------------------------------------------------%
+
+%-scatter showlegend-%
+leg = get(plot_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
+end
+
+obj.data{plotIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
 end
 
 

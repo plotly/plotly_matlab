@@ -9,7 +9,7 @@ function obj = updateErrorbarseries(obj, errorbarIndex)
 % color: ...[DONE]
 % thickness: ...[DONE]
 % width: ...[DONE]
-% opacity: ...[NOT SUPPORTED IN MATLAB]
+% opacity: ---[TODO]
 % visible: ...[DONE]
 
 %-------------------------------------------------------------------------%

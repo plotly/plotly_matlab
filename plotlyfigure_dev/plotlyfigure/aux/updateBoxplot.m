@@ -10,7 +10,7 @@ function obj = updateBoxplot(obj, boxIndex)
 % pointpos: ...[NOT SUPPORTED IN MATLAB]
 % whiskerwidth: ........................[TODO]
 % fillcolor: ...[DONE]
-% opacity: -------------------------------------->[TODO]
+% opacity: ---[TODO]
 % xaxis: ...[DONE]
 % yaxis: ...[DONE]
 % showlegend: ...[DONE]
@@ -32,7 +32,7 @@ function obj = updateBoxplot(obj, boxIndex)
 % color: ...[DONE]
 % width: ...[DONE]
 % dash: ...[DONE]
-% opacity: -------------------------------------->[TODO]
+% opacity: ---[TODO]
 % shape: ...[DONE]
 % smoothing: ...[NOT SUPPORTED IN MATLAB]
 
@@ -245,7 +245,8 @@ for bp = bpnum:-1:1
     gendata = generateBoxData(outliers, lwhisker, Q1, median, Q3, uwhisker);
     
     %-boxplot y-data-%
-    obj.data{boxIndex}.y(length(ydata)+1:length(ydata)+length(gendata)) = generateBoxData(outliers, lwhisker, Q1, median, Q3, uwhisker);
+    obj.data{boxIndex}.y(length(ydata)+1:length(ydata)+length(gendata)) = ...
+        generateBoxData(outliers, lwhisker, Q1, median, Q3, uwhisker);
     
     %-boxplot x-data-%
     if (bpnum > 1)

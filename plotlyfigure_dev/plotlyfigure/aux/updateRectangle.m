@@ -43,22 +43,22 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE XAXIS-%
+%-rectangle xaxis-%
 obj.data{rectIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE YAXIS-%
+%-rectangle yaxis-%
 obj.data{rectIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE TYPE-%
+%-rectangle type-%
 obj.data{rectIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE X-%
+%-rectangle x-%
 obj.data{rectIndex}.x = [rect_data.Position(1) rect_data.Position(1) ...
     rect_data.Position(1) + rect_data.Position(3) ...
     rect_data.Position(1) + rect_data.Position(3) ...
@@ -66,7 +66,7 @@ obj.data{rectIndex}.x = [rect_data.Position(1) rect_data.Position(1) ...
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE X-%
+%-rectangle y-%
 obj.data{rectIndex}.y = [rect_data.Position(2) rect_data.Position(2) + rect_data.Position(4) ...
     rect_data.Position(2) + rect_data.Position(4) ...
     rect_data.Position(2) ...
@@ -74,54 +74,51 @@ obj.data{rectIndex}.y = [rect_data.Position(2) rect_data.Position(2) + rect_data
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE NAME-%
+%-rectangle name-%
 obj.data{rectIndex}.name = rect_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE MODE-%
+%-rectangle mode-%
 obj.data{rectIndex}.mode = 'lines';
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE VISIBLE-%
+%-rectangle fill-%
 obj.data{rectIndex}.visible = strcmp(rect_data.Visible,'on');
 
 
 %-------------------------------------------------------------------------%
 
-%-RECTANGLE FILL-%
+%-rectangle fill-%
 obj.data{rectIndex}.fill = 'tonexty';
 
-%------------------------------!STYLE!------------------------------------%
+%-------------------------------------------------------------------------%
 
-if ~obj.PlotOptions.Strip
-    
-    %-RECTANGLE LINE STYLE-%
-    obj.data{rectIndex}.line = extractPatchLine(rect_data);
-    
-    %---------------------------------------------------------------------%
-    
-    %-RECTANGLE FILL COLOR-%
-    fill = extractPatchFace(rect_data);
-    obj.data{rectIndex}.fillcolor = fill.color;
-    
-    %---------------------------------------------------------------------%
-    
-    %-RECTANGLE SHOWLEGEND-%
-    leg = get(rect_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-    
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
-    end
-    
-    obj.data{rectIndex}.showlegend = showleg;
-    
-    %---------------------------------------------------------------------%
-    
+%-rectangle line-%
+obj.data{rectIndex}.line = extractPatchLine(rect_data);
+
+%-------------------------------------------------------------------------%
+
+%-rectangle fillcolor-%
+fill = extractPatchFace(rect_data);
+obj.data{rectIndex}.fillcolor = fill.color;
+
+%-------------------------------------------------------------------------%
+
+%-rectangle showlegend-%
+leg = get(rect_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
 end
+
+obj.data{rectIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
 end

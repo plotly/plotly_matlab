@@ -116,76 +116,72 @@ else
 end
 
 
-%-------------------------------!STYLE!-----------------------------------%
 
-if ~obj.PlotOptions.Strip
-    
-    %-font color-%
-    col = 255*text_data.Color;
-    obj.layout.annotations{anIndex}.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-    %---------------------------------------------------------------------%
-    
-    %-font family-%
-    obj.layout.annotations{anIndex}.font.family = matlab2plotlyfont(text_data.FontName);
-    
-    %---------------------------------------------------------------------%
-    
-    %-font size-%
-    obj.layout.annotations{anIndex}.font.size = text_data.FontSize;
-    
-    %---------------------------------------------------------------------%
-    
-    switch text_data.FontWeight
-        case {'bold','demi'}
-            %-bold text-%
-            obj.layout.annotations{anIndex}.text = ['<b>' obj.layout.annotations{anIndex}.text '</b>'];
-        otherwise
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-background color-%
-    if ~ischar(text_data.BackgroundColor)
-        switch text_data.BackgroundColor
-            
-            case 'ne'
-                obj.layout.annotations{anIndex}.bgcolor = 'rgba(0,0,0,0)';
-            otherwise
-                
-        end
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-border color-%
-    if ~ischar(text_data.EdgeColor)
-        col = 255*text_data.EdgeColora;
-        obj.layout.annotations{anIndex}.bordercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    else
-        %-none-%
-        obj.layout.annotations{anIndex}.bordercolor = 'rgba(0,0,0,0)';
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-textangle-%
-    obj.layout.annotations{anIndex}.textangle = text_data.Rotation;
-    if text_data.Rotation > 180
-        obj.layout.annotations{anIndex}.textangle = text_data.Rotation - 360;
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-borderpad-%
-    obj.layout.annotations{anIndex}.borderwidth = text_data.LineWidth;
-    
-    %---------------------------------------------------------------------%
-    
-    %-borderpad-%
-    obj.layout.annotations{anIndex}.borderpad = text_data.Margin;
-    
+%-font color-%
+col = 255*text_data.Color;
+obj.layout.annotations{anIndex}.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+
+%---------------------------------------------------------------------%
+
+%-font family-%
+obj.layout.annotations{anIndex}.font.family = matlab2plotlyfont(text_data.FontName);
+
+%---------------------------------------------------------------------%
+
+%-font size-%
+obj.layout.annotations{anIndex}.font.size = text_data.FontSize;
+
+%---------------------------------------------------------------------%
+
+switch text_data.FontWeight
+    case {'bold','demi'}
+        %-bold text-%
+        obj.layout.annotations{anIndex}.text = ['<b>' obj.layout.annotations{anIndex}.text '</b>'];
+    otherwise
 end
+
+%---------------------------------------------------------------------%
+
+%-background color-%
+if ~ischar(text_data.BackgroundColor)
+    switch text_data.BackgroundColor
+        
+        case 'ne'
+            obj.layout.annotations{anIndex}.bgcolor = 'rgba(0,0,0,0)';
+        otherwise
+            
+    end
+end
+
+%---------------------------------------------------------------------%
+
+%-border color-%
+if ~ischar(text_data.EdgeColor)
+    col = 255*text_data.EdgeColora;
+    obj.layout.annotations{anIndex}.bordercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+else
+    %-none-%
+    obj.layout.annotations{anIndex}.bordercolor = 'rgba(0,0,0,0)';
+end
+
+%---------------------------------------------------------------------%
+
+%-textangle-%
+obj.layout.annotations{anIndex}.textangle = text_data.Rotation;
+if text_data.Rotation > 180
+    obj.layout.annotations{anIndex}.textangle = text_data.Rotation - 360;
+end
+
+%---------------------------------------------------------------------%
+
+%-borderpad-%
+obj.layout.annotations{anIndex}.borderwidth = text_data.LineWidth;
+
+%---------------------------------------------------------------------%
+
+%-borderpad-%
+obj.layout.annotations{anIndex}.borderpad = text_data.Margin;
+
 
 %hide text (a workaround)
 if strcmp(text_data.Visible,'off')

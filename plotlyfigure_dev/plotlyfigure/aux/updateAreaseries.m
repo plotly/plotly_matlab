@@ -44,7 +44,7 @@ function updateAreaseries(obj,areaIndex)
 % line.color - [DONE]
 % line.width - [DONE]
 % line.dash - [DONE]
-% line.opacity ------------------------------------------> [TODO]
+% line.opacity --- [TODO]
 % line.smoothing - [NOT SUPPORTED IN MATLAB]
 % line.shape - [NOT SUPPORTED IN MATLAB]
 
@@ -66,55 +66,55 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-AREA XAXIS-%
+%-area xaxis-%
 obj.data{areaIndex}.xaxis = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-%-AREA YAXIS-%
+%-area yaxis-%
 obj.data{areaIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-AREA TYPE-%
+%-area type-%
 obj.data{areaIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
-%-AREA VISIBLE-%
+%-area visible-%
 obj.data{areaIndex}.visible = strcmp(area_child_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-AREA X-%
+%-area x-%
 obj.data{areaIndex}.x = area_data.XData;
 
 %-------------------------------------------------------------------------%
 
-%-AREA Y-%
+%-area y-%
 ydata = area_child_data.YData;
 obj.data{areaIndex}.y = ydata(2:(numel(ydata)-1)/2+1)';
 
 %-------------------------------------------------------------------------%
 
-%-AREA NAME-%
+%-area name-%
 obj.data{areaIndex}.name = area_child_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-AREA FILL-%
+%-area fill-%
 obj.data{areaIndex}.fill = 'tonexty';
 
 %-----------------------------!STYLE!-------------------------------------%
 
 if ~obj.PlotOptions.Strip
     
-%-AREA LINE STYLE-%
+%-area line-%
 obj.data{areaIndex}.line = extractPatchLine(area_child_data); 
 
 %-------------------------------------------------------------------------%
     
-%-AREA MODE-%
+%-area mode-%
 if ~strcmpi('none', area_child_data.Marker) && ~strcmpi('none', area_child_data.LineStyle)
     mode = 'lines+markers';
 elseif ~strcmpi('none', area_child_data.Marker)
@@ -129,12 +129,12 @@ obj.data{areaIndex}.mode = mode;
 
 %-------------------------------------------------------------------------%
 
-%-AREA MARKER STYLE-%
+%-area marker-%
 obj.data{areaIndex}.marker = extractPatchMarker(area_child_data); 
 
 %-------------------------------------------------------------------------%
 
-%-AREA SHOWLEGEND-%
+%-area showlegend-%
 leg = get(area_child_data.Annotation);
 legInfo = get(leg.LegendInformation);
 
@@ -149,7 +149,7 @@ obj.data{areaIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
-%-AREA FILL COLOR-%
+%-area fillcolor-%
 fill = extractPatchFace(area_child_data); 
 obj.data{areaIndex}.fillcolor = fill.color; 
 

@@ -7,7 +7,7 @@ updateLineseries(obj, baseIndex);
 
 %-------------------------------------------------------------------------%
 
-%-SHOWLEGEND-%
+%-baseline showlegend-%
 obj.data{baseIndex}.showlegend = obj.PlotlyDefaults.ShowBaselineLegend;
 
 %-CHECK FOR MULTIPLE BASELINES-%
