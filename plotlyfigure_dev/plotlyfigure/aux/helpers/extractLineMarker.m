@@ -22,7 +22,7 @@ marker.size = line_data.MarkerSize;
 
 %-------------------------------------------------------------------------%
 
-%-MARKER SYMBOL (STYLE)-%
+%-MARKER SYMBOL-%
 if ~strcmp(line_data.Marker,'none')
     
     switch line_data.Marker
@@ -60,7 +60,7 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-MARKER LINE WIDTH (STYLE)-%
+%-MARKER LINE WIDTH-%
 marker.line.width = line_data.LineWidth;
 
 %-------------------------------------------------------------------------%
@@ -72,7 +72,7 @@ filledMarker = ismember(line_data.Marker,filledMarkerSet);
 
 %-------------------------------------------------------------------------%
 
-%--MARKER FILL COLOR (STYLE)--%
+%--MARKER FILL COLOR--%
 
 MarkerColor = line_data.MarkerFaceColor;
 
@@ -101,7 +101,7 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-MARKER LINE COLOR (STYLE)-%
+%-MARKER LINE COLOR-%
 
 MarkerLineColor = line_data.MarkerEdgeColor;
 
