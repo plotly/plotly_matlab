@@ -1,19 +1,24 @@
 classdef plotlyfigure < handle
     
     %----CLASS PROPERTIES----%
-    properties (SetObservable)
+    properties
         data; % data of the plot
         layout; % layout of the plot
-    end
-    
-    properties
-        PlotOptions; % filename,fileopt,world_readable
         PlotlyDefaults; % plotly specific conversion defualts
-        UserData; % credentials/configuration/verbose
         Response; % response of making post request
         State; % state of plot (FIGURE/AXIS/PLOTS)
-        PlotlyReference; %load the plotly reference 
     end
+    
+    properties (SetObservable)
+        UserData;% credentials/configuration/verbose
+        PlotOptions; % filename,fileopt,world_readable
+    end
+    
+    properties (Access = private)
+        PlotlyReference; % load the plotly reference
+        InitialState; % inital userdata 
+    end
+    
     
     %----CLASS METHODS----%
     methods
@@ -23,10 +28,10 @@ classdef plotlyfigure < handle
             
             %check input structure
             if nargin > 1
-                if mod(nargin,2) ~= 0 && ~ishandle(varargin{1})
-                    error(['Oops! It appears that you did not initialize the Plotly figure object using the required ',...
-                        '(,..''key'',''value'',...) input structure. Please try again or contact chuck@plot.ly',...
-                        ' for any additional help!']);
+                if mod(nargin,2) ~= 0 && any(~ishandle(varargin{1}))
+                    error('plotlyfigureConstructor:invalidInputs' , ['\nOops! It appears that you did not initialize the Plotly figure object using\n', ...
+                        'the required: >>  plotlyfigure(handle [optional],..''key'',''value'',...) input \n',...
+                        'structure. Please try again or contact chuck@plot.ly for any additional help!']);
                 end
             end
             
@@ -41,7 +46,7 @@ classdef plotlyfigure < handle
             obj.PlotOptions.FileName = 'myplotlyfigure';
             obj.PlotOptions.FileOpt = 'overwrite';
             obj.PlotOptions.WorldReadable = true;
-            obj.PlotOptions.OpenURL = false;
+            obj.PlotOptions.OpenURL = true;
             obj.PlotOptions.Strip = false;
             obj.PlotOptions.Visible = 'on';
             
@@ -54,17 +59,16 @@ classdef plotlyfigure < handle
             obj.PlotlyDefaults.MaxTickLength = 20;
             obj.PlotlyDefaults.ExponentFormat = 'none';
             obj.PlotlyDefaults.ErrorbarWidth = 6;
-            obj.PlotlyDefaults.MarkerOpacity = 1;
             obj.PlotlyDefaults.ShowBaselineLegend = false;
             obj.PlotlyDefaults.Bargap = 0;
             
             % check for some key/vals
             for a = 1:2:nargin
                 if(strcmpi(varargin{a},'filename'))
-                    obj.PlotOptions.Filename = varargin{a+1};
+                    obj.PlotOptions.FileName = varargin{a+1};
                 end
                 if(strcmpi(varargin{a},'fileopt'))
-                    obj.PlotOptions.Fileopt= varargin{a+1};
+                    obj.PlotOptions.FileOpt= varargin{a+1};
                 end
                 if(strcmpi(varargin{a},'world_readable'))
                     obj.PlotOptions.WorldReadable = varargin{a+1};
@@ -88,15 +92,20 @@ classdef plotlyfigure < handle
             
             % user data
             try
-                [obj.UserData.Credentials.Username,...
-                    obj.UserData.Credentials.Api_Key,...
-                    obj.UserData.Configuration.Plotly_Domain] = signin;
+                [obj.UserData.Username,...
+                    obj.UserData.ApiKey,...
+                    obj.UserData.PlotlyDomain] = signin;
+                
+                % save the initial state
+                obj.InitialState.Username = obj.UserData.Username;
+                obj.InitialState.ApiKey = obj.UserData.ApiKey;
+                obj.InitialState.PlotlyDomain = obj.UserData.PlotlyDomain;
             catch
                 error('Whoops! you must be signed in to initialize a plotlyfigure object!');
             end
             
             % user experience
-            obj.UserData.Verbose = false;
+            obj.UserData.Verbose = true;
             
             % figure state
             obj.State.Figure = [];
@@ -137,7 +146,7 @@ classdef plotlyfigure < handle
             end
             
             % plotly figure default style
-            set(fig,'Name','Plotly Figure','Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
+            set(fig,'Name',obj.PlotOptions.FileName,'Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
             
             % figure state
             obj.State.Figure.Handle = fig;
@@ -145,6 +154,11 @@ classdef plotlyfigure < handle
             % convert figure
             obj.update;
             
+            % add listeners
+            addlistener(obj,'PlotOptions','PostSet',@(src,event)updatePlotOptions(obj,src,event));
+           
+            % add listeners
+            addlistener(obj,'UserData','PostSet',@(src,event)updateUserData(obj,src,event));
         end
         
         %-------------------------USER METHODS----------------------------%
@@ -159,11 +173,88 @@ classdef plotlyfigure < handle
         function obj = loadplotlyref(obj)
             if isempty(obj.PlotlyReference)
                 % plotly reference
-                obj.PlotlyReference = loadjson(fileread('plotly_reference.json'));
+                plotlyref = load('plotly_reference.mat');
+                % update the PlotlyRef property
+                obj.PlotlyReference = plotlyref.pr;  
             end
         end
         
-        %----STRIP THE STYLE DEFAULTS----%
+        %----STRIP THE FIELDS OF A SPECIFIED KEY-----%
+        function stripped = stripkeys(obj, fields, fieldname, key)
+            
+            %plorlt reference
+            pr = obj.PlotlyReference;
+            
+            % initialize output
+            stripped = fields;
+            
+            % get fieldnames
+            fn = fieldnames(stripped);
+            fnmod = fn;
+            
+            try
+                
+                for d = 1:length(fn);
+                    
+                    % clean up axis keys
+                    if any(strfind(fn{d},'xaxis')) || any(strfind(fn{d},'yaxis'))
+                        fnmod{d} = fn{d}(1:length('_axis'));
+                    end
+                    
+                    % keys:(object, style, plot_info, data)
+                    keytype = getfield(pr,fieldname,fnmod{d},'key_type');
+                    
+                    % check for objects
+                    if strcmp(keytype,'object')
+                        
+                        % clean up font keys
+                        if any(strfind(fn{d},'font'))
+                            fnmod{d} = 'font';
+                        end
+                        
+                        % handle annotations
+                        if strcmp(fn{d},'annotations')
+                            annot = getfield(stripped, fn{d});
+                            fnmod{d} = 'annotation';
+                            for a = 1:length(annot)
+                                %recursive call to stripkeys
+                                stripped.annotations{a} = obj.stripkeys(annot{a}, fnmod{d}, key);
+                            end
+                        else
+                            %recursive call to stripkeys
+                            stripped = setfield(stripped, fn{d}, obj.stripkeys(getfield(stripped, fn{d}), fnmod{d}, key));
+                        end
+                        
+                        % look for desired key
+                    elseif any(strcmp(keytype, key))
+                        stripped = rmfield(stripped, fn{d});
+                    end
+                    
+                end
+                
+                %----CLEAN UP----%
+                remfn = fieldnames(stripped);
+                
+                for n = 1:length(remfn)
+                    if isstruct(getfield(stripped,remfn{n}))
+                        if isempty(fieldnames(getfield(stripped,remfn{n})))
+                            stripped = rmfield(stripped,remfn{n});
+                        end
+                    elseif isempty(getfield(stripped,remfn{n}))
+                        stripped = rmfield(stripped,remfn{n});
+                    end
+                end
+                
+                %---HANDLE ERRORS---%
+            catch exception
+                if obj.UserData.Verbose
+                    fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
+                end
+                
+            end
+        end
+            
+       %----STRIP THE STYLE DEFAULTS----%
         function obj = strip(obj)
             
             % load plotly reference
@@ -174,11 +265,11 @@ classdef plotlyfigure < handle
             
             % strip the style keys from data
             for d = 1:length(obj.data)
-                obj.data{d} = stripkeys(obj, obj.data{d}, obj.data{d}.type, 'style');
+                obj.data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, 'style');
             end
             
             % strip the style keys from layout
-            obj.layout = stripkeys(obj, obj.layout, 'layout', 'style');
+            obj.layout = obj.stripkeys(obj.layout, 'layout', 'style');
             
         end
         
@@ -190,7 +281,7 @@ classdef plotlyfigure < handle
             
             % remove style / plot_info types in data
             for d = 1:length(obj.data)
-                datafield = stripkeys(obj, obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+                datafield = obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
             end
             
         end
@@ -203,11 +294,11 @@ classdef plotlyfigure < handle
             
             % validate data fields
             for d = 1:length(obj.data)
-                stripkeys(obj, obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+                obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
             end
             
             % validate layout fields
-            stripkeys(obj, obj.layout, 'layout', 'style');
+            obj.stripkeys(obj.layout, 'layout', 'style');
             
         end
               
@@ -271,12 +362,7 @@ classdef plotlyfigure < handle
         %------------------------REST API CALL----------------------------%
         
         %----SEND PLOT REQUEST (NO UPDATE)----%
-        function obj = plotly(obj,showlink)
-            
-            % display hyperlink in command window
-            if nargin == 1
-                showlink = true;
-            end
+        function obj = plotly(obj)
             
             % validate keys
             validate(obj); 
@@ -311,14 +397,14 @@ classdef plotlyfigure < handle
             obj.State.Figure.NumPlots = 0;
             obj.State.Figure.NumLegends = 0;
             obj.State.Figure.NumColorbars = 0;
-            obj.State.Figure.NumAnnotations = 0;
+            obj.State.Figure.NumTexts = 0;
             
             % find axes of figure
             ax = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','');
             obj.State.Figure.NumAxes = length(ax);
             
             % update number of annotations (one title per axis)
-            obj.State.Figure.NumAnnotations = length(ax);
+            obj.State.Figure.NumTexts = length(ax);
             
             % find children of figure axes
             for a = 1:length(ax)
@@ -366,13 +452,13 @@ classdef plotlyfigure < handle
                 texts = findobj(ax(axrev),'Type','text','-depth',1);
                 
                 for t = 1:length(texts)
-                    obj.State.Text(obj.State.Figure.NumAnnotations + t).Handle = handle(texts(t));
-                    obj.State.Text(obj.State.Figure.NumAnnotations + t).Title = false;
-                    obj.State.Text(obj.State.Figure.NumAnnotations + t).AssociatedAxis = handle(ax(axrev));
+                    obj.State.Text(obj.State.Figure.NumTexts + t).Handle = handle(texts(t));
+                    obj.State.Text(obj.State.Figure.NumTexts + t).Title = false;
+                    obj.State.Text(obj.State.Figure.NumTexts + t).AssociatedAxis = handle(ax(axrev));
                 end
                 
                 % update number of annotations
-                obj.State.Figure.NumAnnotations = obj.State.Figure.NumAnnotations + length(texts);
+                obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + length(texts);
                 
             end
             
@@ -429,7 +515,7 @@ classdef plotlyfigure < handle
             end
             
             % update annotations
-            for n = 1:obj.State.Figure.NumAnnotations
+            for n = 1:obj.State.Figure.NumTexts
                 updateAnnotation(obj,n);
             end
             
@@ -463,8 +549,24 @@ classdef plotlyfigure < handle
         end
         
         
+        %-------------------CALLBACK FUNCTIONS--------------------------%
+        
+        %----UPDATE PLOT OPTIONS----%
+        function obj = updatePlotOptions(obj,~,~)
+            set(obj.State.Figure.Handle,'Name',obj.PlotOptions.FileName, 'Visible', obj.PlotOptions.Visible);
+        end
+        
+        %----UPDATE USER DATA----%
+        function obj = updateUserData(obj,~,~)
+            signin(obj.UserData.Username,...
+                   obj.UserData.ApiKey,...
+                   obj.UserData.PlotlyDomain);
+               disp('here'); 
+        end
+        
         %-------------------OVERLOADED FUNCTIONS--------------------------%
         
+        %----PLOT FUNCTIONS----%
         function han = image(obj, varargin)
             %call image
             han = image(varargin{:});
@@ -603,6 +705,15 @@ classdef plotlyfigure < handle
             obj.update;
             %send to plotly
             obj.plotly;
+        end
+        
+        %----OTHER----%
+        function delete(obj)
+            % reset persistent USERNAME, KEY, and DOMAIN
+            % of signin to original state
+            signin(obj.InitialState.Username, ...
+                   obj.InitialState.ApiKey,...
+                   obj.InitialState.PlotlyDomain); 
         end
     end
 end
