@@ -81,34 +81,37 @@ obj.data{contourIndex}.name = contour_data.DisplayName;
 %-------------------------------------------------------------------------%
 
 %-contour x data-%
-if isvector(contour_data.XData)
-    obj.data{contourIndex}.xtype = 'array';
-    obj.data{contourIndex}.x = linspace(contour_data.XData(1),contour_data.XData(end),length(contour_data.XData));
+if ~isvector(contour_data.XData)
+    obj.data{contourIndex}.x = contour_data.XData(1,:);
 else
-    obj.data{contourIndex}.xtype = 'scaled';
-    minx = min(min(contour_data.XData));
-    maxx = max(max(contour_data.XData));
-    obj.data{contourIndex}.x0 = minx;
-    obj.data{contourIndex}.dx = (maxx-minx)/size(contour_data.ZData,1);
+    obj.data{contourIndex}.x = contour_data.XData;
 end
 
 %-------------------------------------------------------------------------%
 
 %-contour y data-%
-if isvector(contour_data.YData)
-    obj.data{contourIndex}.ytype = 'array';
-    obj.data{contourIndex}.y = linspace(contour_data.YData(1),contour_data.YData(end),length(contour_data.YData));
+if ~isvector(contour_data.YData)
+    obj.data{contourIndex}.y = contour_data.YData(:,1)';
 else
-    obj.data{contourIndex}.ytype = 'scaled';
-    miny = min(min(contour_data.YData));
-    maxy = max(max(contour_data.YData));
-    obj.data{contourIndex}.y0 = miny;
-    obj.data{contourIndex}.dy = (maxy-miny)/size(contour_data.ZData,2);
+    obj.data{contourIndex}.y = contour_data.YData';
 end
+
 %-------------------------------------------------------------------------%
 
 %-contour z data-%
 obj.data{contourIndex}.z = contour_data.ZData;
+
+%-------------------------------------------------------------------------%
+
+%-contour x type-%
+
+obj.data{contourIndex}.xtype = 'array';
+
+%-------------------------------------------------------------------------%
+
+%-contour y type-%
+
+obj.data{contourIndex}.ytype = 'array';
 
 %-------------------------------------------------------------------------%
 
@@ -121,6 +124,7 @@ obj.data{contourIndex}.visible = strcmp(contour_data.Visible,'on');
 %-contour showscale-%
 obj.data{contourIndex}.showscale = false;
 
+%-------------------------------------------------------------------------%
 
 %-zauto-%
 obj.data{contourIndex}.zauto = false;

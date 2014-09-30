@@ -166,7 +166,7 @@ end
 
 %---------------------------------------------------------------------%
 
-%-textangle-%
+%-text angle-%
 obj.layout.annotations{anIndex}.textangle = text_data.Rotation;
 if text_data.Rotation > 180
     obj.layout.annotations{anIndex}.textangle = text_data.Rotation - 360;
@@ -174,12 +174,12 @@ end
 
 %---------------------------------------------------------------------%
 
-%-borderpad-%
+%-border width-%
 obj.layout.annotations{anIndex}.borderwidth = text_data.LineWidth;
 
 %---------------------------------------------------------------------%
 
-%-borderpad-%
+%-border pad-%
 obj.layout.annotations{anIndex}.borderpad = text_data.Margin;
 
 

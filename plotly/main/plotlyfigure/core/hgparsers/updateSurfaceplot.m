@@ -45,7 +45,7 @@ obj.data{surfaceIndex}.x = reshape(obj.data{surfaceIndex}.x,1,size(obj.data{surf
 if isvector(image_data.YData)
     obj.data{surfaceIndex}.y = repmat(image_data.YData,size(image_data.ZData,2),1);
 else
-    obj.data{surfaceIndex}.y = image_data.YData; 
+    obj.data{surfaceIndex}.y = image_data.YData;
 end
 
 obj.data{surfaceIndex}.y = reshape(obj.data{surfaceIndex}.y,1,size(obj.data{surfaceIndex}.y,1)*size(obj.data{surfaceIndex}.y,2));
@@ -78,21 +78,18 @@ obj.data{surfaceIndex}.reversecale = false;
 
 %-------------------------------------------------------------------------%
 
-%-surface showlegend-%
-if ~ obj.PlotOptions.Strip
-   
-    leg = get(image_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-    
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
-    end
-    
-    obj.data{surfaceIndex}.showlegend = showleg;
+leg = get(image_data.Annotation);
+legInfo = get(leg.LegendInformation);
+
+switch legInfo.IconDisplayStyle
+    case 'on'
+        showleg = true;
+    case 'off'
+        showleg = false;
 end
+
+obj.data{surfaceIndex}.showlegend = showleg;
+
 %-------------------------------------------------------------------------%
 
 end

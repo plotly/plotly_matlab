@@ -4,9 +4,7 @@ classdef plotlyfigure < handle
     properties
         data; % data of the plot
         layout; % layout of the plot
-        PlotlyDefaults; % plotly specific conversion defualts
-        Response; % response of making post request
-        State; % state of plot (FIGURE/AXIS/PLOTS)
+        url; % response of making post request
     end
     
     properties (SetObservable)
@@ -14,11 +12,15 @@ classdef plotlyfigure < handle
         PlotOptions; % filename,fileopt,world_readable
     end
     
-    properties (Access = private)
-        PlotlyReference; % load the plotly reference
-        InitialState; % inital userdata 
+    properties (Hidden = true)
+        PlotlyDefaults; % plotly specific conversion defualts
+        State; % state of plot (FIGURE/AXIS/PLOTS)
     end
     
+    properties (Access = private)
+        PlotlyReference; % load the plotly reference
+        InitialState; % inital userdata
+    end
     
     %----CLASS METHODS----%
     methods
@@ -26,31 +28,32 @@ classdef plotlyfigure < handle
         %----CONSTRUCTOR---%
         function obj = plotlyfigure(varargin)
             
-            %check input structure
-            if nargin > 1
-                if mod(nargin,2) ~= 0 && any(~ishandle(varargin{1}))
-                    error('plotlyfigureConstructor:invalidInputs' , ['\nOops! It appears that you did not initialize the Plotly figure object using\n', ...
-                        'the required: >>  plotlyfigure(handle [optional],..''key'',''value'',...) input \n',...
-                        'structure. Please try again or contact chuck@plot.ly for any additional help!']);
-                end
-            end
-            
-            % core Plotly elements
+            %-Core-%
             obj.data = {};
             obj.layout = struct();
+            obj.url = '';
             
-            % plotly reference 
-            obj.PlotlyReference = []; 
+            %-UserData-%
+            try
+                [obj.UserData.Username,...
+                    obj.UserData.ApiKey,...
+                    obj.UserData.PlotlyDomain] = signin;
+            catch
+                error('Whoops! you must be signed in to initialize a plotlyfigure object!');
+            end
             
-            % plot options
-            obj.PlotOptions.FileName = 'myplotlyfigure';
-            obj.PlotOptions.FileOpt = 'overwrite';
+            obj.UserData.Verbose = true;
+            
+            %-PlotOptions-%
+            obj.PlotOptions.FileName = 'untitled';
+            obj.PlotOptions.FileOpt = 'new';
             obj.PlotOptions.WorldReadable = true;
+            obj.PlotOptions.ShowURL = true;
             obj.PlotOptions.OpenURL = true;
-            obj.PlotOptions.Strip = false;
+            obj.PlotOptions.Strip = true;
             obj.PlotOptions.Visible = 'on';
             
-            % plot option defaults (edit these for custom conversions)
+            %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 80;
             obj.PlotlyDefaults.TitleHeight = 0.01;
             obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
@@ -62,102 +65,116 @@ classdef plotlyfigure < handle
             obj.PlotlyDefaults.ShowBaselineLegend = false;
             obj.PlotlyDefaults.Bargap = 0;
             
-            % check for some key/vals
-            for a = 1:2:nargin
-                if(strcmpi(varargin{a},'filename'))
-                    obj.PlotOptions.FileName = varargin{a+1};
-                end
-                if(strcmpi(varargin{a},'fileopt'))
-                    obj.PlotOptions.FileOpt= varargin{a+1};
-                end
-                if(strcmpi(varargin{a},'world_readable'))
-                    obj.PlotOptions.WorldReadable = varargin{a+1};
-                end
-                if(strcmpi(varargin{a},'open'))
-                    obj.PlotOptions.OpenURL = varargin{a+1};
-                end
-                if(strcmpi(varargin{a},'strip'))
-                    obj.PlotOptions.Strip = varargin{a+1};
-                end
-                if(strcmpi(varargin{a},'visible'))
-                    obj.PlotOptions.Visible = varargin{a+1};
-                end
-                if(strcmpi(varargin{a},'layout'))
-                    obj.layout= varargin{a+1};
-                end
-                if(strcmpi(varargin{a},'data'))
-                    obj.data = varargin{a+1};
-                end
-            end
-            
-            % user data
-            try
-                [obj.UserData.Username,...
-                    obj.UserData.ApiKey,...
-                    obj.UserData.PlotlyDomain] = signin;
-                
-                % save the initial state
-                obj.InitialState.Username = obj.UserData.Username;
-                obj.InitialState.ApiKey = obj.UserData.ApiKey;
-                obj.InitialState.PlotlyDomain = obj.UserData.PlotlyDomain;
-            catch
-                error('Whoops! you must be signed in to initialize a plotlyfigure object!');
-            end
-            
-            % user experience
-            obj.UserData.Verbose = true;
-            
-            % figure state
+            %-State-%
             obj.State.Figure = [];
-            
-            % axis state
             obj.State.Axis = [];
-            
-            % plot state
             obj.State.Plot = [];
-            
-            % text state
             obj.State.Text = [];
-            
-            % legend state
             obj.State.Legend = [];
-            
-            % colorbar state
             obj.State.Colorbar = [];
             
-            % initialize emtpy fig handle
-            fig = [];
+            %-PlotlyReference-%
+            obj.PlotlyReference = [];
             
-            % check to see if the first argument is a figure
-            if nargin > 0
-                if ishandle(varargin{1})
-                    fig = varargin{1};
-                end
+            %-InitialState-%
+            obj.InitialState.Username = obj.UserData.Username;
+            obj.InitialState.ApiKey = obj.UserData.ApiKey;
+            obj.InitialState.PlotlyDomain = obj.UserData.PlotlyDomain;
+            
+            % initialize figure handle
+            fig_han = [];
+            
+            % initialize autoupdate key
+            updatekey = false;
+            
+            % parse inputs
+            switch nargin
+                
+                case 0
+                case 1
+                    % check for figure handle
+                    if ishandle(varargin{1})
+                        if strcmp(handle(varargin{1}).classhandle.name,'figure')
+                            fig_han = varargin{1};
+                            updatekey = true;
+                        end
+                    else
+                        errkey = 'plotlyfigureConstructor:invalidInputs';
+                        error(errkey , plotlyerror(errkey));
+                    end
+                    
+                otherwise
+                    
+                    % check for figure handle
+                    if ishandle(varargin{1})
+                        if strcmp(handle(varargin{1}).classhandle.name,'figure')
+                            fig_han = varargin{1};
+                            updatekey = true;
+                            parseinit = 2;
+                        end
+                    else
+                        parseinit = 1;
+                    end
+                    
+                    % check for proper property/value structure
+                    if mod(length(parseinit:nargin),2) ~= 0
+                        errkey = 'plotlyfigureConstructor:invalidInputs';
+                        error(errkey , plotlyerror(errkey));
+                    end
+                    
+                    % parse property/values
+                    for a = parseinit:2:nargin
+                        if(strcmpi(varargin{a},'filename'))
+                            obj.PlotOptions.FileName = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'fileopt'))
+                            obj.PlotOptions.FileOpt= varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'world_readable'))
+                            obj.PlotOptions.WorldReadable = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'link'))
+                            obj.PlotOptions.ShowURL = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'open'))
+                            obj.PlotOptions.OpenURL = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'strip'))
+                            obj.PlotOptions.Strip = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'visible'))
+                            obj.PlotOptions.Visible = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'layout'))
+                            obj.layout= varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'data'))
+                            obj.data = varargin{a+1};
+                        end
+                    end
             end
             
-            if isempty(fig)
-                
-                % create new figure
-                fig = figure;
-                
-                % add default axis
+            % create figure/axes if empty
+            if isempty(fig_han)
+                fig_han = figure;
                 axes;
-                
             end
             
             % plotly figure default style
-            set(fig,'Name',obj.PlotOptions.FileName,'Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
+            set(fig_han,'Name',obj.PlotOptions.FileName,'Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
             
             % figure state
-            obj.State.Figure.Handle = fig;
+            obj.State.Figure.Handle = fig_han;
             
-            % convert figure
-            obj.update;
+            % update
+            if updatekey
+                obj.update;
+            end
             
-            % add listeners
+            % add plot options listeners
             addlistener(obj,'PlotOptions','PostSet',@(src,event)updatePlotOptions(obj,src,event));
-           
-            % add listeners
+            
+            % add user data listeners
             addlistener(obj,'UserData','PostSet',@(src,event)updateUserData(obj,src,event));
         end
         
@@ -175,93 +192,15 @@ classdef plotlyfigure < handle
                 % plotly reference
                 plotlyref = load('plotly_reference.mat');
                 % update the PlotlyRef property
-                obj.PlotlyReference = plotlyref.pr;  
+                obj.PlotlyReference = plotlyref.pr;
             end
         end
         
-        %----STRIP THE FIELDS OF A SPECIFIED KEY-----%
-        function stripped = stripkeys(obj, fields, fieldname, key)
-            
-            %plorlt reference
-            pr = obj.PlotlyReference;
-            
-            % initialize output
-            stripped = fields;
-            
-            % get fieldnames
-            fn = fieldnames(stripped);
-            fnmod = fn;
-            
-            try
-                
-                for d = 1:length(fn);
-                    
-                    % clean up axis keys
-                    if any(strfind(fn{d},'xaxis')) || any(strfind(fn{d},'yaxis'))
-                        fnmod{d} = fn{d}(1:length('_axis'));
-                    end
-                    
-                    % keys:(object, style, plot_info, data)
-                    keytype = getfield(pr,fieldname,fnmod{d},'key_type');
-                    
-                    % check for objects
-                    if strcmp(keytype,'object')
-                        
-                        % clean up font keys
-                        if any(strfind(fn{d},'font'))
-                            fnmod{d} = 'font';
-                        end
-                        
-                        % handle annotations
-                        if strcmp(fn{d},'annotations')
-                            annot = getfield(stripped, fn{d});
-                            fnmod{d} = 'annotation';
-                            for a = 1:length(annot)
-                                %recursive call to stripkeys
-                                stripped.annotations{a} = obj.stripkeys(annot{a}, fnmod{d}, key);
-                            end
-                        else
-                            %recursive call to stripkeys
-                            stripped = setfield(stripped, fn{d}, obj.stripkeys(getfield(stripped, fn{d}), fnmod{d}, key));
-                        end
-                        
-                        % look for desired key
-                    elseif any(strcmp(keytype, key))
-                        stripped = rmfield(stripped, fn{d});
-                    end
-                    
-                end
-                
-                %----CLEAN UP----%
-                remfn = fieldnames(stripped);
-                
-                for n = 1:length(remfn)
-                    if isstruct(getfield(stripped,remfn{n}))
-                        if isempty(fieldnames(getfield(stripped,remfn{n})))
-                            stripped = rmfield(stripped,remfn{n});
-                        end
-                    elseif isempty(getfield(stripped,remfn{n}))
-                        stripped = rmfield(stripped,remfn{n});
-                    end
-                end
-                
-                %---HANDLE ERRORS---%
-            catch exception
-                if obj.UserData.Verbose
-                    fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
-                end
-                
-            end
-        end
-            
-       %----STRIP THE STYLE DEFAULTS----%
+        %----STRIP THE STYLE DEFAULTS----%
         function obj = strip(obj)
             
             % load plotly reference
             obj.loadplotlyref;
-            
-            % update the data/layout
-            obj.update;
             
             % strip the style keys from data
             for d = 1:length(obj.data)
@@ -274,14 +213,17 @@ classdef plotlyfigure < handle
         end
         
         %----GET THE FIELDS OF TYPE DATA----%
-        function datafield = getdata(obj)
+        function data = getdata(obj)
             
             % load plotly reference
             obj.loadplotlyref;
             
+            % initialize output
+            data = cell(1,length(obj.data));
+            
             % remove style / plot_info types in data
             for d = 1:length(obj.data)
-                datafield = obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+                data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
             end
             
         end
@@ -301,10 +243,10 @@ classdef plotlyfigure < handle
             obj.stripkeys(obj.layout, 'layout', 'style');
             
         end
-              
+        
         %----GET PLOTLY FIGURE-----%
-        function obj = grab(obj, file_owner, file_id)
-            plotlyfig = getplotlyfig(file_owner, file_id);
+        function obj = pull(obj, file_owner, file_id)
+            plotlyfig = plotlygetfile(file_owner, file_id);
             obj.data = plotlyfig.data;
             obj.layout = plotlyfig.layout;
         end
@@ -319,7 +261,7 @@ classdef plotlyfigure < handle
             imgfig.layout = obj.layout;
             
             % save image
-            saveplotlyfig(imgfig, filename, varargin{:});
+            plotlyimage(imgfig, filename, varargin{:});
         end
         
         %----SAVE STATIC JPEG IMAGE-----%
@@ -364,8 +306,13 @@ classdef plotlyfigure < handle
         %----SEND PLOT REQUEST (NO UPDATE)----%
         function obj = plotly(obj)
             
+            % strip keys
+            if obj.PlotOptions.Strip
+                obj.strip;
+            end
+            
             % validate keys
-            validate(obj); 
+            validate(obj);
             
             %args
             args.filename = obj.PlotOptions.FileName;
@@ -379,11 +326,16 @@ classdef plotlyfigure < handle
             response = plotly(obj.data,args);
             
             %update response
-            obj.Response = response;
+            obj.url = response.url;
             
             %ouput url as hyperlink in command window if possible
-            if obj.PlotOptions.OpenURL
+            if obj.PlotOptions.ShowURL
                 openurl(response.url);
+            end
+            
+            %open url in browser
+            if obj.PlotOptions.OpenURL
+                web(response.url, '-browser');
             end
         end
         
@@ -391,6 +343,12 @@ classdef plotlyfigure < handle
         
         %automatic figure conversion
         function obj = update(obj)
+            
+            % update PlotOptions.Visible
+            obj.PlotOptions.Visible = get(obj.State.Figure.Handle,'Visible');
+            
+            % update PlotOptions.Name
+            obj.PlotOptions.Name = get(obj.State.Figure.Handle,'Name');
             
             % reset figure object count
             obj.State.Figure.NumAxes = 0;
@@ -439,7 +397,7 @@ classdef plotlyfigure < handle
                 for np = 1:length(plots)
                     
                     % reverse plots
-                    nprev = length(plots) - np + 1; 
+                    nprev = length(plots) - np + 1;
                     
                     % update the plot fields
                     obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
@@ -509,7 +467,7 @@ classdef plotlyfigure < handle
                 updateAxis(obj,n);
             end
             
-             % update plots
+            % update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
             end
@@ -553,15 +511,14 @@ classdef plotlyfigure < handle
         
         %----UPDATE PLOT OPTIONS----%
         function obj = updatePlotOptions(obj,~,~)
-            set(obj.State.Figure.Handle,'Name',obj.PlotOptions.FileName, 'Visible', obj.PlotOptions.Visible);
+            set(obj.State.Figure.Handle, 'Name', obj.PlotOptions.FileName, 'Visible', obj.PlotOptions.Visible);
         end
         
         %----UPDATE USER DATA----%
         function obj = updateUserData(obj,~,~)
             signin(obj.UserData.Username,...
-                   obj.UserData.ApiKey,...
-                   obj.UserData.PlotlyDomain);
-               disp('here'); 
+                obj.UserData.ApiKey,...
+                obj.UserData.PlotlyDomain);
         end
         
         %-------------------OVERLOADED FUNCTIONS--------------------------%
@@ -712,9 +669,84 @@ classdef plotlyfigure < handle
             % reset persistent USERNAME, KEY, and DOMAIN
             % of signin to original state
             signin(obj.InitialState.Username, ...
-                   obj.InitialState.ApiKey,...
-                   obj.InitialState.PlotlyDomain); 
+                obj.InitialState.ApiKey,...
+                obj.InitialState.PlotlyDomain);
+        end
+    end
+    
+    methods (Access=private)
+        %----STRIP THE FIELDS OF A SPECIFIED KEY-----%
+        function stripped = stripkeys(obj, fields, fieldname, key)
+            
+            %plorlt reference
+            pr = obj.PlotlyReference;
+            
+            % initialize output
+            stripped = fields;
+            
+            % get fieldnames
+            fn = fieldnames(stripped);
+            fnmod = fn;
+            
+            try
+                for d = 1:length(fn);
+                    
+                    % clean up axis keys
+                    if any(strfind(fn{d},'xaxis')) || any(strfind(fn{d},'yaxis'))
+                        fnmod{d} = fn{d}(1:length('_axis'));
+                    end
+                    
+                    % keys:(object, style, plot_info, data)
+                    keytype = getfield(pr,fieldname,fnmod{d},'key_type');
+                    
+                    % check for objects
+                    if strcmp(keytype,'object')
+                        
+                        % clean up font keys
+                        if any(strfind(fn{d},'font'))
+                            fnmod{d} = 'font';
+                        end
+                        
+                        % handle annotations
+                        if strcmp(fn{d},'annotations')
+                            annot = stripped.(fn{d});
+                            fnmod{d} = 'annotation';
+                            for a = 1:length(annot)
+                                %recursive call to stripkeys
+                                stripped.annotations{a} = obj.stripkeys(annot{a}, fnmod{d}, key);
+                            end
+                        else
+                            %recursive call to stripkeys
+                            stripped.(fn{d}) = obj.stripkeys(stripped.(fn{d}), fnmod{d}, key);
+                        end
+                        
+                        % look for desired key
+                    elseif any(strcmp(keytype, key))
+                        stripped = rmfield(stripped, fn{d});
+                    end
+                    
+                end
+                
+                %----CLEAN UP----%
+                remfn = fieldnames(stripped);
+                
+                for n = 1:length(remfn)
+                    if isstruct(stripped.(remfn{n}))
+                        if isempty(fieldnames(stripped.(remfn{n})))
+                            stripped = rmfield(stripped,remfn{n});
+                        end
+                    elseif isempty(stripped.(remfn{n}))
+                        stripped = rmfield(stripped,remfn{n});
+                    end
+                end
+                
+                %---HANDLE ERRORS---%
+            catch exception
+                if obj.UserData.Verbose
+                    fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
+                end
+                
+            end
         end
     end
 end
-

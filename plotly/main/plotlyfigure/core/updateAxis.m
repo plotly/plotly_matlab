@@ -498,7 +498,7 @@ end
 
 %-------------------------HANDLE MULTIPLE AXES----------------------------%
 
-overlapping = isOverlapping(obj, axIndex);
+overlapping = isOverlappingAxis(obj, axIndex);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-------------------------------------------------------------------------%

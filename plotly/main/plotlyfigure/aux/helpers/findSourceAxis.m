@@ -12,7 +12,7 @@ for a = 1:axIndex
 end
 
 % check axis overlap
-[multipleaxis, overlap] = isOverlapping(obj, axIndex); 
+[multipleaxis, overlap] = isOverlappingAxis(obj, axIndex); 
 
 % find x/y source axis
 if multipleaxis

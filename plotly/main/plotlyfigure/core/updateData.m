@@ -56,31 +56,28 @@ end
 
 %------------------------AXIS/DATA CLEAN UP-------------------------------%
 
-if ~obj.PlotOptions.Strip
-    
-    %-AXIS INDEX-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    
-    %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
-    
-    %-AXIS DATA-%
-    eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-    eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
-    
-    %---------------------------------------------------------------------%
-    
-    % check for xaxis dates
-    if strcmpi(xaxis.type, 'date')
-        obj.data{dataIndex}.x =  convertDate(obj.data{dataIndex}.x);
-    end
-    
-    % check for yaxis dates
-    if strcmpi(yaxis.type, 'date')
-        obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
-    end
-    
-    %---------------------------------------------------------------------%
-    
+%-AXIS INDEX-%
+axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+
+%-CHECK FOR MULTIPLE AXES-%
+[xsource, ysource] = findSourceAxis(obj,axIndex);
+
+%-AXIS DATA-%
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+
+%-------------------------------------------------------------------------%
+
+% check for xaxis dates
+if strcmpi(xaxis.type, 'date')
+    obj.data{dataIndex}.x =  convertDate(obj.data{dataIndex}.x);
 end
+
+% check for yaxis dates
+if strcmpi(yaxis.type, 'date')
+    obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
+end
+
+%-------------------------------------------------------------------------%
+
 end

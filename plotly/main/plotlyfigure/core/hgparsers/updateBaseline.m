@@ -11,7 +11,7 @@ updateLineseries(obj, baseIndex);
 obj.data{baseIndex}.showlegend = obj.PlotlyDefaults.ShowBaselineLegend;
 
 %-CHECK FOR MULTIPLE BASELINES-%
-if ismultipleBaseline(obj,baseIndex)
+if isMultipleBaseline(obj,baseIndex)
     %-hide baseline if mutliple-%
     obj.data{baseIndex}.visible = false;
 end
