@@ -1,6 +1,6 @@
-function saveplotlyfig(figure_or_data, filename, varargin)
+function plotlyimage(figure_or_data, filename, varargin)
 
-    [path, name, ext] = fileparts(filename);
+    [~, ~, ext] = fileparts(filename);
     if nargin < 3
         format = ext(2:length(ext));
     else
