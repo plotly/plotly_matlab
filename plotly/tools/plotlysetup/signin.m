@@ -9,7 +9,6 @@ persistent USERNAME KEY PLOTLY_DOMAIN
 if nargin > 1 && ischar(varargin{1}) && ischar(varargin{2})
     USERNAME = varargin{1};
     KEY = varargin{2};
-    plotlysession('MATLAB API');
     mlock;
 elseif isempty(USERNAME) || isempty(KEY)
     creds = loadplotlycredentials();
