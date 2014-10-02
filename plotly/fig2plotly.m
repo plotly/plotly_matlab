@@ -106,7 +106,7 @@ response = plotly(data, struct('layout', layout, ...
     'fileopt', fileopt ,'world_readable',world_readable));
 
 if open_browser
-    openurl(response.url);
+    web(response.url, '-browser');
 end
 
 end
