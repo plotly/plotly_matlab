@@ -1,5 +1,5 @@
 %----UPDATE THE PLOTLY HELP GRAPH REFERENCE----%
-function updatePlotlyHelp
+function updateplotlyhelp
 
 % remote Plotly Graph Reference url
 remote = ['https://raw.githubusercontent.com/plotly/',...
@@ -18,11 +18,19 @@ end
 % load the json into a struct
 pr = loadjson(prContent); 
 
+%------------------------MATLAB SPECIFIC TWEAKS---------------------------%
+
+%-key_type changes-%
+pr.layout.plot_bgcolor.key_type = 'plot_info'; 
+pr.scatter.mode.key_type = 'plot_info'; 
+
+%-------------------------------------------------------------------------%
+
 % save directory
-helpdir = fileparts(which('updatePlotlyHelp')); 
+helpdir = fileparts(which('plotlyhelp')); 
 
 % pr filename 
-prname = fullfile(helpdir,'plotly_reference'); 
+prname = fullfile(helpdir,'aux','graph_reference','plotly_reference'); 
 
 %----save----%
 save(prname,'pr'); 
