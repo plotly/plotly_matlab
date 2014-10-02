@@ -26,35 +26,36 @@ obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
 %-------------------------------------------------------------------------%
 
 %-surface type-%
-obj.data{surfaceIndex}.type = 'scatter3d';
+if ~isvector(image_data.XData) || ~isvector(image_data.YData)
+    obj.data{surfaceIndex}.type = 'scatter3d';
+else
+    obj.data{surfaceIndex}.type = 'surface';
+end
 
 %-------------------------------------------------------------------------%
 
 %-surface x-%
-if isvector(image_data.XData)
-    obj.data{surfaceIndex}.x = repmat(image_data.XData,size(image_data.ZData,1),1);
-else
-    obj.data{surfaceIndex}.x = image_data.XData;
+obj.data{surfaceIndex}.x = image_data.XData;
+
+if strcmp(obj.data{surfaceIndex}.type,'scatter3d')
+    obj.data{surfaceIndex}.x = reshape(obj.data{surfaceIndex}.x,1,size(obj.data{surfaceIndex}.x,1)*size(obj.data{surfaceIndex}.x,2));
 end
-
-obj.data{surfaceIndex}.x = reshape(obj.data{surfaceIndex}.x,1,size(obj.data{surfaceIndex}.x,1)*size(obj.data{surfaceIndex}.x,2));
-
 %-------------------------------------------------------------------------%
 
 %-surface y-%
-if isvector(image_data.YData)
-    obj.data{surfaceIndex}.y = repmat(image_data.YData,size(image_data.ZData,2),1);
-else
-    obj.data{surfaceIndex}.y = image_data.YData;
-end
+obj.data{surfaceIndex}.y = image_data.YData;
 
+if strcmp(obj.data{surfaceIndex}.type,'scatter3d')
 obj.data{surfaceIndex}.y = reshape(obj.data{surfaceIndex}.y,1,size(obj.data{surfaceIndex}.y,1)*size(obj.data{surfaceIndex}.y,2));
-
-
+end
 %-------------------------------------------------------------------------%
 
 %-surface z-%
-obj.data{surfaceIndex}.z = reshape(image_data.ZData,1,size(image_data.ZData,1)*size(image_data.ZData,2));
+obj.data{surfaceIndex}.z = image_data.ZData;  
+
+if strcmp(obj.data{surfaceIndex}.type,'scatter3d')
+    obj.data{surfaceIndex}.z = reshape(image_data.ZData,1,size(image_data.ZData,1)*size(image_data.ZData,2));    
+end
 
 %-------------------------------------------------------------------------%
 

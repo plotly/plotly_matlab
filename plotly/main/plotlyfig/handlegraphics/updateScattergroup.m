@@ -140,12 +140,7 @@ for m = 1:length(scatter_child_data)
     end
     
     obj.data{scatterIndex}.showlegend = showleg;
-    
-    %---------------------------------------------------------------------%
-    
-    %-scatter opacity-%
-    obj.data{scatterIndex}.opacity = obj.PlotlyDefaults.MarkerOpacity;
-    
+   
     %---------------------------------------------------------------------%
     
     %-scatter marker-%

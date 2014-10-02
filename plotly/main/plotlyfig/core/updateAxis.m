@@ -37,7 +37,7 @@ function obj = updateAxis(obj,axIndex)
 % linecolor:...[DONE]
 % linewidth:...[DONE]
 % anchor:...[DONE]
-% overlaying:...[NOT SUPPORTED IN MATLAB]
+% overlaying:...[DONE]
 % side:...[DONE]
 % position:...[NOT SUPPORTED IN MATLAB]
 
@@ -498,8 +498,7 @@ end
 
 %-------------------------HANDLE MULTIPLE AXES----------------------------%
 
-overlapping = isOverlappingAxis(obj, axIndex);
-[xsource, ysource] = findSourceAxis(obj,axIndex);
+[xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj,axIndex);
 
 %-------------------------------------------------------------------------%
 
@@ -513,23 +512,16 @@ yaxis.anchor = ['x' num2str(xsource)];
 
 %-------------------------------------------------------------------------%
 
-% make overlap specific style modifications
-if overlapping
-    
-    % fix x mirror
-    if xsource == axIndex
-        xaxis.mirror = false;
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    % fix y mirror
-    if ysource == axIndex && overlapping
-        yaxis.mirror = false;
-    end
-    
-    %---------------------------------------------------------------------%
-    
+%-xaxis overlaying-%
+if xoverlay
+    xaxis.overlaying = ['x' num2str(xoverlay)];
+end
+
+%-------------------------------------------------------------------------%
+
+%-yaxis overlaying-%
+if yoverlay
+    yaxis.overlaying = ['y' num2str(yoverlay)];
 end
 
 %-------------------------------------------------------------------------%
@@ -537,6 +529,8 @@ end
 % update the layout field (do not overwrite source)
 if xsource == axIndex
     obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
+else
+  
 end
 
 %-------------------------------------------------------------------------%
@@ -544,6 +538,8 @@ end
 % update the layout field (do not overwrite source)
 if ysource == axIndex
     obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
+else
+    
 end
 %-------------------------------------------------------------------------%
 

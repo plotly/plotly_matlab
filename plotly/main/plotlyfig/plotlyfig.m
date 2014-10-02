@@ -1,4 +1,4 @@
-classdef plotlyfigure < handle
+classdef plotlyfig < handle
     
     %----CLASS PROPERTIES----%
     properties
@@ -26,7 +26,7 @@ classdef plotlyfigure < handle
     methods
         
         %----CONSTRUCTOR---%
-        function obj = plotlyfigure(varargin)
+        function obj = plotlyfig(varargin)
             
             %-Core-%
             obj.data = {};
@@ -39,10 +39,11 @@ classdef plotlyfigure < handle
                     obj.UserData.ApiKey,...
                     obj.UserData.PlotlyDomain] = signin;
             catch
-                error('Whoops! you must be signed in to initialize a plotlyfigure object!');
+                errkey = 'plotlyfigureConstructor:notSignedIn';
+                error(errkey, plotlymsg(errkey));
             end
             
-            obj.UserData.Verbose = true;
+            obj.UserData.Verbose = false;
             
             %-PlotOptions-%
             obj.PlotOptions.FileName = '';
@@ -107,7 +108,7 @@ classdef plotlyfigure < handle
                         end
                     else
                         errkey = 'plotlyfigureConstructor:invalidInputs';
-                        error(errkey , plotlyerror(errkey));
+                        error(errkey , plotlymsg(errkey));
                     end
                     
                 otherwise
@@ -126,7 +127,7 @@ classdef plotlyfigure < handle
                     % check for proper property/value structure
                     if mod(length(parseinit:nargin),2) ~= 0
                         errkey = 'plotlyfigureConstructor:invalidInputs';
-                        error(errkey , plotlyerror(errkey));
+                        error(errkey , plotlymsg(errkey));
                     end
                     
                     % parse property/values
@@ -256,7 +257,7 @@ classdef plotlyfigure < handle
         end
         
         %----GET PLOTLY FIGURE-----%
-        function obj = pull(obj, file_owner, file_id)
+        function obj = download(obj, file_owner, file_id)
             plotlyfig = plotlygetfile(file_owner, file_id);
             obj.data = plotlyfig.data;
             obj.layout = plotlyfig.layout;
@@ -272,7 +273,7 @@ classdef plotlyfigure < handle
             imgfig.layout = obj.layout;
             
             % save image
-            plotlyimage(imgfig, filename, varargin{:});
+            plotlygenimage(imgfig, filename, varargin{:});
         end
         
         %----SAVE STATIC JPEG IMAGE-----%
@@ -687,9 +688,11 @@ classdef plotlyfigure < handle
         function delete(obj)
             % reset persistent USERNAME, KEY, and DOMAIN
             % of signin to original state
-            signin(obj.InitialState.Username, ...
-                obj.InitialState.ApiKey,...
-                obj.InitialState.PlotlyDomain);
+            if isfield(obj.InitialState,'Username')
+                signin(obj.InitialState.Username, ...
+                    obj.InitialState.ApiKey,...
+                    obj.InitialState.PlotlyDomain);
+            end
         end
     end
     
