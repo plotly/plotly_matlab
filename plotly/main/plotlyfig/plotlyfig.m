@@ -275,10 +275,16 @@ classdef plotlyfig < handle
                 obj.strip;
             end
             
+            % handle title
+            if isempty(filename)
+                handleFileName(obj);
+                filename = obj.PlotOptions.FileName;
+            end
+            
             % create image figure
             imgfig.data = obj.data;
             imgfig.layout = obj.layout;
-                   
+            
             % save image
             plotlygenimage(imgfig, filename, varargin{:});
         end
