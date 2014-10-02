@@ -134,9 +134,11 @@ classdef plotlyfig < handle
                     for a = parseinit:2:nargin
                         if(strcmpi(varargin{a},'filename'))
                             obj.PlotOptions.FileName = varargin{a+1};
+                            % overwrite if filename provided
+                            obj.PlotOptions.FileOpt = 'overwrite'; 
                         end
                         if(strcmpi(varargin{a},'fileopt'))
-                            obj.PlotOptions.FileOpt= varargin{a+1};
+                            obj.PlotOptions.FileOpt = varargin{a+1};
                         end
                         if(strcmpi(varargin{a},'world_readable'))
                             obj.PlotOptions.WorldReadable = varargin{a+1};
@@ -268,10 +270,15 @@ classdef plotlyfig < handle
         %----SAVE STATIC PLOTLY IMAGE-----%
         function obj = saveas(obj, filename, varargin)
             
+            % strip keys
+            if obj.PlotOptions.Strip
+                obj.strip;
+            end
+            
             % create image figure
             imgfig.data = obj.data;
             imgfig.layout = obj.layout;
-            
+                   
             % save image
             plotlygenimage(imgfig, filename, varargin{:});
         end
@@ -327,7 +334,7 @@ classdef plotlyfig < handle
             validate(obj);
             
             % handle title
-            handleFileNameOpt(obj); 
+            handleFileName(obj); 
             
             %args
             args.filename = obj.PlotOptions.FileName;
