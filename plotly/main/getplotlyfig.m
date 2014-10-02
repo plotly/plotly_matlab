@@ -29,7 +29,7 @@ function p = getplotlyfig(file_owner, file_id)
 %-------------------------------------------------------------------------%
 
 %--CONSTRUCT PLOTLY FIGURE OBJECT--%
-p = plotlyfigure('Visible','off');
+p = plotlyfig('Visible','off');
 
 %-------------------------------------------------------------------------%
 

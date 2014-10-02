@@ -36,19 +36,21 @@ function p = saveplotlyfig(figure_or_data, filename, varargin)
 %-------------------------------------------------------------------------%
 
 %--CONSTRUCT PLOTLY FIGURE OBJECT--%
-p = plotlyfigure('Visible','off');
+p = plotlyfig('Visible','off');
 
 %-------------------------------------------------------------------------%
 
 %--PARSE FIGURE_OR_DATA--%
 if iscell(figure_or_data)
     p.data = figure_or_data;
-elseif isstruct(figure_or_data) || isa(figure_or_data,'plotlyfigure'); 
+elseif isstruct(figure_or_data); 
     p.data = figure_or_data.data;
     p.layout = figure_or_data.layout;
+elseif isa(figure_or_data, 'plotlyfig')
+    p = figure_or_data; 
 else
     errkey = 'plotlySaveImage:invalidInputs'; 
-    error(errkey,plotlyerror(errkey)); 
+    error(errkey,plotlymsg(errkey)); 
 end
 
 %-------------------------------------------------------------------------%
