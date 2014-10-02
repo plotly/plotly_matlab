@@ -1,4 +1,4 @@
-function handleFileNameOpt(obj)
+function handleFileName(obj)
 
 %--IF EMPTY FILENAME, CHECK FOR PLOT TITLES--%
 if isempty(obj.PlotOptions.FileName)
@@ -14,14 +14,6 @@ end
 %--IF FILENAME IS STILL EMPTY SET TO UNTITLED--%
 if isempty(obj.PlotOptions.FileName)
     obj.PlotOptions.FileName = 'untitled';
-    if isempty(obj.PlotOptions.FileOpt)
-        obj.PlotOptions.FileOpt = 'new';
-    end
-else
-    %--IF THERE IS A FILENAME--%
-    if isempty(obj.PlotOptions.FileOpt)
-        obj.PlotOptions.FileOpt = 'new';
-    end
 end
 
 end
