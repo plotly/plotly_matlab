@@ -33,7 +33,9 @@ p = plotlyfigure('Visible','off');
 
 %-------------------------------------------------------------------------%
 
-%--MAKE CALL TO PULL METHOD--%
-p.pull(file_owner, file_id);
+%--MAKE CALL TO DOWNLOAD METHOD--%
+p.download(file_owner, file_id);
+
+%-------------------------------------------------------------------------%
 
 end
