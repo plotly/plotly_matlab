@@ -11,8 +11,7 @@ To use, simply:
 0. sign-up (either online or using signup.m) 
 1. run plotlysetup('username','api_key') (both username and api_key can be found online!)
 3. call: >> fig2plotly to convert your MATLAB figure!
-4. or call: >> plotly(x,y) with your data!  
-5. View, style and share your plot in your browser at Plotly (https://plot.ly)
+4. View, style and share your plot in your browser at Plotly (https://plot.ly)
 
 See full documentation and examples at https://plot.ly/matlab 
 
