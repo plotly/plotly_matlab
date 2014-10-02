@@ -45,7 +45,7 @@ classdef plotlyfigure < handle
             obj.UserData.Verbose = true;
             
             %-PlotOptions-%
-            obj.PlotOptions.FileName = 'untitled';
+            obj.PlotOptions.FileName = '';
             obj.PlotOptions.FileOpt = 'new';
             obj.PlotOptions.WorldReadable = true;
             obj.PlotOptions.ShowURL = true;
@@ -72,6 +72,13 @@ classdef plotlyfigure < handle
             obj.State.Text = [];
             obj.State.Legend = [];
             obj.State.Colorbar = [];
+            
+            % figure object management
+            obj.State.Figure.NumAxes = 0;
+            obj.State.Figure.NumPlots = 0;
+            obj.State.Figure.NumLegends = 0;
+            obj.State.Figure.NumColorbars = 0;
+            obj.State.Figure.NumTexts = 0;
             
             %-PlotlyReference-%
             obj.PlotlyReference = [];
@@ -170,6 +177,10 @@ classdef plotlyfigure < handle
             if updatekey
                 obj.update;
             end
+            
+            % add figure listeners
+            addlistener(obj.State.Figure.Handle,'Visible','PostSet',@(src,event)updateFigureVisible(obj,src,event));
+            addlistener(obj.State.Figure.Handle,'Name','PostSet',@(src,event)updateFigureName(obj,src,event));
             
             % add plot options listeners
             addlistener(obj,'PlotOptions','PostSet',@(src,event)updatePlotOptions(obj,src,event));
@@ -314,6 +325,9 @@ classdef plotlyfigure < handle
             % validate keys
             validate(obj);
             
+            % handle title
+            handleFileNameOpt(obj); 
+            
             %args
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
@@ -343,13 +357,7 @@ classdef plotlyfigure < handle
         
         %automatic figure conversion
         function obj = update(obj)
-            
-            % update PlotOptions.Visible
-            obj.PlotOptions.Visible = get(obj.State.Figure.Handle,'Visible');
-            
-            % update PlotOptions.Name
-            obj.PlotOptions.Name = get(obj.State.Figure.Handle,'Name');
-            
+
             % reset figure object count
             obj.State.Figure.NumAxes = 0;
             obj.State.Figure.NumPlots = 0;
@@ -508,6 +516,17 @@ classdef plotlyfigure < handle
         
         
         %-------------------CALLBACK FUNCTIONS--------------------------%
+        
+        %----UPDATE FIGURE OPTIONS----%
+        function obj = updateFigureVisible(obj,~,~)
+            % update PlotOptions.Visible
+            obj.PlotOptions.Visible = get(obj.State.Figure.Handle,'Visible');
+        end
+        
+        function obj = updateFigureName(obj,~,~)
+            % update PlotOptions.Name
+            obj.PlotOptions.FileName = get(obj.State.Figure.Handle,'Name');
+        end
         
         %----UPDATE PLOT OPTIONS----%
         function obj = updatePlotOptions(obj,~,~)
