@@ -27,4 +27,7 @@ for s = 1:length(REMOVEFILES)
         removed{s} = REMOVEFILES{s};      
     end
 end
+
+display('done cleanup!'); 
+
 end

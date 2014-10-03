@@ -123,7 +123,7 @@ else
                     fprintf(['Downloading the Plotly API Matlab Library v.' pvRemote ' ... ']);
                 end
                 
-                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/master.zip';
+                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/plotlyupdate_test.zip';
                 newPlotlyZip = fullfile(plotlyUpdateDir,['plotlyupdate_' pvRemote '.zip']);
                 
                 %download from url
