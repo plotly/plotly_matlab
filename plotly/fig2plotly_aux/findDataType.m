@@ -1,4 +1,4 @@
-function data_type = findDataType(m_data, m_axis)
+function data_type = findDataType(m_data, m_axis, dataHan)
 
 data_type = [];
 
@@ -84,5 +84,9 @@ if strcmp('hggroup',m_data.Type)
     
 end
 
+%----3D SUPPORT----%
+if strcmp(handle(dataHan).classhandle.name,'surfaceplot')
+    data_type = 'surfaceplot';
+end
 
 end

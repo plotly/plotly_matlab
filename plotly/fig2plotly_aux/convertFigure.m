@@ -76,7 +76,7 @@ for i=axis_num:-1:1
                     m_data = get(m_axis.Children(j));
                     
                     %conditions for deretmining the data type
-                    data_type = findDataType(m_data, m_axis);
+                    data_type = findDataType(m_data, m_axis, m_axis.Children(j));
                     
                     if strcmp('box',data_type)
                         datas = extractDataBox(m_data, xid, yid, m_axis.CLim, f.Colormap, strip_style);
@@ -111,7 +111,7 @@ for i=axis_num:-1:1
                         end
                     end
                     if strcmp('histogram',data_type)
-                        [data{data_counter} layout] = extractDataHist(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        [data{data_counter}, layout] = extractDataHist(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
                         bar_counter = bar_counter+1;
                     end
@@ -123,10 +123,17 @@ for i=axis_num:-1:1
                         data_counter = data_counter+1;
                     end
                     if strcmp('bar',data_type)
-                        [data{data_counter} layout] = extractDataBar(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
+                        [data{data_counter}, layout] = extractDataBar(m_data, layout, xid, yid, m_axis.CLim, f.Colormap, strip_style);
                         data_counter = data_counter+1;
                         bar_counter = bar_counter+1;
                     end
+                    
+                    %---3D SUPPORT---%
+                    if strcmp('surfaceplot',data_type)
+                        [data{data_counter}] = extractData3D(m_data, xid, yid);
+                        data_counter = data_counter + 1; 
+                    end
+                    
                 end
             end
         end
