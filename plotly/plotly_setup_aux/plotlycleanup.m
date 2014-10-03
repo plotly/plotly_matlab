@@ -1,5 +1,5 @@
 function removed = plotlycleanup
-%cleans up any old Plotly API MATLAB library files (v.1.0.0)
+%cleans up any old Plotly API MATLAB library files
 
 %files to be removed (hard coded)
 REMOVEFILES = {''};
@@ -28,6 +28,6 @@ for s = 1:length(REMOVEFILES)
     end
 end
 
-display('done cleanup!'); 
+disp('DONE CLEANUP!'); 
 
 end
