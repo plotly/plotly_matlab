@@ -1,6 +1,6 @@
 function removed = plotlycleanup
 
-% cleans up any old Plotly API MATLAB library files and folders 
+% cleans up any old Plotly API MATLAB library files and folders
 
 % initialize output
 removed = {};
@@ -10,7 +10,6 @@ REMOVEFILES = {'plotly.m'};
 
 %----REMOVE FOLDERS----%
 REMOVEFOLDERS = {'fig2plotly_aux'};
-
 
 %----check for local Plotly instances----%
 try
@@ -57,7 +56,7 @@ for d = 1:length(plotlyDirs)
         end
     end
     
-    removed = [removefiles removefolders];
+    removed = [removed removefiles removefolders];
     
 end
 end
