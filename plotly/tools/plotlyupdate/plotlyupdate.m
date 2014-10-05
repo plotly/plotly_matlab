@@ -54,7 +54,7 @@ pvRemote = pvContent(pvBounds(1)+1:pvBounds(2)-1);
 
 %----check for local Plotly instances----%
 try
-    plotlyScriptDirs = which('plotly','-all');
+    plotlyScriptDirs = which('plotly.m','-all');
     
     if isempty(plotlyScriptDirs);
         error('plotly:missingScript',...
@@ -67,11 +67,8 @@ catch exception
     return
 end
 
-% directory of above libraries
-plotlyDirs = cell(1,length(plotlyScriptDirs));
-for d = 1:length(plotlyScriptDirs)
-    plotlyDirs{d} = fileparts(plotlyScriptDirs{d});
-end
+% find the location of all plotly/ directories
+plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
 
 %----update if necessary----%
 if strcmp(pvLocal,pvRemote)
