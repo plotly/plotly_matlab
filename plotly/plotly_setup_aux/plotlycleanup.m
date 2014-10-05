@@ -34,7 +34,12 @@ for d = 1:length(plotlyDirs)
     
     % delete files from plotly directory
     removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);
-    delete(removefiles{:});
+    
+    for f = 1:length(removefiles)
+        if exist(removefiles{f},'file')
+            delete(removefiles{f});
+        end
+    end
     
     % update removed list
     removed = [removed removefiles];
