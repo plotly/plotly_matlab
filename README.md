@@ -1,4 +1,6 @@
-## Nutshell
+## PLOTLY MATLAB WRAPPER 2.0.0
+
+## NUTSHELL
 
 Convert your MATLAB figures into online [plotly](https://plot.ly) graphs with a single line of code:
 
