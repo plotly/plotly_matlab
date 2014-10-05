@@ -28,6 +28,4 @@ for s = 1:length(REMOVEFILES)
     end
 end
 
-disp('DONE CLEANUP!'); 
-
 end
