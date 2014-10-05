@@ -34,7 +34,7 @@ end
 
 % remote Plotly API MATLAB Library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
-    'master/plotly/plotly_aux/plotly_version.m'];
+          'plotlyclass/readme.md'];
 
 % remote Plotly API MATLAB Library
 try
@@ -165,10 +165,10 @@ else
                 end
                 
                 % new Plotly directory
-                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-master','plotly');
+                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass','plotly');
                 
                 % files in Plotly repo root
-                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-master'));
+                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass'));
                 
                 % files not to be included
                 repoExclude = {'.','..','.gitignore','plotly'};
@@ -177,7 +177,7 @@ else
                 d = 1;
                 for r = 1:length(repoRoot);
                     if(isempty(intersect(repoRoot(r).name,repoExclude)))
-                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-master',repoRoot(r).name);
+                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass',repoRoot(r).name);
                         d = d+1;
                     end
                 end
