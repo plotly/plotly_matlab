@@ -34,7 +34,7 @@ end
 
 % remote Plotly API MATLAB Library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
-          'plotlyclass/readme.md'];
+          'plotlyclass/README.md'];
 
 % remote Plotly API MATLAB Library
 try
@@ -49,8 +49,8 @@ catch
 end
 
 % remote version number
-pvBounds = strfind(pvContent,'''');
-pvRemote = pvContent(pvBounds(1)+1:pvBounds(2)-1);
+[pvBounds(1), pvBounds(2)] = regexp(pvContent,'\d+.\d+.\d+', 'once');
+pvRemote = pvContent(pvBounds(1):pvBounds(2));
 
 %----check for local Plotly instances----%
 try
