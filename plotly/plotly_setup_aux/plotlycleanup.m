@@ -34,11 +34,11 @@ plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
 for d = 1:length(plotlyDirs)
     
     % delete files from plotly directory
-    removedfiles = fullfile(plotlyDirs{d}, REMOVEFILES);
+    removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);
     delete(removefiles{:});
     
     % remove folders from plotly directory
-    removedfolders = fullfile(plotlyDirs{d},REMOVEFOLDERS);
+    removefolders = fullfile(plotlyDirs{d},REMOVEFOLDERS);
     
     for f = 1:length(removefolders)
         %remove folder from path
@@ -57,7 +57,7 @@ for d = 1:length(plotlyDirs)
         end
     end
     
-    removed = [removedfiles removedfolders];
+    removed = [removefiles removefolders];
     
 end
 end
