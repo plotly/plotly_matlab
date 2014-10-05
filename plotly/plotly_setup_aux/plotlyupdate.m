@@ -1,6 +1,6 @@
 %-----AUTOMATIC PLOTLY MATLAB API UPDATING-----%
 
-function exception = plotlyupdate(varargin)
+function plotlyupdate(varargin)
 
 % plotlyupdate.m automatically updates the Plotly
 % API MATLAB library if the current version is not
