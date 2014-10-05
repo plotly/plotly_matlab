@@ -14,20 +14,24 @@ function p = saveplotlyfig(figure_or_data, filename, varargin)
 % [INPUTS]: [TYPE]{default} - description/'options'
 
 % figure: [structure array]{} - structure with 'data' and 'layout' fields
+% or
+% figure: [plotlyfig object]{} - plotlyfig object with data and layout properties
+% or
+% figure: [figure handle]{} - figure handle
 % data: [cell array]{} - cell array of Plotly traces
-% varargin: [string]{.png} - image extension ('png','jpeg','pdf','svg') 
+% varargin: [string]{.png} - image extension ('png','jpeg','pdf','svg')
 
 % [OUTPUT]:
 
 % static image save to the directory specified within the filename with the
-% extension specified within filename or varargin. 
+% extension specified within filename or varargin.
 
-% [EXAMPLE]: 
+% [EXAMPLE]:
 
 % data.type = 'scatter';
-% data.x = 1:10; 
-% data.y = 1:10; 
-% saveplotlyfig(data,'myimage.jpeg'); 
+% data.x = 1:10;
+% data.y = 1:10;
+% saveplotlyfig(data,'myimage.jpeg');
 
 % [ADDITIONAL RESOURCES]:
 
@@ -35,22 +39,23 @@ function p = saveplotlyfig(figure_or_data, filename, varargin)
 
 %-------------------------------------------------------------------------%
 
-%--CONSTRUCT PLOTLY FIGURE OBJECT--%
-p = plotlyfig('Visible','off');
-
-%-------------------------------------------------------------------------%
-
 %--PARSE FIGURE_OR_DATA--%
 if iscell(figure_or_data)
+    p = plotlyfig('Visible','off');
     p.data = figure_or_data;
-elseif isstruct(figure_or_data); 
+elseif isstruct(figure_or_data);
+    p = plotlyfig('Visible','off');
     p.data = figure_or_data.data;
     p.layout = figure_or_data.layout;
 elseif isa(figure_or_data, 'plotlyfig')
-    p = figure_or_data; 
+    p = figure_or_data;
+elseif ishandle(figure_or_data)
+    if strcmp(handle(figure_or_data).classhandle.name,'figure')
+        p = plotlyfig(figure_or_data, 'strip', false);
+    end
 else
-    errkey = 'plotlySaveImage:invalidInputs'; 
-    error(errkey,plotlymsg(errkey)); 
+    errkey = 'plotlySaveImage:invalidInputs';
+    error(errkey,plotlymsg(errkey));
 end
 
 %-------------------------------------------------------------------------%
