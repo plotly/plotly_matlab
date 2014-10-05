@@ -37,22 +37,22 @@ plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
 
 for d = 1:length(plotlyDirs)
     
-    try 
-        % delete files from plotly directory
-        delete(fullfile(plotlyDirs{d}, REMOVEFILES));
-        
-        % remove folders from plotly directory
-        rmdir(fullfile(plotlyDirs{d},REMOVEFOLDERS));
-        if (status == 0)
-            error('plotly:deletePlotlyAPI',...
-                ['\n\nShoot! It looks like something went wrong removing the Plotly API ' ...
-                'from the MATLAB toolbox directory \n' ...
-                'Please contact your system admin. or chuck@plot.ly for more information. \n\n']);
-        end
-        
-    catch exception %deleting files / removing directories catch...
-        fprintf(['\n\n' exception.identifier exception.message '\n\n']);
+    % delete files from plotly directory
+    removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);
+    delete(removefiles{:});
+    
+    % remove folders from plotly directory
+    removefolders = fullfile(plotlyDirs{d},REMOVEFOLDERS);
+    rmdir(removefolders{:});
+    
+    if (status == 0)
+        error('plotly:deletePlotlyAPI',...
+            ['\n\nShoot! It looks like something went wrong removing the Plotly API ' ...
+            'from the MATLAB toolbox directory \n' ...
+            'Please contact your system admin. or chuck@plot.ly for more information. \n\n']);
     end
+    
+    removed = [removedfiles removedfolders];
     
 end
 end
