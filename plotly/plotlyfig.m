@@ -4,7 +4,11 @@ classdef plotlyfig < handle
     properties
         data; % data of the plot
         layout; % layout of the plot
-        url; % response of making post request
+        url; % url response of making post request
+        error; % error response of making post request
+        warning; % warning response of making post request
+        message; % message response of making post request
+        
     end
     
     properties (SetObservable)
@@ -135,7 +139,7 @@ classdef plotlyfig < handle
                         if(strcmpi(varargin{a},'filename'))
                             obj.PlotOptions.FileName = varargin{a+1};
                             % overwrite if filename provided
-                            obj.PlotOptions.FileOpt = 'overwrite'; 
+                            obj.PlotOptions.FileOpt = 'overwrite';
                         end
                         if(strcmpi(varargin{a},'fileopt'))
                             obj.PlotOptions.FileOpt = varargin{a+1};
@@ -340,7 +344,7 @@ classdef plotlyfig < handle
             validate(obj);
             
             % handle title
-            handleFileName(obj); 
+            handleFileName(obj);
             
             %args
             args.filename = obj.PlotOptions.FileName;
@@ -355,6 +359,9 @@ classdef plotlyfig < handle
             
             %update response
             obj.url = response.url;
+            obj.error = response.error;
+            obj.warning = response.warning;
+            obj.message = response.message;
             
             %ouput url as hyperlink in command window if possible
             if obj.PlotOptions.ShowURL
@@ -371,7 +378,7 @@ classdef plotlyfig < handle
         
         %automatic figure conversion
         function obj = update(obj)
-
+            
             % reset figure object count
             obj.State.Figure.NumAxes = 0;
             obj.State.Figure.NumPlots = 0;
