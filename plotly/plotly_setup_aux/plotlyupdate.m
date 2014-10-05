@@ -185,6 +185,9 @@ else
                 % plotly toolbox directory
                 plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
                 
+                % remove current plotlyclean script
+                delete(which('plotlycleanup.m'));
+                
                 % replace the old Plotly with the new Plotly
                 for d = 1:length(plotlyDirs)
                     % do not copy aux Plotly repo root files to toolbox dir. Plotly
@@ -196,12 +199,10 @@ else
                             copyfile(auxFiles{r},auxFileDest,'f');
                         end
                     end
-                    % remove old Plotly API Matlab Library from path 
-                    rmpath(genpath(plotlyDirs{d}));
                     % copy actual Plotly API Matlab Library
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
-                    % add new Plotly API Matlab Library to path
-                    addpath(genpath(fullfile(plotlyDirs{d},newPlotlyDir)));
+                    % add new plotlyclean script to path
+                    addpath(genpath(plotlyDirs{d}));
                 end
                 
                 if verbose
