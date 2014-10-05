@@ -201,7 +201,7 @@ else
                     % copy actual Plotly API Matlab Library
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
                     % add new Plotly API Matlab Library to path
-                    rmpath(genpath(plotlyDirs{d}));
+                    addpath(genpath(plotlyDirs{d}));
                 end
                 
                 if verbose
