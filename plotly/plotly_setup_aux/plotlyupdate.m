@@ -185,8 +185,9 @@ else
                 % plotly toolbox directory
                 plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
                 
-                % remove current plotlyclean script
-                delete(which('plotlycleanup.m'));
+                % remove old plotlyclean scripts
+                pcScripts = which('plotlycleanup.m','-all');
+                delete(pcScripts{:}); 
                 
                 % replace the old Plotly with the new Plotly
                 for d = 1:length(plotlyDirs)
