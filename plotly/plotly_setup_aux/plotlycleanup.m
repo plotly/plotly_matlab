@@ -32,6 +32,9 @@ plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
 
 for d = 1:length(plotlyDirs)
     
+    % add plotlydirs to searchpath (will be removed in future)
+    addpath(genpath(plotlyDirs{d})); 
+    
     % delete files from plotly directory
     removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);
     
