@@ -196,8 +196,10 @@ else
                             copyfile(auxFiles{r},auxFileDest,'f');
                         end
                     end
-                    %copy actual Plotly API Matlab Library
+                    % copy actual Plotly API Matlab Library
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
+                    % add to path
+                    addpath(genpath(fullfile(plotlyDirs{d},newplotlyDir)));
                 end
                 
                 if verbose
