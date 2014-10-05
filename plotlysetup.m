@@ -84,18 +84,6 @@ if(~is_octave)
         
         if(strcmpi(overwrite,'y'))
             
-            %remove the older version from MATLABs searchpath
-            rmpath(genpath(plotlyToolboxPath));
-            %delete the older version
-            [status, ~, ~] = rmdir(plotlyToolboxPath,'s');
-            %check that the folder was deleted
-            if (status == 0)
-                error('plotly:deletePlotlyAPI',...
-                    ['\n\nShoot! It looks like something went wrong removing the Plotly API ' ...
-                    'from the MATLAB toolbox directory \n' ...
-                    'Please contact your system admin. or chuck@plot.ly for more information. \n\n']);
-            end
-            
             %move a copy of the Plotly api to matlab root directory
             [status, ~, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath);
             %check that the plotly api was copied to the matlab root toolbox directory
