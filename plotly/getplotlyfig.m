@@ -1,29 +1,41 @@
-function figure = getplotlyfig(file_owner, file_id)
+function p = getplotlyfig(file_owner, file_id)
 
-    [un, key, domain] = signin;
+%-----------------------------SAVEPLOTLYFIG-------------------------------%
 
-    headers = struct(...
-                    'name',...
-                        {...
-                            'plotly-username',...
-                            'plotly-apikey',...
-                            'plotly-version',...
-                            'plotly-platform',...
-                            'user-agent'
-                        },...
-                    'value',...
-                        {...
-                            un,...
-                            key,...
-                            plotly_version,...
-                            'MATLAB',...
-                            'MATLAB'
-                        });
+% Grab an online Plotly figure's data/layout information
 
-    url = [domain, '/apigetfile/', file_owner, '/', num2str(file_id)];
+% [CALL]:
 
-    [response_string, extras] = urlread2(url, 'Post', '', headers);
-    response_handler(response_string, extras);
-    response_object = loadjson(response_string);
-    figure = response_object.payload.figure;
+% p = getplotlyfig(file_owner file_id)
+
+% [INPUTS]: [TYPE]{default} - description/'options'
+
+% file_owner: [string]{} - Unique Plotly username
+% file_id [int]{} - the id of the graph you want to obtain
+
+% [OUTPUT]:
+
+% p - plotlyfigure object
+
+% [EXAMPLE]:
+
+% url: https://plot.ly/~demos/1526
+% fig = getplotlyfig('demos','1526'); 
+
+% [ADDITIONAL RESOURCES]:
+
+% For full documentation and examples, see https://plot.ly/matlab/get-requests/
+
+%-------------------------------------------------------------------------%
+
+%--CONSTRUCT PLOTLY FIGURE OBJECT--%
+p = plotlyfig('Visible','off');
+
+%-------------------------------------------------------------------------%
+
+%--MAKE CALL TO DOWNLOAD METHOD--%
+p.download(file_owner, file_id);
+
+%-------------------------------------------------------------------------%
+
 end

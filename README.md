@@ -1,4 +1,6 @@
-## Nutshell
+## PLOTLY MATLAB WRAPPER 2.0.0
+
+## NUTSHELL
 
 Convert your MATLAB figures into online [plotly](https://plot.ly) graphs with a single line of code:
 
@@ -26,5 +28,6 @@ figure = getplotlyfig('chris', 1638) % downloads the graph data from https://plo
 Live here: [https://plot.ly/MATLAB](https://plot.ly/MATLAB)
 
 ## Get in touch
+- <chuck@plot.ly>
 - <chris@plot.ly>
 - [@plotlygraphs](https://twitter.com/plotlygraphs)

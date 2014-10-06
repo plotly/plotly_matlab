@@ -34,7 +34,7 @@ end
 
 % remote Plotly API MATLAB Library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
-    'master/plotly/plotly_aux/plotly_version.m'];
+          'plotlyclass/README.md'];
 
 % remote Plotly API MATLAB Library
 try
@@ -49,12 +49,12 @@ catch
 end
 
 % remote version number
-pvBounds = strfind(pvContent,'''');
-pvRemote = pvContent(pvBounds(1)+1:pvBounds(2)-1);
+[pvBounds(1), pvBounds(2)] = regexp(pvContent,'\d+.\d+.\d+', 'once');
+pvRemote = pvContent(pvBounds(1):pvBounds(2));
 
 %----check for local Plotly instances----%
 try
-    plotlyScriptDirs = which('plotly','-all');
+    plotlyScriptDirs = which('plotly.m','-all');
     
     if isempty(plotlyScriptDirs);
         error('plotly:missingScript',...
@@ -67,11 +67,8 @@ catch exception
     return
 end
 
-% directory of above libraries
-plotlyDirs = cell(1,length(plotlyScriptDirs));
-for d = 1:length(plotlyScriptDirs)
-    plotlyDirs{d} = fileparts(plotlyScriptDirs{d});
-end
+% find the location of all plotly/ directories
+plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
 
 %----update if necessary----%
 if strcmp(pvLocal,pvRemote)
@@ -123,7 +120,7 @@ else
                     fprintf(['Downloading the Plotly API Matlab Library v.' pvRemote ' ... ']);
                 end
                 
-                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/master.zip';
+                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/plotlyclass.zip';
                 newPlotlyZip = fullfile(plotlyUpdateDir,['plotlyupdate_' pvRemote '.zip']);
                 
                 %download from url
@@ -168,10 +165,10 @@ else
                 end
                 
                 % new Plotly directory
-                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-master','plotly');
+                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass','plotly');
                 
                 % files in Plotly repo root
-                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-master'));
+                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass'));
                 
                 % files not to be included
                 repoExclude = {'.','..','.gitignore','plotly'};
@@ -180,13 +177,17 @@ else
                 d = 1;
                 for r = 1:length(repoRoot);
                     if(isempty(intersect(repoRoot(r).name,repoExclude)))
-                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-master',repoRoot(r).name);
+                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass',repoRoot(r).name);
                         d = d+1;
                     end
                 end
                 
                 % plotly toolbox directory
                 plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
+                
+                % remove old plotlyclean scripts
+                pcScripts = which('plotlycleanup.m','-all');
+                delete(pcScripts{:}); 
                 
                 % replace the old Plotly with the new Plotly
                 for d = 1:length(plotlyDirs)
@@ -199,8 +200,10 @@ else
                             copyfile(auxFiles{r},auxFileDest,'f');
                         end
                     end
-                    %copy actual Plotly API Matlab Library
+                    % copy actual Plotly API Matlab Library
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
+                    % add new plotlyclean script to path
+                    addpath(genpath(plotlyDirs{d}));
                 end
                 
                 if verbose

@@ -1,30 +1,77 @@
 function removed = plotlycleanup
-%cleans up any old Plotly API MATLAB library files
 
-%files to be removed (hard coded)
-REMOVEFILES = {''};
+% cleans up any old Plotly API MATLAB library files and folders
 
-%initialize removed
-removed = {}; 
+% initialize output
+removed = {};
 
-for s = 1:length(REMOVEFILES)
+%----REMOVE FILES----%
+REMOVEFILES = {'plotly.m'};
+
+%----REMOVE FOLDERS----%
+REMOVEFOLDERS = {'fig2plotly_aux'};
+
+%----check for local Plotly instances----%
+try
+    plotlyScriptDirs = which('plotly.m','-all');
     
-    %look for old files
-    oldScripts = which(REMOVEFILES{s},'-all');
+    if isempty(plotlyScriptDirs);
+        error('plotly:missingScript',...
+            ['\n\nWe were unable to locate plotly.m. Please Add this\n',...
+            'script to your MATLAB search path and try again.\n\n']);
+    end
     
-    if ~isempty(oldScripts)
- 
-        %remove files
-        if(~iscell(oldScripts))
-            delete(oldScripts);
-        else
-            for d = 1:length(oldScripts)
-                delete(oldScripts{d});
+    
+catch exception %locating plotly error catch...
+    fprintf(['\n\n' exception.identifier exception.message '\n\n']);
+    return
+end
+
+% find the location of all plotly/ directories
+plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
+
+for d = 1:length(plotlyDirs)
+    
+    % add plotlydirs to searchpath (will be removed in future)
+    addpath(genpath(plotlyDirs{d})); 
+    
+    % delete files from plotly directory
+    removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);
+    
+    for f = 1:length(removefiles)
+        if exist(removefiles{f},'file')
+            delete(removefiles{f});
+        end
+    end
+    
+    % update removed list
+    removed = [removed removefiles];
+    
+    % remove folders from plotly directory
+    removefolders = fullfile(plotlyDirs{d},REMOVEFOLDERS);
+    
+    for f = 1:length(removefolders)
+        if exist(removefolders{f},'dir')
+            
+            %remove folder from path
+            rmpath(removefolders{f});
+            
+            %delete folder/subfolders
+            try
+                status = rmdir(removefolders{f},'s');
+                
+                if (status == 0)
+                    error('plotly:deletePlotlyAPI',...
+                        ['\n\nShoot! It looks like something went wrong removing the Plotly API ' ...
+                        'from the MATLAB toolbox directory \n' ...
+                        'Please contact your system admin. or chuck@plot.ly for more information. \n\n']);
+                end
+                
+                % update removed list
+                removed = [removed removefolders];
+                
             end
         end
-
-        %output which files have been removed
-        removed{s} = REMOVEFILES{s};      
-    end
+    end   
 end
 end

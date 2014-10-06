@@ -1,4 +1,5 @@
 function exception = plotlysetup(username, api_key, varargin)
+
 % CALL: plotlysetup('username','api_key','kwargs'[optional]);
 % WHERE: kwargs are of the form ..,'property,value,'property',value,...
 % VALID PROPERTIES [OPTIONAL]: 'stream_ids' -> your stream ids [cell array] (found online)
@@ -91,6 +92,7 @@ if(~is_octave)
                     error('plotly:copyPlotly',permissionMessage('copy the Plotly folder'));
                 end
             end
+            
         end
         
         %add it to the searchpath (startup.m will handle this next time!)
