@@ -83,9 +83,9 @@ obj.data{histIndex}.histnorm = 'count';
 
 %-------------------------------------------------------------------------%
 
-obj.data{histIndex}.orientation = histogramOrientation(hist_data);
+orientation = histogramOrientation(hist_data);
 
-switch obj.data{histIndex}.orientation
+switch orientation
     case 'v'
         
         %-hist x data-%
