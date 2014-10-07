@@ -42,4 +42,7 @@ xlabel('FREQUENCY(Hz.)');
 
 % PLOTLY
 response = fig2plotly(fig,'name','matlab_basic_fft.m');
+response.data{1}.line.width = 1; 
+response.data{2}.line.width = 1; 
+plotly(response); 
 plotly_url = response.url;
