@@ -165,28 +165,6 @@ yaxis.gridcolor = yaxiscol;
 
 %-------------------------------------------------------------------------%
 
-if strcmp(axis_data.Visible,'on')
-    %-xaxis showline-%
-    xaxis.showline = true;
-    %-xaxis showticklabels-%
-    xaxis.showticklabels = true;
-    %-yaxis showline-%
-    yaxis.showline = true;
-    %-yaxis showticklabels-%
-    yaxis.showticklabels = true;
-else
-    %-xaxis showline-%
-    xaxis.showline = false;
-    %-xaxis showticklabels-%
-    xaxis.showticklabels = false;
-    %-yaxis showline-%
-    yaxis.showline = false;
-    %-yaxis showticklabels-%
-    yaxis.showticklabels = false;
-end
-
-%-------------------------------------------------------------------------%
-
 if strcmp(axis_data.XGrid, 'on') || strcmp(axis_data.XMinorGrid, 'on')
     %-xaxis show grid-%
     xaxis.showgrid = true;
@@ -526,11 +504,37 @@ end
 
 %-------------------------------------------------------------------------%
 
+if strcmp(axis_data.Visible,'on')
+    %-xaxis showline-%
+    xaxis.showline = true;
+    %-xaxis showticklabels-%
+    xaxis.showticklabels = true;
+    %-yaxis showline-%
+    yaxis.showline = true;
+    %-yaxis showticklabels-%
+    yaxis.showticklabels = true;
+else
+    %-xaxis showline-%
+    xaxis.showline = false;
+    %-xaxis showticklabels-%
+    xaxis.showticklabels = false;
+    %-xaxis ticks-%
+    xaxis.ticks = '';
+    %-yaxis showline-%
+    yaxis.showline = false;
+    %-yaxis showticklabels-%
+    yaxis.showticklabels = false;
+    %-yaxis ticks-%
+    yaxis.ticks = '';
+end
+
+%-------------------------------------------------------------------------%
+
 % update the layout field (do not overwrite source)
 if xsource == axIndex
     obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
 else
-  
+    
 end
 
 %-------------------------------------------------------------------------%
