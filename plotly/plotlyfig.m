@@ -47,7 +47,7 @@ classdef plotlyfig < handle
                 error(errkey, plotlymsg(errkey));
             end
             
-            obj.UserData.Verbose = false;
+            obj.UserData.Verbose = true;
             
             %-PlotOptions-%
             obj.PlotOptions.FileName = '';
@@ -61,6 +61,7 @@ classdef plotlyfig < handle
             %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 80;
             obj.PlotlyDefaults.TitleHeight = 0.01;
+            obj.PlotlyDefaults.TitleFontSizeIncrease = 40; 
             obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
             obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5;
             obj.PlotlyDefaults.MarginPad = 0;
@@ -231,7 +232,7 @@ classdef plotlyfig < handle
         function obj = strip(obj)
             
             % set the PlotOptions.Strip property
-            obj.PlotOptions.Strip = false;
+            obj.PlotOptions.Strip = true;
             
             % load plotly reference
             obj.loadplotlyref;
@@ -778,9 +779,11 @@ classdef plotlyfig < handle
                             stripped.(fn{d}) = obj.stripkeys(stripped.(fn{d}), fnmod{d}, key);
                         end
                         
-                        % look for desired key
+                        % look for desired key and strip if not an exception
                     elseif any(strcmp(keytype, key))
-                        stripped = rmfield(stripped, fn{d});
+                        if ~isExceptionStrip(stripped,fn{d})
+                            stripped = rmfield(stripped, fn{d});
+                        end
                     end
                     
                 end
