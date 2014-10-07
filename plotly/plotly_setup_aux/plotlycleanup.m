@@ -54,7 +54,7 @@ for d = 1:length(plotlyDirs)
         if exist(removefolders{f},'dir')
             
             %remove folder from path
-            rmpath(removefolders{f});
+            rmpath(genpath(removefolders{f}));
             
             %delete folder/subfolders
             try
