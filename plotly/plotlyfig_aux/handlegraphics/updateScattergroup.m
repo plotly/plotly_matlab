@@ -140,36 +140,11 @@ for m = 1:length(scatter_child_data)
     end
     
     obj.data{scatterIndex}.showlegend = showleg;
-   
+    
     %---------------------------------------------------------------------%
     
     %-scatter marker-%
     childmarker = extractPatchMarker(scatter_child_data(n));
-    
-    %---------------------------------------------------------------------%
-    
-    %-sizeref-%
-    obj.data{scatterIndex}.marker.sizeref = childmarker.sizeref;
-    
-    %---------------------------------------------------------------------%
-    
-    %-sizemode-%
-    obj.data{scatterIndex}.marker.sizemode = childmarker.sizemode;
-    
-    %---------------------------------------------------------------------%
-    
-    %-size-%
-    obj.data{scatterIndex}.marker.size(m) = childmarker.size;
-    
-    %---------------------------------------------------------------------%
-    
-    %-symbol-%
-    obj.data{scatterIndex}.marker.symbol = childmarker.symbol;
-    
-    %---------------------------------------------------------------------%
-    
-    %-line width-%
-    obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
     
     %---------------------------------------------------------------------%
     
@@ -191,6 +166,39 @@ for m = 1:length(scatter_child_data)
     
     %---------------------------------------------------------------------%
     
+    %-sizeref-%
+    obj.data{scatterIndex}.marker.sizeref = childmarker.sizeref;
+    
+    %---------------------------------------------------------------------%
+    
+    %-sizemode-%
+    obj.data{scatterIndex}.marker.sizemode = childmarker.sizemode;
+    
+    %---------------------------------------------------------------------%
+    
+    %-symbol-%
+    obj.data{scatterIndex}.marker.symbol{m} = childmarker.symbol;
+    
+    %---------------------------------------------------------------------%
+    
+    %-size-%
+    if length(scatter_child_data) > 1
+        obj.data{scatterIndex}.marker.size(m) = childmarker.size;
+    else
+        obj.data{scatterIndex}.marker.size(1:length(childmarker.color)) = childmarker.size;
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-line width-%
+    
+    if length(scatter_child_data) > 1
+        obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
+    else
+        obj.data{scatterIndex}.marker.line.width(1:length(childmarker.line.color)) = childmarker.line.width;
+    end
+    
+    %---------------------------------------------------------------------%
     
 end
 end
