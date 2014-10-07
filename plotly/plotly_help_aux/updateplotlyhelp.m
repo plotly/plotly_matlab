@@ -3,7 +3,7 @@ function updateplotlyhelp
 
 % remote Plotly Graph Reference url
 remote = ['https://raw.githubusercontent.com/plotly/',...
-    'graph_reference/master/graph_objs/matlab/graph_objs_keymeta.json'];
+    'graph_reference/matlab-strip-style-mods/graph_objs/matlab/graph_objs_keymeta.json'];
 
 % download the remote content
 try
@@ -21,16 +21,15 @@ pr = loadjson(prContent);
 %------------------------MATLAB SPECIFIC TWEAKS---------------------------%
 
 %-key_type changes-%
-pr.layout.plot_bgcolor.key_type = 'plot_info'; 
-pr.scatter.mode.key_type = 'plot_info'; 
+pr.histogram.orientation.key_type = 'plot_info'; 
 
 %-------------------------------------------------------------------------%
 
 % save directory
-helpdir = fileparts(which('plotlyhelp')); 
+helpdir = fullfile(fileparts(which('updateplotlyhelp')),'plotly_reference'); 
 
 % pr filename 
-prname = fullfile(helpdir,'aux','graph_reference','plotly_reference'); 
+prname = fullfile(helpdir); 
 
 %----save----%
 save(prname,'pr'); 
