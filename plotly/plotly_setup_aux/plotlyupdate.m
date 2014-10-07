@@ -150,7 +150,7 @@ else
                     fprintf('Done! \n');
                 end
                 
-            catch
+            catch exception
                 fprintf('\n\nAn error occured while unzipping the newest version of Plotly\n\n');
                 %update failed
                 success = false;
@@ -187,7 +187,10 @@ else
                 
                 % remove old plotlyclean scripts
                 pcScripts = which('plotlycleanup.m','-all');
-                delete(pcScripts{:}); 
+                
+                for d = 1:length(pcScripts)
+                    delete(pcScripts{:});
+                end
                 
                 % replace the old Plotly with the new Plotly
                 for d = 1:length(plotlyDirs)
@@ -210,7 +213,7 @@ else
                     fprintf('Done! \n');
                 end
                 
-            catch
+            catch exception 
                 fprintf(['\n\nAn error occured while updating to the newest version \n',...
                     'of Plotly v.' pvRemote '. Please check your write permissions\n',...
                     'for your outdated Plotly directories with your system admin.\n',...
