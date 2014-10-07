@@ -205,17 +205,33 @@ classdef plotlyfig < handle
         end
         
         %----LOAD PLOTLY REFERENCE-----%
-        function obj = loadplotlyref(obj)
+        function obj = loadplotlyref(obj) 
             if isempty(obj.PlotlyReference)
+                
                 % plotly reference
                 plotlyref = load('plotly_reference.mat');
+                
                 % update the PlotlyRef property
                 obj.PlotlyReference = plotlyref.pr;
             end
         end
         
+        %----KEEP THE MATLAB STYLE DEFAULTS----%
+        function obj = revert(obj)
+      
+            % set the PlotOptions.Strip property
+            obj.PlotOptions.Strip = false; 
+            
+            % update the object
+            obj.update;   
+            
+        end
+        
         %----STRIP THE STYLE DEFAULTS----%
         function obj = strip(obj)
+            
+            % set the PlotOptions.Strip property
+            obj.PlotOptions.Strip = false;
             
             % load plotly reference
             obj.loadplotlyref;
@@ -421,7 +437,7 @@ classdef plotlyfig < handle
                 end
                 
                 % update plots
-                plots = [plots ; baselinehan];
+                % plots = [plots ; baselinehan];
                 
                 for np = 1:length(plots)
                     
