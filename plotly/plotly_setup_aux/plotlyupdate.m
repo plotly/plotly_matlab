@@ -189,7 +189,9 @@ else
                 pcScripts = which('plotlycleanup.m','-all');
                 
                 for d = 1:length(pcScripts)
+                    rmpath(filepart(pcScripts{d}));
                     delete(pcScripts{d});
+                    addpath(fileparts(pcScripts{d}));
                 end
                 
                 % replace the old Plotly with the new Plotly
