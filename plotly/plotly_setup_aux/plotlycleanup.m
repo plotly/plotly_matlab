@@ -38,7 +38,7 @@ for d = 1:length(plotlyDirs)
     removeauxfiles = fullfile(fileparts(plotlyDirs{d}),REMOVEAUXFILES);
     
     for f = 1:length(removeauxfiles)
-        if exists(removeauxfiles, 'file')
+        if exists(removeauxfiles{f}, 'file')
             delete(removefiles{f});
         end
     end
