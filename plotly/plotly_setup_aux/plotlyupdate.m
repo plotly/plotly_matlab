@@ -189,7 +189,7 @@ else
                 pcScripts = which('plotlycleanup.m','-all');
                 
                 for d = 1:length(pcScripts)
-                    delete(pcScripts{:});
+                    delete(pcScripts{d});
                 end
                 
                 % replace the old Plotly with the new Plotly
