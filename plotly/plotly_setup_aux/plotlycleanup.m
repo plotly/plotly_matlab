@@ -20,8 +20,7 @@ try
             ['\n\nWe were unable to locate plotly.m. Please Add this\n',...
             'script to your MATLAB search path and try again.\n\n']);
     end
-    
-    
+     
 catch exception %locating plotly error catch...
     fprintf(['\n\n' exception.identifier exception.message '\n\n']);
     return
@@ -32,16 +31,24 @@ plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
 
 for d = 1:length(plotlyDirs)
     
-    % add plotlydirs to searchpath (will be removed in future)
+    % add plotlydirs to searchpath (will be removed in future once handled by plotlyupdate)
     addpath(genpath(plotlyDirs{d})); 
     
     % delete files from plotly directory
     removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);
     
     for f = 1:length(removefiles)
+        
+        % remove removefiles filepath from searchpath
+        rmpath(fileparts(removefiles{f}));
+        
         if exist(removefiles{f},'file')
             delete(removefiles{f});
         end
+        
+        % add removefiles filepath back to searchpath
+        addpath(fileparts(removefiles{f}));
+        
     end
     
     % update removed list
