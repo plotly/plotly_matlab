@@ -5,10 +5,13 @@ function removed = plotlycleanup
 % initialize output
 removed = {};
 
-%----REMOVE FILES----%
+%----REMOVE AUX FILES----%
+REMOVEAUXFILES = {'testclean.m'}; 
+
+%----REMOVE WRAPPER FILES----%
 REMOVEFILES = {'plotly.m', 'testclean.m'};
 
-%----REMOVE FOLDERS----%
+%----REMOVE WRAPPER FOLDERS----%
 REMOVEFOLDERS = {'fig2plotly_aux'};
 
 %----check for local Plotly instances----%
@@ -30,6 +33,15 @@ end
 plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
 
 for d = 1:length(plotlyDirs)
+    
+    % delete auxiliary files
+    removeauxfiles = fullfile(fileparts(plotlyDirs{d},REMOVEAUXFILES));
+    
+    for f = 1:length(removeauxfiles)
+        if exists(removeauxfiles, 'file')
+            delete(removefiles{f});
+        end
+    end
     
     % add plotlydirs to searchpath (will be removed in future once handled by plotlyupdate)
     addpath(genpath(plotlyDirs{d})); 
