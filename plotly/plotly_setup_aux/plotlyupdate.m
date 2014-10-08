@@ -34,7 +34,7 @@ end
 
 % remote Plotly API MATLAB Library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
-          'plotlyclass/README.md'];
+          'plotly_update_dir_test/README.md'];
 
 % remote Plotly API MATLAB Library
 try
@@ -120,7 +120,7 @@ else
                     fprintf(['Downloading the Plotly API Matlab Library v.' pvRemote ' ... ']);
                 end
                 
-                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/plotlyclass.zip';
+                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/plotly_update_dir_test.zip';
                 newPlotlyZip = fullfile(plotlyUpdateDir,['plotlyupdate_' pvRemote '.zip']);
                 
                 %download from url
@@ -165,10 +165,10 @@ else
                 end
                 
                 % new Plotly directory
-                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass','plotly');
+                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-plotly_update_dir_test','plotly');
                 
                 % files in Plotly repo root
-                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass'));
+                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-plotly_update_dir_test'));
                 
                 % files not to be included
                 repoExclude = {'.','..','.gitignore','plotly'};
@@ -177,7 +177,7 @@ else
                 d = 1;
                 for r = 1:length(repoRoot);
                     if(isempty(intersect(repoRoot(r).name,repoExclude)))
-                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyclass',repoRoot(r).name);
+                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-plotly_update_dir_test',repoRoot(r).name);
                         d = d+1;
                     end
                 end
@@ -205,8 +205,8 @@ else
                     end
                     % copy actual Plotly API Matlab Library
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
-                    % add new plotlyclean script to path
-                    addpath(genpath(plotlyDirs{d}));
+                    % add new scripts to path
+                    addpath(genpath(plotlyDirs{d})); % <----THIS LINE
                 end
                 
                 if verbose
@@ -243,7 +243,7 @@ else
                         end
                     end
                 end
-            catch
+            catch exception
                 fprintf(['\n\nAn error occured while cleaning up the outdated Plotly scripts. Please\n',...
                     'check your write permissions for your outdated Plotly directories with \n',...
                     'your system admin. Contact chuck@plot.ly for more information.\n\n']);
