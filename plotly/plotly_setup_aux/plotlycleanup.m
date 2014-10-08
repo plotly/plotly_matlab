@@ -39,7 +39,7 @@ for d = 1:length(plotlyDirs)
     
     for f = 1:length(removeauxfiles)
         if exist(removeauxfiles{f}, 'file')
-            delete(removefiles{f});
+            delete(removeauxfiles{f});
         end
     end
     
