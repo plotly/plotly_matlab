@@ -6,7 +6,7 @@ function removed = plotlycleanup
 removed = {};
 
 %----REMOVE FILES----%
-REMOVEFILES = {'plotly.m'};
+REMOVEFILES = {'plotly.m', 'testclean.m'};
 
 %----REMOVE FOLDERS----%
 REMOVEFOLDERS = {'fig2plotly_aux'};
