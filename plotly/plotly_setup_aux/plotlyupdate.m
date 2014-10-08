@@ -189,26 +189,40 @@ else
                 pcScripts = which('plotlycleanup.m','-all');
                 
                 for d = 1:length(pcScripts)
+                    
+                    % remove plotlycleanup path from searchpath 
                     rmpath(fileparts(pcScripts{d}));
+                    
+                    % delete plotlycleanup
                     delete(pcScripts{d});
+                    
+                    % add plotlycleanup path to searhpath
                     addpath(fileparts(pcScripts{d}));
+                    
                 end
                 
                 % replace the old Plotly with the new Plotly
                 for d = 1:length(plotlyDirs)
+                    
                     % do not copy aux Plotly repo root files to toolbox dir. Plotly
                     if ~strcmp(plotlyDirs{d},plotlyToolboxDir)
+                        
                         % aux files destination
                         auxFileDest = fileparts(plotlyDirs{d});
+                        
                         % copy aux to appropriate destination
                         for r = 1:length(auxFiles)
                             copyfile(auxFiles{r},auxFileDest,'f');
                         end
+                        
                     end
+                    
                     % copy actual Plotly API Matlab Library
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
+                    
                     % add new scripts to path
-                    addpath(genpath(plotlyDirs{d})); % <----THIS LINE
+                    addpath(genpath(plotlyDirs{d}));
+                    
                 end
                 
                 if verbose
