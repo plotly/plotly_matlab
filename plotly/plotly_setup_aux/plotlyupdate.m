@@ -189,7 +189,7 @@ else
                 pcScripts = which('plotlycleanup.m','-all');
                 
                 for d = 1:length(pcScripts)
-                    rmpath(filepart(pcScripts{d}));
+                    rmpath(fileparts(pcScripts{d}));
                     delete(pcScripts{d});
                     addpath(fileparts(pcScripts{d}));
                 end
