@@ -51,11 +51,10 @@ for d = 1:length(plotlyDirs)
     for f = 1:length(removeauxfiles)
         if exist(removeauxfiles{f}, 'file')
             delete(removeauxfiles{f});
+            % update removed list
+            removed = [removed {removeauxfiles{f}}]; 
         end
     end
-    
-    % update removed list
-    removed = [removed removeauxfiles];
     
     % delete files from plotly directory
     removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);
@@ -67,16 +66,15 @@ for d = 1:length(plotlyDirs)
         
         if exist(removefiles{f},'file')
             delete(removefiles{f});
+            % update removed list
+            removed = [removed removefiles{f}];
         end
         
         % add removefiles filepath back to searchpath
         addpath(fileparts(removefiles{f}));
         
     end
-    
-    % update removed list
-    removed = [removed removefiles];
-    
+
     % remove folders from plotly directory
     removefolders = fullfile(plotlyDirs{d},REMOVEFOLDERS);
     
@@ -89,7 +87,7 @@ for d = 1:length(plotlyDirs)
             %delete folder/subfolders
             try
                 status = rmdir(removefolders{f},'s');
-                
+
                 if (status == 0)
                     error('plotly:deletePlotlyAPI',...
                         ['\n\nShoot! It looks like something went wrong removing the Plotly API ' ...
@@ -99,7 +97,7 @@ for d = 1:length(plotlyDirs)
                 
                 % update removed list
                 removed = [removed removefolders];
-                
+ 
             end
         end
     end   
