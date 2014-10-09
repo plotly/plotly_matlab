@@ -30,7 +30,7 @@ Convert your MATLAB figures into online [Plotly](https://plot.ly) graphs with a 
 
 ```
 
-[![MATLAB Contour Plot](https://plot.ly/~matlab_user_guide/1522.svg)](https://plot.ly/~matlab_user_guide/949)
+[![MATLAB Contour Plot](https://plot.ly/~matlab_user_guide/1522.svg)](https://plot.ly/~matlab_user_guide/1522)
 
 Also, access other Plotly services and graphs programatically. Like, publication-quality image export:
 
