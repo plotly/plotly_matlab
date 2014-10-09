@@ -207,6 +207,8 @@ else
                     % add plotlycleanup path to searhpath
                     addpath(fileparts(pcScripts{d}));
                     
+                    %rehash toolbox
+                    rehash toolboxreset
                 end
                 
                 % replace the old Plotly with the new Plotly
