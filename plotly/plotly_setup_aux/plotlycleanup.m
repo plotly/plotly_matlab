@@ -30,7 +30,15 @@ catch exception %locating plotly error catch...
 end
 
 % find the location of all plotly/ directories
-plotlyDirs = findPlotlyDirs(plotlyScriptDirs);
+plotlyDirs = cell(1,plotlyScriptDirs);
+
+for d = 1:length(plotlyScriptDirs)
+    %parse filepath string at the Plotly directory
+    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),'plotly');
+    if ~isempty(plotlyLoc)
+        plotlyDirs{d} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'plotly');
+    end
+end
 
 for d = 1:length(plotlyDirs)
     
