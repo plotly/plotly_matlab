@@ -68,7 +68,7 @@ catch exception
 end
 
 % find the location of all plotly/ directories
-plotlyDirs = cell(1,plotlyScriptDirs);
+plotlyDirs = cell(1,length(plotlyScriptDirs));
 
 for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
