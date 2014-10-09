@@ -1,6 +1,6 @@
 %-----AUTOMATIC PLOTLY MATLAB API UPDATING-----%
 
-function exception = plotlyupdate(varargin)
+function plotlyupdate(varargin)
 
 % plotlyupdate.m automatically updates the Plotly
 % API MATLAB library if the current version is not
@@ -331,13 +331,13 @@ else
         if(strcmpi(overwrite,'y'))
             if verbose
                 if nargout
-                    exception = plotlyupdate('verbose','nocheck');
+                    plotlyupdate('verbose','nocheck');
                 else
                     plotlyupdate('verbose','nocheck');
                 end
             else
                 if nargout
-                    exception = plotlyupdate('nocheck');
+                    plotlyupdate('nocheck');
                 else
                     plotlyupdate('nocheck');
                 end
