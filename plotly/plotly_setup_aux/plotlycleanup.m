@@ -6,7 +6,7 @@ function removed = plotlycleanup
 removed = {};
 
 %----REMOVE AUX FILES----%
-REMOVEAUXFILES = {'testclean.m'}; 
+REMOVEAUXFILES = {''}; 
 
 %----REMOVE WRAPPER FILES----%
 REMOVEFILES = {'plotly.m'};
