@@ -42,6 +42,9 @@ end
 
 for d = 1:length(plotlyDirs)
     
+    % add plotlydirs to searchpath (will be removed in future once handled by plotlyupdate)
+    addpath(genpath(plotlyDirs{d}));
+    
     % delete auxiliary files
     removeauxfiles = fullfile(fileparts(plotlyDirs{d}),REMOVEAUXFILES);
     
@@ -53,9 +56,6 @@ for d = 1:length(plotlyDirs)
     
     % update removed list
     removed = [removed removeauxfiles];
-    
-    % add plotlydirs to searchpath (will be removed in future once handled by plotlyupdate)
-    addpath(genpath(plotlyDirs{d})); 
     
     % delete files from plotly directory
     removefiles = fullfile(plotlyDirs{d}, REMOVEFILES);

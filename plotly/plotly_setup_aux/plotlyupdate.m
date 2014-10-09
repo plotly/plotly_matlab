@@ -201,7 +201,7 @@ else
                     % remove plotlycleanup path from searchpath 
                     rmpath(fileparts(pcScripts{d}));
                     
-                    % delete plotlycleanup
+                    % delete plotlycleanup!
                     delete(pcScripts{d});
                     
                     % add plotlycleanup path to searhpath
@@ -228,7 +228,7 @@ else
                     % copy actual Plotly API Matlab Library
                     copyfile(newPlotlyDir,plotlyDirs{d},'f');
                     
-                    % add new scripts to path
+                    % add new scripts to path!
                     addpath(genpath(plotlyDirs{d}));
                     
                 end
