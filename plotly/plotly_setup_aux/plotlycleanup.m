@@ -96,7 +96,7 @@ for d = 1:length(plotlyDirs)
                 end
                 
                 % update removed list
-                removed = [removed removefolders];
+                removed = [removed removefolders{f}];
  
             end
         end
