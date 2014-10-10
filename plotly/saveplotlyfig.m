@@ -43,12 +43,16 @@ function p = saveplotlyfig(figure_or_data, filename, varargin)
 if iscell(figure_or_data)
     p = plotlyfig('Visible','off');
     p.data = figure_or_data;
+    p.layout = struct(); 
+    p.PlotOptions.Strip = false; 
 elseif isstruct(figure_or_data);
     p = plotlyfig('Visible','off');
     p.data = figure_or_data.data;
     p.layout = figure_or_data.layout;
+    p.PlotOptions.Strip = false; 
 elseif isa(figure_or_data, 'plotlyfig')
     p = figure_or_data;
+    p.PlotOptions.Strip = false;
 elseif ishandle(figure_or_data)
     if strcmp(handle(figure_or_data).classhandle.name,'figure')
         p = plotlyfig(figure_or_data, 'strip', false);
