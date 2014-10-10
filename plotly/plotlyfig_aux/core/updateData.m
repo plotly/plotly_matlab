@@ -3,55 +3,63 @@
 function obj = updateData(obj, dataIndex)
 
 %-update plot based on plot call class-%
-switch obj.State.Plot(dataIndex).Class
+try
+    switch obj.State.Plot(dataIndex).Class
+        
+        %--CORE PLOT OBJECTS--%
+        case 'image'
+            updateImage(obj, dataIndex);
+        case 'line'
+            updateLineseries(obj, dataIndex);
+        case 'patch'
+            % check for histogram
+            if isHistogram(obj,dataIndex)
+                updateHistogram(obj,dataIndex);
+            else
+                updatePatch(obj, dataIndex);
+            end
+        case 'rectangle'
+            updateRectangle(obj,dataIndex);
+        case 'surface'
+            updateSurfaceplot(obj,dataIndex);
+            
+            %-GROUP PLOT OBJECTS-%
+        case 'areaseries';
+            updateAreaseries(obj, dataIndex);
+        case 'barseries'
+            updateBarseries(obj, dataIndex);
+        case 'baseline'
+            updateBaseline(obj, dataIndex);
+        case 'contourgroup'
+            updateContourgroup(obj,dataIndex);
+        case 'errorbarseries'
+            updateErrorbarseries(obj,dataIndex);
+        case 'lineseries'
+            updateLineseries(obj, dataIndex);
+        case 'quivergroup'
+            updateQuivergroup(obj, dataIndex);
+        case 'scattergroup'
+            updateScattergroup(obj, dataIndex);
+        case 'stairseries'
+            updateStairseries(obj, dataIndex);
+        case 'stemseries'
+            updateStemseries(obj, dataIndex);
+        case 'surfaceplot'
+            updateSurfaceplot(obj,dataIndex);
+            
+            %--Plotly supported MATLAB group plot objects--%
+        case 'hggroup'
+            % check for boxplot
+            if isBoxplot(obj, dataIndex)
+                updateBoxplot(obj, dataIndex);
+            end
+    end
     
-    %--CORE PLOT OBJECTS--%
-    case 'image'
-        updateImage(obj, dataIndex);
-    case 'line'
-        updateLineseries(obj, dataIndex);
-    case 'patch'
-        % check for histogram
-        if isHistogram(obj,dataIndex)
-            updateHistogram(obj,dataIndex);
-        else
-            updatePatch(obj, dataIndex);
-        end
-    case 'rectangle'
-        updateRectangle(obj,dataIndex);
-    case 'surface'
-        updateSurfaceplot(obj,dataIndex);
-        
-        %-GROUP PLOT OBJECTS-%
-    case 'areaseries';
-        updateAreaseries(obj, dataIndex);
-    case 'barseries'
-        updateBarseries(obj, dataIndex);
-    case 'baseline'
-        updateBaseline(obj, dataIndex);
-    case 'contourgroup'
-        updateContourgroup(obj,dataIndex);
-    case 'errorbarseries'
-        updateErrorbarseries(obj,dataIndex);
-    case 'lineseries'
-        updateLineseries(obj, dataIndex);
-    case 'quivergroup'
-        updateQuivergroup(obj, dataIndex);
-    case 'scattergroup'
-        updateScattergroup(obj, dataIndex);
-    case 'stairseries'
-        updateStairseries(obj, dataIndex);
-    case 'stemseries'
-        updateStemseries(obj, dataIndex);
-    case 'surfaceplot'
-        updateSurfaceplot(obj,dataIndex);
-        
-        %--Plotly supported MATLAB group plot objects--%
-    case 'hggroup'
-        % check for boxplot
-        if isBoxplot(obj, dataIndex)
-            updateBoxplot(obj, dataIndex);
-        end
+catch
+    if obj.UserData.Verbose
+        fprintf(['\nWe had trouble parsing the ' obj.State.Plot(dataIndex).Class ' object.\n',...
+                 'This trace will not be rendered.\n\n']);
+    end
 end
 
 %------------------------AXIS/DATA CLEAN UP-------------------------------%
