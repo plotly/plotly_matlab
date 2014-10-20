@@ -135,7 +135,7 @@ for bp = bpnum:-1:1
     end
     
     obj.data{boxIndex}.showlegend = showleg;
-
+    
     %-boxplot components-%
     Q1 = [];
     Q3 = [];
@@ -172,10 +172,8 @@ for bp = bpnum:-1:1
                 
                 uwhisker = box_child_data.YData(2);
                 
-                if ~obj.PlotOptions.Strip
-                    %-boxplot whisker width-%
-                    obj.data{boxIndex}.whiskerwidth = 1;
-                end
+                %-boxplot whisker width-%
+                obj.data{boxIndex}.whiskerwidth = 1;
                 
                 %-lower whisker-%
             case 'Lower Whisker'
