@@ -119,29 +119,23 @@ for bp = bpnum:-1:1
     %---------------------------------------------------------------------%
     
     %-box fillcolor-%
-    if ~obj.PlotOptions.Strip
-        obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
-    end
+    obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
     
     %---------------------------------------------------------------------%
     
-    if ~obj.PlotOptions.Strip
-        
-        %-box showlegend-%
-        leg = get(box_data.Annotation);
-        legInfo = get(leg.LegendInformation);
-        
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
-        end
-        
-        obj.data{boxIndex}.showlegend = showleg;
-        
+    %-box showlegend-%
+    leg = get(box_data.Annotation);
+    legInfo = get(leg.LegendInformation);
+    
+    switch legInfo.IconDisplayStyle
+        case 'on'
+            showleg = true;
+        case 'off'
+            showleg = false;
     end
     
+    obj.data{boxIndex}.showlegend = showleg;
+
     %-boxplot components-%
     Q1 = [];
     Q3 = [];
@@ -214,7 +208,7 @@ for bp = bpnum:-1:1
                     outliers = box_child_data.YData;
                     
                     %-outlier marker style-%
-                    obj.data{boxIndex}.marker = extractLineMarker(box_child_data);  
+                    obj.data{boxIndex}.marker = extractLineMarker(box_child_data);
                 end
                 
                 %-compact whiskers-%
