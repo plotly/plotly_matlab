@@ -54,7 +54,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.FileOpt = 'new';
             obj.PlotOptions.WorldReadable = true;
             obj.PlotOptions.ShowURL = true;
-            obj.PlotOptions.OpenURL = true;
+            obj.PlotOptions.OpenURL = false;
             obj.PlotOptions.Strip = true;
             obj.PlotOptions.Visible = 'on';
             
