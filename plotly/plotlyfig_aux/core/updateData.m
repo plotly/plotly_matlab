@@ -4,7 +4,7 @@ function obj = updateData(obj, dataIndex)
 
 %-update plot based on plot call class-%
 try
-    switch obj.State.Plot(dataIndex).Class
+    switch lower(obj.State.Plot(dataIndex).Class)
         
         %--CORE PLOT OBJECTS--%
         case 'image'
@@ -24,31 +24,31 @@ try
             updateSurfaceplot(obj,dataIndex);
             
             %-GROUP PLOT OBJECTS-%
-        case 'areaseries';
+        case {'areaseries','area'};
             updateAreaseries(obj, dataIndex);
-        case 'barseries'
+        case {'barseries','bar'}
             updateBarseries(obj, dataIndex);
         case 'baseline'
             updateBaseline(obj, dataIndex);
-        case 'contourgroup'
+        case {'contourgroup','contour'}
             updateContourgroup(obj,dataIndex);
-        case 'errorbarseries'
+        case {'errorbarseries','errorbar'}
             updateErrorbarseries(obj,dataIndex);
         case 'lineseries'
             updateLineseries(obj, dataIndex);
-        case 'quivergroup'
+        case {'quivergroup','quiver'}
             updateQuivergroup(obj, dataIndex);
-        case 'scattergroup'
+        case {'scattergroup','scatter'}
             updateScattergroup(obj, dataIndex);
-        case 'stairseries'
+        case {'stairseries','stair'}
             updateStairseries(obj, dataIndex);
-        case 'stemseries'
+        case {'stemseries','stem'}
             updateStemseries(obj, dataIndex);
         case 'surfaceplot'
             updateSurfaceplot(obj,dataIndex);
             
             %--Plotly supported MATLAB group plot objects--%
-        case 'hggroup'
+        case {'hggroup','group'}
             % check for boxplot
             if isBoxplot(obj, dataIndex)
                 updateBoxplot(obj, dataIndex);

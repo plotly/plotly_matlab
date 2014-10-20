@@ -107,7 +107,7 @@ classdef plotlyfig < handle
                 case 1
                     % check for figure handle
                     if ishandle(varargin{1})
-                        if strcmp(handle(varargin{1}).classhandle.name,'figure')
+                        if strcmp(varargin{1}.Type,'figure')
                             fig_han = varargin{1};
                             updatekey = true;
                         end
@@ -120,7 +120,7 @@ classdef plotlyfig < handle
                     
                     % check for figure handle
                     if ishandle(varargin{1})
-                        if strcmp(handle(varargin{1}).classhandle.name,'figure')
+                        if strcmp(varargin{1}.Type,'figure')
                             fig_han = varargin{1};
                             updatekey = true;
                             parseinit = 2;
@@ -449,7 +449,7 @@ classdef plotlyfig < handle
                     obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
                     obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
                     obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
-                    obj.State.Plot(obj.State.Figure.NumPlots).Class = handle(plots(nprev)).classhandle.name;
+                    obj.State.Plot(obj.State.Figure.NumPlots).Class = getGraphClass(plots(nprev));
                 end
                 
                 % find text of figure
