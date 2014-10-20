@@ -721,6 +721,19 @@ classdef plotlyfig < handle
             obj.plotly;
         end
         
+        function [y,t,x] = initial(obj,varargin)
+            % plot initial
+            initial(varargin{:});
+            % call initial
+            [y,t,x] = initial(varargin{:});
+            % fake output by calling plot
+            plot(t,y); 
+            %update object
+            obj.update;
+            %send to plotly
+            obj.plotly;
+        end
+        
         %----OTHER----%
         function delete(obj)
             % reset persistent USERNAME, KEY, and DOMAIN
