@@ -197,14 +197,14 @@ for bp = bpnum:-1:1
                 Q3 = max(box_child_data.YData);
                 
                 %-boxplot line style-%
-                if ~obj.PlotOptions.Strip
-                    if isCompact
-                        col = 255*box_child_data.Color;
-                        obj.data{boxIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                    else
-                        obj.data{boxIndex}.line = extractLineLine(box_child_data);
-                    end
+                
+                if isCompact
+                    col = 255*box_child_data.Color;
+                    obj.data{boxIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                else
+                    obj.data{boxIndex}.line = extractLineLine(box_child_data);
                 end
+                
                 
                 %-outliers-%
             case 'Outliers'
@@ -212,22 +212,19 @@ for bp = bpnum:-1:1
                 if ~isnan(box_child_data.YData)
                     %-outlier marker data-%
                     outliers = box_child_data.YData;
-                    if ~obj.PlotOptions.Strip
-                        %-outlier marker style-%
-                        obj.data{boxIndex}.marker = extractLineMarker(box_child_data);
-                    end
+                    
+                    %-outlier marker style-%
+                    obj.data{boxIndex}.marker = extractLineMarker(box_child_data);  
                 end
                 
                 %-compact whiskers-%
             case 'Whisker'
                 
-                if ~obj.PlotOptions.Strip
-                    %-boxplot line style-%
-                    obj.data{boxIndex}.line = extractLineLine(box_child_data);
-                    
-                    %-boxplot whisker width-%
-                    obj.data{boxIndex}.whiskerwidth = 0;
-                end
+                %-boxplot line style-%
+                obj.data{boxIndex}.line = extractLineLine(box_child_data);
+                
+                %-boxplot whisker width-%
+                obj.data{boxIndex}.whiskerwidth = 0;
                 
                 %-whisker data-%
                 uwhisker = box_child_data.YData(2);
