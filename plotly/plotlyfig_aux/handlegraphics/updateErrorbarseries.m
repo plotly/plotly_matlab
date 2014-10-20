@@ -53,23 +53,22 @@ obj.data{errorbarIndex}.error_y.array = errorbar_data.UData;
 %-errorbar valueminus-%
 obj.data{errorbarIndex}.error_y.arrayminus = errorbar_data.LData;
 
-%-----------------------------!STYLE!-------------------------------------%
+%-------------------------------------------------------------------------%
 
-if ~obj.PlotOptions.Strip
-    %-errorbar thickness-%
-    obj.data{errorbarIndex}.error_y.thickness = errorbar_line_child_data.LineWidth;
-    
-    %-------------------------------------------------------------------------%
-    
-    %-errorbar width-%
-    obj.data{errorbarIndex}.error_y.width = obj.PlotlyDefaults.ErrorbarWidth;
-    
-    %-------------------------------------------------------------------------%
-    
-    %-errorbar color-%
-    col = 255*errorbar_line_child_data.Color;
-    obj.data{errorbarIndex}.error_y.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
-    %-------------------------------------------------------------------------%
-end
+%-errorbar thickness-%
+obj.data{errorbarIndex}.error_y.thickness = errorbar_line_child_data.LineWidth;
+
+%-------------------------------------------------------------------------%
+
+%-errorbar width-%
+obj.data{errorbarIndex}.error_y.width = obj.PlotlyDefaults.ErrorbarWidth;
+
+%-------------------------------------------------------------------------%
+
+%-errorbar color-%
+col = 255*errorbar_line_child_data.Color;
+obj.data{errorbarIndex}.error_y.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+
+%-------------------------------------------------------------------------%
+
 end

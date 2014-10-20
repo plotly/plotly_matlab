@@ -105,10 +105,8 @@ obj.data{areaIndex}.name = area_child_data.DisplayName;
 %-area fill-%
 obj.data{areaIndex}.fill = 'tonexty';
 
-%-----------------------------!STYLE!-------------------------------------%
-
-if ~obj.PlotOptions.Strip
-    
+%-------------------------------------------------------------------------%
+ 
 %-area line-%
 obj.data{areaIndex}.line = extractPatchLine(area_child_data); 
 
@@ -155,7 +153,6 @@ obj.data{areaIndex}.fillcolor = fill.color;
 
 %-------------------------------------------------------------------------%
 
-end
 end
 
 
