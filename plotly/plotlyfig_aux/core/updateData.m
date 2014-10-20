@@ -24,7 +24,9 @@ try
             updateSurfaceplot(obj,dataIndex);
             
             %-GROUP PLOT OBJECTS-%
-        case {'areaseries','area'};
+        case 'area'
+            updateArea(obj, dataIndex); 
+        case 'areaseries'
             updateAreaseries(obj, dataIndex);
         case {'barseries','bar'}
             updateBarseries(obj, dataIndex);
