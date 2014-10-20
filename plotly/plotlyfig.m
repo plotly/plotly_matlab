@@ -107,7 +107,7 @@ classdef plotlyfig < handle
                 case 1
                     % check for figure handle
                     if ishandle(varargin{1})
-                        if strcmp(varargin{1}.Type,'figure')
+                        if strcmp(get(varargin{1},'type'),'figure')
                             fig_han = varargin{1};
                             updatekey = true;
                         end
@@ -120,7 +120,7 @@ classdef plotlyfig < handle
                     
                     % check for figure handle
                     if ishandle(varargin{1})
-                        if strcmp(varargin{1}.Type,'figure')
+                        if strcmp(get(varargin{1},'type'),'figure')
                             fig_han = varargin{1};
                             updatekey = true;
                             parseinit = 2;
@@ -430,16 +430,6 @@ classdef plotlyfig < handle
                 % add baseline objects
                 baselines = findobj(ax(axrev),'-property','BaseLine');
                 
-                % get baseline handles
-                baselinehan = get(baselines,'BaseLine');
-                
-                if iscell(baselinehan)
-                    baselinehan = cell2mat(baselinehan);
-                end
-                
-                % update plots
-                % plots = [plots ; baselinehan];
-                
                 for np = 1:length(plots)
                     
                     % reverse plots
@@ -629,6 +619,19 @@ classdef plotlyfig < handle
             han = area(varargin{:});
             %update object
             obj.update;
+            %check for HG2
+            if isHG2
+                %grab the Y data matrix
+                if length(varargin) >= 2
+                    for h = 1:length(han)
+                        if h > 1
+                    obj.data{obj.getDataIndex(han(h))}.y = ...
+                    obj.data{obj.getDataIndex(han(h-1))}.y + ...
+                    obj.data{obj.getDataIndex(han(h))}.y; 
+                        end
+                    end
+                end
+            end
             %send to plotly
             obj.plotly;
         end
