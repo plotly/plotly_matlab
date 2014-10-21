@@ -74,7 +74,7 @@ marker.line.width = patch_data.LineWidth;
 
 %-------------------------------------------------------------------------%
 
-%--MARKER FILL COLOR (STYLE)--%
+%--MARKER FILL COLOR--%
 
 %-figure colormap-%
 colormap = figure_data.Colormap;
@@ -90,32 +90,32 @@ filledMarker = ismember(patch_data.Marker,filledMarkerSet);
 % initialize markercolor output
 markercolor = cell(1,length(patch_data.FaceVertexCData));
 
-for n = 1:length(patch_data.FaceVertexCData)
+if filledMarker
     
-    if filledMarker
-        
-        if isnumeric(MarkerColor)
-            col = 255*MarkerColor;
-            markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        else
-            switch MarkerColor
+    if isnumeric(MarkerColor)
+        col = 255*MarkerColor;
+        markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    else
+        switch MarkerColor
+            
+            case 'none'
                 
-                case 'none'
-                    
-                    markercolor{n} = 'rgba(0,0,0,0)';
-                    
-                case 'auto'
-                    
-                    if ~strcmp(axis_data.Color,'none')
-                        col = 255*axis_data.Color;
-                    else
-                        col = 255*figure_data.Color;
-                    end
-                    
-                    markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                    
-                    
-                case 'flat'
+                markercolor = 'rgba(0,0,0,0)';
+                
+            case 'auto'
+                
+                if ~strcmp(axis_data.Color,'none')
+                    col = 255*axis_data.Color;
+                else
+                    col = 255*figure_data.Color;
+                end
+                
+                markercolor  = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                
+                
+            case 'flat'
+                
+                for n = 1:length(patch_data.FaceVertexCData)
                     
                     switch patch_data.CDataMapping
                         
@@ -129,18 +129,18 @@ for n = 1:length(patch_data.FaceVertexCData)
                     
                     markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                     
-            end
+                end
         end
-        
-        marker.color = markercolor;
-        
     end
+    
+    marker.color = markercolor;
+    
 end
 
 
 %-------------------------------------------------------------------------%
 
-%-MARKER LINE COLOR (STYLE)-%
+%-MARKER LINE COLOR-%
 
 % marker edge color
 MarkerLineColor = patch_data.MarkerEdgeColor;
@@ -150,34 +150,34 @@ filledMarker = ismember(patch_data.Marker,filledMarkerSet);
 % initialize marker line color
 markerlinecolor = cell(1,length(patch_data.FaceVertexCData));
 
-for n = 1:length(patch_data.FaceVertexCData)
-    
-    if isnumeric(MarkerLineColor)
-        col = 255*MarkerLineColor;
-        markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    else
-        switch MarkerLineColor
+if isnumeric(MarkerLineColor)
+    col = 255*MarkerLineColor;
+    markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+else
+    switch MarkerLineColor
+        
+        case 'none'
             
-            case 'none'
+            markerlinecolor = 'rgba(0,0,0,0)';
+            
+        case 'auto'
+            
+            EdgeColor = patch_data.EdgeColor;
+            
+            if isnumeric(EdgeColor)
+                col = 255*EdgeColor;
+                markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+            else
                 
-                markerlinecolor{n} = 'rgba(0,0,0,0)';
-                
-            case 'auto'
-                
-                EdgeColor = patch_data.EdgeColor;
-                
-                if isnumeric(EdgeColor)
-                    col = 255*EdgeColor;
-                    markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                else
+                switch EdgeColor
                     
-                    switch EdgeColor
+                    case 'none'
                         
-                        case 'none'
-                            
-                            markerlinecolor{n} = 'rgba(0,0,0,0)';
-                            
-                        case {'flat', 'interp'}
+                        markerlinecolor = 'rgba(0,0,0,0)';
+                        
+                    case {'flat', 'interp'}
+                        
+                        for n = 1:length(patch_data.FaceVertexCData)
                             
                             switch patch_data.CDataMapping
                                 
@@ -193,10 +193,14 @@ for n = 1:length(patch_data.FaceVertexCData)
                             
                             markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                             
-                    end
+                        end
+                        
                 end
-                
-            case 'flat'
+            end
+            
+        case 'flat'
+            
+            for n = 1:length(patch_data.FaceVertexCData)
                 
                 switch patch_data.CDataMapping
                     
@@ -211,14 +215,14 @@ for n = 1:length(patch_data.FaceVertexCData)
                 
                 markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                 
-        end
+            end
     end
-    
-    if filledMarker
-        marker.line.color = markerlinecolor;
-    else
-        marker.color = markerlinecolor;
-    end   
+end
+
+if filledMarker
+    marker.line.color = markerlinecolor;
+else
+    marker.color = markerlinecolor;
 end
 
 %-------------------------------------------------------------------------%
