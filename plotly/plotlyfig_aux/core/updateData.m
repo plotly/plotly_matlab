@@ -28,7 +28,9 @@ try
             updateArea(obj, dataIndex); 
         case 'areaseries'
             updateAreaseries(obj, dataIndex);
-        case {'barseries','bar'}
+        case 'bar'
+            updateBar(obj, dataIndex); 
+        case 'barseries'
             updateBarseries(obj, dataIndex);
         case 'baseline'
             updateBaseline(obj, dataIndex);
