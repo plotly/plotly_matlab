@@ -22,5 +22,5 @@ xlabel('omega');
 ylabel('|G|[omega]');
 
 % PLOTLY 
-response = fig2plotly(fig, 'name', 'matlab_log_log_line');
+response = fig2plotly(fig, 'filename', 'matlab_log_log_line');
 plotly_url = response.url;

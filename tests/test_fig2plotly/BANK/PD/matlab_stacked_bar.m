@@ -14,5 +14,5 @@ ylabel('Cases (in thousands)');
 legend('Measles', 'Mumps', 'Chicken pox');
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_stacked_bar');
+response = fig2plotly(fig,'filename','matlab_stacked_bar');
 plotly_url = response.url;

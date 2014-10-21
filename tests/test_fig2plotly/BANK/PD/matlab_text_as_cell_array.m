@@ -7,5 +7,5 @@ text(2, 20, txt);
 title(txt);
 
 % PLOTLY
-response = fig2plotly(fig,'name','matlab_text_as_cell_array');
+response = fig2plotly(fig,'filename','matlab_text_as_cell_array');
 plotly_url = response.url;

@@ -15,5 +15,5 @@ gplot(H, V, 'r-');
 axis off equal;
 
 % PLOTLY 
-response = fig2plotly(fig, 'name', 'matlab_graph_plot');
+response = fig2plotly(fig, 'filename', 'matlab_graph_plot');
 plotly_url = response.url;

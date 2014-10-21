@@ -7,5 +7,5 @@ y = [1, 5, 3;
 fig = figure; 
 area(y)
 
-response = fig2plotly(fig,'name','matlab_basic_area');
+response = fig2plotly(fig,'filename','matlab_basic_area');
 plotly_url = response.url;

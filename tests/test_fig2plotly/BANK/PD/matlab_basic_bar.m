@@ -7,5 +7,5 @@ fig = figure;
 bar(x,y);
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_basic_bar');
+response = fig2plotly(fig,'filename','matlab_basic_bar');
 plotly_url = response.url;

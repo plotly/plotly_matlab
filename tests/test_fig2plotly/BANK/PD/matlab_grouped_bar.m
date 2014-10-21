@@ -9,5 +9,5 @@ fig = figure;
 bar(Y,'group');
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_grouped_bar');
+response = fig2plotly(fig,'filename','matlab_grouped_bar');
 plotly_url = response.url;

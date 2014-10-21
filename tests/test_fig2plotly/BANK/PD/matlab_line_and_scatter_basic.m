@@ -26,5 +26,5 @@ xlabel('Time (s.)');
 ylabel('Amplitude'); 
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_line_and_scatter_basic');
+response = fig2plotly(fig,'filename','matlab_line_and_scatter_basic');
 plotly_url = response.url;

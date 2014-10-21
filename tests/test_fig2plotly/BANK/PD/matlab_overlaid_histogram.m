@@ -33,5 +33,5 @@ for i=1:2
 end
 
 % PLOTLY
-response = fig2plotly(fig,'name','matlab_overlaid_histogram');
+response = fig2plotly(fig,'filename','matlab_overlaid_histogram');
 plotly_url = response.url;

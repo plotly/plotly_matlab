@@ -6,5 +6,5 @@ imagesc(z);
 colorbar;
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_basic_heatmap');
+response = fig2plotly(fig,'filename','matlab_basic_heatmap');
 plotly_url = response.url;

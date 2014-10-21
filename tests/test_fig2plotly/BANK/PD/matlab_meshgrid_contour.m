@@ -8,5 +8,5 @@ fig = figure;
 contour(X,Y,Z)
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_meshgrid_contour');
+response = fig2plotly(fig,'filename','matlab_meshgrid_contour');
 plotly_url = response.url;

@@ -23,5 +23,5 @@ bar(x, y2,'r');
 legend('group1','group2'); 
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_overlaid_bar');
+response = fig2plotly(fig,'filename','matlab_overlaid_bar');
 plotly_url = response.url;

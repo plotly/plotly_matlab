@@ -6,5 +6,5 @@ fig = figure;
 scatter(x, y, r, c, 'filled', 'MarkerEdgeColor', 'k')
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_bubble_chart');
+response = fig2plotly(fig,'filename','matlab_bubble_chart');
 plotly_url = response.url;

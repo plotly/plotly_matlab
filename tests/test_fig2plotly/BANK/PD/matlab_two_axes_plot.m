@@ -17,5 +17,5 @@ set(get(ax(1), 'Ylabel'), 'String', 'Low Frequency');
 set(get(ax(2), 'Ylabel'), 'String', 'High Frequency');
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_two_axes_plot');
+response = fig2plotly(fig,'filename','matlab_two_axes_plot');
 plotly_url = response.url;

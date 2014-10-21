@@ -13,5 +13,5 @@ fig = figure;
 barh(bins,h1); 
 
 % PLOTLY
-response = fig2plotly(fig,'name','matlab_horizontal_histogram');
+response = fig2plotly(fig,'filename','matlab_horizontal_histogram');
 plotly_url = response.url;

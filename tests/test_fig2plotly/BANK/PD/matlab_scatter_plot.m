@@ -12,5 +12,5 @@ xlabel('Longitude');
 ylabel('Latitude');
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_scatter_plot');
+response = fig2plotly(fig,'filename','matlab_scatter_plot');
 plotly_url = response.url;

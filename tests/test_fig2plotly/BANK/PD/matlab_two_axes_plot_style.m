@@ -39,7 +39,7 @@ set(leg,'Interpreter','latex');
 grid on 
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_two_axes_plot_style');
+response = fig2plotly(fig,'filename','matlab_two_axes_plot_style');
 plotly_url = response.url;
 
 

@@ -7,5 +7,5 @@ fig = figure;
 errorbar(x,y,e)
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_symmetric_error_bars');
+response = fig2plotly(fig,'filename','matlab_symmetric_error_bars');
 plotly_url = response.url;

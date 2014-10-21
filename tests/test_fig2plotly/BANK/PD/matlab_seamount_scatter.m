@@ -7,5 +7,5 @@ scatter(x,y,s,c)
 zoom(2)
 
 % PLOTLY 
-response = fig2plotly(fig, 'name', 'matlab_seamount_scatter');
+response = fig2plotly(fig, 'filename', 'matlab_seamount_scatter');
 plotly_url = response.url;

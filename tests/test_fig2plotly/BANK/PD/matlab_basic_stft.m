@@ -48,5 +48,5 @@ ylabel('FREQUENCY (Hz.)')
 title(['C4 GUITAR: MAGNITUDE SPECTROGRAM ANALYSIS']);
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_basic_stft'); 
+response = fig2plotly(fig,'filename','matlab_basic_stft'); 
 plotly_url = response.url; 

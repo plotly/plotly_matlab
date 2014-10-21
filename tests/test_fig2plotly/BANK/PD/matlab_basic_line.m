@@ -7,5 +7,5 @@ fig = figure;
 plot(x,y1,x,y2)
 
 % PLOTL Y
-response = fig2plotly(fig,'name','matlab_basic_line');
+response = fig2plotly(fig,'filename','matlab_basic_line');
 plotly_url = response.url;

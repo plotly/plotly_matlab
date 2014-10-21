@@ -38,5 +38,5 @@ ylabel('x_zoh(t)');
 title('Reconstruction at T=4e-6 ');
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_three_subplots');
+response = fig2plotly(fig,'filename','matlab_three_subplots');
 plotly_url = response.url;

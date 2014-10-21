@@ -20,5 +20,5 @@ xlabel('EbNo (dB)');
 ylabel('SER and BER');
 
 % PLOTLY
-response = fig2plotly(fig,'name','matlab_semi_logy');
+response = fig2plotly(fig,'filename','matlab_semi_logy');
 plotly_url = response.url;

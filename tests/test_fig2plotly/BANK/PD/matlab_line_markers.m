@@ -14,5 +14,5 @@ plot(x, y0, 'r+', x, y1, 'go', x, y2, 'b*', x, y3, 'cx', ...
     x, y4, 'ms', x, y5, 'yd', x, y6, 'kv');
 
 % PLOTLY     
-response = fig2plotly(fig,'name','matlab_line_markers');
+response = fig2plotly(fig,'filename','matlab_line_markers');
 plotly_url = response.url;

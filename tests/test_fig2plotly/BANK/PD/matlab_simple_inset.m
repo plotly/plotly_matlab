@@ -36,5 +36,5 @@ set(handaxes3, 'box','off');
 xlabel('t'); ylabel('(sin(t))^3');
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_simple_inset');
+response = fig2plotly(fig,'filename','matlab_simple_inset');
 plotly_url = response.url;

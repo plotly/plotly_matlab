@@ -30,5 +30,5 @@ set(get(ax(1), 'Ylabel'), 'String', 'Cases');
 set(get(ax(2), 'Ylabel'), 'String', 'Infection rate in cases per thousand');
 
 % PLOTLY 
-response = fig2plotly(fig,'name','matlab_two_axes_plot_bar');
+response = fig2plotly(fig,'filename','matlab_two_axes_plot_bar');
 plotly_url = response.url;
