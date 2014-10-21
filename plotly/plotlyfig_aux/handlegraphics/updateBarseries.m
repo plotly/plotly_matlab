@@ -123,8 +123,6 @@ switch bar_data.Horizontal
     
     case 'off'
         
-        obj.data{barIndex}.orientation = 'v';
-        
         %-bar x data-%
         obj.data{barIndex}.x = bar_data.XData;
         
@@ -134,22 +132,12 @@ switch bar_data.Horizontal
         
     case 'on'
         
-        obj.data{barIndex}.orientation = 'h';
-        
         %-bar x data-%
         obj.data{barIndex}.x = bar_data.YData;
         
         %-bar y data-%
         obj.data{barIndex}.y = bar_data.XData;
 end
-
-%-layout bargroupgap-%
-obj.layout.bargroupgap = 1-bar_data.BarWidth;
-
-%---------------------------------------------------------------------%
-
-%-layout bargap-%
-obj.layout.bargap = obj.PlotlyDefaults.Bargap;
 
 %---------------------------------------------------------------------%
 
