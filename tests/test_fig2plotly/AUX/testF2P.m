@@ -174,7 +174,7 @@ for localInd = 1:length(scriptInfo);
     %save iimage in imgDir
     saveplotlyfig(plotlyfig,[imgDir '/' sc(1:end-2)],ext);
     %close figures as they are generated
-    close
+    close all
     %display status
     fprintf(['image: ' sc ' saved as: ' ext ' \n'])
     %clear conflicting variables and preserve local variables
