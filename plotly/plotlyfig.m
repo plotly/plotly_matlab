@@ -350,6 +350,12 @@ classdef plotlyfig < handle
         %------------------------REST API CALL----------------------------%
         
         %----SEND PLOT REQUEST (NO UPDATE)----%
+        function obj = upload(obj)
+            % same as calling plotly
+            obj.plotly; 
+        end
+        
+        %----SEND PLOT REQUEST (NO UPDATE)----%
         function obj = plotly(obj)
             
             % strip keys
