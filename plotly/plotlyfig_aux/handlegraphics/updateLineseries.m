@@ -96,7 +96,7 @@ obj.data{plotIndex}.y = plot_data.YData;
 %-------------------------------------------------------------------------%
 
 if isfield(plot_data,'ZData')
-    if ~isempty(plot_data.ZData)
+    if any(plot_data.ZData)
         %-scatter z-%
         obj.data{plotIndex}.z = plot_data.ZData;
         
