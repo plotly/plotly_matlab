@@ -3,7 +3,8 @@ classdef plotlycolumn < double
     %---column properties---%
     properties
         Data;
-        ID;
+        FID
+        UID;
         Name;
     end
     
@@ -11,12 +12,13 @@ classdef plotlycolumn < double
     methods
         
         %---constructor---%
-        function obj = plotlycolumn(data, name, id)
+        function obj = plotlycolumn(data, name, uid, fid)
             
             obj = obj@double(data);
             obj.Data = data; 
             obj.Name = name; 
-            obj.ID = id; 
+            obj.UID = uid; 
+            obj.FID = fid; 
             
         end
         
