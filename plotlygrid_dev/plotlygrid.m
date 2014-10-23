@@ -103,7 +103,6 @@ classdef plotlygrid < dynamicprops & handle
             obj.url = response.file.web_url;
             obj.warnings = response.warnings;
             
-            
             %--add dynamic properties--%
             fields = fieldnames(data);
             
@@ -111,7 +110,7 @@ classdef plotlygrid < dynamicprops & handle
                 % add property field
                 addprop(obj,fields{d});
                 % create column object
-                plotlycol = plotlycolumn(data.(fields{d}), obj.File.cols{d}.name, obj.File.cols{d}.uid);
+                plotlycol = plotlycolumn(data.(fields{d}), obj.File.cols{d}.name, obj.File.cols{d}.uid, obj.File.fid);
                 % initialize property field
                 obj.(fields{d}) = plotlycol;
             end
