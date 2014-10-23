@@ -28,7 +28,6 @@ File;
 % --- PUBLIC METHODS--- %
 
 plotlygrid (constructor)
-upload
 appendCols
 appendRows
 
@@ -50,6 +49,8 @@ Construct `plotlygrid` object
 ```
 grid = plotlygrid(data, 'filename', 'experimental data')
 ```
+
+the `plotlygrid` constructor sends the grid data to the Plotly server and returns the necessary column data required to initialize the dynamic `plotlycolumn` properties. 
 
 Example `plotlygrid` object properties once initialized:
 ```
@@ -103,17 +104,6 @@ grid.File.web_url: 'http://local.plot.ly/~localgrids/56/'
 grid.File.embed_url: 'http://local.plot.ly/~localgrids/56.embed'
 grid.File.cols: {[1x1 struct]  [1x1 struct]}
 
-% --GridData-- % (hidden)
-
-grid.GridData.current.data: [1 2 3] 
-grid.GridData.current.order: 1
-grid.GridData.voltage.data: [11 12 13] 
-grid.GridData.voltage.order: 2
-grid.GridData.mag_field.data: [110 120 130]
-grid.GridData.mag_field.order: 3
-grid.GridData.time.data: [500 6000 700]
-grid.GridData.time.order: 4
-
 ```
 
 ## Updating Grids
@@ -131,7 +121,7 @@ cols{2}.data = [10 20 30 40 50];
 grids.appenCols(cols);
 ```
 
-The `appendCols` method dynamically updates the properties of grid, adding new plotlycolumn objects under properties with the same name as the newly created column. So grid.my_new_column1 and grid.my_new_column2 would now be properties of grid and would be initialized with new plotlycolumn objects. 
+The `appendCols` method dynamically updates the properties of grid, adding new plotlycolumn objects under properties with the same name as the newly created column. For example, grid.my_new_column1 and grid.my_new_column2 would now be properties of grid and would be initialized with new plotlycolumn objects. 
 
 For now, `appendRows` takes row data as input in the form of an mxn matrix, where n is the number of columns in the grid and m is the number of rows to be appended. This might change to something a little more user friendly in the near future. The `plotlygrid` object properties containing the column data are updated to reflect the addition of these new rows. 
 
@@ -164,32 +154,35 @@ grid = plotlygrid(data);
 plot(grid.time, grid.power, 'r');
 
 ```
-Since `grid.time` is a plotlycolumn object, the plotlycoluumn function `plot` will be invoked. This will look something like:
+Since `grid.time` is a plotlycolumn object, the plotlycoluumn function `plot` will be invoked. This overloaded function will look something like:
 
 ```
 
 function obj = plot(obj, varargin)
   
   handle = plot(obj, varargin)
-
   p = plotlyfig(gcf); 
-
   data_index = p.getDataIndex(handle);
 
   if isa(varargin{1},'plotlycolumn')
+
     obj2 = varargin{1}; 
     p.data{data_index}.x = [obj.username '/' obj.FID ':' obj.UID]; 
-    p.data{data_index}.y = [obj2.username '/' obj2.FID ':' obj2.UID]; 
+    p.data{data_index}.y = [obj2.username '/' obj2.FID ':' obj2.UID];
+
   else
+
     p.data{data_index}.y = [obj.username '/' obj.FID ':' obj.UID]; 
+
   end
 
   p.plotly; 
+
 end
 
 ```
 
-the else statment above could throw a msg like : Whoops! you are implicitly creating a new data column by only specifying one plotlycolumn as input... do you want us to create a new plotlycolumn object for you? ... and then do it. 
+the else statment above could throw a msg like : Whoops! you are implicitly creating a new data column by only specifying one plotlycolumn as input... do you want us to create a new plotlycolumn object for you? ... and then do it. These overloaded plot methods will also inject the column references in the UserData field of the plot object. The plotlfig class will look for these column references when updating style and layout so that the x and y data remain referencing the column.  
 
 
 ## Overwriting and Deleting Plotly Grids
@@ -200,7 +193,6 @@ Overwriting is not currently supported. For now, only a complete deletion of a g
 deleteplotlygrid('grid_url' or 'uid' or 'plotlygridobj' or 'filename')
 
 ``` 
-Will it ever be possible to give someone permission to delete a grid in your account? 
 
 In the future, overwriting will look like: 
 
@@ -215,6 +207,8 @@ grid = plotlygrid(data, 'mygrid', 'overwrite', false)
 
 ## Error Handling 
 
+duplicate column names not allowed... 
+
 ```
 data.time = [1:10];
 data.time = [120:130];
@@ -224,6 +218,8 @@ grid = plotlygrid(data,'filename','my_grid');
 
 ```
 
+filenames must be specified... 
+
 ```
 data.time = [1:10];
 data.power = [120:130];
@@ -232,6 +228,8 @@ grid = plotlygrid(data);
 'Whoops! Must specify a filename!' 
 
 ```
+
+Append row must append data to all columns ... 
 
 ```
 data.time = [1:10];
@@ -244,7 +242,7 @@ grid.appendRows(row_data);
 'Whoops! Missing row data for the power column.' 
 
 ```
-
+Catch overwrite of existing file... 
 ```
 data.time = [1:10];
 data.power = [120:130];

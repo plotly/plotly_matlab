@@ -11,7 +11,6 @@ classdef plotlygrid < dynamicprops & handle
     end
     
     properties (Hidden=true)
-        GridData;
         File;
     end
     %----CLASS METHODS----%
@@ -43,8 +42,8 @@ classdef plotlygrid < dynamicprops & handle
                     fields = fieldnames(data);
                     for f = 1:length(fields)
                         %format the GridData
-                        obj.GridData.cols.(fields{f}).data = data.(fields{f});
-                        obj.GridData.cols.(fields{f}).order = f;
+                        gd.cols.(fields{f}).data = data.(fields{f});
+                        gd.cols.(fields{f}).order = f;
                     end
                 end
             end
@@ -81,28 +80,11 @@ classdef plotlygrid < dynamicprops & handle
             end
             
             %--send grid to Plotly--%
-            obj.upload;
-            
-            %--add dynamic properties--%
-            fields = fieldnames(data);
-            
-            for d = 1:length(fields)
-                % add property field
-                addprop(obj,fields{d});
-                % create column object
-                plotlycol = plotlycolumn(data.(fields{d}), obj.File.cols{d}.name, obj.File.cols{d}.uid);
-                % initialize property field
-                obj.(fields{d}) = plotlycol;
-            end
-        end
-        
-        function obj = upload(obj)
-            
             platform = 'MATLAB';
             endpoint = [obj.UserData.Domain '/v2/grids'];
             
             %-PAYLOAD-%
-            payload.data = m2json(obj.GridData);
+            payload.data = m2json(gd);
             payload.filename = obj.GridOptions.FileName;
             payload.world_readable = obj.GridOptions.WorldReadable;
             
@@ -121,6 +103,18 @@ classdef plotlygrid < dynamicprops & handle
             obj.url = response.file.web_url;
             obj.warnings = response.warnings;
             
+            
+            %--add dynamic properties--%
+            fields = fieldnames(data);
+            
+            for d = 1:length(fields)
+                % add property field
+                addprop(obj,fields{d});
+                % create column object
+                plotlycol = plotlycolumn(data.(fields{d}), obj.File.cols{d}.name, obj.File.cols{d}.uid);
+                % initialize property field
+                obj.(fields{d}) = plotlycol;
+            end
         end
         
         function obj = appendCols(obj, cols)
