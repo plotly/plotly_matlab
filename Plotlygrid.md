@@ -133,7 +133,7 @@ grids.appenCols(cols);
 
 The `appendCols` method dynamically updates the properties of grid, adding new plotlycolumn objects under the name corresponding to the column. 
 So grid.my_new_column1 and grid.my_new_column2 would now be properites of grid 
-and would be initialized with new plotlycolumn objects. Should grid.File is also updated with the new column information? Pourquoi-pas. 
+and would be initialized with new plotlycolumn objects. Should grid.File also be updated with the new column information? Pourquoi-pas. 
 
 
 For now, `appendRows` takes row data as input in the form of an mxn matrix, where n is the number of columns in the grid and m is the number of rows to be appended. This might change to something a little more user friedly in the near future. The `plotlygrid` object properties containing the column data are updated to reflect the addition of these new rows. 
