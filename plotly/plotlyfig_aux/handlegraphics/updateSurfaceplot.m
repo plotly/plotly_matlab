@@ -88,11 +88,6 @@ obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-surface reversescale-%
-obj.data{surfaceIndex}.reversecale = false;
-
-%-------------------------------------------------------------------------%
-
 leg = get(image_data.Annotation);
 legInfo = get(leg.LegendInformation);
 
