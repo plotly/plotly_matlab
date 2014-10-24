@@ -25,6 +25,9 @@ obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
+% check for 3D
+if any(image_data.ZData)
+
 %-surface type-%
 if ~isvector(image_data.XData) || ~isvector(image_data.YData)
     obj.data{surfaceIndex}.type = 'scatter3d';
@@ -55,6 +58,17 @@ obj.data{surfaceIndex}.z = image_data.ZData;
 
 if strcmp(obj.data{surfaceIndex}.type,'scatter3d')
     obj.data{surfaceIndex}.z = reshape(image_data.ZData,1,size(image_data.ZData,1)*size(image_data.ZData,2));    
+end
+
+else
+    %-surface type-%
+    obj = updateImage(obj, surfaceIndex); 
+    
+    %-surface x-%
+    obj.data{surfaceIndex}.x = image_data.XData(1,:);
+    
+    %-surface y-%
+    obj.data{surfaceIndex}.y = image_data.YData(:,1);
 end
 
 %-------------------------------------------------------------------------%
