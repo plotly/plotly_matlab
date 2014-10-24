@@ -37,14 +37,14 @@ axIndex = obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis);
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-%-TEXT DATA STRUCTURE-%
-text_data = get(obj.State.Text(anIndex).Handle);
-
 %-STANDARDIZE UNITS-%
-textunits = text_data.Units;
-fontunits = text_data.FontUnits;
+textunits = get(obj.State.Text(anIndex).Handle,'Units');
+fontunits = get(obj.State.Text(anIndex).Handle,'FontUnits');
 set(obj.State.Text(anIndex).Handle,'Units','data');
 set(obj.State.Text(anIndex).Handle,'FontUnits','points');
+
+%-TEXT DATA STRUCTURE-%
+text_data = get(obj.State.Text(anIndex).Handle);
 
 %-------------------------------------------------------------------------%
 

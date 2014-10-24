@@ -118,7 +118,7 @@ obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-patch fill-%
-obj.data{patchIndex}.fill = 'tonexty';
+obj.data{patchIndex}.fill = 'tozeroy';
 
 %-PATCH MODE-%
 if ~strcmpi('none', patch_data.Marker) && ~strcmpi('none', patch_data.LineStyle)
