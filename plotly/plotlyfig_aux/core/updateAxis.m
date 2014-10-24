@@ -290,13 +290,11 @@ else
                         xaxis.nticks = length(axis_data.XTick) + 1;
                     catch
                         %-yaxis type category-%
-                        yaxis.type = 'category';
+                        xaxis.type = 'category';
                         %-range (overwrite)-%
-                        yaxis.range = [axis_data.YTickLabel(1,:) axis_data.YTickLabel(end,:)];
+                        xaxis.autorange = true;
                         %-yaxis autotick-%
-                        yaxis.autotick = true;
-                        %-yaxis numticks-%
-                        yaxis.nticks = length(axis_data.YTick) + 1;
+                        xaxis.autotick = true;
                     end
                 end
             end
@@ -498,12 +496,10 @@ else
                     catch
                         %-yaxis type category-%
                         yaxis.type = 'category';
-                        %-range (overwrite)-%
-                        yaxis.range = [axis_data.YTickLabel(1,:) axis_data.YTickLabel(end,:)];
+                        %-yaxis autorange-%
+                        yaxis.autorange = true;
                         %-yaxis autotick-%
                         yaxis.autotick = true;
-                        %-yaxis numticks-%
-                        yaxis.nticks = length(axis_data.YTick) + 1;
                     end
                 end
             end
