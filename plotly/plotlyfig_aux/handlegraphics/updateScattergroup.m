@@ -98,7 +98,7 @@ obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-scatter name-%
-obj.data{scatterIndex}.name = scatter_child_data.DisplayName;
+obj.data{scatterIndex}.name = scatter_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
@@ -182,7 +182,7 @@ for m = 1:length(scatter_child_data)
     %---------------------------------------------------------------------%
     
     %-size-%
-    if length(scatter_child_data) > 1
+    if length(scatter_child_data) > 1 || ischar(childmarker.color)
         obj.data{scatterIndex}.marker.size(m) = childmarker.size;
     else
         obj.data{scatterIndex}.marker.size(1:length(childmarker.color)) = childmarker.size;
@@ -192,7 +192,7 @@ for m = 1:length(scatter_child_data)
     
     %-line width-%
     
-    if length(scatter_child_data) > 1
+    if length(scatter_child_data) > 1 || ischar(childmarker.line.color)
         obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
     else
         obj.data{scatterIndex}.marker.line.width(1:length(childmarker.line.color)) = childmarker.line.width;
