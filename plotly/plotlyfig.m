@@ -619,19 +619,6 @@ classdef plotlyfig < handle
             han = area(varargin{:});
             %update object
             obj.update;
-            %check for HG2
-            if isHG2
-                %grab the Y data matrix
-                if length(varargin) >= 2
-                    for h = 1:length(han)
-                        if h > 1
-                    obj.data{obj.getDataIndex(han(h))}.y = ...
-                    obj.data{obj.getDataIndex(han(h-1))}.y + ...
-                    obj.data{obj.getDataIndex(han(h))}.y; 
-                        end
-                    end
-                end
-            end
             %send to plotly
             obj.plotly;
         end
