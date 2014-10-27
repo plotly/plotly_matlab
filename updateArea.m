@@ -1,61 +1,78 @@
 function updateArea(obj,areaIndex)
 
-%----AREA FIELDS----%
+% x: ...[DONE]
+% y: ...[DONE]
+% r: ...[NOT SUPPORTED IN MATLAB]
+% t: ...[NOT SUPPORTED IN MATLAB]
+% mode: ...[DONE]
+% name: ...[DONE]
+% text: ...[NOT SUPPORTED IN MATLAB]
+% error_y: ...[HANDLED BY ERRORBAR]
+% error_x: ...[HANDLED BY ERRORBAR]
 
-% x - [DONE]
-% y - [DONE]
-% r - [HANDLED BY SCATTER]
-% t - [HANDLED BY SCATTER]
-% mode - [DONE]
-% name - [DONE]
-% text - [NOT SUPPORTED IN MATLAB]
-% error_y - [HANDLED BY ERRORBAR]
-% error_x - [HANDLED BY ERRORBAR]
-% connectgaps - [NOT SUPPORTED IN MATLAB]
-% fill - [HANDLED BY AREA]
-% fillcolor - [HANDLED BY AREA]
-% opacity - [NOT SUPPORTED IN MATLAB]
-% textfont - [NOT SUPPORTED IN MATLAB]
-% textposition - [NOT SUPPORTED IN MATLAB]
-% xaxis [DONE]
-% yaxis [DONE]
-% showlegend [DONE]
-% stream - [HANDLED BY PLOTLYSTREAM]
-% visible [DONE]
-% type [DONE]
+%----marker----%
 
-% MARKER
-% marker.color - [DONE]
-% marker.size - [DONE]
-% marker.line.color - [DONE]
-% marker.line.width - [DONE]
-% marker.line.dash - [NOT SUPPORTED IN MATLAB]
-% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
-% marker.line.shape - [NOT SUPPORTED IN MATLAB]
-% marker.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.colorscale - [NOT SUPPORTED IN MATLAB]
-% marker.sizemode - [NOT SUPPORTED IN MATLAB]
-% marker.sizeref - [NOT SUPPORTED IN MATLAB]
-% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
+% color: ...[NA]
+% size: ...[NA]
+% symbol: ...[NA]
+% opacity: ...[NA]
+% sizeref: ...[NA]
+% sizemode: ...[NA]
+% colorscale: ...[NA]
+% cauto: ...[NA]
+% cmin: ...[NA]
+% cmax: ...[NA]
+% outliercolor: ...[NA]
+% maxdisplayed: ...[NA]
 
-% LINE
+%----marker line----%
 
-% line.color - [DONE]
-% line.width - [DONE]
-% line.dash - [DONE]
-% line.opacity --- [TODO]
-% line.smoothing - [NOT SUPPORTED IN MATLAB]
-% line.shape - [NOT SUPPORTED IN MATLAB]
+% color: ...[NA]
+% width: ...[NA]
+% dash: ...[NA]
+% opacity: ...[NA]
+% shape: ...[NA]
+% smoothing: ...[NA]
+% outliercolor: ...[NA]
+% outlierwidth: ...[NA]
+
+%----line----%
+% color: .........[TODO]
+% width: .........[TODO]
+% dash: .........[TODO]
+% opacity: .........[TODO]
+% shape: ...[NA]
+% smoothing: ...[NA]
+% outliercolor: ...[NA]
+% outlierwidth: ...[NA]
+
+% textposition: ...[NOT SUPPORTED IN MATLAB]
+% textfont: ...[NOT SUPPORTED IN MATLAB]
+% connectgaps: ...[NOT SUPPORTED IN MATLAB]
+% fill: ...[DONE]
+% fillcolor: ..........[TODO]
+% opacity: ..........[TODO]
+% xaxis: ...[DONE]
+% yaxis: ....[DONE]
+% showlegend: ...[DONE]
+% stream: ...[HANDLED BY PLOTLYSTREAM]
+% visible: ...[DONE]
+% type: ...[DONE]
+
+%-------------------------------------------------------------------------%
+
+%-store original area handle-%
+area_data = obj.State.Plot(areaIndex).Handle; 
+
+%------------------------------------------------------------------------%
+
+%-get "children" using new HG2 approach-%
+area_child = get(area_data.java.firstDown); 
+
+%------------------------------------------------------------------------%
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
-
-%-AREA DATA STRUCTURE- %
-area_data = get(obj.State.Plot(areaIndex).Handle);
-
-%-AREA CHILD DATA STRUCTURE- %
-area_child_data = get(area_data.Children(1));
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -81,61 +98,55 @@ obj.data{areaIndex}.type = 'scatter';
 
 %-------------------------------------------------------------------------%
 
-%-area visible-%
-obj.data{areaIndex}.visible = strcmp(area_child_data.Visible,'on');
-
-%-------------------------------------------------------------------------%
-
 %-area x-%
-obj.data{areaIndex}.x = area_data.XData;
+xdata = area_child.VertexData(1,:);
+obj.data{areaIndex}.x = [xdata xdata(1)];
 
 %-------------------------------------------------------------------------%
 
 %-area y-%
-ydata = area_child_data.YData;
-obj.data{areaIndex}.y = ydata(2:(numel(ydata)-1)/2+1)';
+ydata = area_child.VertexData(2,:);
+obj.data{areaIndex}.y = [ydata ydata(1)];
 
 %-------------------------------------------------------------------------%
 
 %-area name-%
-obj.data{areaIndex}.name = area_child_data.DisplayName;
+if ~isempty(area_data.DisplayName);
+    obj.data{areaIndex}.name = area_data.DisplayName;
+else
+    obj.data{areaIndex}.name = area_data.DisplayName;
+end
+
+%-------------------------------------------------------------------------%
+
+%-area visible-%
+obj.data{areaIndex}.visible = strcmp(area_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
 %-area fill-%
-obj.data{areaIndex}.fill = 'tonexty';
+obj.data{areaIndex}.fill = 'tozeroy';
 
-%-----------------------------!STYLE!-------------------------------------%
+%-------------------------------------------------------------------------%
 
-if ~obj.PlotOptions.Strip
-    
+%-AREA MODE-%
+obj.data{areaIndex}.mode = 'lines';
+
+%-------------------------------------------------------------------------%
+
 %-area line-%
-obj.data{areaIndex}.line = extractPatchLine(area_child_data); 
-
-%-------------------------------------------------------------------------%
-    
-%-area mode-%
-if ~strcmpi('none', area_child_data.Marker) && ~strcmpi('none', area_child_data.LineStyle)
-    mode = 'lines+markers';
-elseif ~strcmpi('none', area_child_data.Marker)
-    mode = 'markers';
-elseif ~strcmpi('none', area_child_data.LineStyle)
-    mode = 'lines';
-else
-    mode = 'none';
-end
-
-obj.data{areaIndex}.mode = mode;
+obj.data{areaIndex}.line = extractAreaLine(area_data);
 
 %-------------------------------------------------------------------------%
 
-%-area marker-%
-obj.data{areaIndex}.marker = extractPatchMarker(area_child_data); 
+%-area fillcolor-%
+fill = extractAreaFace(area_data);
+obj.data{areaIndex}.fillcolor = fill.color;
 
 %-------------------------------------------------------------------------%
 
 %-area showlegend-%
-leg = get(area_child_data.Annotation);
+leg = get(area_data.Annotation);
 legInfo = get(leg.LegendInformation);
 
 switch legInfo.IconDisplayStyle
@@ -149,14 +160,6 @@ obj.data{areaIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
-%-area fillcolor-%
-fill = extractPatchFace(area_child_data); 
-obj.data{areaIndex}.fillcolor = fill.color; 
-
-%-------------------------------------------------------------------------%
-
 end
-end
-
 
 
