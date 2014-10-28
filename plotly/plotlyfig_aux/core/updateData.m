@@ -36,17 +36,27 @@ try
             updateBaseline(obj, dataIndex);
         case {'contourgroup','contour'}
             updateContourgroup(obj,dataIndex);
-        case {'errorbarseries','errorbar'}
+        case 'errorbar'
+            updateErrorbar(obj,dataIndex); 
+        case 'errorbarseries'
             updateErrorbarseries(obj,dataIndex);
         case 'lineseries'
             updateLineseries(obj, dataIndex);
-        case {'quivergroup','quiver'}
+        case 'quiver'
+            updateQuiver(obj, dataIndex); 
+        case 'quivergroup'
             updateQuivergroup(obj, dataIndex);
-        case {'scattergroup','scatter'}
+        case 'scatter'
+            updateScatter(obj, dataIndex); 
+        case 'scattergroup'
             updateScattergroup(obj, dataIndex);
-        case {'stairseries','stair'}
+        case 'stair'
+            updateStair(obj, dataIndex); 
+        case 'stairseries'
             updateStairseries(obj, dataIndex);
-        case {'stemseries','stem'}
+        case 'stem'
+            updateStem(obj, dataIndex); 
+        case 'stemseries'
             updateStemseries(obj, dataIndex);
         case 'surfaceplot'
             updateSurfaceplot(obj,dataIndex);
@@ -59,10 +69,10 @@ try
             end
     end
     
-catch
+catch exception
     if obj.UserData.Verbose
-        fprintf(['\nWe had trouble parsing the ' obj.State.Plot(dataIndex).Class ' object.\n',...
-                 'This trace will not be rendered.\n\n']);
+        fprintf([exception.message '\nWe had trouble parsing the ' obj.State.Plot(dataIndex).Class ' object.\n',...
+                 'This trace might not render properly.\n\n']);
     end
 end
 

@@ -152,7 +152,7 @@ markerlinecolor = cell(1,length(patch_data.FaceVertexCData));
 
 if isnumeric(MarkerLineColor)
     col = 255*MarkerLineColor;
-    markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 else
     switch MarkerLineColor
         

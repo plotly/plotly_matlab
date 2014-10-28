@@ -27,7 +27,7 @@ obj.layout.legend = struct();
 %-------------------------------------------------------------------------%
 
 %-layout showlegend-%
-obj.layout.showlegend = strcmpi(get(obj.State.Legend(legIndex).Handle,'ContentsVisible'),'on');
+obj.layout.showlegend = strcmpi(legend_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
