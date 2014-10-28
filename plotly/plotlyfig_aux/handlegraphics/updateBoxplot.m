@@ -52,7 +52,7 @@ box_child = box_data.Children;
 %-CONFIRM PROPER BOXPLOT STRUCTURE-%
 
 % check for compact boxplot
-isCompact = any(findobj(obj.State.Plot(boxIndex).Handle,'Tag','Whisker'));
+isCompact = ~isempty(findobj(obj.State.Plot(boxIndex).Handle,'Tag','Whisker'));
 
 % number of boxplots
 if isCompact

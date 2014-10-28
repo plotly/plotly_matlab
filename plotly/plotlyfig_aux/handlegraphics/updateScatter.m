@@ -1,4 +1,4 @@
-function updateScattergroup(obj,scatterIndex)
+function updateScatter(obj,scatterIndex)
 
 %check: http://undocumentedmatlab.com/blog/undocumented-scatter-plot-behavior
 
@@ -57,12 +57,6 @@ axIndex = obj.getAxisIndex(obj.State.Plot(scatterIndex).AssociatedAxis);
 %-SCATTER DATA STRUCTURE- %
 scatter_data = get(obj.State.Plot(scatterIndex).Handle);
 
-%-SCATTER CHILDREN-%
-scatter_child = get(obj.State.Plot(scatterIndex).Handle,'Children');
-
-%-SCATTER CHILDREN DATA-%
-scatter_child_data = get(scatter_child);
-
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
@@ -103,27 +97,27 @@ obj.data{scatterIndex}.name = scatter_data.DisplayName;
 %-------------------------------------------------------------------------%
 
 %-scatter patch data-%
-for m = 1:length(scatter_child_data)
+for m = 1:length(scatter_data)
     
     %reverse counter
-    n = length(scatter_child_data) - m + 1;
+    n = length(scatter_data) - m + 1;
     
     %---------------------------------------------------------------------%
     
     %-scatter x-%
-    if length(scatter_child_data) > 1
-        obj.data{scatterIndex}.x(m) = scatter_child_data(n).XData;
+    if length(scatter_data) > 1
+        obj.data{scatterIndex}.x(m) = scatter_data(n).XData;
     else
-        obj.data{scatterIndex}.x = scatter_child_data.XData;
+        obj.data{scatterIndex}.x = scatter_data.XData;
     end
     
     %---------------------------------------------------------------------%
     
     %-scatter y-%
-    if length(scatter_child_data) > 1
-        obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
+    if length(scatter_data) > 1
+        obj.data{scatterIndex}.y(m) = scatter_data(n).YData;
     else
-        obj.data{scatterIndex}.y = scatter_child_data.YData;
+        obj.data{scatterIndex}.y = scatter_data.YData;
     end
     
     %---------------------------------------------------------------------%
@@ -144,12 +138,12 @@ for m = 1:length(scatter_child_data)
     %---------------------------------------------------------------------%
     
     %-scatter marker-%
-    childmarker = extractPatchMarker(scatter_child_data(n));
+    childmarker = extractScatterMarker(scatter_data(n));
     
     %---------------------------------------------------------------------%
     
     %-line color-%
-    if length(scatter_child_data) > 1
+    if length(scatter_data) > 1
         obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
     else
         obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
@@ -158,7 +152,7 @@ for m = 1:length(scatter_child_data)
     %---------------------------------------------------------------------%
     
     %-marker color-%
-    if length(scatter_child_data) > 1
+    if length(scatter_data) > 1
         obj.data{scatterIndex}.marker.color{m} = childmarker.color{1};
     else
         obj.data{scatterIndex}.marker.color = childmarker.color;
@@ -182,17 +176,13 @@ for m = 1:length(scatter_child_data)
     %---------------------------------------------------------------------%
     
     %-size-%
-    if length(scatter_child_data) > 1 || ischar(childmarker.color)
-        obj.data{scatterIndex}.marker.size(m) = childmarker.size;
-    else
-        obj.data{scatterIndex}.marker.size(1:length(childmarker.color)) = childmarker.size;
-    end
-    
+    obj.data{scatterIndex}.marker.size = childmarker.size;
+  
     %---------------------------------------------------------------------%
     
     %-line width-%
     
-    if length(scatter_child_data) > 1 || ischar(childmarker.line.color)
+    if length(scatter_data) > 1 || ischar(childmarker.line.color)
         obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
     else
         obj.data{scatterIndex}.marker.line.width(1:length(childmarker.line.color)) = childmarker.line.width;

@@ -26,7 +26,7 @@ obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
 %-------------------------------------------------------------------------%
 
 % check for 3D
-if any(image_data.ZData)
+if any(nonzeros(image_data.ZData))
 
 %-surface type-%
 if ~isvector(image_data.XData) || ~isvector(image_data.YData)
@@ -85,11 +85,6 @@ obj.data{surfaceIndex}.showscale = false;
 
 %-surface visible-%
 obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
-
-%-------------------------------------------------------------------------%
-
-%-surface reversescale-%
-obj.data{surfaceIndex}.reversecale = false;
 
 %-------------------------------------------------------------------------%
 

@@ -1,5 +1,5 @@
 function gc = getGraphClass(obj)
-if ishg2(obj)
+if isHG2
     gc = lower(obj.Type);
 else
     gc = lower(handle(obj).classhandle.name);
