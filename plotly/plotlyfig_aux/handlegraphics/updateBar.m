@@ -109,6 +109,9 @@ switch bar_data.Horizontal
     
     case 'off'
         
+        %-bar orientation-%
+        obj.data{barIndex}.orientation = 'v';
+        
         %-bar x data-%
         obj.data{barIndex}.x = bar_data.XData;
         
@@ -117,6 +120,9 @@ switch bar_data.Horizontal
         
         
     case 'on'
+        
+        %-bar orientation-%
+        obj.data{barIndex}.orientation = 'h';
         
         %-bar x data-%
         obj.data{barIndex}.x = bar_data.YData;
