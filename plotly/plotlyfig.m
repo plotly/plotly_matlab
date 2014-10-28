@@ -457,7 +457,12 @@ classdef plotlyfig < handle
             end
             
             % find legends of figure
-            legs = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','legend');
+            if isHG2
+                legs = findobj(obj.State.Figure.Handle,'Type','Legend');
+            else
+                legs = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','legend');
+            end
+                
             obj.State.Figure.NumLegends = length(legs);
             
             for g = 1:length(legs)
@@ -471,7 +476,12 @@ classdef plotlyfig < handle
             end
             
             % find colorbar of figure
-            cols = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','Colorbar');
+            if isHG2
+                cols = findobj(obj.State.Figure.Handle,'Type','Colorbar');
+            else
+                cols = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','Colorbar');
+            end
+            
             obj.State.Figure.NumColorbars = length(cols);
             
             for c = 1:length(cols)
