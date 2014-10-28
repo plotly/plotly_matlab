@@ -150,7 +150,11 @@ for m = 1:length(scatter_child_data)
     
     %-line color-%
     if length(scatter_child_data) > 1
-        obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
+        if iscell(childmarker.line.color)
+            obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
+        else
+            obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color;
+        end
     else
         obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
     end
@@ -159,7 +163,11 @@ for m = 1:length(scatter_child_data)
     
     %-marker color-%
     if length(scatter_child_data) > 1
-        obj.data{scatterIndex}.marker.color{m} = childmarker.color{1};
+        if iscell(childmarker.color)
+            obj.data{scatterIndex}.marker.color{m} = childmarker.color{1};
+        else
+            obj.data{scatterIndex}.marker.color{m} = childmarker.color;
+        end
     else
         obj.data{scatterIndex}.marker.color = childmarker.color;
     end
