@@ -42,24 +42,13 @@ function obj = updateBar(obj,barIndex)
 % outliercolor: ...[NA]
 % outlierwidth: ...[NA]
 
-% LINE:
-% color: ........[N/A]
-% width: ...[NA]
-% dash: ...[NA]
-% opacity: ...[NA]
-% shape: ...[NA]
-% smoothing: ...[NA]
-% outliercolor: ...[NA]
-% outlierwidth: ...[NA]
-
-
 %-------------------------------------------------------------------------%
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
 
 %-BAR DATA STRUCTURE- %
-bar_data = get(obj.State.Plot(barIndex).Handle);
+bar_data = obj.State.Plot(barIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj, axIndex);
@@ -154,10 +143,15 @@ obj.data{barIndex}.showlegend = showleg;
 %-------------------------------------------------------------------------%
 
 %-bar marker-%
-obj.data{barIndex}.marker = extractPatchFace(bar_data);
+obj.data{barIndex}.marker = extractAreaFace(bar_data);
 
 %-------------------------------------------------------------------------%
 
+%-bar marker line-%
+markerline = extractAreaLine(bar_data); 
+obj.data{barIndex}.marker.line = markerline; 
+
+%-------------------------------------------------------------------------%
 end
 
 
