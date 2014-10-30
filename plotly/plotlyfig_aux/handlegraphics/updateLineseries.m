@@ -95,6 +95,18 @@ obj.data{plotIndex}.y = plot_data.YData;
 
 %-------------------------------------------------------------------------%
 
+if isfield(plot_data,'ZData')
+    if any(plot_data.ZData)
+        %-scatter z-%
+        obj.data{plotIndex}.z = plot_data.ZData;
+        
+        %overwrite type
+        obj.data{plotIndex}.type = 'scatter3d';
+    end
+end
+
+%-------------------------------------------------------------------------%
+
 %-scatter name-%
 obj.data{plotIndex}.name = plot_data.DisplayName;
 

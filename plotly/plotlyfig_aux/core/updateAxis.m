@@ -212,6 +212,9 @@ if isempty(axis_data.XTick)
     xaxis.ticks = '';
     xaxis.showticklabels = false;
     
+    %-xaxis autorange-%
+    xaxis.autorange = true; 
+    
     %---------------------------------------------------------------------%
     
     switch axis_data.Box
@@ -256,11 +259,13 @@ else
         if strcmp(axis_data.XTickLabelMode,'auto')
             %-xaxis range-%
             xaxis.range = axis_data.XLim;
-            
         else
             %-xaxis show tick labels-%
             if isempty(axis_data.XTickLabel)
+                %-hide tick labels-%
                 xaxis.showticklabels = false;
+                %-xaxis autorange-%
+                xaxis.autorange = true;
             else
                 try datevec(axis_data.XTickLabel(1,:),axis_data.UserData.plotly.xdateformat);
                     %-xaxis type date-%
@@ -269,10 +274,28 @@ else
                     xaxis.range = [convertDate(datenum(axis_data.XTickLabel(1,:),axis_data.UserData.plotly.xdateformat)), ...
                         convertDate(datenum(axis_data.XTickLabel(end,:),axis_data.UserData.plotly.xdateformat))];
                 catch
-                    %-xaxis type category-%
-                    xaxis.type = 'category';
-                    %-range (overwrite)-%
-                    xaxis.range = [str2double(axis_data.XTickLabel(1,:)) str2double(axis_data.XTickLabel(end,:))];
+                    %x-axis labels
+                    xlabels = str2double(axis_data.XTickLabel);
+                    try
+                        %find numbers in labels
+                        labelnums = find(~isnan(xlabels));
+                        %-yaxis type linear-%
+                        xaxis.type = 'linear';
+                        %-range (overwrite)-%
+                        delta = (xlabels(labelnums(2)) - xlabels(labelnums(1)))/(labelnums(2)-labelnums(1));
+                        xaxis.range = [xlabels(labelnums(1))-delta*(labelnums(1)-1) xlabels(labelnums(1)) + (length(xlabels)-labelnums(1))*delta];
+                        %-yaxis autotick-%
+                        xaxis.autotick = true;
+                        %-yaxis numticks-%
+                        xaxis.nticks = length(axis_data.XTick) + 1;
+                    catch
+                        %-yaxis type category-%
+                        xaxis.type = 'category';
+                        %-range (overwrite)-%
+                        xaxis.autorange = true;
+                        %-yaxis autotick-%
+                        xaxis.autotick = true;
+                    end
                 end
             end
         end
@@ -381,6 +404,9 @@ if isempty(axis_data.YTick)
     yaxis.ticks = '';
     yaxis.showticklabels = false;
     
+    %-yaxis autorange-%
+    yaxis.autorange = true; 
+    
     %---------------------------------------------------------------------%
     
     switch axis_data.Box
@@ -437,7 +463,10 @@ else
         else
             %-yaxis show tick labels-%
             if isempty(axis_data.YTickLabel)
+                %-hide tick labels-%
                 yaxis.showticklabels = false;
+                %-yaxis autorange-%
+                yaxis.autorange = true;
             else
                 try datevec(axis_data.YTickLabel(1,:),axis_data.UserData.plotly.ydateformat);
                     %-yaxis type date-%
@@ -450,14 +479,28 @@ else
                     %-yaxis numticks-%
                     yaxis.nticks = length(axis_data.YTick) + 1;
                 catch
-                    %-yaxis type category-%
-                    yaxis.type = 'category';
-                    %-range (overwrite)-%
-                    yaxis.range = [str2double(axis_data.YTickLabel(1,:)) str2double(axis_data.YTickLabel(end,:))];
-                    %-yaxis autotick-%
-                    yaxis.autotick = true;
-                    %-yaxis numticks-%
-                    yaxis.nticks = length(axis_data.YTick) + 1;
+                    %y-axis labels
+                    ylabels = str2double(axis_data.YTickLabel);
+                    try
+                        %find numbers in labels
+                        labelnums = find(~isnan(ylabels));
+                        %-yaxis type linear-%
+                        yaxis.type = 'linear';
+                        %-range (overwrite)-%
+                        delta = (ylabels(labelnums(2)) - ylabels(labelnums(1)))/(labelnums(2)-labelnums(1));
+                        yaxis.range = [ylabels(labelnums(1))-delta*(labelnums(1)-1) ylabels(labelnums(1)) + (length(ylabels)-labelnums(1))*delta];
+                        %-yaxis autotick-%
+                        yaxis.autotick = true;
+                        %-yaxis numticks-%
+                        yaxis.nticks = length(axis_data.YTick) + 1;
+                    catch
+                        %-yaxis type category-%
+                        yaxis.type = 'category';
+                        %-yaxis autorange-%
+                        yaxis.autorange = true;
+                        %-yaxis autotick-%
+                        yaxis.autotick = true;
+                    end
                 end
             end
         end
@@ -507,12 +550,8 @@ end
 if strcmp(axis_data.Visible,'on')
     %-xaxis showline-%
     xaxis.showline = true;
-    %-xaxis showticklabels-%
-    xaxis.showticklabels = true;
     %-yaxis showline-%
     yaxis.showline = true;
-    %-yaxis showticklabels-%
-    yaxis.showticklabels = true;
 else
     %-xaxis showline-%
     xaxis.showline = false;

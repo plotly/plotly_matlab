@@ -52,7 +52,7 @@ box_child = box_data.Children;
 %-CONFIRM PROPER BOXPLOT STRUCTURE-%
 
 % check for compact boxplot
-isCompact = any(findobj(obj.State.Plot(boxIndex).Handle,'Tag','Whisker'));
+isCompact = ~isempty(findobj(obj.State.Plot(boxIndex).Handle,'Tag','Whisker'));
 
 % number of boxplots
 if isCompact
@@ -119,28 +119,22 @@ for bp = bpnum:-1:1
     %---------------------------------------------------------------------%
     
     %-box fillcolor-%
-    if ~obj.PlotOptions.Strip
-        obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
-    end
+    obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
     
     %---------------------------------------------------------------------%
     
-    if ~obj.PlotOptions.Strip
-        
-        %-box showlegend-%
-        leg = get(box_data.Annotation);
-        legInfo = get(leg.LegendInformation);
-        
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
-        end
-        
-        obj.data{boxIndex}.showlegend = showleg;
-        
+    %-box showlegend-%
+    leg = get(box_data.Annotation);
+    legInfo = get(leg.LegendInformation);
+    
+    switch legInfo.IconDisplayStyle
+        case 'on'
+            showleg = true;
+        case 'off'
+            showleg = false;
     end
+    
+    obj.data{boxIndex}.showlegend = showleg;
     
     %-boxplot components-%
     Q1 = [];
@@ -178,10 +172,8 @@ for bp = bpnum:-1:1
                 
                 uwhisker = box_child_data.YData(2);
                 
-                if ~obj.PlotOptions.Strip
-                    %-boxplot whisker width-%
-                    obj.data{boxIndex}.whiskerwidth = 1;
-                end
+                %-boxplot whisker width-%
+                obj.data{boxIndex}.whiskerwidth = 1;
                 
                 %-lower whisker-%
             case 'Lower Whisker'
@@ -197,14 +189,14 @@ for bp = bpnum:-1:1
                 Q3 = max(box_child_data.YData);
                 
                 %-boxplot line style-%
-                if ~obj.PlotOptions.Strip
-                    if isCompact
-                        col = 255*box_child_data.Color;
-                        obj.data{boxIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                    else
-                        obj.data{boxIndex}.line = extractLineLine(box_child_data);
-                    end
+                
+                if isCompact
+                    col = 255*box_child_data.Color;
+                    obj.data{boxIndex}.fillcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                else
+                    obj.data{boxIndex}.line = extractLineLine(box_child_data);
                 end
+                
                 
                 %-outliers-%
             case 'Outliers'
@@ -212,22 +204,19 @@ for bp = bpnum:-1:1
                 if ~isnan(box_child_data.YData)
                     %-outlier marker data-%
                     outliers = box_child_data.YData;
-                    if ~obj.PlotOptions.Strip
-                        %-outlier marker style-%
-                        obj.data{boxIndex}.marker = extractLineMarker(box_child_data);
-                    end
+                    
+                    %-outlier marker style-%
+                    obj.data{boxIndex}.marker = extractLineMarker(box_child_data);
                 end
                 
                 %-compact whiskers-%
             case 'Whisker'
                 
-                if ~obj.PlotOptions.Strip
-                    %-boxplot line style-%
-                    obj.data{boxIndex}.line = extractLineLine(box_child_data);
-                    
-                    %-boxplot whisker width-%
-                    obj.data{boxIndex}.whiskerwidth = 0;
-                end
+                %-boxplot line style-%
+                obj.data{boxIndex}.line = extractLineLine(box_child_data);
+                
+                %-boxplot whisker width-%
+                obj.data{boxIndex}.whiskerwidth = 0;
                 
                 %-whisker data-%
                 uwhisker = box_child_data.YData(2);

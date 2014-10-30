@@ -1,4 +1,4 @@
-function obj = updateBarseries(obj,barIndex)
+function obj = updateBar(obj,barIndex)
 
 % x: ...[DONE]
 % y: ...[DONE]
@@ -42,30 +42,16 @@ function obj = updateBarseries(obj,barIndex)
 % outliercolor: ...[NA]
 % outlierwidth: ...[NA]
 
-% LINE:
-% color: ........[N/A]
-% width: ...[NA]
-% dash: ...[NA]
-% opacity: ...[NA]
-% shape: ...[NA]
-% smoothing: ...[NA]
-% outliercolor: ...[NA]
-% outlierwidth: ...[NA]
-
-
 %-------------------------------------------------------------------------%
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
 
 %-BAR DATA STRUCTURE- %
-bar_data = get(obj.State.Plot(barIndex).Handle);
-
-%-BAR CHILD (PATCH) DATA STRUCTURE- %
-bar_child_data = get(bar_data.Children(1));
+bar_data = obj.State.Plot(barIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
+[xsource, ysource] = findSourceAxis(obj, axIndex);
 
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
@@ -123,6 +109,7 @@ switch bar_data.Horizontal
     
     case 'off'
         
+        %-bar orientation-%
         obj.data{barIndex}.orientation = 'v';
         
         %-bar x data-%
@@ -134,6 +121,7 @@ switch bar_data.Horizontal
         
     case 'on'
         
+        %-bar orientation-%
         obj.data{barIndex}.orientation = 'h';
         
         %-bar x data-%
@@ -160,18 +148,16 @@ obj.data{barIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
-%-bar opacity-%
-if ~ischar(bar_child_data.FaceAlpha)
-    obj.data{barIndex}.opacity = bar_child_data.FaceAlpha;
-end
-
-%-------------------------------------------------------------------------%
-
 %-bar marker-%
-obj.data{barIndex}.marker = extractPatchFace(bar_child_data);
+obj.data{barIndex}.marker = extractAreaFace(bar_data);
 
 %-------------------------------------------------------------------------%
 
+%-bar marker line-%
+markerline = extractAreaLine(bar_data); 
+obj.data{barIndex}.marker.line = markerline; 
+
+%-------------------------------------------------------------------------%
 end
 
 

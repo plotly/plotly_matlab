@@ -76,10 +76,16 @@ colorbar.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 % get colorbar title and labels
 colorbar_title = colorbar_data.Title;
 colorbar_title_data = get(colorbar_title);
-colorbar_xlabel = colorbar_data.XLabel;
-colorbar_xlabel_data = get(colorbar_xlabel);
-colorbar_ylabel = colorbar_data.YLabel;
-colorbar_ylabel_data = get(colorbar_ylabel);
+if isHG2
+    colorbar_ylabel = colorbar_data.Label;
+    colorbar_ylabel_data = get(colorbar_data.Label);
+    colorbar_xlabel_data.String = [];
+else
+    colorbar_xlabel = colorbar_data.XLabel;
+    colorbar_xlabel_data = get(colorbar_xlabel);
+    colorbar_ylabel = colorbar_data.YLabel;
+    colorbar_ylabel_data = get(colorbar_ylabel);
+end
 
 %-colorbar title-%
 if ~isempty(colorbar_title_data.String)
@@ -100,16 +106,19 @@ end
 %-STANDARDIZE UNITS-%
 titleunits = colorbar_title_data.Units;
 titlefontunits = colorbar_title_data.FontUnits;
-xlabelunits = colorbar_xlabel_data.Units;
-xlabelfontunits = colorbar_xlabel_data.FontUnits;
 ylabelunits = colorbar_ylabel_data.Units;
 ylabelfontunits = colorbar_ylabel_data.FontUnits;
 set(colorbar_title,'Units','data');
-set(colorbar_title,'FontUnits','points');
-set(colorbar_xlabel,'Units','data');
-set(colorbar_xlabel,'FontUnits','points');
 set(colorbar_ylabel,'Units','data');
 set(colorbar_ylabel,'FontUnits','points');
+if ~isHG2
+    xlabelunits = colorbar_xlabel_data.Units;
+    xlabelfontunits = colorbar_xlabel_data.FontUnits;
+    set(colorbar_title,'FontUnits','points');
+    set(colorbar_xlabel,'Units','data');
+    set(colorbar_xlabel,'FontUnits','points');
+end
+
 
 if ~isempty(colorbar_title_data.String)
     %-colorbar titleside-%
@@ -146,10 +155,13 @@ end
 %-REVERT UNITS-%
 set(colorbar_title,'Units',titleunits);
 set(colorbar_title,'FontUnits',titlefontunits);
-set(colorbar_xlabel,'Units',xlabelunits);
-set(colorbar_xlabel,'FontUnits',xlabelfontunits);
 set(colorbar_ylabel,'Units',ylabelunits);
 set(colorbar_ylabel,'FontUnits',ylabelfontunits);
+
+if ~isHG2
+    set(colorbar_xlabel,'Units',xlabelunits);
+    set(colorbar_xlabel,'FontUnits',xlabelfontunits);
+end
 
 
 %-thicknessmode-%
@@ -199,10 +211,14 @@ colorbar.ticklen = ticklength;
 
 % check orientation for x/y properties
 
-if orientVert
-    col = 255*colorbar_data.YColor;
+if isHG2
+    col = [0 0 0];
 else
-    col = 255*colorbar_data.XColor;
+    if orientVert
+        col = 255*colorbar_data.YColor;
+    else
+        col = 255*colorbar_data.XColor;
+    end
 end
 
 colorbar_col = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
@@ -239,85 +255,87 @@ colorbar.ypad = obj.PlotlyDefaults.MarginPad;
 %-------------------------------------------------------------------------%
 
 % check orientation for x/y properties
-if orientVert
-    if isempty(colorbar_data.YTick)
-        %-show tick labels-%
-        colorbar.ticks = '';
-        colorbar.showticklabels = false;
-    else
-        %-tick direction-%
-        switch colorbar_data.TickDir
-            case 'in'
-                colorbar.ticks = 'inside';
-            case 'out'
-                colorbar.ticks = 'outside';
-        end
-        
-        if strcmp(colorbar_data.YTickLabelMode,'auto')
-            %-autotick-%
-            colorbar.autotick = true;
-            %-numticks-%
-            colorbar.nticks = length(colorbar_data.YTick) + 1; %nticks = max ticks (so + 1)
-        else
+if ~isHG2
+    if orientVert
+        if isempty(colorbar_data.YTick)
             %-show tick labels-%
-            if isempty(colorbar_data.YTickLabel)
-                colorbar.showticklabels = false;
-            else
+            colorbar.ticks = '';
+            colorbar.showticklabels = false;
+        else
+            %-tick direction-%
+            switch colorbar_data.TickDir
+                case 'in'
+                    colorbar.ticks = 'inside';
+                case 'out'
+                    colorbar.ticks = 'outside';
+            end
+            
+            if strcmp(colorbar_data.YTickLabelMode,'auto')
                 %-autotick-%
-                colorbar.autotick = false;
-                %-tick0-%
-                colorbar.tick0 = str2double(colorbar_data.YTickLabel(1,:));
-                %-dtick-%
-                colorbar.dtick = str2double(colorbar_data.YTickLabel(2,:))- str2double(colorbar_data.YtickLabel(1,:));
+                colorbar.autotick = true;
+                %-numticks-%
+                colorbar.nticks = length(colorbar_data.YTick) + 1; %nticks = max ticks (so + 1)
+            else
+                %-show tick labels-%
+                if isempty(colorbar_data.YTickLabel)
+                    colorbar.showticklabels = false;
+                else
+                    %-autotick-%
+                    colorbar.autotick = false;
+                    %-tick0-%
+                    colorbar.tick0 = str2double(colorbar_data.YTickLabel(1,:));
+                    %-dtick-%
+                    colorbar.dtick = str2double(colorbar_data.YTickLabel(2,:))- str2double(colorbar_data.YtickLabel(1,:));
+                end
             end
         end
-    end
-else
-    if isempty(colorbar_data.XTick)
-        %-show tick labels-%
-        colorbar.ticks = '';
-        colorbar.showticklabels = false;
     else
-        %-tick direction-%
-        switch colorbar_data.TickDir
-            case 'in'
-                colorbar.ticks = 'inside';
-            case 'out'
-                colorbar.ticks = 'outside';
-        end
-        
-        if strcmp(colorbar_data.XTickLabelMode,'auto')
-            %-autotick-%
-            colorbar.autotick = true;
-            %-numticks-%
-            colorbar.nticks = length(colorbar_data.XTick) + 1;
-        else
+        if isempty(colorbar_data.XTick)
             %-show tick labels-%
-            if isempty(colorbar_data.XTickLabel)
-                colorbar.showticklabels = false;
-            else
+            colorbar.ticks = '';
+            colorbar.showticklabels = false;
+        else
+            %-tick direction-%
+            switch colorbar_data.TickDir
+                case 'in'
+                    colorbar.ticks = 'inside';
+                case 'out'
+                    colorbar.ticks = 'outside';
+            end
+            
+            if strcmp(colorbar_data.XTickLabelMode,'auto')
                 %-autotick-%
-                colorbar.autotick = false;
-                %-tick0-%
-                colorbar.tick0 = str2double(colorbar_data.XTickLabel(1,:));
-                %-dtick-%
-                colorbar.dtick = str2double(colorbar_data.XTickLabel(2,:))- str2double(colorbar_data.XtickLabel(1,:));
+                colorbar.autotick = true;
+                %-numticks-%
+                colorbar.nticks = length(colorbar_data.XTick) + 1;
+            else
+                %-show tick labels-%
+                if isempty(colorbar_data.XTickLabel)
+                    colorbar.showticklabels = false;
+                else
+                    %-autotick-%
+                    colorbar.autotick = false;
+                    %-tick0-%
+                    colorbar.tick0 = str2double(colorbar_data.XTickLabel(1,:));
+                    %-dtick-%
+                    colorbar.dtick = str2double(colorbar_data.XTickLabel(2,:))- str2double(colorbar_data.XtickLabel(1,:));
+                end
             end
         end
     end
 end
-
 %-------------------------------------------------------------------------%
 
-%-colorbar bg-color-%
-if ~ischar(colorbar_data.Color)
-    col = 255*colorbar_data.Color;
-else
-    col = 255*figure_data.Color;
+if ~isHG2
+    %-colorbar bg-color-%
+    if ~ischar(colorbar_data.Color)
+        col = 255*colorbar_data.Color;
+    else
+        col = 255*figure_data.Color;
+    end
+    
+    obj.layout.plot_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 end
-
-obj.layout.plot_bgcolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-
 %-------------------------------------------------------------------------%
 
 

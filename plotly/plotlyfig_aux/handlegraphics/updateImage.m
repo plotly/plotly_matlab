@@ -106,11 +106,6 @@ obj.data{imageIndex}.showscale = false;
 
 %-------------------------------------------------------------------------%
 
-%-image reversescale-%
-obj.data{imageIndex}.reversecale = false;
-
-%-------------------------------------------------------------------------%
-
 %-image zauto-%
 obj.data{imageIndex}.zauto = false;
 

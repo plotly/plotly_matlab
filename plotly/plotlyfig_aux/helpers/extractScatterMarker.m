@@ -1,4 +1,4 @@
-function marker = extractPatchMarker(patch_data)
+function marker = extractScatterMarker(patch_data)
 
 % EXTRACTS THE MARKER STYLE USED FOR MATLAB OBJECTS
 % OF TYPE "PATCH". THESE OBJECTS ARE USED IN AREASERIES
@@ -23,12 +23,12 @@ marker.sizeref = 1;
 %-------------------------------------------------------------------------%
 
 %-MARKER SIZEMODE-%
-marker.sizemode = 'diameter';
+marker.sizemode = 'area';
 
 %-------------------------------------------------------------------------%
 
 %-MARKER SIZE (STYLE)-%
-marker.size = patch_data.MarkerSize;
+marker.size = patch_data.SizeData;
 
 %-------------------------------------------------------------------------%
 
@@ -87,9 +87,6 @@ filledMarkerSet = {'o','square','s','diamond','d',...
 
 filledMarker = ismember(patch_data.Marker,filledMarkerSet);
 
-% initialize markercolor output
-markercolor = cell(1,length(patch_data.FaceVertexCData));
-
 if filledMarker
     
     if isnumeric(MarkerColor)
@@ -115,17 +112,11 @@ if filledMarker
                 
             case 'flat'
                 
-                for n = 1:length(patch_data.FaceVertexCData)
+                for n = 1:length(patch_data.CData)
                     
-                    switch patch_data.CDataMapping
-                        
-                        case 'scaled'
-                            capCD = max(min(patch_data.FaceVertexCData(n,1),axis_data.CLim(2)),axis_data.CLim(1));
-                            scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                            col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
-                        case 'direct'
-                            col =  255*(colormap(patch_data.FaceVertexCData(n,1),:));
-                    end
+                    capCD = max(min(patch_data.CData(1,n),axis_data.CLim(2)),axis_data.CLim(1));
+                    scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
+                    col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
                     
                     markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                     
@@ -146,9 +137,6 @@ end
 MarkerLineColor = patch_data.MarkerEdgeColor;
 
 filledMarker = ismember(patch_data.Marker,filledMarkerSet);
-
-% initialize marker line color
-markerlinecolor = cell(1,length(patch_data.FaceVertexCData));
 
 if isnumeric(MarkerLineColor)
     col = 255*MarkerLineColor;
@@ -177,19 +165,12 @@ else
                         
                     case {'flat', 'interp'}
                         
-                        for n = 1:length(patch_data.FaceVertexCData)
+                        for n = 1:length(patch_data.CData)
                             
-                            switch patch_data.CDataMapping
-                                
-                                case 'scaled'
-                                    capCD = max(min(patch_data.FaceVertexCData(n,1),axis_data.CLim(2)),axis_data.CLim(1));
-                                    scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                                    col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
-                                    
-                                case 'direct'
-                                    col =  255*(colormap(patch_data.FaceVertexCData(n,1),:));
-                                    
-                            end
+                            
+                            capCD = max(min(patch_data.CData(1,n),axis_data.CLim(2)),axis_data.CLim(1));
+                            scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
+                            col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
                             
                             markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                             
@@ -200,18 +181,11 @@ else
             
         case 'flat'
             
-            for n = 1:length(patch_data.FaceVertexCData)
+            for n = 1:length(patch_data.CData)
                 
-                switch patch_data.CDataMapping
-                    
-                    case 'scaled'
-                        capCD = max(min(patch_data.FaceVertexCData(n,1),axis_data.CLim(2)),axis_data.CLim(1));
-                        scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                        col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
-                    case 'direct'
-                        col =  255*(colormap(patch_data.FaceVertexCData(n,1),:));
-                        
-                end
+                capCD = max(min(patch_data.CData(1,n),axis_data.CLim(2)),axis_data.CLim(1));
+                scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
+                col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
                 
                 markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                 

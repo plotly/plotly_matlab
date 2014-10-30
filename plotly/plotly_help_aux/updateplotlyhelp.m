@@ -21,6 +21,9 @@ pr = loadjson(prContent);
 %------------------------MATLAB SPECIFIC TWEAKS---------------------------%
 
 %-key_type changes-%
+pr.annotation.xref.key_type = 'plot_info'; 
+pr.annotation.yref.key_type = 'plot_info'; 
+pr.line.shape.key_type = 'plot_info'; 
 
 %-------------------------------------------------------------------------%
 
