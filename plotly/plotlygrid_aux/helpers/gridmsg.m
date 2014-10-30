@@ -1,6 +1,5 @@
 function errormsg = gridmsg(key)
-switch key
-    %--plotlyfigure constructor--%
+switch key 
     case 'gridAuthentication:credentialsNotFound'
         errormsg = ['\nOpps! It looks like you haven''t set up your plotly '...
                     'account credentials\nyet. To get started, save your '...
@@ -15,6 +14,8 @@ switch key
     case 'gridInputs:notKeyValue'
         errormsg = ['\nOops! The variable argument inputs to plotlygrid.m ',...
             'must be key value. \n'];
+    case 'gridDelete:tooInvalidInputs'
+        errormsg = ['\nOops! you specified the wrong number of inputs!']; 
     case 'gridGeneric:genericError'
         errormsg = [''];
 end
