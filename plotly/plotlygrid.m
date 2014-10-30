@@ -169,6 +169,12 @@ classdef plotlygrid < dynamicprops & handle
             end
             
             %-check for duplicate column names-%
+            for c = 1:length(cols)
+                if ~isempty(intersect(cols{c}.name,fieldnames(obj)))
+                    errkey = 'gridCols:duplicateName';
+                    error(errkey, gridmsg(errkey))
+                end
+            end
             
             %-endpoint-%
             endpoint = obj.Endpoints.Col;
@@ -184,6 +190,13 @@ classdef plotlygrid < dynamicprops & handle
                 errkey = 'gridGeneric:genericError';
                 error(errkey,[gridmsg(errkey) response.detail]);
             end
+            
+            %-append new columns-%
+            for c = 1:length(cols)
+                obj.File.cols{end + 1} = response.cols{c}; 
+                obj.Data.(cols{c}.name) = cols{c}.data; 
+                obj.addColProps; 
+            end
         end
     end
     
@@ -195,21 +208,27 @@ classdef plotlygrid < dynamicprops & handle
             fields = fieldnames(obj.Data);
             
             for d = 1:length(fields)
-                
-                % add property field
-                addprop(obj,fields{d});
-                
-                % create column object
-                plotlycol = plotlycolumn(obj.Data.(fields{d}), ...
-                    obj.File.cols{d}.name, obj.File.cols{d}.uid, obj.File.fid);
-                
-                % initialize property field
-                obj.(fields{d}) = plotlycol;
+                if ~isprop(obj, fields{d})
+                    
+                    % add property field
+                    addprop(obj,fields{d});
+                    
+                    % create column object
+                    plotlycol = plotlycolumn(obj.Data.(fields{d}), ...
+                        obj.File.cols{d}.name, obj.File.cols{d}.uid, obj.File.fid);
+                    
+                    % initialize property field
+                    obj.(fields{d}) = plotlycol;
+                    
+                end
             end
             
         end
         
-        function varargout = makecall(obj, request, endpoint, payload)
+        function response = makecall(obj, request, endpoint, payload)
+            
+            %-initialize ouptut-%
+            response = ''; 
             
             %-encoding-%
             encoder = sun.misc.BASE64Encoder();
@@ -229,7 +248,7 @@ classdef plotlygrid < dynamicprops & handle
                 response_handler(resp);
                 
                 %-structure resp-%
-                varargout{1} = loadjson(resp);
+                response = loadjson(resp);
             end
         end
     end
