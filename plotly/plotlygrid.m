@@ -13,7 +13,7 @@ classdef plotlygrid < dynamicprops & handle
     properties (Hidden=true)
         File;
         Data;
-        Endpoints; 
+        Endpoints;
     end
     
     %----CLASS METHODS----%
@@ -28,7 +28,7 @@ classdef plotlygrid < dynamicprops & handle
                 errkey = 'gridAuthentication:credentialsNotFound';
                 error(errkey,gridmsg(errkey));
             end
-           
+            
             %--update UserData--%
             obj.UserData.UserName = un;
             obj.UserData.ApiKey = key;
@@ -117,7 +117,7 @@ classdef plotlygrid < dynamicprops & handle
                 payload.world_readable = obj.GridOptions.WorldReadable;
                 
                 %-make call-%
-                response = obj.makecall(endpoint, payload); 
+                response = obj.makecall('Post', endpoint, payload);
                 
                 %-handle success/errors-%
                 if isfield(response,'file')
@@ -142,6 +142,8 @@ classdef plotlygrid < dynamicprops & handle
         
         function obj = appendRows(obj, data)
             
+            %TODO: CHECK CORRECT INPUT STRUCTURE
+            
             %-endpoint-%
             endpoint = obj.Endpoints.Row;
             
@@ -149,7 +151,7 @@ classdef plotlygrid < dynamicprops & handle
             payload.rows = m2json(data);
             
             %-make call-%
-            response = obj.makecall(endpoint, payload); 
+            response = obj.makecall('Post', endpoint, payload);
             
             %-handle errors-%
             if isfield(response,'detail')
@@ -175,7 +177,7 @@ classdef plotlygrid < dynamicprops & handle
             payload.cols = m2json(cols);
             
             %-make call-%
-            response = obj.makecall(endpoint, payload); 
+            response = obj.makecall('Post', endpoint, payload);
             
             %-handle errors-%
             if isfield(response,'detail')
@@ -184,7 +186,7 @@ classdef plotlygrid < dynamicprops & handle
             end
         end
     end
-
+    
     methods(Hidden=true)
         
         function obj = addColProps(obj)
@@ -207,20 +209,20 @@ classdef plotlygrid < dynamicprops & handle
             
         end
         
-        function varargout = makecall(obj, endpoint, payload)
+        function varargout = makecall(obj, request, endpoint, payload)
             
             %-encoding-%
             encoder = sun.misc.BASE64Encoder();
             encoded_un_key = char(encoder.encode(java.lang.String([obj.UserData.UserName, ':', ...
-                                  obj.UserData.ApiKey]).getBytes()));
+                obj.UserData.ApiKey]).getBytes()));
             
             %-headers-%
             headers = struct('name', {'Authorization','plotly_client_platform','content-type','accept'},...
-                             'value', {['Basic ' encoded_un_key], 'MATLAB', 'application/json','*/*'});
+                'value', {['Basic ' encoded_un_key], 'MATLAB', 'application/json','*/*'});
             
             %-make call-%
-            resp = urlread2(endpoint, 'Post', m2json(payload), headers);
-             
+            resp = urlread2(endpoint, request , m2json(payload), headers);
+            
             if ~isempty(resp)
                 
                 %-check response-%
