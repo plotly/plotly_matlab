@@ -1,6 +1,6 @@
 classdef plotlycolumn < double
     
-    %---column properties---%
+    %----CLASS PROPERTIES----%
     properties
         Data;
         FID
@@ -8,11 +8,15 @@ classdef plotlycolumn < double
         Name;
     end
     
-    %---column methods---%
+     %----CLASS METHODS----%
     methods
         
-        %---constructor---%
         function obj = plotlycolumn(data, name, uid, fid)
+            
+            %-make data a column vector-%
+            if size(data,2) > 1
+                data = data';
+            end
             
             obj = obj@double(data);
             obj.Data = data; 
@@ -22,10 +26,21 @@ classdef plotlycolumn < double
             
         end
         
-        %---display---%
+        %--display--%
         function obj = disp(obj)
-            disp(double(obj));
+            disp(obj.Data');
         end
         
+        %--apend data-%
+        function obj = appendData(obj, data, appendPos)
+            
+            %-make data a column vector-%
+            if size(data,2) > 1
+                data = data';
+            end
+            
+            obj.Data = [obj.Data ; nan(1, diff(appendPos,length(obj.Data))) ; data];
+            
+        end
     end
 end
