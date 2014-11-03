@@ -19,6 +19,8 @@ switch key
         errormsg = ['\nOops! Please data input must be a matrix!\n\n'];
     case 'gridAppendCols:noGridId'
         errormsg = ['\nOops! Please specify a gridId!\n\n'];
+    case  'gridDelete:noGridId'
+        errormsg = ['\nOops! Please specify a gridId!\n\n'];
     case 'gridAppendCols:invalidInput'
         errormsg = ['\nOops! Column input must be a struct!\n\n'];
     case 'gridFilename:alreadyExists'
