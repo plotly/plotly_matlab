@@ -57,12 +57,8 @@ classdef plotlyapiv2 < handle
             
             if isfield(obj.Response, 'detail')
                 obj.Success = false;
-            elseif isfield(obj.Response, 'file') || ...
-                   isfield(obj.Response, 'cols') || ...
-                   isempty(obj.Response)
-                obj.Success = true;
             else
-                warning('weird plotly APIV2 ouput!');
+                obj.Success = true;
             end
         end
     end
