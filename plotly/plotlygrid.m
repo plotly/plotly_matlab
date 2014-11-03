@@ -3,7 +3,9 @@ classdef plotlygrid < dynamicprops & handle
     %----CLASS PROPERTIES----%
     
     properties
-        ID; 
+        ID;
+        FileName;
+        Meta;
         GridOptions;
         ColumnData;
     end
@@ -39,12 +41,16 @@ classdef plotlygrid < dynamicprops & handle
             obj.UserData.Domain = domain;
             
             %--initialize grid options--%
-            obj.GridOptions.FileName = '';
             obj.GridOptions.WorldReadable = true;
-            obj.GridOptions.Parent = '0';
             obj.GridOptions.ParentPath = '';
             obj.GridOptions.OpenUrl = false;
             obj.GridOptions.ShowUrl = false;
+            
+            %-initialize filename-%
+            obj.FileName = '';
+            
+            %-initialize meta-%
+            obj.Meta = '';
             
             %--add raw data as property--%
             if nargin > 0
@@ -65,11 +71,11 @@ classdef plotlygrid < dynamicprops & handle
                 for n = 2:2:length(varargin)
                     switch varargin{n}
                         case 'filename'
-                            obj.GridOptions.FileName = varargin{n+1};
+                            obj.FileName = varargin{n+1};
+                        case 'meta'
+                            obj.Meta = varargin{n+1};
                         case 'world_readable'
                             obj.GridOptions.WorldReadable = varargin{n+1};
-                        case 'parent'
-                            obj.GridOptions.Parent = varargin{n+1};
                         case 'parent_path'
                             obj.GridOptions.ParentPath = varargin{n+1};
                         case 'open'
@@ -85,18 +91,19 @@ classdef plotlygrid < dynamicprops & handle
             
         end
         
-        function obj = upload(obj)
+        function obj = plotly(obj)
             
             %--check for valid filename and data--%
-            if isempty(obj.GridOptions.FileName)
+            if isempty(obj.FileName)
                 errkey = 'gridFilename:notValid';
-                error(gridmsg(errkey));
+                error(errkey, gridmsg(errkey));
             elseif ~isstruct(obj.ColumnData)
                 errkey = 'gridData:notValid';
-                error(gridmsg(errkey));
+                error(errkey, gridmsg(errkey));
             else
                 
-                %--parse data--%
+                
+                %-parse data-%
                 fields = fieldnames(obj.ColumnData);
                 gd = struct();
                 
@@ -106,13 +113,14 @@ classdef plotlygrid < dynamicprops & handle
                     gd.cols.(fields{f}).order = f-1;
                 end
                 
-                %--relative endpoint--%
-                relative_endpoint = '/grids';
-                
                 %-payload-%
                 payload.data = m2json(gd);
-                payload.filename = obj.GridOptions.FileName;
+                payload.filename = obj.FileName;
+                payload.metadata = obj.Meta; 
                 payload.world_readable = obj.GridOptions.WorldReadable;
+                
+                %-relative endpoint-%
+                relative_endpoint = '/grids';
                 
                 %-make call-%
                 obj.Caller.makecall('Post', relative_endpoint, payload);
@@ -136,6 +144,10 @@ classdef plotlygrid < dynamicprops & handle
             end
         end
         
+        function obj = upload(obj)
+            obj.plotly;
+        end
+        
         function obj = appendRows(obj, data)
             
             %-endpoint-%
@@ -148,8 +160,8 @@ classdef plotlygrid < dynamicprops & handle
             
             %-check input-%
             if ~ismatrix(data)
-                errkey = 'gridAppendRows:invalidInput'; 
-                error(errkey, gridmsg(errkey)); 
+                errkey = 'gridAppendRows:invalidInput';
+                error(errkey, gridmsg(errkey));
             end
             
             %-payload-%
@@ -168,7 +180,7 @@ classdef plotlygrid < dynamicprops & handle
                 %-update columns-%
                 for c = 1:length(colnames)
                     obj.(colnames{c}) = obj.(colnames{c}).appendData(data(:,c),appendPos);
-                    obj.ColumnData.(colnames{c}) = obj.(colnames{c}).ColumnData;
+                    obj.ColumnData.(colnames{c}) = obj.(colnames{c}).Data;
                 end
                 
             else
@@ -220,6 +232,50 @@ classdef plotlygrid < dynamicprops & handle
             end
             
         end
+        
+        function obj = deleteRemote(obj)
+            
+            %-endpoint-%
+            if ~isempty(obj.ID)
+                relative_endpoint = ['/grids/' obj.ID ];
+            else
+                errkey = 'gridDelete:noGridId';
+                error(errkey, gridmsg(errkey));
+            end
+            
+            %-question user upon delete request-%
+            checkdelete = input(['\nWhoops! You are about to delete grid: ' obj.ID '.' ,...
+                'Do you wish to proceed? (y/n): ' ], 's');
+            
+            %-check answer-%
+            if strcmpi(checkdelete, 'y')
+                
+                %-payload-%
+                payload = '';
+                
+                %-make call-%
+                obj.Caller.makecall('DELETE', relative_endpoint, payload);
+                
+                %-handle succes/errors-%
+                if ~obj.Caller.Success
+                    errkey = 'gridGeneric:genericError';
+                    error(errkey,[gridmsg(errkey) obj.Caller.Response.detail]);
+                end
+                
+            else
+                fprintf(['\nGrid: ' obj.ID ' was not deleted. \n\n']);
+            end
+            
+        end
+        
+        function obj = addMetadata(obj)
+            
+        end
+        
+        function obj = download(obj)
+            
+        end
+        
     end
     
     methods(Hidden=true)
@@ -261,7 +317,7 @@ classdef plotlygrid < dynamicprops & handle
                 end
             end
             
-        end  
+        end
     end
 end
 
