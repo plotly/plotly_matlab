@@ -1,4 +1,4 @@
-function saveplotlyconfig(plotly_domain,plotly_streaming_domain)
+function saveplotlyconfig(plotly_domain,plotly_streaming_domain, plotly_api_domain)
 % Save plotly config info.
 % Plotly config info are saved as JSON strings
 % in ~/.plotly/.config
@@ -34,7 +34,7 @@ if(fileIDConfig == -1)
     error('plotly:saveconfiguration',...
         ['Error opening configuration file at '...
         plotly_credentials_file '. Get in touch at '...
-        'chris@plot.ly for support.']);
+        'chuck@plot.ly for support.']);
 end
 
 
@@ -44,7 +44,11 @@ switch nargin
     case 2
         config.plotly_domain = plotly_domain;
         config.plotly_streaming_domain= plotly_streaming_domain;
-    otherwise %if neither endpoints are specified, no worries!
+    case 3
+        config.plotly_domain = plotly_domain;
+        config.plotly_streaming_domain= plotly_streaming_domain;
+        config.plotly_api_domain = plotly_api_domain;
+    otherwise
 end
 
 config_string = m2json(config);
