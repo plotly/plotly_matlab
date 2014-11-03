@@ -244,7 +244,7 @@ classdef plotlygrid < dynamicprops & handle
             end
             
             %-question user upon delete request-%
-            checkdelete = input(['\nWhoops! You are about to delete grid: ' obj.ID '.' ,...
+            checkdelete = input(['\nWhoops! You are about to delete grid: ' obj.ID '\n' ,...
                 'Do you wish to proceed? (y/n): ' ], 's');
             
             %-check answer-%
@@ -257,7 +257,9 @@ classdef plotlygrid < dynamicprops & handle
                 obj.Caller.makecall('DELETE', relative_endpoint, payload);
                 
                 %-handle succes/errors-%
-                if ~obj.Caller.Success
+                if obj.Caller.Success
+                    fprintf('\n'); 
+                else
                     errkey = 'gridGeneric:genericError';
                     error(errkey,[gridmsg(errkey) obj.Caller.Response.detail]);
                 end
