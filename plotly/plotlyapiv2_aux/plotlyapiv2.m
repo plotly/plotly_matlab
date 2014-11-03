@@ -2,7 +2,7 @@ classdef plotlyapiv2 < handle
     
     %----CLASS PROPERTIES----%
     properties
-        Domain = 'http://api-local.plot.ly:3000/v2';
+        Domain;
         Response
         UserData
         Success
@@ -13,9 +13,20 @@ classdef plotlyapiv2 < handle
         
         %-CLASS CONSTRUCTOR-%
         function obj =  plotlyapiv2(username, api_key)
+            
+            %-domain-%
+            try
+                config = loadplotlyconfig;
+                obj.Domain = config.plotly_api_domain;
+            catch
+                errkey = 'apiV2:noDomain';
+                error(errkey, apiv2msg(errkey));
+            end
+            
             obj.UserData.UserName = username;
             obj.UserData.ApiKey = api_key;
             obj.Success = false;
+            
         end
         
         %-MAKE CALL-%
@@ -39,8 +50,15 @@ classdef plotlyapiv2 < handle
             headers = struct('name', {'Authorization','plotly_client_platform','content-type','accept'},...
                 'value', {['Basic ' encoded_un_key], platform, 'application/json','*/*'});
             
+            %-body-%
+            if ~isempty(payload)
+                body = m2json(payload);
+            else
+                body = ''; 
+            end
+            
             %-make call-%
-            resp = urlread2(endpoint, request , m2json(payload), headers);
+            resp = urlread2(endpoint, request , body, headers);
             
             if ~isempty(resp)
                 
