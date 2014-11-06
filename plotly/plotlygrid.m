@@ -103,7 +103,7 @@ classdef plotlygrid < dynamicprops & handle
             else
                 
                 
-                %-parse data-%
+                %-data-%
                 fields = fieldnames(obj.ColumnData);
                 gd = struct();
                 
@@ -111,6 +111,11 @@ classdef plotlygrid < dynamicprops & handle
                     %format the grid data (gd)
                     gd.cols.(fields{f}).data = obj.ColumnData.(fields{f});
                     gd.cols.(fields{f}).order = f-1;
+                end
+                
+                %-metadata-%
+                if ~isempty(obj.Meta)
+                    gd.metadata = obj.Meta; 
                 end
                 
                 %-payload-%
@@ -254,7 +259,7 @@ classdef plotlygrid < dynamicprops & handle
                 payload = '';
                 
                 %-make call-%
-                obj.Caller.makecall('DELETE', relative_endpoint, payload);
+                obj.Caller.makecall('Delete', relative_endpoint, payload);
                 
                 %-handle succes/errors-%
                 if obj.Caller.Success
@@ -272,6 +277,33 @@ classdef plotlygrid < dynamicprops & handle
         
         function obj = addMetadata(obj)
             
+            %-endpoint-%
+            if ~isempty(obj.ID)
+                relative_endpoint = ['/grids/' obj.ID ];
+            else
+                errkey = 'gridMeta:noGridId';
+                error(errkey, gridmsg(errkey));
+            end
+            
+            %-payload-%
+            if ~isempty(obj.Meta)
+                payload.metadata = m2json(obj.Meta);
+            else
+                errkey = 'gridMeta:noMetaData';
+                error(errkey, gridmsg(errkey));
+            end
+            
+            %-make call-%
+            obj.Caller.makecall('Patch', relative_endpoint, payload);
+            
+            %-handle succes/errors-%
+            if obj.Caller.Success
+                fprintf('\n');
+            else
+                errkey = 'gridGeneric:genericError';
+                error(errkey,[gridmsg(errkey) obj.Caller.Response.detail]);
+            end
+
         end
         
         function obj = download(obj)
