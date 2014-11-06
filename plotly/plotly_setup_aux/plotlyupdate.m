@@ -72,6 +72,7 @@ plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
 
 % find the location of all plotly/ directories
 dircount = 1; 
+plotlyDirs = {}; 
 for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
     plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api-master','plotly'));
@@ -82,6 +83,10 @@ for d = 1:length(plotlyScriptDirs)
         plotlyDirs{dircount} = plotlyToolboxDir;
     end
     dircount = dircount + 1; 
+end
+
+if isempty(plotlyDirs)
+    error('It seems your plotly wrapper directory structure has changed. Update aborted.'); 
 end
 
 %----update if necessary----%
