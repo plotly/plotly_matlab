@@ -34,7 +34,7 @@ end
 
 % remote Plotly API MATLAB Library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
-          'master/README.md'];
+          'plotlyupdate/README.md'];
 
 % remote Plotly API MATLAB Library
 try
