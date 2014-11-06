@@ -68,14 +68,19 @@ catch exception
 end
 
 % find the location of all plotly/ directories
-plotlyDirs = cell(1,length(plotlyScriptDirs));
-
+dircount = 1; 
 for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
-    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),'plotly');
+    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api','plotly'));
     if ~isempty(plotlyLoc)
-        plotlyDirs{d} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'plotly');
+        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'Matlab-api','plotly');
     end
+    dircount = dircount + 1; 
+end
+
+% MATLAB toolbox plotly 
+if exist(fullfile(matlabroot,'toolbox','plotly'), 'dir');
+    plotlyDirs{end+1} = fullfile(matlabroot,'toolbox','plotly'); 
 end
 
 %----update if necessary----%
