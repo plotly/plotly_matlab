@@ -33,10 +33,10 @@ plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
 dircount = 1; 
 for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
-    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api','plotly'));
+    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api-master','plotly'));
     plotlyToolboxLoc = strfind(fileparts(plotlyScriptDirs{d}),plotlyToolboxDir); 
     if ~isempty(plotlyLoc)
-        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api','plotly');
+        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api-master','plotly');
     elseif ~isempty(plotlyToolboxLoc)
         plotlyDirs{dircount} = plotlyToolboxDir;
     end

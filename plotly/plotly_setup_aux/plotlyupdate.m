@@ -34,7 +34,7 @@ end
 
 % remote Plotly API MATLAB Library url
 remote = ['https://raw.githubusercontent.com/plotly/MATLAB-api/',...
-          'plotlyupdate/README.md'];
+          'master/README.md'];
 
 % remote Plotly API MATLAB Library
 try
@@ -74,10 +74,10 @@ plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
 dircount = 1; 
 for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
-    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api','plotly'));
+    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api-master','plotly'));
     plotlyToolboxLoc = strfind(fileparts(plotlyScriptDirs{d}),plotlyToolboxDir); 
     if ~isempty(plotlyLoc)
-        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api','plotly');
+        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api-master','plotly');
     elseif ~isempty(plotlyToolboxLoc)
         plotlyDirs{dircount} = plotlyToolboxDir;
     end
@@ -134,7 +134,7 @@ else
                     fprintf(['Downloading the Plotly API Matlab Library v.' pvRemote ' ... ']);
                 end
                 
-                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/plotlyupdate.zip';
+                newPlotlyUrl = 'https://github.com/plotly/MATLAB-api/archive/master.zip';
                 newPlotlyZip = fullfile(plotlyUpdateDir,['plotlyupdate_' pvRemote '.zip']);
                 
                 %download from url
@@ -179,10 +179,10 @@ else
                 end
                 
                 % new Plotly directory
-                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyupdate','plotly');
+                newPlotlyDir = fullfile(plotlyUpdateDir,'MATLAB-api-master','plotly');
                 
                 % files in Plotly repo root
-                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-plotlyupdate'));
+                repoRoot = dir(fullfile(plotlyUpdateDir,'MATLAB-api-master'));
                 
                 % files not to be included
                 repoExclude = {'.','..','.gitignore','plotly'};
@@ -191,7 +191,7 @@ else
                 d = 1;
                 for r = 1:length(repoRoot);
                     if(isempty(intersect(repoRoot(r).name,repoExclude)))
-                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-plotlyupdate',repoRoot(r).name);
+                        auxFiles{d} = fullfile(plotlyUpdateDir,'MATLAB-api-master',repoRoot(r).name);
                         d = d+1;
                     end
                 end
