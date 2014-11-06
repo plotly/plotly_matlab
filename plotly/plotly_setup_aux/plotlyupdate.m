@@ -78,9 +78,12 @@ for d = 1:length(plotlyScriptDirs)
     dircount = dircount + 1; 
 end
 
-% MATLAB toolbox plotly 
-if exist(fullfile(matlabroot,'toolbox','plotly'), 'dir');
-    plotlyDirs{end+1} = fullfile(matlabroot,'toolbox','plotly'); 
+% plotly toolbox directory
+plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
+
+% MATLAB toolbox plotly
+if exist(plotlyToolboxDir, 'dir');
+    plotlyDirs{end+1} = plotlyToolboxDir;
 end
 
 %----update if necessary----%
@@ -194,9 +197,6 @@ else
                         d = d+1;
                     end
                 end
-                
-                % plotly toolbox directory
-                plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
                 
                 % remove old plotlyclean scripts
                 pcScripts = which('plotlycleanup.m','-all');

@@ -37,9 +37,12 @@ for d = 1:length(plotlyScriptDirs)
     dircount = dircount + 1; 
 end
 
-% MATLAB toolbox plotly 
-if exist(fullfile(matlabroot,'toolbox','plotly'), 'dir');
-    plotlyDirs{end+1} = fullfile(matlabroot,'toolbox','plotly'); 
+% plotly toolbox directory
+plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
+
+% MATLAB toolbox plotly
+if exist(plotlyToolboxDir, 'dir');
+    plotlyDirs{end+1} = plotlyToolboxDir;
 end
 
 for d = 1:length(plotlyDirs)
