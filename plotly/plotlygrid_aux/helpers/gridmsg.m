@@ -21,6 +21,10 @@ switch key
         errormsg = ['\nOops! Please specify a gridId!\n\n'];
     case  'gridDelete:noGridId'
         errormsg = ['\nOops! Please specify a gridId!\n\n'];
+    case 'gridMeta:noGridId'
+        errormsg = ['\nOops! Please specify a gridId!\n\n'];
+    case 'gridMeta:noMetaData'
+        errormsg = ['\nOops! No meta data found!\n\n'];
     case 'gridAppendCols:invalidInput'
         errormsg = ['\nOops! Column input must be a struct!\n\n'];
     case 'gridFilename:alreadyExists'
