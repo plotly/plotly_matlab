@@ -32,7 +32,7 @@ for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
     plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api','plotly'));
     if ~isempty(plotlyLoc)
-        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'Matlab-api','plotly');
+        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api','plotly');
     end
     dircount = dircount + 1; 
 end
