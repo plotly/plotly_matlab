@@ -26,23 +26,21 @@ catch exception %locating plotly error catch...
     return
 end
 
+% plotly toolbox directory
+plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
+
 % find the location of all plotly/ directories
 dircount = 1; 
 for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
     plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api','plotly'));
+    plotlyToolboxLoc = strfind(fileparts(plotlyScriptDirs{d}),plotlyToolboxDir); 
     if ~isempty(plotlyLoc)
         plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api','plotly');
+    elseif ~isempty(plotlyToolboxLoc)
+        plotlyDirs{dircount} = plotlyToolboxDir;
     end
     dircount = dircount + 1; 
-end
-
-% plotly toolbox directory
-plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
-
-% MATLAB toolbox plotly
-if exist(plotlyToolboxDir, 'dir');
-    plotlyDirs{end+1} = plotlyToolboxDir;
 end
 
 for d = 1:length(plotlyDirs)
