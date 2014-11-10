@@ -584,6 +584,21 @@ classdef plotlyfig < handle
                 obj.UserData.PlotlyDomain);
         end
         
+        %------------------------DATA 2 SOURCE----------------------------%
+        
+        function colsrc = data2colsrc(~, coldata, plotlycolumns)
+           
+            colsrc = 0;
+            
+            colindex = find(cellfun(@(x)(isequal(coldata,x.Data)),...
+            plotlycolumns),1,'first');
+            
+            if(colindex)
+                colsrc = plotlycolumns{colindex}.ID; 
+            end
+            
+        end
+        
         %-------------------OVERLOADED FUNCTIONS--------------------------%
         
         %----PLOT FUNCTIONS----%
