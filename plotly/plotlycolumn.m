@@ -44,7 +44,7 @@ classdef plotlycolumn
         function han = plot(obj, varargin)
             [data vargs] = filterCol(obj,varargin{:});
             han = plot(data, vargs{:});
-            referenceData(obj, han, varargin);
+            referenceData(obj, han, varargin{:});
         end
         
         function obj = bar(obj, varargin)
