@@ -1,10 +1,9 @@
-classdef plotlycolumn < double
+classdef plotlycolumn 
     
     %----CLASS PROPERTIES----%
     properties
         Data;
-        FID
-        UID;
+        ID;
         Name;
     end
     
@@ -18,11 +17,9 @@ classdef plotlycolumn < double
                 data = data';
             end
             
-            obj = obj@double(data);
             obj.Data = data; 
             obj.Name = name; 
-            obj.UID = uid; 
-            obj.FID = fid; 
+            obj.ID = [strrep(fid,':','/') ':' uid]; 
             
         end
         
@@ -42,5 +39,39 @@ classdef plotlycolumn < double
             obj.Data = [obj.Data ; nan(1, diff(appendPos,length(obj.Data))) ; data];
             
         end
+        
+        %--overloaded plotting functions--%
+        function han = plot(obj, varargin)
+           data = obj.Data; 
+           for n = 1:length(varargin)
+               if isa(varargin{n},'plotlycolumn')
+                   
+               end
+           end
+           han = plot(data, data);  
+           referenceData(obj, han, varargin); 
+        end
+        
+        function obj = bar(obj, varargin)
+           han = bar(obj, varargin{:});  
+           referenceData(obj, han, varargin); 
+        end
+        
+        %--reference data--%
+        function obj = referenceData(obj, handles, varargin)
+            
+            userdata.plotlycolrefs{1} = obj; 
+            
+            for n = 1:length(varargin)
+                if isa(varargin{n},'plotlycolumn')
+                    userdata.plotlycolrefs{n+1} = varargin{n}; 
+                end
+            end
+            
+            for h = 1:length(handles)
+                set(handles(h), 'UserData', userdata);
+            end
+            
+        end      
     end
 end
