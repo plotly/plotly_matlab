@@ -47,7 +47,7 @@ classdef plotlyapiv2 < handle
                 obj.UserData.ApiKey]).getBytes()));
             
             %-headers-%
-            headers = struct('name', {'Authorization','plotly_client_platform','content-type','accept'},...
+            headers = struct('name', {'Authorization','plotly-client-platform','content-type','accept'},...
                 'value', {['Basic ' encoded_un_key], platform, 'application/json','*/*'});
             
             %-body-%
