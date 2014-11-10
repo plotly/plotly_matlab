@@ -85,9 +85,10 @@ obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-%-scatter x-%
+%-scatter xsrc-%
 if isfield(plot_data.UserData,'plotlycolrefs')
-    obj.data2colsrc(plot_data.XData,plot_data.UserData.plotlycolsrefs); 
+    obj.data{plotIndex}.xsrc = data2colsrc(plot_data.XData, ...
+        plot_data.UserData.plotlycolrefs);
 end
 
 %-------------------------------------------------------------------------%
@@ -99,21 +100,18 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-scatter y-%
-obj.data{plotIndex}.y = plot_data.YData;
+%-scatter ysrc-%
+if isfield(plot_data.UserData,'plotlycolrefs')
+    obj.data{plotIndex}.ysrc = data2colsrc(plot_data.YData, ...
+        plot_data.UserData.plotlycolrefs);
+end
 
 %-------------------------------------------------------------------------%
 
-if isfield(plot_data,'ZData')
-    if any(plot_data.ZData)
-        %-scatter z-%
-        obj.data{plotIndex}.z = plot_data.ZData;
-        
-        %overwrite type
-        obj.data{plotIndex}.type = 'scatter3d';
-    end
+%-scatter y-%
+if ~isfield(obj.data{plotIndex},'ysrc')
+    obj.data{plotIndex}.x = plot_data.YData;
 end
-
 %-------------------------------------------------------------------------%
 
 %-scatter name-%

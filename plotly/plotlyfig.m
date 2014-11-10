@@ -61,7 +61,7 @@ classdef plotlyfig < handle
             %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 80;
             obj.PlotlyDefaults.TitleHeight = 0.01;
-            obj.PlotlyDefaults.TitleFontSizeIncrease = 40; 
+            obj.PlotlyDefaults.TitleFontSizeIncrease = 40;
             obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
             obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5;
             obj.PlotlyDefaults.MarginPad = 0;
@@ -206,7 +206,7 @@ classdef plotlyfig < handle
         end
         
         %----LOAD PLOTLY REFERENCE-----%
-        function obj = loadplotlyref(obj) 
+        function obj = loadplotlyref(obj)
             if isempty(obj.PlotlyReference)
                 
                 % plotly reference
@@ -219,12 +219,12 @@ classdef plotlyfig < handle
         
         %----KEEP THE MATLAB STYLE DEFAULTS----%
         function obj = revert(obj)
-      
+            
             % set the PlotOptions.Strip property
-            obj.PlotOptions.Strip = false; 
+            obj.PlotOptions.Strip = false;
             
             % update the object
-            obj.update;   
+            obj.update;
             
         end
         
@@ -352,7 +352,7 @@ classdef plotlyfig < handle
         %----SEND PLOT REQUEST (NO UPDATE)----%
         function obj = upload(obj)
             % same as calling plotly
-            obj.plotly; 
+            obj.plotly;
         end
         
         %----SEND PLOT REQUEST (NO UPDATE)----%
@@ -468,7 +468,7 @@ classdef plotlyfig < handle
             else
                 legs = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','legend');
             end
-                
+            
             obj.State.Figure.NumLegends = length(legs);
             
             for g = 1:length(legs)
@@ -582,21 +582,6 @@ classdef plotlyfig < handle
             signin(obj.UserData.Username,...
                 obj.UserData.ApiKey,...
                 obj.UserData.PlotlyDomain);
-        end
-        
-        %------------------------DATA 2 SOURCE----------------------------%
-        
-        function colsrc = data2colsrc(~, coldata, plotlycolumns)
-           
-            colsrc = 0;
-            
-            colindex = find(cellfun(@(x)(isequal(coldata,x.Data)),...
-            plotlycolumns),1,'first');
-            
-            if(colindex)
-                colsrc = plotlycolumns{colindex}.ID; 
-            end
-            
         end
         
         %-------------------OVERLOADED FUNCTIONS--------------------------%
@@ -748,7 +733,7 @@ classdef plotlyfig < handle
             % call initial
             [y,t,x] = initial(varargin{:});
             % fake output by calling plot
-            plot(t,y); 
+            plot(t,y);
             %update object
             obj.update;
             %send to plotly
@@ -842,7 +827,7 @@ classdef plotlyfig < handle
                     if ~(strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d'))
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
-                end 
+                end
             end
         end
     end

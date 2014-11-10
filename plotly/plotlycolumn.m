@@ -1,4 +1,4 @@
-classdef plotlycolumn 
+classdef plotlycolumn
     
     %----CLASS PROPERTIES----%
     properties
@@ -7,7 +7,7 @@ classdef plotlycolumn
         Name;
     end
     
-     %----CLASS METHODS----%
+    %----CLASS METHODS----%
     methods
         
         function obj = plotlycolumn(data, name, uid, fid)
@@ -17,9 +17,9 @@ classdef plotlycolumn
                 data = data';
             end
             
-            obj.Data = data; 
-            obj.Name = name; 
-            obj.ID = [strrep(fid,':','/') ':' uid]; 
+            obj.Data = data;
+            obj.Name = name;
+            obj.ID = [strrep(fid,':','/') ':' uid];
             
         end
         
@@ -42,29 +42,37 @@ classdef plotlycolumn
         
         %--overloaded plotting functions--%
         function han = plot(obj, varargin)
-           data = obj.Data; 
-           for n = 1:length(varargin)
-               if isa(varargin{n},'plotlycolumn')
-                   
-               end
-           end
-           han = plot(data, data);  
-           referenceData(obj, han, varargin); 
+            [data vargs] = filterCol(obj,varargin);
+            han = plot(data, vargs{:});
+            referenceData(obj, han, varargin);
         end
         
         function obj = bar(obj, varargin)
-           han = bar(obj, varargin{:});  
-           referenceData(obj, han, varargin); 
+            han = bar(obj, varargin{:});
+            referenceData(obj, han, varargin);
+        end
+        
+        %--extract out data from column object--%
+        function [data, vars] = filterCol(obj,varargin)
+            data = obj.Data;
+            vars = {};
+            count = 0;
+            for n = 1:length(varargin)
+                if isa(varargin{n},'plotlycolumn')
+                    vars{count} = varargin{n}.Data;
+                    count = count + 1;
+                end
+            end
         end
         
         %--reference data--%
         function obj = referenceData(obj, handles, varargin)
             
-            userdata.plotlycolrefs{1} = obj; 
+            userdata.plotlycolrefs{1} = obj;
             
             for n = 1:length(varargin)
                 if isa(varargin{n},'plotlycolumn')
-                    userdata.plotlycolrefs{n+1} = varargin{n}; 
+                    userdata.plotlycolrefs{n+1} = varargin{n};
                 end
             end
             
@@ -72,6 +80,6 @@ classdef plotlycolumn
                 set(handles(h), 'UserData', userdata);
             end
             
-        end      
+        end
     end
 end
