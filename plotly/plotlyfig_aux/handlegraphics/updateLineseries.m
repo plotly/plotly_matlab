@@ -86,7 +86,16 @@ obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-scatter x-%
-obj.data{plotIndex}.x = plot_data.XData;
+if isfield(plot_data.UserData,'plotlycolrefs')
+    obj.data2colsrc(plot_data.XData,plot_data.UserData.plotlycolsrefs); 
+end
+
+%-------------------------------------------------------------------------%
+
+%-scatter x-%
+if ~isfield(obj.data{plotIndex},'xsrc')
+    obj.data{plotIndex}.x = plot_data.XData;
+end
 
 %-------------------------------------------------------------------------%
 
