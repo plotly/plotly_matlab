@@ -42,7 +42,7 @@ classdef plotlycolumn
         
         %--overloaded plotting functions--%
         function han = plot(obj, varargin)
-            [data vargs] = filterCol(obj,varargin);
+            [data vargs] = filterCol(obj,varargin{:});
             han = plot(data, vargs{:});
             referenceData(obj, han, varargin);
         end
@@ -55,12 +55,12 @@ classdef plotlycolumn
         %--extract out data from column object--%
         function [data, vars] = filterCol(obj,varargin)
             data = obj.Data;
-            vars = {};
-            count = 0;
+            vars = varargin;
             for n = 1:length(varargin)
                 if isa(varargin{n},'plotlycolumn')
-                    vars{count} = varargin{n}.Data;
-                    count = count + 1;
+                    vars{n} = varargin{n}.Data;
+                else
+                    vars{n} = varargin{n}; 
                 end
             end
         end
