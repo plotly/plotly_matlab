@@ -169,7 +169,21 @@ obj.data{patchIndex}.line = extractPatchLine(patch_data);
 
 %-patch fillcolor-%
 fill = extractPatchFace(patch_data);
-obj.data{patchIndex}.fillcolor = fill.color;
+
+if strcmp(obj.data{patchIndex}.type,'scatter');
+    obj.data{patchIndex}.fillcolor = fill.color; 
+else
+    obj.data{patchIndex}.surfacecolor = fill.color;
+end
+
+%-------------------------------------------------------------------------%
+
+%-surfaceaxis-%
+if strcmp(obj.data{patchIndex}.type,'scatter3d');
+    minstd = min([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)]);
+    ind = find([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)] == minstd)-1;
+    obj.data{patchIndex}.surfaceaxis = ind; 
+end
 
 %-------------------------------------------------------------------------%
 
