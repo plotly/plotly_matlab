@@ -37,10 +37,11 @@ for d = 1:length(plotlyScriptDirs)
     plotlyToolboxLoc = strfind(fileparts(plotlyScriptDirs{d}),plotlyToolboxDir); 
     if ~isempty(plotlyLoc)
         plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api-master','plotly');
+        dircount = dircount + 1; 
     elseif ~isempty(plotlyToolboxLoc)
         plotlyDirs{dircount} = plotlyToolboxDir;
+        dircount = dircount + 1; 
     end
-    dircount = dircount + 1; 
 end
 
 for d = 1:length(plotlyDirs)
