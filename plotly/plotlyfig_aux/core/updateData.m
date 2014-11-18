@@ -96,7 +96,8 @@ if strcmpi(xaxis.type, 'date')
 end
 
 % check for xaxis categories
-if strcmpi(xaxis.type, 'category')
+if strcmpi(xaxis.type, 'category') && ...
+        ~strcmp(obj.data{dataIndex}.type,'box')
     obj.data{dataIndex}.x =  get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
 end
 
@@ -106,9 +107,11 @@ if strcmpi(yaxis.type, 'date')
 end
 
 % check for yaxis categories
-if strcmpi(yaxis.type, 'category')
+if strcmpi(yaxis.type, 'category') && ...
+        ~strcmp(obj.data{dataIndex}.type,'box')
     obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
 end
+
 %-------------------------------------------------------------------------%
 
 end
