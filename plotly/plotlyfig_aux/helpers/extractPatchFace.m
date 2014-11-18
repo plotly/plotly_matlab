@@ -36,7 +36,7 @@ else
         case 'none'
             marker.color = 'rgba(0,0,0,0,)';
             
-        case 'flat'
+        case {'flat','interp'}
             
             switch patch_data.CDataMapping
                 

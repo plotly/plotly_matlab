@@ -83,7 +83,11 @@ obj.data{scatterIndex}.yaxis = ['y' num2str(ysource)];
 %-------------------------------------------------------------------------%
 
 %-scatter type-%
-obj.data{scatterIndex}.type = 'scatter';
+if any(nonzeros(scatter_data.ZData))
+    obj.data{scatterIndex}.type = 'scatter3d';
+else
+    obj.data{scatterIndex}.type = 'scatter';
+end
 
 %-------------------------------------------------------------------------%
 
@@ -124,6 +128,17 @@ for m = 1:length(scatter_child_data)
         obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
     else
         obj.data{scatterIndex}.y = scatter_child_data.YData;
+    end
+    
+    %---------------------------------------------------------------------%
+    
+    %-scatter z-%
+    if any(nonzeros(scatter_data.ZData))
+        if length(scatter_child_data) > 1
+            obj.data{scatterIndex}.z(m) = scatter_child_data(n).ZData;
+        else
+            obj.data{scatterIndex}.z = scatter_child_data.ZData;
+        end
     end
     
     %---------------------------------------------------------------------%

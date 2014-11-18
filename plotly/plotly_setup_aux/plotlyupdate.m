@@ -67,15 +67,27 @@ catch exception
     return
 end
 
-% find the location of all plotly/ directories
-plotlyDirs = cell(1,length(plotlyScriptDirs));
+% plotly toolbox directory
+plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
 
+% find the location of all plotly/ directories
+dircount = 1; 
+plotlyDirs = {}; 
 for d = 1:length(plotlyScriptDirs)
     %parse filepath string at the Plotly directory
-    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),'plotly');
+    plotlyLoc = strfind(fileparts(plotlyScriptDirs{d}),fullfile('MATLAB-api-master','plotly'));
+    plotlyToolboxLoc = strfind(fileparts(plotlyScriptDirs{d}),plotlyToolboxDir); 
     if ~isempty(plotlyLoc)
-        plotlyDirs{d} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'plotly');
+        plotlyDirs{dircount} = fullfile(plotlyScriptDirs{d}(1:plotlyLoc-1),'MATLAB-api-master','plotly');
+        dircount = dircount + 1; 
+    elseif ~isempty(plotlyToolboxLoc)
+        plotlyDirs{dircount} = plotlyToolboxDir;
+        dircount = dircount + 1; 
     end
+end
+
+if isempty(plotlyDirs)
+    error('It seems your plotly wrapper directory structure has changed. Update aborted.'); 
 end
 
 %----update if necessary----%
@@ -190,9 +202,6 @@ else
                     end
                 end
                 
-                % plotly toolbox directory
-                plotlyToolboxDir = fullfile(matlabroot,'toolbox','plotly');
-                
                 % remove old plotlyclean scripts
                 pcScripts = which('plotlycleanup.m','-all');
                 
@@ -270,7 +279,7 @@ else
                     end
                 end
             catch exception
-                fprintf(['\n\nAn error occured while cleaning up the outdated Plotly scripts. Please\n',...
+                fprintf([exception '\n\nAn error occured while cleaning up the outdated Plotly scripts. Please\n',...
                     'check your write permissions for your outdated Plotly directories with \n',...
                     'your system admin. Contact chuck@plot.ly for more information.\n\n']);
             end
