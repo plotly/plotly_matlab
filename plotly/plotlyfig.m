@@ -556,23 +556,23 @@ classdef plotlyfig < handle
         %-------------------CALLBACK FUNCTIONS--------------------------%
         
         %----UPDATE FIGURE OPTIONS----%
-        function obj = updateFigureVisible(obj)
+        function obj = updateFigureVisible(obj,src,event)
             % update PlotOptions.Visible
             obj.PlotOptions.Visible = get(obj.State.Figure.Handle,'Visible');
         end
         
-        function obj = updateFigureName(obj)
+        function obj = updateFigureName(obj,src,event)
             % update PlotOptions.Name
             obj.PlotOptions.FileName = get(obj.State.Figure.Handle,'Name');
         end
         
         %----UPDATE PLOT OPTIONS----%
-        function obj = updatePlotOptions(obj)
+        function obj = updatePlotOptions(obj,src,event)
             set(obj.State.Figure.Handle, 'Name', obj.PlotOptions.FileName, 'Visible', obj.PlotOptions.Visible);
         end
         
         %----UPDATE USER DATA----%
-        function obj = updateUserData(obj)
+        function obj = updateUserData(obj,src,event)
             signin(obj.UserData.Username,...
                 obj.UserData.ApiKey,...
                 obj.UserData.PlotlyDomain);
