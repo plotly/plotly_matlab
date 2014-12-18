@@ -1,6 +1,6 @@
-function plotlyimage(figure_or_data, filename, varargin)
+function plotlygenimage(figure_or_data, filename, varargin)
 
-    [~, ~, ext] = fileparts(filename);
+    [pathstr, name, ext] = fileparts(filename);
     if nargin < 3
         format = ext(2:length(ext));
     else
