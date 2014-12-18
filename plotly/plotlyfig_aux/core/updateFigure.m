@@ -1,6 +1,6 @@
 %----UPDATE FIGURE DATA/LAYOUT----%
 
-function obj = updateFigure(obj, ~, ~)
+function obj = updateFigure(obj)
 
 %--------PLOTLY LAYOUT FIELDS---------%
 
