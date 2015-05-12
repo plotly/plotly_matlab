@@ -34,6 +34,5 @@ function valstr = m2json(val)
             valstr = 'false';
         end
     else
-        disp [val ' iselse'];
         valstr = ''; % wtf is it?
     end

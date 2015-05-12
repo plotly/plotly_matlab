@@ -134,7 +134,7 @@ if(~is_octave)
     end
     
 else %if octave
-    display('\nOctave users: Automatic Plotly API embedding coming soon!\n');
+    fprintf('\n\nOctave users: Automatic Plotly API embedding coming soon!\n\n');
 end %end check for matlab...
 
 try %save user credentials
