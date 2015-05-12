@@ -61,4 +61,7 @@ creds_string = m2json(creds);
 fprintf(fileIDCred,'%s',creds_string);
 fclose(fileIDCred);
 
+%signin using newly saved credentials
+signin(username, api_key);
+
 end

@@ -45,12 +45,16 @@ if(fileIDConfig == -1)
         'chris@plot.ly for support.']);
 end
 
+% get user credenitals 
+[username, api_key] = signin; 
 
 switch nargin
     case 1
         config.plotly_domain = plotly_domain;
+        signin(username, api_key, plotly_domain);
     case 2
         config.plotly_domain = plotly_domain;
+        signin(username, api_key, plotly_domain);
         config.plotly_streaming_domain= plotly_streaming_domain;
     otherwise %if neither endpoints are specified, no worries!
 end
