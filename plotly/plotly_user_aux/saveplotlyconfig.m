@@ -3,6 +3,14 @@ function saveplotlyconfig(plotly_domain,plotly_streaming_domain)
 % Plotly config info are saved as JSON strings
 % in ~/.plotly/.config
 
+% catch missing input arguments
+if nargin < 1 
+    error('plotly:saveconfig', ...
+    ['Incorrect number of inputs. Please save your configuration ', ...
+    'as follows: >> saveplotlyconfig(plotly_domain,', ...
+    '[optional]plotly_streaming_domain)']); 
+end
+
 % if the config file exists, then load it up
 try
     config = loadplotlyconfig();
