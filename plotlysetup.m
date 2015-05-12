@@ -139,7 +139,10 @@ end %end check for matlab...
 
 try %save user credentials
     fprintf('Saving username/api_key credentials ... ');
-    saveplotlycredentials(username,api_key);
+
+    %update: as of v.2.1.7, This also signs in the user
+    saveplotlycredentials(username, api_key);
+
     %worked!
     fprintf('Done\n');
 catch exception %writing credentials file permission problem catch...
@@ -168,13 +171,19 @@ try
         
         if strcmp(varargin{n},'stream_ids')
             fprintf('Saving stream_ids credentials ... ');
-            saveplotlycredentials(username,api_key,varargin{n+1});
+
+            %update: as of v.2.1.7, This also signs in the user
+            saveplotlycredentials(username, api_key, varargin{n+1});
+
             %worked!
             fprintf('Done\n');
         end
         if strcmp(varargin{n},'plotly_domain')
             fprintf('Saving plotly_domain configuration ... ');
+
+            %update: as of v.2.1.7, This also signs in the user
             saveplotlyconfig(varargin{n+1});
+
             %worked!
             fprintf('Done\n');
         end
@@ -185,7 +194,10 @@ try
             catch
                 config.plotly_domain = '';
             end
+
+            %update: as of v.2.1.7, This also signs in the user
             saveplotlyconfig(config.plotly_domain,varargin{n+1});
+
             %worked!
             fprintf('Done\n');
         end
@@ -194,9 +206,6 @@ try
 catch exception %writing varargin problem catch...
     fprintf(['\n\n' exception.identifier exception.message '\n\n']);
 end
-
-%sign in the user
-signin(username,api_key);
 
 %greet the people!
 fprintf('\nWelcome to Plotly! If you are new to Plotly please enter: >> plotlyhelp to get started!\n\n')
