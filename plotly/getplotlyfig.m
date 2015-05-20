@@ -15,7 +15,7 @@ function p = getplotlyfig(file_owner, file_id)
 
 % [OUTPUT]:
 
-% p - plotlyfigure object
+% p - plotlyfig object
 
 % [EXAMPLE]:
 
