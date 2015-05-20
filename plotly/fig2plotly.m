@@ -25,7 +25,7 @@ function p = fig2plotly(varargin)
 
 % [OUTPUT]:
 
-% p - plotlyfigure object
+% p - plotlyfig object
 
 % [ADDITIONAL RESOURCES]:
 

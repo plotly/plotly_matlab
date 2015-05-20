@@ -1,11 +1,11 @@
 function errormsg = plotlymsg(key)
 switch key
-    %--plotlyfigure constructor--%
-    case 'plotlyfigureConstructor:notSignedIn'
-        errormsg = '\nOops! You must be signed in to initialize a plotlyfigure object.\n'; 
-    case 'plotlyfigureConstructor:invalidInputs'
-        errormsg = ['\nOops! It appears that you did not initialize the plotlyfigure object using the\n', ...
-            'required: >>  plotlyfigure(handle [optional],''property'',''value'',...) \n',...
+    %--plotlyfig constructor--%
+    case 'plotlyfigConstructor:notSignedIn'
+        errormsg = '\nOops! You must be signed in to initialize a plotlyfig object.\n'; 
+    case 'plotlyfigConstructor:invalidInputs'
+        errormsg = ['\nOops! It appears that you did not initialize the plotlyfig object using the\n', ...
+            'required: >>  plotlyfig(handle [optional],''property'',''value'',...) \n',...
             'input structure. Please try again or contact chuck@plot.ly for any additional help!\n\n'];
         %--saveplotlyfig invocation--%;
     case 'plotlySaveImage:invalidInputs'
