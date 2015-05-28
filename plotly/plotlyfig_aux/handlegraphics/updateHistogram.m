@@ -6,10 +6,10 @@ function obj = updateHistogram(obj,histIndex)
 % name:...[DONE]
 % autobinx:...[DONE]
 % nbinsx:...[DONE]
-% xbins:...[NA]
+% xbins:...[DONE]
 % autobiny:...[DONE]
 % nbinsy:...[DONE]
-% ybins:...[NA]
+% ybins:...[DONE]
 % text:...[NOT SUPPORTED IN MATLAB]
 % error_y:...[HANDLED BY ERRORBARSERIES]
 % error_x:...[HANDLED BY ERRORBARSERIES]
@@ -79,7 +79,7 @@ obj.data{histIndex}.type = 'histogram';
 %-------------------------------------------------------------------------%
 
 %-HIST XAXIS-%
-obj.data{histIndex}.histnorm = 'count';
+obj.data{histIndex}.histfunc= 'count';
 
 %-------------------------------------------------------------------------%
 
@@ -103,12 +103,15 @@ switch orientation
         %-------------------------------------------------------------------------%
         
         %-hist autobinx-%
-        obj.data{histIndex}.autobinx = true;
+        obj.data{histIndex}.autobinx = false;
         
         %-------------------------------------------------------------------------%
         
-        %-hist nbinsx-%
-        obj.data{histIndex}.nbinsx = length(xdata) + 1; %(+1 for max #)
+        %-hist xbins-%
+        xbins.start = hist_data.XData(2,1);
+        xbins.end = hist_data.XData(3,end);
+        xbins.size = diff(hist_data.XData(2:3,1));
+        obj.data{histIndex}.xbins = xbins; 
        
         %-------------------------------------------------------------------------%
         
@@ -130,12 +133,15 @@ switch orientation
         %-------------------------------------------------------------------------%
         
         %-hist autobiny-%
-        obj.data{histIndex}.autobiny = true;
+        obj.data{histIndex}.autobiny = false;
         
         %-------------------------------------------------------------------------%
         
-        %-hist nbinsy-%
-        obj.data{histIndex}.nbinsy = length(ydata);
+        %-hist ybins-%
+        ybins.start = hist_data.YData(2,1);
+        ybins.end = hist_data.YData(3,end);
+        ybins.size = diff(hist_data.YData(2:3,1));
+        obj.data{histIndex}.ybins = ybins; 
        
         %-------------------------------------------------------------------------%
              

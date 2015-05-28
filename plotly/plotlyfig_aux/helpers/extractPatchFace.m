@@ -34,7 +34,7 @@ else
     switch patch_data.FaceColor
         
         case 'none'
-            marker.color = 'rgba(0,0,0,0,)';
+            marker.color = 'rgba(0,0,0,0)';
             
         case {'flat','interp'}
             
