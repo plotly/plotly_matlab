@@ -3,6 +3,14 @@ function saveplotlycredentials(username, api_key, stream_ids)
 % Plotly credentials are saved as JSON strings
 % in ~/.plotly/.credentials
 
+% catch missing input arguments
+if nargin < 2
+    error('plotly:savecredentials', ...
+    ['Incorrect number of inputs. Please save your credentials ', ...
+    'as follows: >> saveplotlycredentials(username, api_key,', ...
+    '[optional]stream_ids)']); 
+end
+
 % if the credentials file exists, then load it up
 try
     creds = loadplotlycredentials();
@@ -45,9 +53,6 @@ switch nargin
         creds.username = username;
         creds.api_key = api_key;
         creds.stream_ids = stream_ids;
-    otherwise %need to specify both the username and api_key
-        error('plotly:savecredentials',...
-        'Please specify your username and api_key');   
 end
 
 creds_string = m2json(creds);
@@ -55,5 +60,8 @@ creds_string = m2json(creds);
 %write the json strings to the cred file
 fprintf(fileIDCred,'%s',creds_string);
 fclose(fileIDCred);
+
+%signin using newly saved credentials
+signin(username, api_key);
 
 end
