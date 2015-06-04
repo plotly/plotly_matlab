@@ -285,7 +285,7 @@ if ~isHG2
                     %-tick0-%
                     colorbar.tick0 = str2double(colorbar_data.YTickLabel(1,:));
                     %-dtick-%
-                    colorbar.dtick = str2double(colorbar_data.YTickLabel(2,:))- str2double(colorbar_data.YtickLabel(1,:));
+                    colorbar.dtick = str2double(colorbar_data.YTickLabel(2,:)) - str2double(colorbar_data.YTickLabel(1,:));
                 end
             end
         end
@@ -318,7 +318,7 @@ if ~isHG2
                     %-tick0-%
                     colorbar.tick0 = str2double(colorbar_data.XTickLabel(1,:));
                     %-dtick-%
-                    colorbar.dtick = str2double(colorbar_data.XTickLabel(2,:))- str2double(colorbar_data.XtickLabel(1,:));
+                    colorbar.dtick = str2double(colorbar_data.XTickLabel(2,:)) - str2double(colorbar_data.XTickLabel(1,:));
                 end
             end
         end
