@@ -50,6 +50,7 @@ classdef plotlyfig < handle
             obj.UserData.Verbose = true;
             
             %-PlotOptions-%
+            obj.PlotOptions.CleanFeedTitle = true; 
             obj.PlotOptions.FileName = '';
             obj.PlotOptions.FileOpt = 'new';
             obj.PlotOptions.WorldReadable = true;
@@ -360,9 +361,14 @@ classdef plotlyfig < handle
             % validate keys
             validate(obj);
             
-            % handle title
+            % handle filename
             handleFileName(obj);
             
+            % handle title (for feed)
+            if obj.PlotOptions.CleanFeedTitle
+                cleanFeedTitle(obj);
+            end
+                
             %args
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
