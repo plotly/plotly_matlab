@@ -43,13 +43,14 @@ classdef plotlyfig < handle
                     obj.UserData.ApiKey,...
                     obj.UserData.PlotlyDomain] = signin;
             catch
-                errkey = 'plotlyfigureConstructor:notSignedIn';
+                errkey = 'plotlyfigConstructor:notSignedIn';
                 error(errkey, plotlymsg(errkey));
             end
             
             obj.UserData.Verbose = true;
             
             %-PlotOptions-%
+            obj.PlotOptions.CleanFeedTitle = true; 
             obj.PlotOptions.FileName = '';
             obj.PlotOptions.FileOpt = 'new';
             obj.PlotOptions.WorldReadable = true;
@@ -112,7 +113,7 @@ classdef plotlyfig < handle
                             updatekey = true;
                         end
                     else
-                        errkey = 'plotlyfigureConstructor:invalidInputs';
+                        errkey = 'plotlyfigConstructor:invalidInputs';
                         error(errkey , plotlymsg(errkey));
                     end
                     
@@ -131,7 +132,7 @@ classdef plotlyfig < handle
                     
                     % check for proper property/value structure
                     if mod(length(parseinit:nargin),2) ~= 0
-                        errkey = 'plotlyfigureConstructor:invalidInputs';
+                        errkey = 'plotlyfigConstructor:invalidInputs';
                         error(errkey , plotlymsg(errkey));
                     end
                     
@@ -360,9 +361,14 @@ classdef plotlyfig < handle
             % validate keys
             validate(obj);
             
-            % handle title
+            % handle filename
             handleFileName(obj);
             
+            % handle title (for feed)
+            if obj.PlotOptions.CleanFeedTitle
+                cleanFeedTitle(obj);
+            end
+                
             %args
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
