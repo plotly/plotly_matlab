@@ -59,6 +59,11 @@ classdef plotlyfig < handle
             obj.PlotOptions.Strip = true;
             obj.PlotOptions.Visible = 'on';
             
+            % offline options
+            obj.PlotOptions.Offline = false;
+            obj.PlotOptions.ShowLinkText = true; 
+            obj.PlotOptions.LinkText = obj.get_link_text; 
+            
             %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 80;
             obj.PlotlyDefaults.TitleHeight = 0.01;
@@ -71,6 +76,8 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.ErrorbarWidth = 6;
             obj.PlotlyDefaults.ShowBaselineLegend = false;
             obj.PlotlyDefaults.Bargap = 0;
+            obj.PlotlyDefaults.CaptionMarginIncreaseFactor = 1.2; 
+            obj.PlotlyDefaults.MinCaptionMargin = 80;
             
             %-State-%
             obj.State.Figure = [];
@@ -160,6 +167,15 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'visible'))
                             obj.PlotOptions.Visible = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'offline'))
+                            obj.PlotOptions.Offline = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'showlink'))
+                            obj.PlotOptions.ShowLinkText = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'linktext'))
+                            obj.PlotOptions.LinkText = varargin{a+1};
                         end
                         if(strcmpi(varargin{a},'layout'))
                             obj.layout= varargin{a+1};
@@ -347,6 +363,40 @@ classdef plotlyfig < handle
             end
         end
         
+        %----ADD A CUSTOM CAPTION-----%
+        function obj = add_caption(obj, caption_string, varargin)
+            
+            caption.text = caption_string; 
+            
+            % defaults
+            caption.xref = 'paper';
+            caption.yref = 'paper';
+            caption.xanchor = 'left';
+            caption.yanchor = 'top';
+            caption.x = 0.1; 
+            caption.y = -0.05;
+            caption.showarrow = false; 
+            
+            % inject any custom annotation specs
+            for n = 1:2:length(varargin)
+                caption = setfield(caption, varargin{n}, varargin{n+1}); 
+            end
+            
+            % adjust the bottom margin
+            obj.layout.margin.b = max(obj.layout.margin.b, ...
+                    obj.PlotlyDefaults.MinCaptionMargin); 
+   
+            % add the new caption to the figure
+            obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + 1;
+            obj.layout.annotations{obj.State.Figure.NumTexts} = caption; 
+            
+            % update the figure state
+            obj.State.Text(obj.State.Figure.NumTexts).Handle = NaN;
+            obj.State.Text(obj.State.Figure.NumTexts).AssociatedAxis = gca;
+            obj.State.Text(obj.State.Figure.NumTexts).Title = false;
+            
+        end
+        
         
         %------------------------REST API CALL----------------------------%
         
@@ -378,23 +428,24 @@ classdef plotlyfig < handle
             args.layout = obj.layout;
             
             %send to plotly
-            response = plotly(obj.data,args);
+            if ~obj.PlotOptions.Offline
+                response = plotly(obj.data, args);
             
-            %update response
-            obj.url = response.url;
-            obj.error = response.error;
-            obj.warning = response.warning;
-            obj.message = response.message;
-            
-            %ouput url as hyperlink in command window if possible
-            if obj.PlotOptions.ShowURL
-                openurl(response.url);
-            end
-            
-            %open url in browser
-            if obj.PlotOptions.OpenURL
-                web(response.url, '-browser');
-            end
+                %update response
+                obj.url = response.url;
+                obj.error = response.error;
+                obj.warning = response.warning;
+                obj.message = response.message;
+                
+                %open url in browser
+                if obj.PlotOptions.OpenURL
+                    web(response.url, '-browser');
+                end
+            else
+                obj.url = plotlyoffline(obj);   
+                web(obj.url, '-browser');
+            end 
+           
         end
         
         %-----------------------FIGURE CONVERSION-------------------------%
@@ -830,5 +881,12 @@ classdef plotlyfig < handle
                 end 
             end
         end
+
+        function link_text = get_link_text(obj)
+           plotly_domain = obj.UserData.PlotlyDomain; 
+           link_domain = strrep(plotly_domain, 'https://', ''); 
+           link_domain = strrep(link_domain, 'http://', ''); 
+           link_text = ['Export to ' link_domain]; 
+        end   
     end
 end
