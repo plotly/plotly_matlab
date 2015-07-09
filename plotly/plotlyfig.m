@@ -59,6 +59,11 @@ classdef plotlyfig < handle
             obj.PlotOptions.Strip = true;
             obj.PlotOptions.Visible = 'on';
             
+            % offline options
+            obj.PlotOptions.Offline = false;
+            obj.PlotOptions.ShowLinkText = true; 
+            obj.PlotOptions.LinkText = obj.get_link_text; 
+            
             %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 80;
             obj.PlotlyDefaults.TitleHeight = 0.01;
@@ -162,6 +167,15 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'visible'))
                             obj.PlotOptions.Visible = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'offline'))
+                            obj.PlotOptions.Offline = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'showlink'))
+                            obj.PlotOptions.ShowLinkText = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'linktext'))
+                            obj.PlotOptions.LinkText = varargin{a+1};
                         end
                         if(strcmpi(varargin{a},'layout'))
                             obj.layout= varargin{a+1};
@@ -414,23 +428,24 @@ classdef plotlyfig < handle
             args.layout = obj.layout;
             
             %send to plotly
-            response = plotly(obj.data,args);
+            if ~obj.PlotOptions.Offline
+                response = plotly(obj.data, args);
             
-            %update response
-            obj.url = response.url;
-            obj.error = response.error;
-            obj.warning = response.warning;
-            obj.message = response.message;
-            
-            %ouput url as hyperlink in command window if possible
-            if obj.PlotOptions.ShowURL
-                openurl(response.url);
-            end
-            
-            %open url in browser
-            if obj.PlotOptions.OpenURL
-                web(response.url, '-browser');
-            end
+                %update response
+                obj.url = response.url;
+                obj.error = response.error;
+                obj.warning = response.warning;
+                obj.message = response.message;
+                
+                %open url in browser
+                if obj.PlotOptions.OpenURL
+                    web(response.url, '-browser');
+                end
+            else
+                obj.url = plotlyoffline(obj);   
+                web(obj.url, '-browser');
+            end 
+           
         end
         
         %-----------------------FIGURE CONVERSION-------------------------%
@@ -866,5 +881,12 @@ classdef plotlyfig < handle
                 end 
             end
         end
+
+        function link_text = get_link_text(obj)
+           plotly_domain = obj.UserData.PlotlyDomain; 
+           link_domain = strrep(plotly_domain, 'https://', ''); 
+           link_domain = strrep(link_domain, 'http://', ''); 
+           link_text = ['Export to ' link_domain]; 
+        end   
     end
 end
