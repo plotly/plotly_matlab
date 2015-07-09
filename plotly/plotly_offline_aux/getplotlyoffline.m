@@ -29,4 +29,10 @@ function getplotlyoffline(plotly_bundle_url)
     file_id = fopen(bundle_file, 'w'); 
     fprintf(file_id, '%s', bundle);
     fclose(file_id); 
+    
+    % success! 
+    fprintf(['\nSuccess! You can generate your first offline ', ...
+             'graph\nusing the ''offline'' flag of fig2plotly as ', ...
+             'follows:\n\n>> plot(1:10); fig2plotly(gcf, ', ... 
+             '''offline'', true);\n\n'])
 end
