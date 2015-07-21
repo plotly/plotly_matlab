@@ -123,8 +123,7 @@ for m = 1:length(scatter_data)
     %---------------------------------------------------------------------%
     
     %-scatter z-%
-    if ~verLessThan('matlab','8.4') 
-        % '8.4' is r2014b '8.3' is r2014a
+    if isHG2()
         if isfield(scatter_data,'ZData')
             if any(scatter_data.ZData)
                 if length(scatter_data) > 1
