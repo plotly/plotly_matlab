@@ -65,6 +65,12 @@ udata = reshape(quiver_data.UData,1,size(quiver_data.UData,1)*size(quiver_data.U
 vdata = reshape(quiver_data.VData,1,size(quiver_data.VData,1)*size(quiver_data.VData,1)); 
 
 %------------------------------------------------------------------------%
+% JNJ: Need to implement the arrowheads!!! Bit of an oversight...!
+% Also, compare Python plotly arrowheads to the matlab arrowheads...
+% At the same time, we might make sure the line length adjusts
+% appropriately.
+% Might as well make arrowheads scaleable, too.
+%------------------------------------------------------------------------%
 
 %-quiver x-%
 m = 1; 
