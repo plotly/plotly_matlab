@@ -89,7 +89,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-quiver barbs-%
-max_head_size = 0.3; % 'MaxHeadSize' scalar, matlab clips to 0.2
+maxheadsize = quiver_data.MaxHeadSize; % 'MaxHeadSize' scalar, matlab clips to 0.2
 head_width = deg2rad(17); % barb width, not supported by matlab
 for n = 1:length(xdata) % xdata and ydata had better be the same length... throw an exception if this isn't true?
     % length of arrow
@@ -100,9 +100,9 @@ for n = 1:length(xdata) % xdata and ydata had better be the same length... throw
     
     % make barb with specified angular width and length prop. to arrow
     barb = [...
-    [-max_head_size*l*cos(head_width), max_head_size*l*sin(head_width)]; ... 
+    [-maxheadsize*l*cos(head_width), maxheadsize*l*sin(head_width)]; ... 
     [0, 0]; ...  
-    [-max_head_size*l*cos(head_width), -max_head_size*l*sin(head_width)];
+    [-maxheadsize*l*cos(head_width), -maxheadsize*l*sin(head_width)];
     ]';
     
     % affine matrix: rotate by arrow angle and translate to end of arrow
