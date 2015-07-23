@@ -65,12 +65,6 @@ udata = reshape(quiver_data.UData,1,size(quiver_data.UData,1)*size(quiver_data.U
 vdata = reshape(quiver_data.VData,1,size(quiver_data.VData,1)*size(quiver_data.VData,1)); 
 
 %------------------------------------------------------------------------%
-% JNJ: Need to implement the arrowheads!!! Bit of an oversight...!
-% Also, compare Python plotly arrowheads to the matlab arrowheads...
-% At the same time, we might make sure the line length adjusts
-% appropriately.
-% Might as well make arrowheads scaleable, too.
-%------------------------------------------------------------------------%
 
 %-quiver x-%
 m = 1; 
@@ -90,6 +84,46 @@ obj.data{quiverIndex}.y(m) = ydata(n);
 obj.data{quiverIndex}.y(m+1) = ydata(n) + 0.1*vdata(n);
 obj.data{quiverIndex}.y(m+2) = nan; 
 m = m + 3; 
+end
+
+%-------------------------------------------------------------------------%
+
+%-quiver barbs-%
+max_head_size = 0.15; % 'MaxHeadSize' scalar, matlab clips to 0.2
+head_width = deg2rad(15); % barb width, not supported by matlab
+for n = 1:length(xdata) % xdata and ydata had better be the same length... throw an exception if this isn't true?
+    % length of arrow
+    l = norm([0.1*udata(n), 0.1*vdata(n)]);
+    
+    % angle of arrow
+    phi = atan2(vdata(n),udata(n));
+    
+    % make barb with specified angular width and length prop. to arrow
+    barb = [...
+    [-0.5*l*cos(head_width), 0.5*l*sin(head_width)]; ... 
+    [0, 0]; ...  
+    [-0.5*l*cos(head_width), -0.5*l*sin(head_width)];
+    ]';
+    
+    % affine matrix: rotate by arrow angle and translate to end of arrow
+    barb_transformation = affine2d([...
+        [cos(phi), sin(phi), 0]; ...
+        [-sin(phi), cos(phi), 0]; ...
+        [xdata(n) + 0.1*udata(n), ydata(n) + 0.1*vdata(n), 1];
+        ]);
+    
+    % apply transformation to barb
+    barb = transformPointsForward(barb_transformation, barb')';
+    
+    % add barb to plot data
+    obj.data{quiverIndex}.x(end+1) = barb(1,1); % point 1
+    obj.data{quiverIndex}.y(end+1) = barb(2,1);
+    obj.data{quiverIndex}.x(end+1) = barb(1,2); % point 2
+    obj.data{quiverIndex}.y(end+1) = barb(2,2);
+    obj.data{quiverIndex}.x(end+1) = barb(1,3); % point 3
+    obj.data{quiverIndex}.y(end+1) = barb(2,3);
+    obj.data{quiverIndex}.x(end+1) = nan; % insert blank line between successive barbs
+    obj.data{quiverIndex}.y(end+1) = nan;
 end
 
 %-------------------------------------------------------------------------%
