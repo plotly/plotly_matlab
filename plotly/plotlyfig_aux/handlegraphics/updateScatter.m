@@ -122,6 +122,23 @@ for m = 1:length(scatter_data)
     
     %---------------------------------------------------------------------%
     
+    %-scatter z-%
+    if isHG2()
+        if isfield(scatter_data,'ZData')
+            if any(scatter_data.ZData)
+                if length(scatter_data) > 1
+                    obj.data{scatterIndex}.z(m) = scatter_data(n).ZData;
+                else
+                    obj.data{scatterIndex}.z = scatter_data.ZData;
+                end
+                % overwrite type
+                obj.data{scatterIndex}.type = 'scatter3d';
+            end
+        end
+    end
+    
+    %---------------------------------------------------------------------%
+    
     %-scatter showlegend-%
     leg = get(scatter_data.Annotation);
     legInfo = get(leg.LegendInformation);
