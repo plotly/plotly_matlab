@@ -89,20 +89,23 @@ end
 %-------------------------------------------------------------------------%
 
 %-quiver barbs-%
-maxheadsize = quiver_data.MaxHeadSize; % 'MaxHeadSize' scalar, matlab clips to 0.2
-head_width = deg2rad(17); % barb width, not supported by matlab
-for n = 1:length(xdata) % xdata and ydata had better be the same length... throw an exception if this isn't true?
+% 'MaxHeadSize' scalar, matlab clips to 0.2 in r2014b
+maxheadsize = quiver_data.MaxHeadSize;
+% barb angular width, not supported by matlab
+head_width = deg2rad(17.5); 
+for n = 1:length(xdata)
     % length of arrow
     l = norm([0.1*udata(n), 0.1*vdata(n)]);
     
     % angle of arrow
     phi = atan2(vdata(n),udata(n));
     
-    % make barb with specified angular width and length prop. to arrow
+    % make barb with specified angular width, length is prop. to arrow
     barb = [...
     [-maxheadsize*l*cos(head_width), maxheadsize*l*sin(head_width)]; ... 
     [0, 0]; ...  
-    [-maxheadsize*l*cos(head_width), -maxheadsize*l*sin(head_width)];
+    [-maxheadsize*l*cos(head_width), -maxheadsize*l*sin(head_width)]; ...
+    [nan, nan]; ...
     ]';
     
     % affine matrix: rotate by arrow angle and translate to end of arrow
@@ -112,18 +115,14 @@ for n = 1:length(xdata) % xdata and ydata had better be the same length... throw
         [xdata(n) + 0.1*udata(n), ydata(n) + 0.1*vdata(n), 1];
         ]);
     
-    % apply transformation to barb
+    % place barb at end of arrow
     barb = transformPointsForward(barb_transformation, barb')';
     
-    % add barb to plot data
-    obj.data{quiverIndex}.x(end+1) = barb(1,1); % point 1
-    obj.data{quiverIndex}.y(end+1) = barb(2,1);
-    obj.data{quiverIndex}.x(end+1) = barb(1,2); % point 2
-    obj.data{quiverIndex}.y(end+1) = barb(2,2);
-    obj.data{quiverIndex}.x(end+1) = barb(1,3); % point 3
-    obj.data{quiverIndex}.y(end+1) = barb(2,3);
-    obj.data{quiverIndex}.x(end+1) = nan; % insert blank line between successive barbs
-    obj.data{quiverIndex}.y(end+1) = nan;
+    % add barb to plot data, inserting is optimized in matlab >2010
+    for col = 1:4
+        obj.data{quiverIndex}.x(end+1) = barb(1,col); % point 1
+        obj.data{quiverIndex}.y(end+1) = barb(2,col);
+    end
 end
 
 %-------------------------------------------------------------------------%
