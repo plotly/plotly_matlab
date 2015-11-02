@@ -74,13 +74,15 @@ colorbar.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 %-------------------------------------------------------------------------%
 
 % get colorbar title and labels
-colorbar_title = colorbar_data.Title;
-colorbar_title_data = get(colorbar_title);
 if isHG2
+    colorbar_title = colorbar_data.Label;
+    colorbar_title_data = get(colorbar_title);
     colorbar_ylabel = colorbar_data.Label;
     colorbar_ylabel_data = get(colorbar_data.Label);
     colorbar_xlabel_data.String = [];
 else
+    colorbar_title = colorbar_data.Title;
+    colorbar_title_data = get(colorbar_title);
     colorbar_xlabel = colorbar_data.XLabel;
     colorbar_xlabel_data = get(colorbar_xlabel);
     colorbar_ylabel = colorbar_data.YLabel;
