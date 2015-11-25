@@ -10,9 +10,9 @@ function valstr = m2json(val)
             for i = 1:sz(1)
                 valsubstr = [sprintf('%.15g, ', val(i,:))];
                 valsubstr = valsubstr(1:(end-2));
-                valstr = [valstr ', [' valsubstr ']']; 
+                valstr = [valstr ', [' valsubstr ']'];
             end
-            valstr = valstr(3:end); % trail leading commas    
+            valstr = valstr(3:end); % trail leading commas
         else
             valstr = [sprintf('%.15g, ', val)];
             valstr = valstr(1:(end-2));
