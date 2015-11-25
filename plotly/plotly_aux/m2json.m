@@ -8,13 +8,13 @@ function valstr = m2json(val)
         if length(find(sz>1))>1 % 2D or higher array
             valstr = '';
             for i = 1:sz(1)
-                valsubstr = [sprintf('%g, ', val(i,:))];
+                valsubstr = [sprintf('%.15g, ', val(i,:))];
                 valsubstr = valsubstr(1:(end-2));
                 valstr = [valstr ', [' valsubstr ']']; 
             end
             valstr = valstr(3:end); % trail leading commas    
         else
-            valstr = [sprintf('%g, ', val)];
+            valstr = [sprintf('%.15g, ', val)];
             valstr = valstr(1:(end-2));
         end
         if length(val)>1
