@@ -130,7 +130,19 @@ classdef plotlystream < handle
         %-----------CONNECT TO STREAM-----------%
         function obj = connect(obj)
             obj.URL = java.net.URL([],obj.Specs.Host,obj.Specs.Handler);
-            obj.Connection = obj.URL.openConnection; %throws an I/O exception
+            
+            % Get the proxy information using MathWorks facilities for unified proxy
+            % preference settings.
+            mwtcp = com.mathworks.net.transport.MWTransportClientPropertiesFactory.create();
+            proxy = mwtcp.getProxy();
+
+            % Open a connection to the URL.
+            if isempty(proxy)
+                obj.Connection = obj.URL.openConnection(); %throws an I/O exception
+            else
+                obj.Connection = obj.URL.openConnection(proxy); %throws an I/O exception
+            end
+
             obj.Connection.setChunkedStreamingMode(obj.Specs.Chunklen)
             obj.Connection.setRequestMethod('POST');
             obj.Connection.setDoOutput(true);
