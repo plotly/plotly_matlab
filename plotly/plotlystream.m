@@ -40,11 +40,30 @@ classdef plotlystream < handle
                 obj.Specs.Host = 'http://stream.plot.ly';
             end
             
+            %check if ssl is enabled
+            if any(strfind(obj.Specs.Host,'https://') == 1)
+                obj.Specs.SSLEnabled = true;
+            else
+                obj.Specs.SSLEnabled = false;                
+            end
+            
+            %add http if not present on host
+            if ~obj.Specs.SSLEnabled
+                if ~any(strfind(obj.Specs.Host,'http://') == 1)
+                    obj.Specs.Host = ['http://' obj.Specs.Host];
+                end 
+            end
+            
+            %specify handler
+            if obj.Specs.SSLEnabled
+                obj.Specs.Handler = sun.net.www.protocol.https.Handler;
+            else
+                obj.Specs.Handler = sun.net.www.protocol.http.Handler;
+            end
+            
             %initialize connection settings
-            obj.Specs.Port = 80;
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
-            obj.Specs.Handler = sun.net.www.protocol.http.Handler;
             obj.Specs.Chunklen = 14;
             obj.Specs.Closed = true;
             obj.Specs.ConnectAttempts = 0;
@@ -76,14 +95,6 @@ classdef plotlystream < handle
                         obj.Specs.Host = request.host;
                     end
                     
-                    if (isfield(request,'port'))
-                        obj.Specs.Port = request.port;
-                    end
-                    
-                    if obj.Specs.Port ~=80
-                        obj.Specs.Host = [obj.Specs.Host ':' num2str(obj.Specs.Port)];
-                    end
-                    
                     if isfield(request,'timeout')
                         obj.Specs.Timeout = request.timeout;
                     end
@@ -107,12 +118,6 @@ classdef plotlystream < handle
                     'online documentation found @ plot.ly/matlab for more information or contact ',...
                     'chuck@plot.ly']);
             end
-            
-            %add http if not present on host
-            if ~any(strfind(obj.Specs.Host,'http://') == 1)
-                obj.Specs.Host = ['http://' obj.Specs.Host];
-            end
-            
         end
          
         %-----------OPEN STREAM-----------%
@@ -139,7 +144,19 @@ classdef plotlystream < handle
         %-----------CONNECT TO STREAM-----------%
         function obj = connect(obj)
             obj.URL = java.net.URL([],obj.Specs.Host,obj.Specs.Handler);
-            obj.Connection = obj.URL.openConnection; %throws an I/O exception
+            
+            % Get the proxy information using MathWorks facilities for unified proxy
+            % preference settings.
+            mwtcp = com.mathworks.net.transport.MWTransportClientPropertiesFactory.create();
+            proxy = mwtcp.getProxy();
+
+            % Open a connection to the URL.
+            if isempty(proxy)
+                obj.Connection = obj.URL.openConnection(); %throws an I/O exception
+            else
+                obj.Connection = obj.URL.openConnection(proxy); %throws an I/O exception
+            end
+
             obj.Connection.setChunkedStreamingMode(obj.Specs.Chunklen)
             obj.Connection.setRequestMethod('POST');
             obj.Connection.setDoOutput(true);
