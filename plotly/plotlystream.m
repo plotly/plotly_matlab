@@ -41,7 +41,6 @@ classdef plotlystream < handle
             end
             
             %initialize connection settings
-            obj.Specs.Port = 80;
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
             obj.Specs.Handler = sun.net.www.protocol.http.Handler;
@@ -74,14 +73,6 @@ classdef plotlystream < handle
                     
                     if isfield(request,'host')
                         obj.Specs.Host = request.host;
-                    end
-                    
-                    if (isfield(request,'port'))
-                        obj.Specs.Port = request.port;
-                    end
-                    
-                    if obj.Specs.Port ~=80
-                        obj.Specs.Host = [obj.Specs.Host ':' num2str(obj.Specs.Port)];
                     end
                     
                     if isfield(request,'timeout')
