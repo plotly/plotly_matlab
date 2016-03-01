@@ -40,6 +40,19 @@ classdef plotlystream < handle
                 obj.Specs.Host = 'http://stream.plot.ly';
             end
             
+            %check if ssl is enabled
+            if any(strfind(obj.Specs.Host,'https://') == 1)
+                obj.Specs.SSLEnabled = true;
+            else
+                obj.Specs.SSLEnabled = false;                
+            end
+            
+            %add http if not present on host
+            if ~obj.Specs.SSLEnabled
+                if ~any(strfind(obj.Specs.Host,'http://') == 1)
+                    obj.Specs.Host = ['http://' obj.Specs.Host];
+                end 
+            end
             %initialize connection settings
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
@@ -98,12 +111,6 @@ classdef plotlystream < handle
                     'online documentation found @ plot.ly/matlab for more information or contact ',...
                     'chuck@plot.ly']);
             end
-            
-            %add http if not present on host
-            if ~any(strfind(obj.Specs.Host,'http://') == 1)
-                obj.Specs.Host = ['http://' obj.Specs.Host];
-            end
-            
         end
          
         %-----------OPEN STREAM-----------%
