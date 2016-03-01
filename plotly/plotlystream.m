@@ -53,10 +53,17 @@ classdef plotlystream < handle
                     obj.Specs.Host = ['http://' obj.Specs.Host];
                 end 
             end
+            
+            %specify handler
+            if obj.Specs.SSLEnabled
+                obj.Specs.Handler = sun.net.www.protocol.https.Handler;
+            else
+                obj.Specs.Handler = sun.net.www.protocol.http.Handler;
+            end
+            
             %initialize connection settings
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
-            obj.Specs.Handler = sun.net.www.protocol.http.Handler;
             obj.Specs.Chunklen = 14;
             obj.Specs.Closed = true;
             obj.Specs.ConnectAttempts = 0;
