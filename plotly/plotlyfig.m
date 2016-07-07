@@ -896,7 +896,7 @@ classdef plotlyfig < handle
                 if strcmp(config, 'private')
                     sharing_value = false;
                 elseif strcmp(config, 'secret')
-                    warning('Secret share keys are not currently supported in the MATLAB API.')
+                    warning('Secret share keys are not currently supported in the MATLAB API.');
                     sharing_value = false;
                 else
                     sharing_value = true;
