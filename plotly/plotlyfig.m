@@ -891,16 +891,22 @@ classdef plotlyfig < handle
 
         function sharing_value = get_sharing(obj)
             config = loadplotlyconfig();
-            config = config.sharing;
-            if ~isempty(config)
-                if strcmp(config, 'private')
-                    sharing_value = false;
-                elseif strcmp(config, 'secret')
-                    warning('Secret share keys are not currently supported in the MATLAB API.');
-                    sharing_value = false;
+            if ~isfield(config, 'sharing')
+                if isfield(config, 'world_readable')
+                    sharing_value = config.world_readable;
+                    return;
                 else
                     sharing_value = true;
+                    return;
                 end
+            end
+
+            config = config.sharing;
+            if strcmp(config, 'private')
+                sharing_value = false;
+            elseif strcmp(config, 'secret')
+                warning('Secret share keys are not currently supported in the MATLAB API.');
+                sharing_value = false;
             else
                 sharing_value = true;
             end
