@@ -53,7 +53,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.CleanFeedTitle = true; 
             obj.PlotOptions.FileName = '';
             obj.PlotOptions.FileOpt = 'new';
-            obj.PlotOptions.WorldReadable = true;
+            obj.PlotOptions.WorldReadable = obj.get_sharing;
             obj.PlotOptions.ShowURL = true;
             obj.PlotOptions.OpenURL = true;
             obj.PlotOptions.Strip = true;
@@ -887,6 +887,29 @@ classdef plotlyfig < handle
            link_domain = strrep(plotly_domain, 'https://', ''); 
            link_domain = strrep(link_domain, 'http://', ''); 
            link_text = ['Export to ' link_domain]; 
-        end   
+        end
+
+        function sharing_value = get_sharing(obj)
+            config = loadplotlyconfig();
+            if ~isfield(config, 'sharing')
+                if isfield(config, 'world_readable')
+                    sharing_value = config.world_readable;
+                    return;
+                else
+                    sharing_value = true;
+                    return;
+                end
+            end
+
+            config = config.sharing;
+            if strcmp(config, 'private')
+                sharing_value = false;
+            elseif strcmp(config, 'secret')
+                warning('Secret share keys are not currently supported in the MATLAB API.');
+                sharing_value = false;
+            else
+                sharing_value = true;
+            end
+        end
     end
 end
