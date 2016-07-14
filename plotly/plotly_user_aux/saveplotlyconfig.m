@@ -8,7 +8,7 @@ if nargin < 1
     error('plotly:saveconfig', ...
     ['Incorrect number of inputs. Please save your configuration ', ...
     'as follows: >> saveplotlyconfig(plotly_domain,', ...
-    '[optional]plotly_streaming_domain),', '[optional]sharing']); 
+    '[optional]plotly_streaming_domain,', '[optional]sharing)']); 
 end
 
 % if the config file exists, then load it up
@@ -60,7 +60,12 @@ switch nargin
         config.plotly_domain = plotly_domain;
         signin(username, api_key, plotly_domain);
         config.plotly_streaming_domain = plotly_streaming_domain;
-        config.sharing = sharing;
+        if(strcmp(sharing, 'public') | strcmp(sharing, 'private')) 
+            config.sharing = sharing;
+        else
+            error(['"%s" is an invalid/un-supported value of sharing.\n', ...
+                   'Please use one of "public" or "private"'], sharing);
+        end
     otherwise %if neither endpoints are specified, no worries!
 end
 
