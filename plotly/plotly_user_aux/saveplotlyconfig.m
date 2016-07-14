@@ -1,4 +1,4 @@
-function saveplotlyconfig(plotly_domain,plotly_streaming_domain)
+function saveplotlyconfig(plotly_domain,plotly_streaming_domain, sharing)
 % Save plotly config info.
 % Plotly config info are saved as JSON strings
 % in ~/.plotly/.config
@@ -8,7 +8,7 @@ if nargin < 1
     error('plotly:saveconfig', ...
     ['Incorrect number of inputs. Please save your configuration ', ...
     'as follows: >> saveplotlyconfig(plotly_domain,', ...
-    '[optional]plotly_streaming_domain)']); 
+    '[optional]plotly_streaming_domain),', '[optional]sharing']); 
 end
 
 % if the config file exists, then load it up
@@ -56,6 +56,11 @@ switch nargin
         config.plotly_domain = plotly_domain;
         signin(username, api_key, plotly_domain);
         config.plotly_streaming_domain= plotly_streaming_domain;
+    case 3
+        config.plotly_domain = plotly_domain;
+        signin(username, api_key, plotly_domain);
+        config.plotly_streaming_domain = plotly_streaming_domain;
+        config.sharing = sharing;
     otherwise %if neither endpoints are specified, no worries!
 end
 
