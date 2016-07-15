@@ -64,7 +64,7 @@ switch nargin
         if(strcmp(sharing, 'public') | strcmp(sharing, 'private')) 
             config.sharing = sharing;
         else
-            error(['"%s" is an invalid/un-supported value of sharing.\n', ...
+            warning(['"%s" is an invalid/un-supported value of sharing.\n', ...
                    'Please use one of "public" or "private"'], sharing);
         end
     otherwise %if neither endpoints are specified, no worries!
