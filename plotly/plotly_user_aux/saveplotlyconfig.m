@@ -1,4 +1,4 @@
-function saveplotlyconfig(plotly_domain,plotly_streaming_domain, sharing)
+function saveplotlyconfig(plotly_domain,plotly_streaming_domain,sharing)
 % Save plotly config info.
 % Plotly config info are saved as JSON strings
 % in ~/.plotly/.config
@@ -60,6 +60,7 @@ switch nargin
         config.plotly_domain = plotly_domain;
         signin(username, api_key, plotly_domain);
         config.plotly_streaming_domain = plotly_streaming_domain;
+        sharing = lower(sharing);
         if(strcmp(sharing, 'public') | strcmp(sharing, 'private')) 
             config.sharing = sharing;
         else
