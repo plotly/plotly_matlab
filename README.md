@@ -45,7 +45,7 @@ and Plotly figure retrieval:
 ```
 
 ### DOCUMENTATION:
-Live here: [https://plot.ly/MATLAB](https://plot.ly/MATLAB)
+Live here: [https://plot.ly/matlab](https://plot.ly/matlab)
 
 ### CONTACT:
 - <chuck@plot.ly>
