@@ -1,3 +1,8 @@
+\* = `plotlyupdate.m` is currently disabled. Please download the latest version 
+of the wrapper [here](https://github.com/plotly/MATLAB-Online/archive/master.zip).
+Once downloaded, run `plotlysetup('your_username', 'your_api_key')` to get started
+with the latest version. 
+
 ## MATLAB PLOTLY API WRAPPER 2.2.7
 
 ### NUTSHELL:
