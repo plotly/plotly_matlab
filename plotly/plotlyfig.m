@@ -63,6 +63,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.Offline = false;
             obj.PlotOptions.ShowLinkText = true; 
             obj.PlotOptions.LinkText = obj.get_link_text; 
+            obj.PlotOptions.IncludePlotlyjs = true;
             
             %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 80;
@@ -176,6 +177,9 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'linktext'))
                             obj.PlotOptions.LinkText = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'include_plotlyjs'))
+                            obj.PlotOptions.IncludePlotlyjs = varargin{a+1};
                         end
                         if(strcmpi(varargin{a},'layout'))
                             obj.layout= varargin{a+1};
