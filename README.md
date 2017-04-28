@@ -1,4 +1,4 @@
-# MATLAB
+# MATLAB Online
 
 > MATLAB Online Toolbox - Create interactive charts in your web browser with MATLAB and Plotly
 
