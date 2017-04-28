@@ -1,19 +1,23 @@
-## MATLAB PLOTLY API WRAPPER 2.2.8
+# MATLAB
 
-### INSTALLATION:
+> MATLAB Online Toolbox - Create interactive charts in your web browser with MATLAB and Plotly
 
-The lastest version of the wrapper can be downloaded [here](https://github.com/plotly/MATLAB-Online/archive/master.zip).
+Version: 2.2.8
 
-Once downloaded, run `plotlysetup('your_username', 'your_api_key')` to get started. 
+## Install
 
-### UPDATES: 
+The latest version of the wrapper can be downloaded [here](https://github.com/plotly/MATLAB-Online/archive/master.zip).
 
-**NOTE:** `plotlyupdate.m` is currently disabled.
+Once downloaded, run `plotlysetup('your_username', 'your_api_key')` to get started.
 
-Please manually download and setup the latest version 
-of the wrapper by following the installation instructions above. 
+### Updates
 
-### NUTSHELL:
+**NOTE:** `plotlyupdate.m` is currently turned off.
+
+Please manually download and setup the latest version
+of the wrapper by following the installation instructions above.
+
+## Usage
 
 Convert your MATLAB figures into online [Plotly](https://plot.ly) graphs with a single line of code:
 
@@ -57,10 +61,22 @@ and Plotly figure retrieval:
  p = getplotlyfig('chris', 1638) % downloads the graph data from https://plot.ly/~chris/1638
 ```
 
-### DOCUMENTATION:
-Live here: [https://plot.ly/matlab](https://plot.ly/matlab)
+## Documentation
 
-### CONTACT:
+This lives here: [https://plot.ly/matlab](https://plot.ly/matlab)
+
+## Maintainers
+
 - <chuck@plot.ly>
 - <chris@plot.ly>
 - [@plotlygraphs](https://twitter.com/plotlygraphs)
+
+## Contribute
+
+Please do! This is an open source project. Check out [the issues](https://github.com/plotly/MATLAB-Online/issues) or open a PR!
+
+We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](CODE_OF_CONDUCT.md) for more information.
+
+## License
+
+[MIT](LICENSE) © 2017 Plotly, Inc.
