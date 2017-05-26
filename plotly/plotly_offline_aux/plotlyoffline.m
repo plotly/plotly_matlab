@@ -3,21 +3,29 @@ function response = plotlyoffline(plotlyfig)
     % the current working directory. The file will be saved as: 
     % 'plotlyfig.PlotOptions.FileName'.html. 
     
-    % grab the bundled dependencies
-    userhome = getuserdir();
-    plotly_config_folder   = fullfile(userhome,'.plotly');
-    plotly_js_folder = fullfile(plotly_config_folder, 'plotlyjs');
-    bundle_name = 'plotly-matlab-offline-bundle.js'; 
-    bundle_file = fullfile(plotly_js_folder, bundle_name);
-    
-    % check that the bundle exists 
-    try
-        bundle = fileread(bundle_file); 
-    catch
-        error(['Error reading: %s.\nPlease download the required ', ... 
-               'dependencies using: >>getplotlyoffline \n', ...
-               'or contact support@plot.ly for assistance.'], ...
-               bundle_file);   
+    % create dependency string unless not required
+    if plotlyfig.PlotOptions.IncludePlotlyjs
+        % grab the bundled dependencies
+        userhome = getuserdir();
+        plotly_config_folder   = fullfile(userhome,'.plotly');
+        plotly_js_folder = fullfile(plotly_config_folder, 'plotlyjs');
+        bundle_name = 'plotly-matlab-offline-bundle.js';
+        bundle_file = fullfile(plotly_js_folder, bundle_name);
+
+        % check that the bundle exists
+        try
+            bundle = fileread(bundle_file);
+            % template dependencies
+            dep_script = sprintf('<script type="text/javascript">%s</script>\n', ...
+                bundle);
+        catch
+            error(['Error reading: %s.\nPlease download the required ', ...
+                   'dependencies using: >>getplotlyoffline \n', ...
+                   'or contact support@plot.ly for assistance.'], ...
+                   bundle_file);
+        end
+    else
+        dep_script = '';
     end
     
     % handle plot div specs
@@ -35,15 +43,11 @@ function response = plotlyoffline(plotlyfig)
     jdata = m2json(plotlyfig.data); 
     jlayout = m2json(plotlyfig.layout);
     clean_jdata = escapechars(jdata); 
-    clean_jlayout = escapechars(jlayout); 
-   
-    % template dependencies 
-    dep_script = sprintf('<script type="text/javascript">%s</script>', ...
-                         bundle); 
+    clean_jlayout = escapechars(jlayout);
                      
     % template environment vars        
     plotly_domain = plotlyfig.UserData.PlotlyDomain;
-    env_script = sprintf(['\n<script type="text/javascript">', ...
+    env_script = sprintf(['<script type="text/javascript">', ...
                           'window.PLOTLYENV=window.PLOTLYENV || {};', ...
                           'window.PLOTLYENV.BASE_URL="%s";', ...
                           'Plotly.LINKTEXT="%s";', ...
