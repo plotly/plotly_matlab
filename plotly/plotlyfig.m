@@ -58,6 +58,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.OpenURL = true;
             obj.PlotOptions.Strip = true;
             obj.PlotOptions.Visible = 'on';
+            obj.PlotOptions.TriangulatePatch = false; 
             
             % offline options
             obj.PlotOptions.Offline = false;
