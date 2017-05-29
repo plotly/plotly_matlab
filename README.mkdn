@@ -2,7 +2,7 @@
 
 > MATLAB Online Toolbox - Create interactive charts in your web browser with MATLAB and Plotly
 
-Version: 2.2.8
+Version: 2.2.9
 
 ## Install
 
