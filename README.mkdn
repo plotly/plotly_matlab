@@ -1,8 +1,10 @@
-# MATLAB Online
+# Plotly MATLAB® Library
 
-> MATLAB Online Toolbox - Create interactive charts in your web browser with MATLAB and Plotly
+> Plotly MATLAB® Library - Create interactive charts in your web browser with MATLAB® and Plotly
 
 Version: 2.2.9
+
+*MATLAB is a registered trademarks of The MathWorks, Inc.*
 
 ## Install
 
@@ -19,7 +21,7 @@ of the wrapper by following the installation instructions above.
 
 ## Usage
 
-Convert your MATLAB figures into online [Plotly](https://plot.ly) graphs with a single line of code:
+Convert your MATLAB® figures into online [Plotly](https://plot.ly) graphs with a single line of code:
 
 ```MATLAB
  % Create some data for the two curves to be plotted
@@ -47,7 +49,7 @@ Convert your MATLAB figures into online [Plotly](https://plot.ly) graphs with a 
 
 ```
 
-[![MATLAB Contour Plot](https://plot.ly/~matlab_user_guide/1522.png)](https://plot.ly/~matlab_user_guide/1522)
+[![MATLAB® Contour Plot](https://plot.ly/~matlab_user_guide/1522.png)](https://plot.ly/~matlab_user_guide/1522)
 
 Also, access other Plotly services and graphs programatically. Like, publication-quality image export:
 
