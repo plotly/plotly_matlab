@@ -1,6 +1,6 @@
-# Plotly MATLAB® Library
+# Plotly Graphing Library for MATLAB®
 
-> Plotly MATLAB® Library - Create interactive charts in your web browser with MATLAB® and Plotly
+> Plotly Graphing Library for MATLAB® - Create interactive charts in your web browser with MATLAB® and Plotly
 
 Version: 2.2.9
 
