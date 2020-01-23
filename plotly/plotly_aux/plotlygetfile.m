@@ -22,7 +22,7 @@ function figure = plotlygetfile(file_owner, file_id)
 
     url = [domain, '/apigetfile/', file_owner, '/', num2str(file_id)];
 
-    [response_string, extras] = urlread2(url, 'Post', '', headers);
+    [response_string, extras] = urlread2(url, 'Get', '', headers);
     response_handler(response_string, extras);
     response_object = loadjson(response_string);
     figure = response_object.payload.figure;
