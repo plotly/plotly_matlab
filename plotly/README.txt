@@ -58,8 +58,4 @@ Example Workflow
 
 Documentation
 -------------
-Full documentation and examples at https://plot.ly/API
-
-Questions? 
-----------
-Contact: chuck@plot.ly 
+Full documentation and examples at https://plot.ly/matlab
