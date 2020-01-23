@@ -2,7 +2,7 @@
 
 > Plotly Graphing Library for MATLAB® - Create interactive charts in your web browser with MATLAB® and Plotly
 
-Version: 2.2.9
+Version: 2.2.10
 
 *MATLAB is a registered trademarks of The MathWorks, Inc.*
 
