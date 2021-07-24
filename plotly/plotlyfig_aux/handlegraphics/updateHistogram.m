@@ -119,7 +119,7 @@ switch orientation
         xlength = 0;
         for d = 1:length(xdata)
             obj.data{histIndex}.x(xlength + 1: xlength + hist_data.YData(2,d)) = repmat(xdata(d),1,hist_data.YData(2,d));
-            xlength = length(obj.data{histIndex}.x)
+            xlength = length(obj.data{histIndex}.x);
         end
         
         %-------------------------------------------------------------------------%
