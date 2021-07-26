@@ -40,12 +40,12 @@ obj.data{errorbarIndex}.error_y.symmetric = false;
 %-------------------------------------------------------------------------%
 
 %-errorbar value-%
-obj.data{errorbarIndex}.error_y.array = errorbar_data.UData;
+obj.data{errorbarIndex}.error_y.array = errorbar_data.YPositiveDelta;
 
 %-------------------------------------------------------------------------%
 
 %-errorbar valueminus-%
-obj.data{errorbarIndex}.error_y.arrayminus = errorbar_data.LData;
+obj.data{errorbarIndex}.error_y.arrayminus = errorbar_data.YNegativeDelta;
 
 %-------------------------------------------------------------------------%
 
