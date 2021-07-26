@@ -81,4 +81,4 @@ We want to encourage a warm, welcoming, and safe environment for contributing to
 
 ## License
 
-[MIT](LICENSE) © 2017 Plotly, Inc.
+[MIT](LICENSE) © 2021 Plotly, Inc.
