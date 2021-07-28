@@ -56,7 +56,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.WorldReadable = true;
             obj.PlotOptions.ShowURL = true;
             obj.PlotOptions.OpenURL = true;
-            obj.PlotOptions.Strip = true;
+            obj.PlotOptions.Strip = false;
             obj.PlotOptions.Visible = 'on';
             obj.PlotOptions.TriangulatePatch = false; 
             
