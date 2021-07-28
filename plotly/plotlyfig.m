@@ -886,7 +886,7 @@ classdef plotlyfig < handle
             catch exception
                 if obj.UserData.Verbose
                     % catch 3D output until integrated into graphref
-                    if ~(strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d'))
+                    if ~(strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') || strcmpi(fieldname,'mesh3d'))
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
                 end 
