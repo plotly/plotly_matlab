@@ -73,13 +73,8 @@ obj.data{histIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-hist type-%
-obj.data{histIndex}.type = 'histogram';
-
-%-------------------------------------------------------------------------%
-
-%-HIST XAXIS-%
-obj.data{histIndex}.histfunc= 'count';
+%-bar type-%
+obj.data{histIndex}.type = 'bar';
 
 %-------------------------------------------------------------------------%
 
@@ -93,19 +88,13 @@ end
 
 switch orientation
     case {'vertical', 'horizontal'}
-        % histogram()
-
-        obj.data{histIndex}.x = sort(hist_data.Data.');
-        obj.data{histIndex}.autobinx = false;
-        
-        obj.data{histIndex}.xbins.start = hist_data.BinEdges(1);
-        obj.data{histIndex}.xbins.end   = hist_data.BinEdges(end);
-        obj.data{histIndex}.xbins.size  = mean(hist_data.BinEdges(2:end)-hist_data.BinEdges(1:end-1));
 
         %-------------------------------------------------------------------------%
+        %-hist y data-%
         
-        %-layout bargap-%
-        obj.layout.bargap = 0;
+        obj.data{histIndex}.x = hist_data.BinEdges(1:end-1) + 0.5*diff(hist_data.BinEdges);
+        obj.data{histIndex}.width = diff(hist_data.BinEdges);%[hist_data.BinEdges(2:end), hist_data.Data(end)];
+        obj.data{histIndex}.y = double(hist_data.BinCounts);
         
         %-------------------------------------------------------------------------%
 
