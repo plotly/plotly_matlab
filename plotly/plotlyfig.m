@@ -237,6 +237,8 @@ classdef plotlyfig < handle
                 
                 % plotly reference
                 plotlyref = load('plotly_reference.mat');
+                % rmfield(plotlyref.pr, 'xbins');
+                % plotlyref.pr.xbins.size
                 
                 % update the PlotlyRef property
                 obj.PlotlyReference = plotlyref.pr;
@@ -828,6 +830,7 @@ classdef plotlyfig < handle
             pr = obj.PlotlyReference;
             
             % initialize output
+            % fields
             stripped = fields;
             
             % get fieldnames
