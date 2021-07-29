@@ -265,7 +265,10 @@ classdef plotlyfig < handle
             
             % strip the style keys from data
             for d = 1:length(obj.data)
-                if strcmpi(obj.data{d}.type, 'scatter')
+                if ( ...
+                        strcmpi(obj.data{d}.type, 'scatter') || ...
+                        strcmpi(obj.data{d}.type, 'bar') ...
+                    )
                     return
                 end
                 obj.data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, 'style');
@@ -889,7 +892,10 @@ classdef plotlyfig < handle
             catch exception
                 if obj.UserData.Verbose
                     % catch 3D output until integrated into graphref
-                    if ~(strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') || strcmpi(fieldname,'mesh3d'))
+                    if ~( ...
+                            strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') ...
+                        ||  strcmpi(fieldname,'mesh3d') || strcmpi(fieldname,'bar') ...
+                        )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
                 end 
