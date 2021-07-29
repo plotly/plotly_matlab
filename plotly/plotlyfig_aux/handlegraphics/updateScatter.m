@@ -1,4 +1,4 @@
-function updateScatter_old(obj,scatterIndex)
+function updateScatter(obj,scatterIndex)
 
 %check: http://undocumentedmatlab.com/blog/undocumented-scatter-plot-behavior
 
