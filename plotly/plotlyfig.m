@@ -265,6 +265,9 @@ classdef plotlyfig < handle
             
             % strip the style keys from data
             for d = 1:length(obj.data)
+                if strcmpi(obj.data{d}.type, 'scatter')
+                    return
+                end
                 obj.data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, 'style');
             end
             
