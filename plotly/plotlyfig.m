@@ -237,6 +237,8 @@ classdef plotlyfig < handle
                 
                 % plotly reference
                 plotlyref = load('plotly_reference.mat');
+                % rmfield(plotlyref.pr, 'xbins');
+                % plotlyref.pr.xbins.size
                 
                 % update the PlotlyRef property
                 obj.PlotlyReference = plotlyref.pr;
@@ -265,7 +267,7 @@ classdef plotlyfig < handle
             
             % strip the style keys from data
             for d = 1:length(obj.data)
-                if strcmpi(obj.data{d}.type, 'scatter')
+                if strcmpi(obj.data{d}.type, 'scatter') || strcmpi(obj.data{d}.type, 'histogram')
                     return
                 end
                 obj.data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, 'style');
@@ -825,6 +827,7 @@ classdef plotlyfig < handle
             pr = obj.PlotlyReference;
             
             % initialize output
+            % fields
             stripped = fields;
             
             % get fieldnames
