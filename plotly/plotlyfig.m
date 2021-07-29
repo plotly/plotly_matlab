@@ -61,7 +61,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.TriangulatePatch = false; 
             
             % offline options
-            obj.PlotOptions.Offline = false;
+            obj.PlotOptions.Offline = true;
             obj.PlotOptions.ShowLinkText = true; 
             obj.PlotOptions.LinkText = obj.get_link_text; 
             obj.PlotOptions.IncludePlotlyjs = true;
