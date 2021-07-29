@@ -34,7 +34,7 @@ marker.size = patch_data.SizeData;
 
 %-MARKER SYMBOL (STYLE)-%
 if ~strcmp(patch_data.Marker,'none')
-    
+
     switch patch_data.Marker
         case '.'
             marksymbol = 'circle';
@@ -169,7 +169,7 @@ else
                         for n = 1:length(patch_data.CData)
                             
                             
-                            capCD = max(min(patch_data.CData(1,n),axis_data.CLim(2)),axis_data.CLim(1));
+                            capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
                             scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
                             col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
                             
@@ -184,7 +184,7 @@ else
             
             for n = 1:length(patch_data.CData)
                 
-                capCD = max(min(patch_data.CData(1,n),axis_data.CLim(2)),axis_data.CLim(1));
+                capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
                 scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
                 col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
                 
