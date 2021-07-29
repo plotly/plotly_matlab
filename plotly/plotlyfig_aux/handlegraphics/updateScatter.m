@@ -60,21 +60,23 @@ scatter_data = get(obj.State.Plot(scatterIndex).Handle);
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-if ~isfield(scatter_data,'ZData')
+if isfield(scatter_data,'ZData')
+    if isempty(scatter_data.ZData)
 
-    %-AXIS DATA-%
-    eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-    eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+        %-AXIS DATA-%
+        eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+        eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
-    %-------------------------------------------------------------------------%
+        %-------------------------------------------------------------------------%
 
-    %-scatter xaxis-%
-    obj.data{scatterIndex}.xaxis = ['x' num2str(xsource)];
+        %-scatter xaxis-%
+        obj.data{scatterIndex}.xaxis = ['x' num2str(xsource)];
 
-    %-------------------------------------------------------------------------%
+        %-------------------------------------------------------------------------%
 
-    %-scatter yaxis-%
-    obj.data{scatterIndex}.yaxis = ['y' num2str(ysource)];
+        %-scatter yaxis-%
+        obj.data{scatterIndex}.yaxis = ['y' num2str(ysource)];
+    end
 
 end
 
@@ -154,8 +156,10 @@ for m = 1:length(scatter_data)
             showleg = false;
     end
     
-    if ~isfield(scatter_data,'ZData')
-        obj.data{scatterIndex}.showlegend = showleg;
+    if isfield(scatter_data,'ZData')
+        if isempty(scatter_data.ZData)
+            obj.data{scatterIndex}.showlegend = showleg;
+        end
     end
     
     %---------------------------------------------------------------------%
@@ -169,7 +173,11 @@ for m = 1:length(scatter_data)
     if length(scatter_data) > 1
         obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
     else
-        obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
+        if iscell(childmarker.line.color)
+            obj.data{scatterIndex}.marker.line.color = childmarker.line.color{1};
+        else
+            obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
+        end
     end
     
     %---------------------------------------------------------------------%
@@ -194,12 +202,20 @@ for m = 1:length(scatter_data)
     %---------------------------------------------------------------------%
     
     %-symbol-%
-    obj.data{scatterIndex}.marker.symbol{m} = childmarker.symbol;
+    if length(scatter_data) > 1
+        obj.data{scatterIndex}.marker.symbol{m} = childmarker.symbol;
+    else
+        obj.data{scatterIndex}.marker.symbol = childmarker.symbol;
+    end
     
     %---------------------------------------------------------------------%
     
     %-size-%
-    obj.data{scatterIndex}.marker.size = childmarker.size;
+    if length(scatter_data) > 1
+        obj.data{scatterIndex}.marker.size = childmarker.size;
+    else
+        obj.data{scatterIndex}.marker.size = childmarker.size * 0.15;
+    end
   
     %---------------------------------------------------------------------%
     
@@ -208,7 +224,8 @@ for m = 1:length(scatter_data)
     if length(scatter_data) > 1 || ischar(childmarker.line.color)
         obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
     else
-        obj.data{scatterIndex}.marker.line.width(1:length(childmarker.line.color)) = childmarker.line.width;
+        obj.data{scatterIndex}.marker.line.width = childmarker.line.width;
+        % obj.data{scatterIndex}.marker.line.width(1:length(childmarker.line.color)) = childmarker.line.width;
     end
     
     %---------------------------------------------------------------------%
