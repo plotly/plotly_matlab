@@ -93,6 +93,7 @@ if filledMarker
         col = 255*MarkerColor;
         markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     else
+
         switch MarkerColor
             
             case 'none'
@@ -111,17 +112,16 @@ if filledMarker
                 
                 
             case 'flat'
-                
+
                 for n = 1:length(patch_data.CData)
-                    
-                    capCD = max(min(patch_data.CData(1,n),axis_data.CLim(2)),axis_data.CLim(1));
+
+                    capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
                     scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
                     col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
                     
                     markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                     
                 end
-                markercolor = markercolor{1}
         end
     end
     
@@ -176,8 +176,6 @@ else
                             markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                             
                         end
-
-                        markerlinecolor = markerlinecolor{1}
                         
                 end
             end
@@ -193,8 +191,6 @@ else
                 markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                 
             end
-
-            markerlinecolor = markerlinecolor{1};
     end
 end
 
