@@ -121,6 +121,7 @@ if filledMarker
                     markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                     
                 end
+                markercolor = markercolor{1}
         end
     end
     
@@ -175,6 +176,8 @@ else
                             markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                             
                         end
+
+                        markerlinecolor = markerlinecolor{1}
                         
                 end
             end
@@ -190,6 +193,8 @@ else
                 markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                 
             end
+
+            markerlinecolor = markerlinecolor{1};
     end
 end
 
