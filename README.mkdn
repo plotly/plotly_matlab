@@ -71,11 +71,9 @@ and Plotly figure retrieval:
 
 This lives here: [https://plot.ly/matlab](https://plot.ly/matlab)
 
-## Maintainers
+## Questions & troubleshooting
 
-- <chuck@plot.ly>
-- <chris@plot.ly>
-- [@plotlygraphs](https://twitter.com/plotlygraphs)
+- https://community.plotly.com/c/api/matlab/
 
 ## Contribute
 
