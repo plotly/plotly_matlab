@@ -89,7 +89,7 @@ switch bar_data.BarLayout
     case 'grouped'
         obj.layout.barmode = 'group';
     case 'stacked'
-        obj.layout.barmode = 'stack';
+        obj.layout.barmode = 'relative';
 end
 
 %-------------------------------------------------------------------------%

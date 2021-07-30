@@ -55,7 +55,7 @@ if ~strcmp(line_data.Marker,'none')
     end
     
     marker.symbol = marksymbol;
-    
+    marker.maxdisplayed=length(line_data.MarkerIndices)+1;
 end
 
 %-------------------------------------------------------------------------%
