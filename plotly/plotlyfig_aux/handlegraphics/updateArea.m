@@ -99,14 +99,16 @@ obj.data{areaIndex}.type = 'scatter';
 %-------------------------------------------------------------------------%
 
 %-area x-%
-xdata = area_child.VertexData(1,:);
-obj.data{areaIndex}.x = [xdata xdata(1)];
+% xdata = area_child.VertexData(1,:); % left commented it to futures problems
+% obj.data{areaIndex}.x = [xdata xdata(1)];
+obj.data{areaIndex}.x = area_data.XData;
 
 %-------------------------------------------------------------------------%
 
 %-area y-%
-ydata = area_child.VertexData(2,:);
-obj.data{areaIndex}.y = [ydata ydata(1)];
+% ydata = area_child.VertexData(2,:); % left commented it to futures problems
+% obj.data{areaIndex}.y = [ydata ydata(1)];
+obj.data{areaIndex}.y = area_data.YData;
 
 %-------------------------------------------------------------------------%
 
