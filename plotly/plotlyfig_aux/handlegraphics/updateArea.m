@@ -100,18 +100,18 @@ obj.data{areaIndex}.type = 'scatter';
 
 %-area x-%
 xdata = area_child.VertexData(1,:);
-obj.data{areaIndex}.x = [xdata xdata(1)];
+obj.data{areaIndex}.x = xdata;
 
 %-------------------------------------------------------------------------%
 
 %-area y-%
 ydata = area_child.VertexData(2,:);
-obj.data{areaIndex}.y = [ydata ydata(1)];
+obj.data{areaIndex}.y = ydata;
 
 %-------------------------------------------------------------------------%
 
 %-area name-%
-if ~isempty(area_data.DisplayName);
+if ~isempty(area_data.DisplayName)
     obj.data{areaIndex}.name = area_data.DisplayName;
 else
     obj.data{areaIndex}.name = area_data.DisplayName;
@@ -126,6 +126,14 @@ obj.data{areaIndex}.visible = strcmp(area_data.Visible,'on');
 
 %-area fill-%
 obj.data{areaIndex}.fill = 'tozeroy';
+
+%-overwrite for stacked-%
+if areaIndex==2
+    obj.data{areaIndex-1}.fill = 'tonexty';
+    obj.data{areaIndex}.fill = 'tonexty';
+elseif areaIndex>2
+    obj.data{areaIndex}.fill = 'tonexty';
+end
 
 %-------------------------------------------------------------------------%
 
