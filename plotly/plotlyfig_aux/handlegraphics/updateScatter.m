@@ -173,10 +173,10 @@ for m = 1:length(scatter_data)
     if length(scatter_data) > 1
         obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
     else
-        if iscell(childmarker.line.color)
-            obj.data{scatterIndex}.marker.line.color = childmarker.line.color{1};
-        else
+        if length(childmarker.line.color) > 3
             obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
+        else
+            obj.data{scatterIndex}.marker.line.color = childmarker.line.color{1};
         end
     end
     
