@@ -480,7 +480,14 @@ classdef plotlyfig < handle
             obj.State.Figure.NumTexts = 0;
             
             % find axes of figure
-            ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx'});
+            ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
+            if (length(ax) == 13)
+                
+                ax(3).XTick = ax(end-1).XTick;  ax(end-1) = []; 
+                ax(end-4) = [];
+                ax(1).YTick = ax(end-7).YTick;  ax(end-7) = [];
+                
+            end
             obj.State.Figure.NumAxes = length(ax);
             
             % update number of annotations (one title per axis)
