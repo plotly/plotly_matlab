@@ -76,9 +76,9 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.MarginPad = 0;
             obj.PlotlyDefaults.MaxTickLength = 20;
             obj.PlotlyDefaults.ExponentFormat = 'none';
-            obj.PlotlyDefaults.ErrorbarWidth = 6;
+            obj.PlotlyDefaults.ErrorbarWidth = 3;
             obj.PlotlyDefaults.ShowBaselineLegend = false;
-            obj.PlotlyDefaults.Bargap = 0;
+            obj.PlotlyDefaults.Bargap = 2;
             obj.PlotlyDefaults.CaptionMarginIncreaseFactor = 1.2; 
             obj.PlotlyDefaults.MinCaptionMargin = 80;
             
