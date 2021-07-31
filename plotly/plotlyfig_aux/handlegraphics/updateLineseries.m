@@ -65,6 +65,17 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
+%-if compass or not-%
+iscompass = false;
+x = plot_data.XData;
+y = plot_data.YData;
+
+if length(x)==5 && length(y)==5 && x(2)==x(4) && y(2)==y(4)
+    iscompass = true;
+end
+
+%-------------------------------------------------------------------------%
+
 %-scatter xaxis-%
 obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
 
@@ -78,6 +89,10 @@ obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
 %-scatter type-%
 obj.data{plotIndex}.type = 'scatter';
 
+if iscompass
+    obj.data{plotIndex}.type = 'scatterpolar';
+end
+
 %-------------------------------------------------------------------------%
 
 %-scatter visible-%
@@ -86,12 +101,23 @@ obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-scatter x-%
-obj.data{plotIndex}.x = plot_data.XData;
+
+if iscompass
+    r = sqrt(x.^2 + y.^2);
+    obj.data{plotIndex}.r = r;
+else
+    obj.data{plotIndex}.x = x;
+end
 
 %-------------------------------------------------------------------------%
 
 %-scatter y-%
-obj.data{plotIndex}.y = plot_data.YData;
+if iscompass
+    theta = atan2(x,y);
+    obj.data{plotIndex}.theta = -(rad2deg(theta) - 90);
+else
+    obj.data{plotIndex}.y = plot_data.YData;
+end
 
 %-------------------------------------------------------------------------%
 
