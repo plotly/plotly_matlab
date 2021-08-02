@@ -838,7 +838,7 @@ classdef plotlyfig < handle
             fnmod = fn;
             
             try
-                for d = 1:length(fn);
+                for d = 1:length(fn)
                     
                     % clean up axis keys
                     if any(strfind(fn{d},'xaxis')) || any(strfind(fn{d},'yaxis'))

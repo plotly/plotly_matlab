@@ -253,12 +253,42 @@ else
         
         %-xaxis range-%
         xaxis.range = log10(axis_data.XLim);
+        %-xaxis autotick-%
+        xaxis.autotick = true;
+        %-xaxis nticks-%
+        xaxis.nticks = length(axis_data.XTick) + 1;
         
     elseif strcmp(xaxis.type,'linear')
         
         if strcmp(axis_data.XTickLabelMode,'auto')
             %-xaxis range-%
-            xaxis.range = axis_data.XLim;
+            if isnumeric(axis_data.XLim)
+                xaxis.range = axis_data.XLim;
+
+            elseif isduration(axis_data.XLim)
+               [temp,type] = convertDuration(axis_data.XLim);
+
+               if (~isduration(temp))              
+                   xaxis.range = temp;
+                   xaxis.type = 'duration';
+                   xaxis.title = type;
+               else
+                    xaxis.autorange = true;
+                    xaxis.type = 'duration - specified format';     
+               end
+
+            elseif isdatetime(axis_data.XLim)
+                xaxis.range = convertDate(axis_data.XLim);
+                xaxis.type = 'date'; 
+            else 
+                % data is a category type
+            end
+
+            %-xaxis autotick-%
+            xaxis.autotick = true;
+            %-xaxis numticks-%
+            xaxis.nticks = length(axis_data.XTick)+1;
+
         else
             %-xaxis show tick labels-%
             if isempty(axis_data.XTickLabel)
@@ -267,45 +297,29 @@ else
                 %-xaxis autorange-%
                 xaxis.autorange = true;
             else
-                try datevec(axis_data.XTickLabel(1,:),axis_data.UserData.plotly.xdateformat);
-                    %-xaxis type date-%
-                    xaxis.type = 'date';
+                try
+                    %find numbers in labels
+                    labelnums = find(~isnan(xlabels));
+                    %-yaxis type linear-%
+                    xaxis.type = 'linear';
                     %-range (overwrite)-%
-                    xaxis.range = [convertDate(datenum(axis_data.XTickLabel(1,:),axis_data.UserData.plotly.xdateformat)), ...
-                        convertDate(datenum(axis_data.XTickLabel(end,:),axis_data.UserData.plotly.xdateformat))];
+                    delta = (xlabels(labelnums(2)) - xlabels(labelnums(1)))/(labelnums(2)-labelnums(1));
+                    xaxis.range = [xlabels(labelnums(1))-delta*(labelnums(1)-1) xlabels(labelnums(1)) + (length(xlabels)-labelnums(1))*delta];
+                    %-yaxis autotick-%
+                    xaxis.autotick = true;
+                    %-yaxis numticks-%
+                    xaxis.nticks = length(axis_data.XTick) + 1;
                 catch
-                    %x-axis labels
-                    xlabels = str2double(axis_data.XTickLabel);
-                    try
-                        %find numbers in labels
-                        labelnums = find(~isnan(xlabels));
-                        %-yaxis type linear-%
-                        xaxis.type = 'linear';
-                        %-range (overwrite)-%
-                        delta = (xlabels(labelnums(2)) - xlabels(labelnums(1)))/(labelnums(2)-labelnums(1));
-                        xaxis.range = [xlabels(labelnums(1))-delta*(labelnums(1)-1) xlabels(labelnums(1)) + (length(xlabels)-labelnums(1))*delta];
-                        %-yaxis autotick-%
-                        xaxis.autotick = true;
-                        %-yaxis numticks-%
-                        xaxis.nticks = length(axis_data.XTick) + 1;
-                    catch
-                        %-yaxis type category-%
-                        xaxis.type = 'category';
-                        %-range (overwrite)-%
-                        xaxis.autorange = true;
-                        %-yaxis autotick-%
-                        xaxis.autotick = true;
-                    end
+                    %-yaxis type category-%
+                    xaxis.type = 'category';
+                    %-range (overwrite)-%
+                    xaxis.autorange = true;
+                    %-yaxis autotick-%
+                    xaxis.autotick = true;
                 end
             end
         end
     end
-    
-    %-xaxis autotick-%
-    xaxis.autotick = true;
-    %-xaxis numticks-%
-    xaxis.nticks = length(axis_data.XTick) + 1;
-    
 end
 
 %-------------------------------------------------------------------------%
@@ -387,11 +401,6 @@ yaxis.type = axis_data.YScale;
 
 %-------------------------------------------------------------------------%
 
-%-yaxis range-%
-yaxis.range = axis_data.YLim;
-
-%-------------------------------------------------------------------------%
-
 %-yaxis show tick labels-%
 yaxis.showticklabels = true;
 
@@ -450,12 +459,34 @@ else
         %-xaxis nticks-%
         yaxis.nticks = length(axis_data.YTick) + 1;
         
-    elseif strcmp(yaxis.type,'linear')
-        
-        %-xaxis range-%
-        yaxis.range = axis_data.YLim;
+    elseif strcmp(yaxis.type,'linear') 
         
         if strcmp(axis_data.YTickLabelMode,'auto')
+
+            %-xaxis range-%
+            if isnumeric(axis_data.YLim)
+                yaxis.range = axis_data.YLim;
+
+            elseif isduration(axis_data.YLim)
+
+               [temp,type] = convertDuration(axis_data.YLim);
+
+               if (~isduration(temp))              
+                   yaxis.range = temp;
+                   yaxis.type = 'duration';
+                   yaxis.title = type;
+               else
+                    yaxis.autorange = true;
+                    yaxis.type = 'duration - specified format';
+               end
+
+            elseif isdatetime(axis_data.YLim)
+                yaxis.range = convertDate(axis_data.YLim);
+                yaxis.type = 'date'; 
+            else 
+                % data is a category type
+            end
+
             %-yaxis autotick-%
             yaxis.autotick = true;
             %-yaxis numticks-%
