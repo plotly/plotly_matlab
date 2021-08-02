@@ -436,7 +436,7 @@ classdef plotlyfig < handle
                 cleanFeedTitle(obj);
             end
                 
-            %args
+            %get args
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
             args.world_readable = obj.PlotOptions.WorldReadable;
