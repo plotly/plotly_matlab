@@ -65,13 +65,18 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-if compass or not-%
-iscompass = false;
+%-if polar plot or not-%
+ispolar = false;
 x = plot_data.XData;
 y = plot_data.YData;
 
 if length(x)==5 && length(y)==5 && x(2)==x(4) && y(2)==y(4)
-    iscompass = true;
+    ispolar = true;
+end
+
+%-if polar ezplot or not-%
+if abs(x(1)-x(end))<1e-5 && abs(y(1)-y(end))<1e-5
+    ispolar = true;
 end
 
 %-------------------------------------------------------------------------%
@@ -89,7 +94,7 @@ obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
 %-scatter type-%
 obj.data{plotIndex}.type = 'scatter';
 
-if iscompass
+if ispolar
     obj.data{plotIndex}.type = 'scatterpolar';
 end
 
@@ -102,7 +107,7 @@ obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
 
 %-scatter x-%
 
-if iscompass
+if ispolar
     r = sqrt(x.^2 + y.^2);
     obj.data{plotIndex}.r = r;
 else
@@ -112,7 +117,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-scatter y-%
-if iscompass
+if ispolar
     theta = atan2(x,y);
     obj.data{plotIndex}.theta = -(rad2deg(theta) - 90);
 else
