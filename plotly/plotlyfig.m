@@ -480,7 +480,29 @@ classdef plotlyfig < handle
             obj.State.Figure.NumTexts = 0;
             
             % find axes of figure
-            ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx'});
+            ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
+            
+            %---------- checking the overlaping of the graphs ----------%
+            temp_ax = ax; deleted_idx = 0;
+            for i = 1:length(ax)
+                for j = i:length(ax)
+                    if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j))
+                        temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
+                        if ~ischar(temp_plots.FaceAlpha)
+                            update_opac(i) = true;
+                        else
+                            update_opac(i) = false;
+                        end
+                        temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
+                        temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
+                        temp_ax(j - deleted_idx) = []; 
+                        deleted_idx = deleted_idx + 1;
+                    end
+                end
+            end
+            ax = temp_ax;
+            %---------- checking the overlaping of the graphs ----------%
+            
             obj.State.Figure.NumAxes = length(ax);
             
             % update number of annotations (one title per axis)
@@ -592,6 +614,12 @@ classdef plotlyfig < handle
             % update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
+                
+                if (strcmp(obj.data{1, n}.type, 'bar') && update_opac(length(ax)-n))
+                    obj.data{1, n}.opacity = 0.9;
+                    obj.data{1, n}.marker.color = 'rgb(0,113.985,188.955)';
+                end
+                
             end
             
             % update annotations
