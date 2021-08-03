@@ -1,4 +1,3 @@
-function convertedDate = convertDate(date)
- date.Format = 'yyyy-MM-dd HH:mm:ss';
- convertedDate = char(date);
-end 
+function converted = convertDate(date)
+   converted = (date - datenum(1969,12,31,19,00,00))*1000*60*60*24;
+end
