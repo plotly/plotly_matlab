@@ -64,7 +64,8 @@ try
             updateStemseries(obj, dataIndex);
         case 'surfaceplot'
             updateSurfaceplot(obj,dataIndex);
-            
+        case 'functionline'
+            updateLineseries(obj, dataIndex);
             %--Plotly supported MATLAB group plot objects--%
         case {'hggroup','group'}
             % check for boxplot
