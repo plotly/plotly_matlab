@@ -75,7 +75,7 @@ if length(x)==5 && length(y)==5 && x(2)==x(4) && y(2)==y(4)
 end
 
 %-if polar ezplot or not-%
-if abs(x(1)-x(end))<1e-10 && abs(y(1)-y(end))<1e-10
+if abs(x(1)-x(end))<1e-5 && abs(y(1)-y(end))<1e-5
     ispolar = true;
 end
 
