@@ -46,9 +46,6 @@ if any(nonzeros(image_data.ZData))
     %-surface z-%
     obj.data{surfaceIndex}.z = image_data.ZData;
     
-    %-surface Color-%
-    obj.data{surfaceIndex}.surfacecolor = image_data.CData;
-    
 else
     
     %-surface type-%
