@@ -46,8 +46,6 @@ if any(nonzeros(image_data.ZData))
     %-surface z-%
     obj.data{surfaceIndex}.z = image_data.ZData;
     
-    %-surface Color-%
-    obj.data{surfaceIndex}.surfacecolor = image_data.CData;
     
 else
     
@@ -61,6 +59,27 @@ else
     obj.data{surfaceIndex}.y = image_data.YData(:,1);
 end
 
+%-------------------------------------------------------------------------%
+
+
+%-image colorscale-%
+
+cmap = figure_data.Colormap;
+% or try this one  cmap = colormap;
+
+
+for c = 1: length(cmap)
+    %col =  255*(colormap);
+    x1=(c-1)/length(cmap);
+    if x1 > 0.99
+        x=round(x1);
+    else
+        x=x1;
+    end
+    obj.data{surfaceIndex}.colorscale{c} = { x , ['rgb(' num2str(255*cmap(c,1)) ',' num2str(255*cmap(c,2)) ',' num2str(255*cmap(c,3)) ',' ')'  ]  };
+end
+
+obj.data{surfaceIndex}.surfacecolor = image_data.CData;
 %-------------------------------------------------------------------------%
 
 %-surface name-%
