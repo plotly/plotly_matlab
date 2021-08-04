@@ -516,7 +516,6 @@ classdef plotlyfig < handle
                 axrev = length(ax) - a + 1;
                 
                 % set axis handle field
-%                 ax(axrev).XColor
                 obj.State.Axis(a).Handle = ax(axrev);
                 
                 % add title
