@@ -237,8 +237,6 @@ classdef plotlyfig < handle
                 
                 % plotly reference
                 plotlyref = load('plotly_reference.mat');
-                % rmfield(plotlyref.pr, 'xbins');
-                % plotlyref.pr.xbins.size
                 
                 % update the PlotlyRef property
                 obj.PlotlyReference = plotlyref.pr;
@@ -481,6 +479,9 @@ classdef plotlyfig < handle
             
             % find axes of figure
             ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
+            if isempty(ax)
+                ax = gca;
+            end
             
             %---------- checking the overlaping of the graphs ----------%
             temp_ax = ax; deleted_idx = 0;
@@ -608,23 +609,29 @@ classdef plotlyfig < handle
             
             % update axes
             for n = 1:obj.State.Figure.NumAxes
-                updateAxis(obj,n);
+                try
+                    updateAxis(obj,n);
+                end
             end
             
             % update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
                 
-                if (strcmp(obj.data{1, n}.type, 'bar') && update_opac(length(ax)-n))
-                    obj.data{1, n}.opacity = 0.9;
-                    obj.data{1, n}.marker.color = 'rgb(0,113.985,188.955)';
+                try
+                    if (strcmp(obj.data{n}.type, 'bar') && update_opac(length(ax)-n))
+                        obj.data{1, n}.opacity = 0.9;
+                        obj.data{1, n}.marker.color = 'rgb(0,113.985,188.955)';
+                    end
                 end
                 
             end
             
             % update annotations
             for n = 1:obj.State.Figure.NumTexts
-                updateAnnotation(obj,n);
+                try
+                    updateAnnotation(obj,n);
+                end
             end
             
             % update legends
@@ -866,7 +873,7 @@ classdef plotlyfig < handle
             fnmod = fn;
             
             try
-                for d = 1:length(fn);
+                for d = 1:length(fn)
                     
                     % clean up axis keys
                     if any(strfind(fn{d},'xaxis')) || any(strfind(fn{d},'yaxis'))
