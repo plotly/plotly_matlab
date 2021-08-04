@@ -65,11 +65,8 @@ end
 %-image colorscale-%
 
 cmap = figure_data.Colormap;
-% or try this one  cmap = colormap;
-
 
 for c = 1: length(cmap)
-    %col =  255*(colormap);
     x1=(c-1)/length(cmap);
     if x1 > 0.99
         x=round(x1);
