@@ -8,7 +8,7 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
 %-SURFACE DATA STRUCTURE- %
 image_data = get(obj.State.Plot(surfaceIndex).Handle);
-
+figure_data = get(obj.State.Figure.Handle);
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
 eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
