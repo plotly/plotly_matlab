@@ -129,7 +129,6 @@ if filledMarker
     
 end
 
-
 %-------------------------------------------------------------------------%
 
 %-MARKER LINE COLOR-%
@@ -146,7 +145,7 @@ else
     switch MarkerLineColor
         
         case 'none'
-            
+          
             markerlinecolor = 'rgba(0,0,0,0)';
             
         case 'auto'
@@ -168,7 +167,6 @@ else
                         
                         for n = 1:length(patch_data.CData)
                             
-                            
                             capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
                             scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
                             col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
@@ -184,9 +182,15 @@ else
             
             for n = 1:length(patch_data.CData)
                 
-                capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
-                scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
+                try
+                    capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
+                    scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
+                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
+                catch
+                    capCD = patch_data.CData(n); 
+                    scalefactor = capCD; 
+                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
+                end
                 
                 markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
                 
