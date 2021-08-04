@@ -58,7 +58,8 @@ classdef plotlyfig < handle
             obj.PlotOptions.OpenURL = true;
             obj.PlotOptions.Strip = false;
             obj.PlotOptions.Visible = 'on';
-            obj.PlotOptions.TriangulatePatch = false; 
+            obj.PlotOptions.TriangulatePatch = false;
+            obj.PlotOptions.StripMargins = false;
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -191,6 +192,9 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'data'))
                             obj.data = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'StripMargins'))
+                            obj.PlotOptions.StripMargins = varargin{a+1};
                         end
                     end
             end
@@ -423,6 +427,14 @@ classdef plotlyfig < handle
             % strip keys
             if obj.PlotOptions.Strip
                 obj.strip;
+            end
+            
+            % strip margins
+            if obj.PlotOptions.StripMargins
+                obj.layout.margin.l = 0;
+                obj.layout.margin.r = 0;
+                obj.layout.margin.b = 0;
+                obj.layout.margin.t = 0;
             end
             
             % validate keys
