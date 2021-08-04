@@ -488,7 +488,7 @@ classdef plotlyfig < handle
                 for j = i:length(ax)
                     if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j))
                         temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
-                        if ~ischar(temp_plots.FaceAlpha)
+                        if isfield(temp_plots, 'FaceAlpha')
                             update_opac(i) = true;
                         else
                             update_opac(i) = false;
