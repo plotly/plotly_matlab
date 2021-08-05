@@ -499,9 +499,9 @@ classdef plotlyfig < handle
             temp_ax = ax; deleted_idx = 0;
             for i = 1:length(ax)
                 for j = i:length(ax)
-                    if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j))
+                    if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j) && strcmp(ax(i).Children.Type, 'histogram'))
                         temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
-                        if ~ischar(temp_plots.FaceAlpha)
+                        if isprop(temp_plots, 'FaceAlpha')
                             update_opac(i) = true;
                         else
                             update_opac(i) = false;
