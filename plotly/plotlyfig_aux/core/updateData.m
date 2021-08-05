@@ -12,7 +12,11 @@ try
         case 'line'
             updateLineseries(obj, dataIndex);
         case 'histogram'
-            updateHistogram(obj, dataIndex);
+            if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
+                updateHistogramPolar(obj, dataIndex); 
+            else
+                updateHistogram(obj, dataIndex);
+            end
         case 'histogram2'
             updateHistogram2(obj, dataIndex);
         case 'patch'
