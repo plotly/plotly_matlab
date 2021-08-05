@@ -92,7 +92,9 @@ end
 %-------------------------------------------------------------------------%
 
 %-image name-%
-obj.data{imageIndex}.name = image_data.DisplayName;
+try
+    obj.data{imageIndex}.name = image_data.DisplayName;
+end
 
 %-------------------------------------------------------------------------%
 
@@ -117,7 +119,8 @@ obj.data{imageIndex}.zmin = axis_data.CLim(1);
 %-------------------------------------------------------------------------%
 
 %-image zmax-%
-obj.data{imageIndex}.zmax = axis_data.CLim(2);
+% axis_data.CLim(2); % comment this as optional
+obj.data{imageIndex}.zmax = 255; 
 
 %-------------------------------------------------------------------------%
 
@@ -125,26 +128,29 @@ obj.data{imageIndex}.zmax = axis_data.CLim(2);
 
 %-image colorscale-%
 colormap = figure_data.Colormap;
+len = length(colormap) - 1;
 
-for c = 1:length(colormap)
+for c = 1:size(colormap, 1)
     col =  255*(colormap(c,:));
-    obj.data{imageIndex}.colorscale{c} = {(c-1)/length(colormap), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
+    obj.data{imageIndex}.colorscale{c} = {(c-1)/len, ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
 end
 
 %-------------------------------------------------------------------------%
 
 %-image showlegend-%
-leg = get(image_data.Annotation);
-legInfo = get(leg.LegendInformation);
+try
+    leg = get(image_data.Annotation);
+    legInfo = get(leg.LegendInformation);
 
-switch legInfo.IconDisplayStyle
-    case 'on'
-        showleg = true;
-    case 'off'
-        showleg = false;
+    switch legInfo.IconDisplayStyle
+        case 'on'
+            showleg = true;
+        case 'off'
+            showleg = false;
+    end
+
+    obj.data{imageIndex}.showlegend = showleg;
 end
-
-obj.data{imageIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
