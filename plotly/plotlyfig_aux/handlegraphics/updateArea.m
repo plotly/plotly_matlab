@@ -99,14 +99,16 @@ obj.data{areaIndex}.type = 'scatter';
 %-------------------------------------------------------------------------%
 
 %-area x-%
-xdata = area_child.VertexData(1,:);
-obj.data{areaIndex}.x = [xdata xdata(1)];
+obj.data{areaIndex}.x = area_data.XData;
 
 %-------------------------------------------------------------------------%
 
 %-area y-%
-ydata = area_child.VertexData(2,:);
-obj.data{areaIndex}.y = [ydata ydata(1)];
+if areaIndex>1
+    obj.data{areaIndex}.y = obj.data{areaIndex-1}.y + area_data.YData;
+else
+    obj.data{areaIndex}.y = area_data.YData;
+end
 
 %-------------------------------------------------------------------------%
 
@@ -125,7 +127,7 @@ obj.data{areaIndex}.visible = strcmp(area_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-area fill-%
-obj.data{areaIndex}.fill = 'tozeroy';
+obj.data{areaIndex}.fill = 'tonexty';
 
 %-------------------------------------------------------------------------%
 
