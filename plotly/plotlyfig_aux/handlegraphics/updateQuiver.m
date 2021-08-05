@@ -49,7 +49,7 @@ obj.data{quiverIndex}.name = quiver_data.DisplayName;
 
 %-quiver line color-%
 col = 255*quiver_data.Color; 
-obj.data{quiverIndex}.line.color = ['rgb(' col(1) ',' col(2) ',' col(3) ')']; 
+obj.data{quiverIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
 %------------------------------------------------------------------------%
 
