@@ -92,8 +92,10 @@ end
 %-------------------------------------------------------------------------%
 
 %-image name-%
-obj.data{imageIndex}.name = image_data.DisplayName;
-
+if ~isempty(image_data.DisplayName);
+    obj.data{imageIndex}.name = image_data.DisplayName;
+else
+    obj.data{imageIndex}.name = image_data.DisplayName;
 %-------------------------------------------------------------------------%
 
 %-image visible-%
