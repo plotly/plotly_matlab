@@ -1,4 +1,4 @@
-function updateScatter(obj,scatterIndex)
+function updateScatterPolar(obj,scatterIndex)
 
 %check: http://undocumentedmatlab.com/blog/undocumented-scatter-plot-behavior
 
@@ -57,33 +57,10 @@ axIndex = obj.getAxisIndex(obj.State.Plot(scatterIndex).AssociatedAxis);
 %-SCATTER DATA STRUCTURE- %
 scatter_data = get(obj.State.Plot(scatterIndex).Handle);
 
-%-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
-
-if isfield(scatter_data,'ZData')
-    if isempty(scatter_data.ZData)
-
-        %-AXIS DATA-%
-        eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-        eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
-
-        %-------------------------------------------------------------------------%
-
-        %-scatter xaxis-%
-        obj.data{scatterIndex}.xaxis = ['x' num2str(xsource)];
-
-        %-------------------------------------------------------------------------%
-
-        %-scatter yaxis-%
-        obj.data{scatterIndex}.yaxis = ['y' num2str(ysource)];
-    end
-
-end
-
 %-------------------------------------------------------------------------%
 
-%-scatter type-%
-obj.data{scatterIndex}.type = 'scatter';
+%-scatterpolar type-%
+obj.data{scatterIndex}.type = 'scatterpolar';
 
 %-------------------------------------------------------------------------%
 
@@ -110,38 +87,22 @@ for m = 1:length(scatter_data)
     
     %---------------------------------------------------------------------%
     
-    %-scatter x-%
+    %-scatter r-%
     if length(scatter_data) > 1
-        obj.data{scatterIndex}.x(m) = scatter_data(n).XData;
+        obj.data{scatterIndex}.r(m) = scatter_data(n).RData;
     else
-        obj.data{scatterIndex}.x = scatter_data.XData;
+        obj.data{scatterIndex}.r = scatter_data.RData;
     end
     
     %---------------------------------------------------------------------%
     
-    %-scatter y-%
+    %-scatter theta-%
     if length(scatter_data) > 1
-        obj.data{scatterIndex}.y(m) = scatter_data(n).YData;
+        obj.data{scatterIndex}.theta(m) = rad2deg(scatter_data(n).ThetaData);
     else
-        obj.data{scatterIndex}.y = scatter_data.YData;
+        obj.data{scatterIndex}.theta = rad2deg(scatter_data.ThetaData);
     end
     
-    %---------------------------------------------------------------------%
-    
-    %-scatter z-%
-    if isHG2()
-        if isfield(scatter_data,'ZData')
-            if any(scatter_data.ZData)
-                if length(scatter_data) > 1
-                    obj.data{scatterIndex}.z(m) = scatter_data(n).ZData;
-                else
-                    obj.data{scatterIndex}.z = scatter_data.ZData;
-                end
-                % overwrite type
-                obj.data{scatterIndex}.type = 'scatter3d';
-            end
-        end
-    end
     
     %---------------------------------------------------------------------%
     
@@ -229,7 +190,7 @@ for m = 1:length(scatter_data)
     end
     
     %---------------------------------------------------------------------%
-    
+
 end
 end
 

@@ -8,7 +8,7 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
 %-SURFACE DATA STRUCTURE- %
 image_data = get(obj.State.Plot(surfaceIndex).Handle);
-
+figure_data = get(obj.State.Figure.Handle);
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
 eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
@@ -46,6 +46,7 @@ if any(nonzeros(image_data.ZData))
     %-surface z-%
     obj.data{surfaceIndex}.z = image_data.ZData;
     
+    
 else
     
     %-surface type-%
@@ -58,6 +59,24 @@ else
     obj.data{surfaceIndex}.y = image_data.YData(:,1);
 end
 
+%-------------------------------------------------------------------------%
+
+
+%-image colorscale-%
+
+cmap = figure_data.Colormap;
+
+for c = 1: length(cmap)
+    x1=(c-1)/length(cmap);
+    if x1 > 0.99
+        x=round(x1);
+    else
+        x=x1;
+    end
+    obj.data{surfaceIndex}.colorscale{c} = { x , ['rgb(' num2str(255*cmap(c,1)) ',' num2str(255*cmap(c,2)) ',' num2str(255*cmap(c,3)) ',' ')'  ]  };
+end
+
+obj.data{surfaceIndex}.surfacecolor = image_data.CData;
 %-------------------------------------------------------------------------%
 
 %-surface name-%

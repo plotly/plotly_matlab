@@ -61,4 +61,12 @@ stem_temp_data.y = ydata_extended;
 
 obj.data{dataIndex} = stem_temp_data;
 
+%------------------------------------------------------------------------%
+
+%-put y-zeroline-%
+[~, ysource] = findSourceAxis(obj,dataIndex);
+eval(['obj.layout.yaxis' num2str(ysource) '.zeroline = true;']);
+
+%------------------------------------------------------------------------%
+
 end

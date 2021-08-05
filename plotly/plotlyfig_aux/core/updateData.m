@@ -4,6 +4,7 @@ function obj = updateData(obj, dataIndex)
 
 %-update plot based on plot call class-%
 try
+
     switch lower(obj.State.Plot(dataIndex).Class)
         
         %--CORE PLOT OBJECTS--%
@@ -105,6 +106,18 @@ if strcmpi(xaxis.type, 'category') && ...
     obj.data{dataIndex}.x =  get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
 end
 
+% check for xaxis duration
+if strcmpi(xaxis.type, 'duration')
+    obj.data{dataIndex}.x = convertDuration(obj.data{dataIndex}.x);
+    xaxis.type = 'category';
+end 
+
+% check for xaxis duration with input format
+if strcmpi(xaxis.type, 'duration - specified format')
+    obj.data{dataIndex}.x = get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
+    xaxis.type = 'category';
+end
+%-------------------------------------------------------------------------%
 % check for yaxis dates
 if strcmpi(yaxis.type, 'date')
     obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
@@ -114,6 +127,18 @@ end
 if strcmpi(yaxis.type, 'category') && ...
         ~strcmp(obj.data{dataIndex}.type,'box')
     obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
+end
+
+% check for yaxis duration
+if strcmpi(yaxis.type, 'duration')
+    obj.data{dataIndex}.y = convertDuration(obj.data{dataIndex}.y);
+    yaxis.type = 'category';
+end 
+
+% check for yaxis duration with input format
+if strcmpi(yaxis.type, 'duration - specified format')
+    obj.data{dataIndex}.y = get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
+    yaxis.type = 'category';
 end
 
 %-------------------------------------------------------------------------%

@@ -58,7 +58,8 @@ classdef plotlyfig < handle
             obj.PlotOptions.OpenURL = true;
             obj.PlotOptions.Strip = false;
             obj.PlotOptions.Visible = 'on';
-            obj.PlotOptions.TriangulatePatch = false; 
+            obj.PlotOptions.TriangulatePatch = false;
+            obj.PlotOptions.StripMargins = false;
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -192,6 +193,9 @@ classdef plotlyfig < handle
                         if(strcmpi(varargin{a},'data'))
                             obj.data = varargin{a+1};
                         end
+                        if(strcmpi(varargin{a},'StripMargins'))
+                            obj.PlotOptions.StripMargins = varargin{a+1};
+                        end
                     end
             end
             
@@ -237,8 +241,6 @@ classdef plotlyfig < handle
                 
                 % plotly reference
                 plotlyref = load('plotly_reference.mat');
-                % rmfield(plotlyref.pr, 'xbins');
-                % plotlyref.pr.xbins.size
                 
                 % update the PlotlyRef property
                 obj.PlotlyReference = plotlyref.pr;
@@ -425,6 +427,14 @@ classdef plotlyfig < handle
                 obj.strip;
             end
             
+            % strip margins
+            if obj.PlotOptions.StripMargins
+                obj.layout.margin.l = 0;
+                obj.layout.margin.r = 0;
+                obj.layout.margin.b = 0;
+                obj.layout.margin.t = 0;
+            end
+            
             % validate keys
             validate(obj);
             
@@ -436,7 +446,7 @@ classdef plotlyfig < handle
                 cleanFeedTitle(obj);
             end
                 
-            %args
+            %get args
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
             args.world_readable = obj.PlotOptions.WorldReadable;
@@ -480,7 +490,32 @@ classdef plotlyfig < handle
             obj.State.Figure.NumTexts = 0;
             
             % find axes of figure
-            ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx'});
+            ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
+            if isempty(ax)
+                ax = gca;
+            end
+            
+            %---------- checking the overlaping of the graphs ----------%
+            temp_ax = ax; deleted_idx = 0;
+            for i = 1:length(ax)
+                for j = i:length(ax)
+                    if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j) && strcmp(ax(i).Children.Type, 'histogram'))
+                        temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
+                        if isprop(temp_plots, 'FaceAlpha')
+                            update_opac(i) = true;
+                        else
+                            update_opac(i) = false;
+                        end
+                        temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
+                        temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
+                        temp_ax(j - deleted_idx) = []; 
+                        deleted_idx = deleted_idx + 1;
+                    end
+                end
+            end
+            ax = temp_ax;
+            %---------- checking the overlaping of the graphs ----------%
+            
             obj.State.Figure.NumAxes = length(ax);
             
             % update number of annotations (one title per axis)
@@ -586,17 +621,29 @@ classdef plotlyfig < handle
             
             % update axes
             for n = 1:obj.State.Figure.NumAxes
-                updateAxis(obj,n);
+                try
+                    updateAxis(obj,n);
+                end
             end
             
             % update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
+                
+                try
+                    if (strcmp(obj.data{n}.type, 'bar') && update_opac(length(ax)-n))
+                        obj.data{1, n}.opacity = 0.9;
+                        obj.data{1, n}.marker.color = 'rgb(0,113.985,188.955)';
+                    end
+                end
+                
             end
             
             % update annotations
             for n = 1:obj.State.Figure.NumTexts
-                updateAnnotation(obj,n);
+                try
+                    updateAnnotation(obj,n);
+                end
             end
             
             % update legends
@@ -838,7 +885,7 @@ classdef plotlyfig < handle
             fnmod = fn;
             
             try
-                for d = 1:length(fn);
+                for d = 1:length(fn)
                     
                     % clean up axis keys
                     if any(strfind(fn{d},'xaxis')) || any(strfind(fn{d},'yaxis'))
@@ -898,6 +945,7 @@ classdef plotlyfig < handle
                     if ~( ...
                             strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') ...
                         ||  strcmpi(fieldname,'mesh3d') || strcmpi(fieldname,'bar') ...
+                        ||  strcmpi(fieldname,'scatterpolar') ...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
