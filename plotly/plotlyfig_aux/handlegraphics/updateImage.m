@@ -94,6 +94,8 @@ end
 %-image name-%
 try
     obj.data{imageIndex}.name = image_data.DisplayName;
+catch
+    obj.data{imageIndex}.name = '';
 end
 
 %-------------------------------------------------------------------------%
@@ -119,8 +121,8 @@ obj.data{imageIndex}.zmin = axis_data.CLim(1);
 %-------------------------------------------------------------------------%
 
 %-image zmax-%
-% axis_data.CLim(2); % comment this as optional
-obj.data{imageIndex}.zmax = 255; 
+axis_data.CLim(2); 
+% obj.data{imageIndex}.zmax = 255; % comment this as optional
 
 %-------------------------------------------------------------------------%
 
@@ -150,6 +152,8 @@ try
     end
 
     obj.data{imageIndex}.showlegend = showleg;
+catch
+    %TODO to future
 end
 
 %-------------------------------------------------------------------------%
