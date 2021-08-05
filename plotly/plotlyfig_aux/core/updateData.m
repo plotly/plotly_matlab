@@ -126,6 +126,8 @@ try
             ~strcmp(obj.data{dataIndex}.type,'box')
         obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
     end
+catch
+    % TODO to future
 end
 
 %-------------------------------------------------------------------------%
