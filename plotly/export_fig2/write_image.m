@@ -2,15 +2,33 @@ function output = write_image(pfObj, imageFormat, filename, height, width, scale
 
 % Function to write plotly figures to a supported image format, which are the following: "png", "jpg", "jpeg", "webp", "svg", "pdf", "eps", "json"
 
-debug=1;
+debug=0;
 if nargin < 2
-    imageFormat='png';
+    imageFormat="png";
     filename='figure.png';
     height=500;
     width=800;
     scale=1;
+elseif nargin < 3
+    filename=['figure.',char(imageFormat)];
+    height=500;
+    width=800;
+    scale=1;
+elseif nargin < 4
+    height=500;
+    width=800;
+    scale=1;
+elseif nargin < 5
+    width=800;
+    scale=1;
+elseif nargin < 6
+    scale=1;
 end
 
+if strcmpi(imageFormat,'jpg')
+    imageFormat = "jpeg";
+end
+    
 wd=fileparts(fileparts(mfilename('fullpath')));
 output=[];
 
@@ -48,7 +66,7 @@ q.data.data = pfObj.data;
 q.data.layout = pfObj.layout;
 q.data.layout = rmfield(q.data.layout,'height');
 q.data.layout = rmfield(q.data.layout,'width');
-q.format = imageFormat;
+q.format = string(imageFormat);
 q.height = height;
 q.scale = scale;
 q.width = width;
@@ -87,7 +105,7 @@ if output.code ~= 0
 else
     out=unicode2native(output.result,'UTF-8');
     out=base64decode(out);
-    f=fopen(filename,'wb');
+    f=fopen(char(filename),'wb');
     fwrite(f,out);
     fclose(f);
 end
