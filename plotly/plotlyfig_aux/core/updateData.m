@@ -127,7 +127,7 @@ try
         obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
     end
 catch
-    % TODO to future
+    % TODO to the future
 end
 
 %-------------------------------------------------------------------------%
