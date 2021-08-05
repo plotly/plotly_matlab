@@ -4,7 +4,6 @@ function obj = updateData(obj, dataIndex)
 
 %-update plot based on plot call class-%
 try
-
     switch lower(obj.State.Plot(dataIndex).Class)
         
         %--CORE PLOT OBJECTS--%
@@ -13,7 +12,11 @@ try
         case 'line'
             updateLineseries(obj, dataIndex);
         case 'histogram'
-            updateHistogram(obj, dataIndex);
+            if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
+                updateHistogramPolar(obj, dataIndex); 
+            else
+                updateHistogram(obj, dataIndex);
+            end
         case 'histogram2'
             updateHistogram2(obj, dataIndex);
         case 'patch'
@@ -52,7 +55,11 @@ try
         case 'quivergroup'
             updateQuivergroup(obj, dataIndex);
         case 'scatter'
-            updateScatter(obj, dataIndex); 
+            if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
+                updateScatterPolar(obj, dataIndex); 
+            else
+                updateScatter(obj, dataIndex); 
+            end
         case 'scattergroup'
             updateScattergroup(obj, dataIndex);
         case 'stair'
@@ -65,6 +72,8 @@ try
             updateStemseries(obj, dataIndex);
         case 'surfaceplot'
             updateSurfaceplot(obj,dataIndex);
+        case 'implicitfunctionline'
+            updateLineseries(obj, dataIndex);
             
             %--Plotly supported MATLAB group plot objects--%
         case {'hggroup','group'}
@@ -83,62 +92,42 @@ end
 
 %------------------------AXIS/DATA CLEAN UP-------------------------------%
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+try
+    %-AXIS INDEX-%
+    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
 
-%-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
+    %-CHECK FOR MULTIPLE AXES-%
+    [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-%-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+    %-AXIS DATA-%
+    eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+    eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
-%-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
-% check for xaxis dates
-if strcmpi(xaxis.type, 'date')
-    obj.data{dataIndex}.x =  convertDate(obj.data{dataIndex}.x);
-end
+    % check for xaxis dates
+    if strcmpi(xaxis.type, 'date')
+        obj.data{dataIndex}.x =  convertDate(obj.data{dataIndex}.x);
+    end
 
-% check for xaxis categories
-if strcmpi(xaxis.type, 'category') && ...
-        ~strcmp(obj.data{dataIndex}.type,'box')
-    obj.data{dataIndex}.x =  get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
-end
+    % check for xaxis categories
+    if strcmpi(xaxis.type, 'category') && ...
+            ~strcmp(obj.data{dataIndex}.type,'box')
+        obj.data{dataIndex}.x =  get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
+    end
 
-% check for xaxis duration
-if strcmpi(xaxis.type, 'duration')
-    obj.data{dataIndex}.x = convertDuration(obj.data{dataIndex}.x);
-    xaxis.type = 'category';
-end 
+    % check for yaxis dates
+    if strcmpi(yaxis.type, 'date')
+        obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
+    end
 
-% check for xaxis duration with input format
-if strcmpi(xaxis.type, 'duration - specified format')
-    obj.data{dataIndex}.x = get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
-    xaxis.type = 'category';
-end
-%-------------------------------------------------------------------------%
-% check for yaxis dates
-if strcmpi(yaxis.type, 'date')
-    obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
-end
-
-% check for yaxis categories
-if strcmpi(yaxis.type, 'category') && ...
-        ~strcmp(obj.data{dataIndex}.type,'box')
-    obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
-end
-
-% check for yaxis duration
-if strcmpi(yaxis.type, 'duration')
-    obj.data{dataIndex}.y = convertDuration(obj.data{dataIndex}.y);
-    yaxis.type = 'category';
-end 
-
-% check for yaxis duration with input format
-if strcmpi(yaxis.type, 'duration - specified format')
-    obj.data{dataIndex}.y = get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
-    yaxis.type = 'category';
+    % check for yaxis categories
+    if strcmpi(yaxis.type, 'category') && ...
+            ~strcmp(obj.data{dataIndex}.type,'box')
+        obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
+    end
+catch
+    % TODO to the future
 end
 
 %-------------------------------------------------------------------------%
