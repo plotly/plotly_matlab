@@ -113,10 +113,10 @@ end
 %-------------------------------------------------------------------------%
 
 %-area name-%
-if isfield(area_data,'DisplayName')
+if ~isempty(area_data.DisplayName);
     obj.data{areaIndex}.name = area_data.DisplayName;
 else
-    obj.data{areaIndex}.name = '';
+    obj.data{areaIndex}.name = area_data.DisplayName;
 end
 
 %-------------------------------------------------------------------------%
