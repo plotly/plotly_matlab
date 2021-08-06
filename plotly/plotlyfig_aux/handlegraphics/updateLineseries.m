@@ -74,8 +74,8 @@ if length(x)==5 && length(y)==5 && x(2)==x(4) && y(2)==y(4)
     ispolar = true;
 end
 
-%-if polar ezplot or not-%
-if abs(x(1)-x(end))<1e-5 && abs(y(1)-y(end))<1e-5
+%-if ezpolar or not-%
+if length(obj.State.Axis(plotIndex).Handle.Children) == 2
     ispolar = true;
 end
 
