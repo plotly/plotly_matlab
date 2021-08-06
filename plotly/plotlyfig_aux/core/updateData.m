@@ -1,3 +1,4 @@
+
 %----UPDATE PLOT DATA/STYLE----%
 
 function obj = updateData(obj, dataIndex)
@@ -77,6 +78,11 @@ try
             updateLineseries(obj, dataIndex);
         case 'parameterizedfunctionline'
             updateLineseries(obj, dataIndex);
+            obj.layout.scene.camera.eye.x = -1.25;
+            obj.layout.scene.camera.eye.y = -1.25;
+            obj.layout.scene.camera.eye.z = 0.75;
+            obj.layout.scene.camera.center.z = -0.5;
+            
             %--Plotly supported MATLAB group plot objects--%
         case {'hggroup','group'}
             % check for boxplot
