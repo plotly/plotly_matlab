@@ -499,17 +499,19 @@ classdef plotlyfig < handle
             temp_ax = ax; deleted_idx = 0;
             for i = 1:length(ax)
                 for j = i:length(ax)
-                    if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j) && strcmp(ax(i).Children.Type, 'histogram'))
-                        temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
-                        if isprop(temp_plots, 'FaceAlpha')
-                            update_opac(i) = true;
-                        else
-                            update_opac(i) = false;
+                    if isfield(ax(i).Children,'Type')
+                        if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j) && strcmp(ax(i).Children.Type, 'histogram'))
+                            temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
+                            if isprop(temp_plots, 'FaceAlpha')
+                                update_opac(i) = true;
+                            else
+                                update_opac(i) = false;
+                            end
+                            temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
+                            temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
+                            temp_ax(j - deleted_idx) = []; 
+                            deleted_idx = deleted_idx + 1;
                         end
-                        temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
-                        temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
-                        temp_ax(j - deleted_idx) = []; 
-                        deleted_idx = deleted_idx + 1;
                     end
                 end
             end
