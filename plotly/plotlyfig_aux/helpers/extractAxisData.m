@@ -204,12 +204,8 @@ else
                 axis.autorange = true;
             else
                 %-axis labels
-                labels = str2double(axis_data.XTickLabel);
+                labels = str2double(axis_data.YTickLabel);
                 try 
-                    dataLim = eval(['axis_data.' axisName 'Lim']);
-                    if isnumeric (dataLim)
-                         axis.range = dataLim;
-                    else 
                     %find numbers in labels
                     labelnums = find(~isnan(labels));
                     %-axis type linear-%
@@ -217,7 +213,6 @@ else
                     %-range (overwrite)-%
                     delta = (labels(labelnums(2)) - labels(labelnums(1)))/(labelnums(2)-labelnums(1));
                     axis.range = [labels(labelnums(1))-delta*(labelnums(1)-1) labels(labelnums(1)) + (length(labels)-labelnums(1))*delta];
-                    end
                     %-axis autotick-%
                     axis.autotick = true;
                     %-axis numticks-%
