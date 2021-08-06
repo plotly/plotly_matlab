@@ -4,6 +4,7 @@ function obj = updateData(obj, dataIndex)
 
 %-update plot based on plot call class-%
 try
+
     switch lower(obj.State.Plot(dataIndex).Class)
         
         %--CORE PLOT OBJECTS--%
@@ -74,7 +75,8 @@ try
             updateSurfaceplot(obj,dataIndex);
         case 'implicitfunctionline'
             updateLineseries(obj, dataIndex);
-            
+        case 'parameterizedfunctionline'
+            updateLineseries(obj, dataIndex);
             %--Plotly supported MATLAB group plot objects--%
         case {'hggroup','group'}
             % check for boxplot
