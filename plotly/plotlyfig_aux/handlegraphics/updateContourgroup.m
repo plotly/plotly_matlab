@@ -70,36 +70,60 @@ obj.data{contourIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
 
-%-contour type-%
-obj.data{contourIndex}.type = 'contour';
-
-%-------------------------------------------------------------------------%
-
 %-contour name-%
 obj.data{contourIndex}.name = contour_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
-%-contour x data-%
-if ~isvector(contour_data.XData)
-    obj.data{contourIndex}.x = contour_data.XData(1,:);
+%-setting the plot-%
+xdata = contour_data.XData;
+ydata = contour_data.YData;
+zdata = contour_data.ZData;
+
+if isvector(zdata)
+    
+    %-contour type-%
+    obj.data{contourIndex}.type = 'contour';
+    
+    %-contour x data-%
+    if ~isvector(x)
+        obj.data{contourIndex}.xdata = xdata(1,:);
+    else
+        obj.data{contourIndex}.xdata = xdata;
+    end
+
+    %-contour y data-%
+    if ~isvector(y)
+        obj.data{contourIndex}.ydata = ydata';
+    else
+        obj.data{contourIndex}.ydata = ydata';
+    end
+    
+    %-contour z data-%
+    obj.data{contourIndex}.z = zdata;
+    
 else
-    obj.data{contourIndex}.x = contour_data.XData;
+    
+    %-contour type-%
+    obj.data{contourIndex}.type = 'surface';
+    
+    %-contour x and y data
+    [xmesh, ymesh] = meshgrid(xdata, ydata);
+    obj.data{contourIndex}.x = xmesh;
+    obj.data{contourIndex}.y = ymesh;
+    
+    %-contour z data-%
+    obj.data{contourIndex}.z = zdata;
+    
+    %-setting for contour lines z-direction-%
+    obj.data{contourIndex}.contours.z.start = contour_data.LevelList(1);
+    obj.data{contourIndex}.contours.z.end = contour_data.LevelList(end);
+    obj.data{contourIndex}.contours.z.size = contour_data.LevelStep;
+    obj.data{contourIndex}.contours.z.show = true;
+    obj.data{contourIndex}.contours.z.usecolormap = true;
+    obj.data{contourIndex}.hidesurface = true;
+    
 end
-
-%-------------------------------------------------------------------------%
-
-%-contour y data-%
-if ~isvector(contour_data.YData)
-    obj.data{contourIndex}.y = contour_data.YData(:,1)';
-else
-    obj.data{contourIndex}.y = contour_data.YData';
-end
-
-%-------------------------------------------------------------------------%
-
-%-contour z data-%
-obj.data{contourIndex}.z = contour_data.ZData;
 
 %-------------------------------------------------------------------------%
 
