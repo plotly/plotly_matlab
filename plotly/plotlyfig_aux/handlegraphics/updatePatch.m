@@ -72,7 +72,7 @@ obj.data{patchIndex}.yaxis = ['y' num2str(ysource)];
 if any(nonzeros(patch_data.ZData))
     if obj.PlotOptions.TriangulatePatch
         obj.data{patchIndex}.type = 'mesh3d';
-        
+       
         % update the patch data using reducepatch
         patch_data_red = reducepatch(obj.State.Plot(patchIndex).Handle, 1);
         
@@ -86,41 +86,20 @@ end
 %-------------------------------------------------------------------------%
 
 if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
+
     %-patch x-%
     xdata = patch_data.XData;
-    if isvector(xdata)
-        obj.data{patchIndex}.x = [xdata' xdata(1)];
-    else
-        xtemp = reshape(xdata,[],1);
-        xnew = [];
-        for n = 1:size(xdata,2)
-            xnew = [xnew ; xdata(:,n) ; xdata(1,n); NaN];
-        end
-        obj.data{patchIndex}.x = xnew;
-    end
-
-    %---------------------------------------------------------------------%
 
     %-patch y-%
     ydata = patch_data.YData;
-    if isvector(ydata)
-        obj.data{patchIndex}.y = [ydata' ydata(1)];
-    else
-        ytemp = reshape(ydata,[],1);
-        ynew = [];
-        for n = 1:size(ydata,2)
-            ynew = [ynew ; ydata(:,n) ; ydata(1,n); NaN];
-        end
-        obj.data{patchIndex}.y = ynew;
-    end
-
-    %---------------------------------------------------------------------%
 
     %-patch z-%
     if any(nonzeros(patch_data.ZData))
         zdata = patch_data.ZData;
-
-        if isvector(ydata)
+        
+        if isvector(zdata)
+            obj.data{patchIndex}.x = [xdata' xdata(1)];
+            obj.data{patchIndex}.y = [ydata' ydata(1)];
             obj.data{patchIndex}.z = [zdata' zdata(1)];
         else
             ztemp = reshape(zdata,[],1);
@@ -130,9 +109,40 @@ if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
             end
             obj.data{patchIndex}.z = znew;
         end
-    end
+    else
 
     %---------------------------------------------------------------------%
+
+        if isvector(xdata)
+            obj.data{patchIndex}.x = [xdata' xdata(1)];
+        else
+            xtemp = reshape(xdata,[],1);
+            xnew = [];
+            for n = 1:size(xdata,2)
+                xnew = [xnew ; xdata(:,n) ; xdata(1,n); NaN];
+            end
+            obj.data{patchIndex}.x = xnew;
+        end
+
+        %---------------------------------------------------------------------%
+
+        
+        
+        if isvector(ydata)
+            obj.data{patchIndex}.y = [ydata' ydata(1)];
+        else
+            ytemp = reshape(ydata,[],1);
+            ynew = [];
+            for n = 1:size(ydata,2)
+                ynew = [ynew ; ydata(:,n) ; ydata(1,n); NaN];
+            end
+            obj.data{patchIndex}.y = ynew;
+        end
+
+    end
+    %---------------------------------------------------------------------%
+
+    
 
     %-patch name-%
     if ~isempty(patch_data.DisplayName);
