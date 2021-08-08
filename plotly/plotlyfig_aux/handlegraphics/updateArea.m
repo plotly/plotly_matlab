@@ -113,10 +113,10 @@ end
 %-------------------------------------------------------------------------%
 
 %-area name-%
-if ~isempty(area_data.DisplayName);
+try
     obj.data{areaIndex}.name = area_data.DisplayName;
-else
-    obj.data{areaIndex}.name = area_data.DisplayName;
+catch
+    obj.data{areaIndex}.name = '';
 end
 
 %-------------------------------------------------------------------------%
