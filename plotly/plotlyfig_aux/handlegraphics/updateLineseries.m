@@ -75,8 +75,13 @@ if length(x)==5 && length(y)==5 && x(2)==x(4) && y(2)==y(4)
 end
 
 %-if ezpolar or not-%
-if length(obj.State.Axis(plotIndex).Handle.Children) == 2
-    ispolar = true;
+len = length(obj.State.Axis.Handle.Children);
+if len > 1
+    for l = 1:len
+        if strcmpi(obj.State.Axis.Handle.Children(l).Type, 'Text')
+            ispolar = true;
+        end
+    end
 end
 
 %-------------------------------------------------------------------------%
@@ -185,6 +190,3 @@ obj.data{plotIndex}.showlegend = showleg;
 %-------------------------------------------------------------------------%
 
 end
-
-
-
