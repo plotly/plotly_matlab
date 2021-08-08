@@ -623,6 +623,9 @@ classdef plotlyfig < handle
             for n = 1:obj.State.Figure.NumAxes
                 try
                     updateAxis(obj,n);
+                catch
+                    % TODO to the future
+                    disp('warning: error in updateAxis')
                 end
             end
             
@@ -635,6 +638,9 @@ classdef plotlyfig < handle
                         obj.data{1, n}.opacity = 0.9;
                         obj.data{1, n}.marker.color = 'rgb(0,113.985,188.955)';
                     end
+                catch
+                    % TODO to the future
+                    disp('warning: error using update_opac')
                 end
                 
             end
@@ -643,6 +649,9 @@ classdef plotlyfig < handle
             for n = 1:obj.State.Figure.NumTexts
                 try
                     updateAnnotation(obj,n);
+                catch
+                    % TODO to the future
+                    disp('warning: error in updateAnnotation')
                 end
             end
             

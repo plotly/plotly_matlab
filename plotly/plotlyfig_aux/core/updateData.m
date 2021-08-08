@@ -11,6 +11,8 @@ try
             updateImage(obj, dataIndex);
         case 'line'
             updateLineseries(obj, dataIndex);
+        case 'categoricalhistogram'
+            updateCategoricalHistogram(obj, dataIndex); 
         case 'histogram'
             if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
                 updateHistogramPolar(obj, dataIndex); 
@@ -128,6 +130,7 @@ try
     end
 catch
     % TODO to the future
+    disp('waring: error in updateData at AXIS/DATA CLEAN UP section')
 end
 
 %-------------------------------------------------------------------------%
