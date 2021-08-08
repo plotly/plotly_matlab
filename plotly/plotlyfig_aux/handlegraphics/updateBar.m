@@ -45,7 +45,8 @@ function obj = updateBar(obj,barIndex)
 %-------------------------------------------------------------------------%
 
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
+axis_data = obj.State.Plot(barIndex).AssociatedAxis;
+axIndex = obj.getAxisIndex(axis_data);
 
 %-BAR DATA STRUCTURE- %
 bar_data = obj.State.Plot(barIndex).Handle;
@@ -100,7 +101,11 @@ obj.layout.bargroupgap = 1-bar_data.BarWidth;
 %---------------------------------------------------------------------%
 
 %-layout bargap-%
-obj.layout.bargap = obj.PlotlyDefaults.Bargap;
+if strcmp(obj.layout.barmode,'group')
+    obj.layout.bargap = 0.3;
+else
+    obj.layout.bargap = obj.PlotlyDefaults.Bargap;
+end
 
 %-------------------------------------------------------------------------%
 
@@ -116,8 +121,15 @@ switch bar_data.Horizontal
         obj.data{barIndex}.x = bar_data.XData;
         
         %-bar y data-%
-        obj.data{barIndex}.y = bar_data.YData;
+        obj.data{barIndex}.y = bar_data.YData - bar_data.BaseValue;
         
+        eval(['obj.layout.yaxis',num2str(axIndex),'.range = [',num2str(minmax(axis_data.YTick-bar_data.BaseValue)),'];']);
+        eval(['obj.layout.yaxis',num2str(axIndex),'.tickvals = [',sprintf('%d,',axis_data.YTick-bar_data.BaseValue),'];']);
+        eval(['obj.layout.yaxis',num2str(axIndex),'.ticktext = [',num2str(axis_data.YTick),'];']);
+        eval(['obj.layout.yaxis',num2str(axIndex),'.tickmode = ''array'';']);
+        if bar_data.BaseValue ~= 0
+            eval(['obj.layout.yaxis',num2str(axIndex),'.zeroline = 1;']);
+        end
         
     case 'on'
         
@@ -125,11 +137,20 @@ switch bar_data.Horizontal
         obj.data{barIndex}.orientation = 'h';
         
         %-bar x data-%
-        obj.data{barIndex}.x = bar_data.YData;
+        obj.data{barIndex}.x = bar_data.YData - bar_data.BaseValue;
         
         %-bar y data-%
         obj.data{barIndex}.y = bar_data.XData;
+        
+        eval(['obj.layout.xaxis',num2str(axIndex),'.range = [',num2str(minmax(axis_data.XTick-bar_data.BaseValue)),'];']);
+        eval(['obj.layout.xaxis',num2str(axIndex),'.tickvals = [',sprintf('%d,',axis_data.XTick-bar_data.BaseValue),'];']);
+        eval(['obj.layout.xaxis',num2str(axIndex),'.ticktext = [',num2str(axis_data.XTick),'];']);
+        eval(['obj.layout.xaxis',num2str(axIndex),'.tickmode = ''array'';']);
+        if bar_data.BaseValue ~= 0
+            eval(['obj.layout.xaxis',num2str(axIndex),'.zeroline = 1;']);
+        end
 end
+
 
 %---------------------------------------------------------------------%
 
