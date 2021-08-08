@@ -9,6 +9,7 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 %-SURFACE DATA STRUCTURE- %
 image_data = get(obj.State.Plot(surfaceIndex).Handle);
 figure_data = get(obj.State.Figure.Handle);
+
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
 eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
@@ -35,7 +36,7 @@ if any(nonzeros(image_data.ZData))
     
     %-surface x-%
     obj.data{surfaceIndex}.x = image_data.XData;
-    
+
     %---------------------------------------------------------------------%
     
     %-surface y-%
@@ -45,6 +46,28 @@ if any(nonzeros(image_data.ZData))
     
     %-surface z-%
     obj.data{surfaceIndex}.z = image_data.ZData;
+    
+    %---------------------------------------------------------------------%
+
+    %- setting grid mesh by default -%
+    % x-direction
+    xmin = min(image_data.XData(:));
+    xmax = max(image_data.XData(:));
+    xsize = (xmax - xmin) / (size(image_data.XData, 2) - 1); 
+    obj.data{surfaceIndex}.contours.x.start = xmin;
+    obj.data{surfaceIndex}.contours.x.end = xmax;
+    obj.data{surfaceIndex}.contours.x.size = xsize;
+    obj.data{surfaceIndex}.contours.x.show = true;
+    obj.data{surfaceIndex}.contours.x.color = 'black';
+    % y-direction
+    ymin = min(image_data.YData(:));
+    ymax = max(image_data.YData(:));
+    ysize = (ymax - ymin) / (size(image_data.YData, 2));
+    obj.data{surfaceIndex}.contours.y.start = ymin;
+    obj.data{surfaceIndex}.contours.y.end = ymax;
+    obj.data{surfaceIndex}.contours.y.size = ysize;
+    obj.data{surfaceIndex}.contours.y.show = true;
+    obj.data{surfaceIndex}.contours.y.color = 'black';
     
     
 else
@@ -61,22 +84,18 @@ end
 
 %-------------------------------------------------------------------------%
 
-
 %-image colorscale-%
 
 cmap = figure_data.Colormap;
+len = length(cmap)-1;
 
 for c = 1: length(cmap)
-    x1=(c-1)/length(cmap);
-    if x1 > 0.99
-        x=round(x1);
-    else
-        x=x1;
-    end
-    obj.data{surfaceIndex}.colorscale{c} = { x , ['rgb(' num2str(255*cmap(c,1)) ',' num2str(255*cmap(c,2)) ',' num2str(255*cmap(c,3)) ',' ')'  ]  };
+    col = 255 * cmap(c, :);
+    obj.data{surfaceIndex}.colorscale{c} = { (c-1)/len , ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'  ]  };
 end
 
 obj.data{surfaceIndex}.surfacecolor = image_data.CData;
+
 %-------------------------------------------------------------------------%
 
 %-surface name-%
