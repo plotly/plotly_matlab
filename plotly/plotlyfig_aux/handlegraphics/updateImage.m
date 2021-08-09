@@ -107,6 +107,11 @@ end
 
 %-------------------------------------------------------------------------%
 
+%-set the opacity-%
+obj.data{imageIndex}.opacity = image_data.AlphaData;
+
+%-------------------------------------------------------------------------%
+
 %-image visible-%
 obj.data{imageIndex}.visible = strcmp(image_data.Visible,'on');
 
