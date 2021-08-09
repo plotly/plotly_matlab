@@ -1,4 +1,4 @@
-function figure = addtheme(f, theme)
+function f = addtheme(f, theme)
     
     % validate theme name
     
