@@ -32,6 +32,8 @@ try
             updateRectangle(obj,dataIndex);
         case 'surface'
             updateSurfaceplot(obj,dataIndex);
+        case 'functionsurface'
+            updateFunctionSurface(obj,dataIndex);
             
             %-GROUP PLOT OBJECTS-%
         case 'area'

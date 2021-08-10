@@ -64,8 +64,11 @@ obj.data{imageIndex}.type = 'heatmap';
 %-------------------------------------------------------------------------%
 
 %-image x-%
+x = image_data.XData;
+cdata = image_data.CData;
+
 if (size(image_data.XData,2) == 2)
-    obj.data{imageIndex}.x = image_data.XData(1):image_data.XData(2);
+    obj.data{imageIndex}.x = linspace(x(1), x(2), size(cdata,2));
 else
     obj.data{imageIndex}.x = image_data.XData;
 end
@@ -73,10 +76,12 @@ end
 %-------------------------------------------------------------------------%
 
 %-image y-%
+y = image_data.YData;
+
 if (size(image_data.YData,2) == 2)
-    obj.data{imageIndex}.y = image_data.YData(1):image_data.YData(2);
+    obj.data{imageIndex}.y = linspace(y(1), y(2), size(cdata,1));
 else
-    obj.data{imageIndex}.y = image_data.YData;
+    obj.data{imageIndex}.y = y;
 end
 
 %-------------------------------------------------------------------------%
@@ -84,9 +89,9 @@ end
 %-image z-%
 if(size(image_data.CData,3) > 1)
     % TODO: ALLOW FOR TRUE COLOUR SPECS.
-    obj.data{imageIndex}.z = image_data.CData(:,:,1);
+    obj.data{imageIndex}.z = cdata(:,:,1);
 else
-    obj.data{imageIndex}.z = image_data.CData;
+    obj.data{imageIndex}.z = cdata;
 end
 
 %-------------------------------------------------------------------------%
@@ -121,8 +126,11 @@ obj.data{imageIndex}.zmin = axis_data.CLim(1);
 %-------------------------------------------------------------------------%
 
 %-image zmax-%
-axis_data.CLim(2); 
-% obj.data{imageIndex}.zmax = 255; % comment this as optional
+if ~strcmpi(image_data.CDataMapping, 'direct')
+    obj.data{imageIndex}.zmax = axis_data.CLim(2);
+else
+    obj.data{imageIndex}.zmax = 255;
+end
 
 %-------------------------------------------------------------------------%
 
