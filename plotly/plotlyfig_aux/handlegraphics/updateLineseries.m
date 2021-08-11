@@ -132,7 +132,10 @@ end
 %-------------------------------------------------------------------------%
 
 if isfield(plot_data,'ZData')
-    if any(plot_data.ZData)
+    
+    numbset = unique(plot_data.ZData);
+    
+    if any(plot_data.ZData) && length(numbset)>1
         %-scatter z-%
         obj.data{plotIndex}.z = plot_data.ZData;
         
