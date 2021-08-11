@@ -87,9 +87,11 @@ end
 %-------------------------------------------------------------------------%
 
 %-image z-%
-if(size(image_data.CData,3) > 1)
-    % TODO: ALLOW FOR TRUE COLOUR SPECS.
-    obj.data{imageIndex}.z = cdata(:,:,1);
+isrgbimg = (size(image_data.CData,3) > 1);
+
+if isrgbimg
+    [IND,colormap] = rgb2ind(cdata, 256);
+    obj.data{imageIndex}.z = IND;
 else
     obj.data{imageIndex}.z = cdata;
 end
@@ -137,7 +139,11 @@ end
 %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
 
 %-image colorscale-%
-colormap = figure_data.Colormap;
+
+if ~isrgbimg
+    colormap = figure_data.Colormap;
+end
+
 len = length(colormap) - 1;
 
 for c = 1:size(colormap, 1)
