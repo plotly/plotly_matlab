@@ -34,6 +34,8 @@ try
             updateSurfaceplot(obj,dataIndex);
         case 'functionsurface'
             updateFunctionSurface(obj,dataIndex);
+        case 'implicitfunctionsurface'
+            updateImplicitFunctionSurface(obj,dataIndex);
             
             %-GROUP PLOT OBJECTS-%
         case 'area'
