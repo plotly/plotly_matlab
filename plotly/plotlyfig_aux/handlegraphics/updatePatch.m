@@ -135,10 +135,10 @@ if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
     %---------------------------------------------------------------------%
 
     %-patch name-%
-    if ~isempty(patch_data.DisplayName);
+    try
         obj.data{patchIndex}.name = patch_data.DisplayName;
-    else
-        obj.data{patchIndex}.name = patch_data.DisplayName;
+    catch
+        obj.data{patchIndex}.name = '';
     end
 
     %---------------------------------------------------------------------%
