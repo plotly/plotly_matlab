@@ -61,6 +61,8 @@ try
                 updateBaseline(obj, dataIndex);
             case {'contourgroup','contour'}
                 updateContourgroup(obj,dataIndex);
+            case 'functioncontour'
+                updateFunctionContour(obj,dataIndex);
             case 'errorbar'
                 updateErrorbar(obj,dataIndex); 
             case 'errorbarseries'
