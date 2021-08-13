@@ -91,9 +91,13 @@ end
 %-------------------------------------------------------------------------%
 
 %-text-%
-obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
-if obj.State.Text(anIndex).Title && isempty(text_data.String)
-    obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
+if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+    obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
+    if obj.State.Text(anIndex).Title && isempty(text_data.String) 
+        obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
+    end
+else
+    obj.layout.annotations{anIndex}.text = '<b></b>'; 
 end
 
 %-------------------------------------------------------------------------%
