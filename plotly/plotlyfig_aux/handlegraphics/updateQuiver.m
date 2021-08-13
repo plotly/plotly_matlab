@@ -51,8 +51,10 @@ obj.data{quiverIndex}.name = quiver_data.DisplayName;
 col = 255*quiver_data.Color; 
 obj.data{quiverIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
-%-quiver line color-%
-obj.data{quiverIndex}.line.width = quiver_data.LineWidth;
+%------------------------------------------------------------------------%
+
+%-quiver line width-%
+obj.data{quiverIndex}.line.width = 2 * quiver_data.LineWidth;
 
 %------------------------------------------------------------------------%
 
