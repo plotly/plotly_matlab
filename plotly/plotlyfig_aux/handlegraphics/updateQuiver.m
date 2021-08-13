@@ -115,6 +115,32 @@ obj.data{quiverIndex}.y(m+2) = nan;
 m = m + 3; 
 end
 
+%------------------------------------------------------------------------%
+
+%-quiver z-%
+
+% check for 3D plot
+flag3d = ~isempty(quiver_data.ZData);
+
+if flag3d
+    
+    %-format data-%
+    zdata = quiver_data.ZData(:); 
+    wdata = quiver_data.WData(:)*scalefactor;
+    
+    %-set 3d data-%
+    m = 1; 
+    for n = 1:length(ydata)
+    obj.data{quiverIndex}.z(m) = zdata(n); 
+    obj.data{quiverIndex}.z(m+1) = zdata(n) + wdata(n);
+    obj.data{quiverIndex}.z(m+2) = nan; 
+    m = m + 3; 
+    end
+    
+    %-scatter 3d type-%
+    obj.data{quiverIndex}.type = 'scatter3d'; 
+end
+
 %-------------------------------------------------------------------------%
 
 %-quiver barbs-%
@@ -154,6 +180,10 @@ if isHG2() && strcmp(quiver_data.ShowArrowHead, 'on')
         for col = 1:4
             obj.data{quiverIndex}.x(end+1) = barb(1,col); % point 1
             obj.data{quiverIndex}.y(end+1) = barb(2,col);
+            
+            if flag3d
+                obj.data{quiverIndex}.z(end+1) = zdata(n);
+            end
         end
     end
 end
