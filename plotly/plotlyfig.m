@@ -197,6 +197,9 @@ classdef plotlyfig < handle
                         if(strcmpi(varargin{a},'StripMargins'))
                             obj.PlotOptions.StripMargins = varargin{a+1};
                         end
+                        if(strcmpi(varargin{a},'TriangulatePatch'))
+                            obj.PlotOptions.TriangulatePatch = varargin{a+1};
+                        end
                         if(strcmpi(varargin{a},'TreatAs'))
                             obj.PlotOptions.TreatAs = varargin{a+1};
                         end
