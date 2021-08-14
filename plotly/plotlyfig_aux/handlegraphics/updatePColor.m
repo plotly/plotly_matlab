@@ -31,15 +31,28 @@ obj.data{patchIndex}.type = 'surface';
 
 %-------------------------------------------------------------------------%
 
-%-handle vertices-%
-xdata = []; ydata = []; zdata = []; cdata = [];
+%-format data-%
+XData = pcolor_data.XData;
+YData = pcolor_data.YData;
+ZData = pcolor_data.ZData;
+CData = pcolor_data.CData;
 
-for n = 1:size(pcolor_data.XData, 2)-1
-    for m = 1:size(pcolor_data.XData, 1)-1
-        xdata = [xdata pcolor_data.XData(m:m+1, n:n+1) NaN(2,1)];
-        ydata = [ydata pcolor_data.YData(m:m+1, n:n+1) NaN(2,1)];
-        zdata = [zdata pcolor_data.ZData(m:m+1, n:n+1) NaN(2,1)];
-        cdata = [cdata ones(2,3)*pcolor_data.CData(m, n)];
+xdata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
+ydata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
+zdata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
+cdata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
+
+for n = 1:size(XData, 2)-1
+    for m = 1:size(XData, 1)-1
+        
+        % get indices
+        n1 = 2*(n-1)+1; m1 = 2*(m-1)+1;
+        
+        % get surface mesh
+        xdata(m1:m1+1,n1:n1+1) = XData(m:m+1, n:n+1);
+        ydata(m1:m1+1,n1:n1+1) = YData(m:m+1, n:n+1);
+        zdata(m1:m1+1,n1:n1+1) = ZData(m:m+1, n:n+1);
+        cdata(m1:m1+1,n1:n1+1) = ones(2,2)*CData(m, n);
     end
 end
 
@@ -60,7 +73,7 @@ obj.data{patchIndex}.z = zdata;
 
 %-------------------------------------------------------------------------%
 
-%-colorscale to map-%
+%-coloring-%
 cmap = figure_data.Colormap;
 len = length(cmap)-1;
 
@@ -71,6 +84,8 @@ end
 
 obj.data{patchIndex}.surfacecolor = cdata;
 obj.data{patchIndex}.showscale = false;
+obj.data{patchIndex}.cmin = min(CData(:));
+obj.data{patchIndex}.cmax = max(CData(:));
 
 %-------------------------------------------------------------------------%
 
@@ -92,6 +107,7 @@ obj.layout.scene.camera.eye.z = 14;
 obj.layout.scene.xaxis.showticklabels = true;
 obj.layout.scene.xaxis.zeroline = false;
 obj.layout.scene.xaxis.showgrid = false;
+obj.layout.scene.xaxis.title = '';
 
 %-------------------------------------------------------------------------%
 
@@ -99,6 +115,7 @@ obj.layout.scene.xaxis.showgrid = false;
 obj.layout.scene.yaxis.zeroline = false;
 obj.layout.scene.yaxis.showgrid = false;
 obj.layout.scene.yaxis.showticklabels = true;
+obj.layout.scene.yaxis.title = '';
 
 %-------------------------------------------------------------------------%
 
