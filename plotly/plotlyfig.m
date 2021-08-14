@@ -642,7 +642,7 @@ classdef plotlyfig < handle
                     updateAxis(obj,n);
                 catch
                     % TODO to the future
-                    disp('warning: error in updateAxis')
+                    disp('catch at line 643 in plotlyfog.m file')
                 end
             end
             
@@ -657,7 +657,7 @@ classdef plotlyfig < handle
                     end
                 catch
                     % TODO to the future
-                    disp('warning: error using update_opac')
+                    disp('catch at line 660 in plotlyfog.m file')
                 end
                 
             end
@@ -668,7 +668,7 @@ classdef plotlyfig < handle
                     updateAnnotation(obj,n);
                 catch
                     % TODO to the future
-                    disp('warning: error in updateAnnotation')
+                    disp('catch at line 671 in plotlyfog.m file')
                 end
             end
             
@@ -972,7 +972,7 @@ classdef plotlyfig < handle
                             strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') ...
                         ||  strcmpi(fieldname,'mesh3d') || strcmpi(fieldname,'bar') ...
                         ||  strcmpi(fieldname,'scatterpolar') || strcmpi(fieldname,'barpolar') ...
-                        ||  strcmpi(fieldname,'scene') ...
+                        ||  strcmpi(fieldname,'scene') ||  strcmpi(fieldname,'layout') ...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
