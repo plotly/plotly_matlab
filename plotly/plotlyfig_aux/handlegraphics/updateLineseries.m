@@ -131,6 +131,9 @@ end
 
 %-------------------------------------------------------------------------%
 
+%-Fro 3D plots-%
+obj.PlotOptions.is3d = false; % by default
+
 if isfield(plot_data,'ZData')
     
     numbset = unique(plot_data.ZData);
@@ -139,8 +142,11 @@ if isfield(plot_data,'ZData')
         %-scatter z-%
         obj.data{plotIndex}.z = plot_data.ZData;
         
-        %overwrite type
+        %-overwrite type-%
         obj.data{plotIndex}.type = 'scatter3d';
+        
+        %-flag to manage 3d plots-%
+        obj.PlotOptions.is3d = true;
     end
 end
 
