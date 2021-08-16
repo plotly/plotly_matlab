@@ -269,17 +269,21 @@ classdef plotlyfig < handle
             
             % strip the style keys from data
             for d = 1:length(obj.data)
-                if ( ...
-                        strcmpi(obj.data{d}.type, 'scatter') || ...
-                        strcmpi(obj.data{d}.type, 'bar') ...
-                    )
+                if strcmpi(obj.data{d}.type, 'scatter')
                     return
                 end
-                obj.data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, 'style');
+                obj.data{d} = obj.stripkeys(obj.data{d},'style', 'traces',obj.data{d}.type,'attributes');
             end
             
             % strip the style keys from layout
-            obj.layout = obj.stripkeys(obj.layout, 'layout', 'style');
+            try
+                fields = fieldnames(obj.PlotlyReference.traces.(obj.data{d}.type).layoutAttributes);
+                for i = 1:numel(fields)
+                    field = fields{i};
+                    obj.PlotlyReference.layout.layoutAttributes.(field) = obj.PlotlyReference.traces.(obj.data{d}.type).layoutAttributes.(field);
+                end
+            end
+            obj.layout = obj.stripkeys(obj.layout,'style', 'layout','layoutAttributes');
             
         end
         
@@ -294,7 +298,7 @@ classdef plotlyfig < handle
             
             % remove style / plot_info types in data
             for d = 1:length(obj.data)
-                data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+                data{d} = obj.stripkeys(obj.data{d}, {'style','plot_info'}, 'traces', obj.data{d}.type, 'attributes');
             end
             
         end
@@ -307,11 +311,18 @@ classdef plotlyfig < handle
             
             % validate data fields
             for d = 1:length(obj.data)
-                obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+                obj.stripkeys(obj.data{d}, {'style','plot_info'}, 'traces', obj.data{d}.type, 'attributes');
             end
             
             % validate layout fields
-            obj.stripkeys(obj.layout, 'layout', 'style');
+            try
+                fields = fieldnames(obj.PlotlyReference.traces.(obj.data{d}.type).layoutAttributes);
+                for i = 1:numel(fields)
+                    field = fields{i};
+                    obj.PlotlyReference.layout.layoutAttributes.(field) = obj.PlotlyReference.traces.(obj.data{d}.type).layoutAttributes.(field);
+                end
+            end
+            obj.stripkeys(obj.layout, 'style', 'layout', 'layoutAttributes');
             
         end
         
@@ -871,14 +882,15 @@ classdef plotlyfig < handle
     
     methods (Access=private)
         %----STRIP THE FIELDS OF A SPECIFIED KEY-----%
-        function stripped = stripkeys(obj, fields, fieldname, key)
-            
-            %plorlt reference
-            pr = obj.PlotlyReference;
+        function stripped = stripkeys(obj,stripped,key,pr,varargin)
+            if ~isstruct(pr)
+                varargin=[pr,varargin];
+                pr = obj.PlotlyReference;
+            end
             
             % initialize output
             % fields
-            stripped = fields;
+            
             
             % get fieldnames
             fn = fieldnames(stripped);
@@ -892,16 +904,35 @@ classdef plotlyfig < handle
                         fnmod{d} = fn{d}(1:length('_axis'));
                     end
                     
-                    % keys:(object, style, plot_info, data)
-                    keytype = getfield(pr,fieldname,fnmod{d},'key_type');
+                    if ~strcmp(fnmod{d},'type')
+                        % keys:(object, style, plot_info, data)
+                        txt = 'keytype = getfield(pr';
+                        for i = 1:numel(varargin)
+                            txt=[txt,',''',varargin{i},''''];
+                        end
+                        txt=[txt,',''',fnmod{d},''',''role'');'];
+
+                        try
+                            eval(txt);
+                        catch ME
+                            if strcmp(ME.message,'Unrecognized field name "role".')
+                                keytype = '';
+                            else
+                                txt
+                                throw(ME);
+                            end
+                        end
+                    else
+                        keytype = '';
+                    end
                     
                     % check for objects
                     if strcmp(keytype,'object')
                         
                         % clean up font keys
-                        if any(strfind(fn{d},'font'))
-                            fnmod{d} = 'font';
-                        end
+%                         if any(strfind(fn{d},'font'))
+%                             fnmod{d} = 'font';
+%                         end
                         
                         % handle annotations
                         if strcmp(fn{d},'annotations')
@@ -909,11 +940,22 @@ classdef plotlyfig < handle
                             fnmod{d} = 'annotation';
                             for a = 1:length(annot)
                                 %recursive call to stripkeys
-                                stripped.annotations{a} = obj.stripkeys(annot{a}, fnmod{d}, key);
+                                stripped.annotations{a} = obj.stripkeys(annot{a}, key, 'layout', 'layoutAttributes', 'annotations', 'items', fnmod{d});
                             end
                         else
                             %recursive call to stripkeys
-                            stripped.(fn{d}) = obj.stripkeys(stripped.(fn{d}), fnmod{d}, key);
+                            txt2 = 'prN = pr';
+                            for i = 1:numel(varargin)
+                                txt2 = [txt2,'.',varargin{i}];
+                            end
+                            txt2 = [txt2,';'];
+                            try
+                                eval(txt2);
+                            catch ME
+                                txt2
+                                throw(ME);
+                            end
+                            stripped.(fn{d}) = obj.stripkeys(stripped.(fn{d}), key, prN, fnmod{d});
                         end
                         
                         % look for desired key and strip if not an exception
@@ -922,7 +964,6 @@ classdef plotlyfig < handle
                             stripped = rmfield(stripped, fn{d});
                         end
                     end
-                    
                 end
                 
                 %----CLEAN UP----%
@@ -942,13 +983,13 @@ classdef plotlyfig < handle
             catch exception
                 if obj.UserData.Verbose
                     % catch 3D output until integrated into graphref
-                    if ~( ...
-                            strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') ...
-                        ||  strcmpi(fieldname,'mesh3d') || strcmpi(fieldname,'bar') ...
-                        ||  strcmpi(fieldname,'scatterpolar') || strcmpi(fieldname,'barpolar') ...
-                        )
-                        fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
-                    end
+%                     if ~( ...
+%                             strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') ...
+%                         ||  strcmpi(fieldname,'mesh3d') ...
+%                         ||  strcmpi(fieldname,'scatterpolar') || strcmpi(fieldname,'barpolar') ...
+%                         )
+                        fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' varargin{1} '\n\n']);
+%                     end
                 end 
             end
         end

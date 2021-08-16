@@ -176,7 +176,11 @@ obj.data{barIndex}.marker = extractAreaFace(bar_data);
 
 %-bar marker line-%
 markerline = extractAreaLine(bar_data); 
-obj.data{barIndex}.marker.line = markerline; 
+
+% No dash property in line for bars.
+markerline = rmfield(markerline,'dash');
+
+obj.data{barIndex}.marker.line = markerline;
 
 %-------------------------------------------------------------------------%
 end
