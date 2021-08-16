@@ -87,13 +87,7 @@ if filledMarker
             case 'none'
                 markercolor = 'rgba(0,0,0,0)';
             case 'auto'
-                if ~strcmp(axis_data.Color,'none')
-                    col = 255*axis_data.Color;
-                    markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                else
-                    col = 255*figure_data.Color;
-                    markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                end
+                markercolor = 'rgba(0, 0.4470, 0.7410,1)';
         end
     end
     
