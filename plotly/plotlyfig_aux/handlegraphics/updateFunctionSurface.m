@@ -1,4 +1,4 @@
-function obj = updateSurfaceplot(obj, surfaceIndex)
+function obj = updateFunctionSurface(obj, surfaceIndex)
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
@@ -25,62 +25,50 @@ obj.data{surfaceIndex}.xaxis = ['x' num2str(xsource)];
 obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
 
 %-------------------------------------------------------------------------%
+    
+%-surface type-%
+obj.data{surfaceIndex}.type = 'surface';
 
-% check for 3D
-if any(nonzeros(image_data.ZData))
-    
-    %-surface type-%
-    obj.data{surfaceIndex}.type = 'surface';
-    
-    %---------------------------------------------------------------------%
-    
-    %-surface x-%
-    obj.data{surfaceIndex}.x = image_data.XData;
+%---------------------------------------------------------------------%
 
-    %---------------------------------------------------------------------%
-    
-    %-surface y-%
-    obj.data{surfaceIndex}.y = image_data.YData;
-    
-    %---------------------------------------------------------------------%
-    
-    %-surface z-%
-    obj.data{surfaceIndex}.z = image_data.ZData;
-    
-    %---------------------------------------------------------------------%
+%-surface x-%
+mden = image_data.MeshDensity;
+x = reshape(image_data.XData(1:mden*mden), [mden, mden]);
+obj.data{surfaceIndex}.x = x;
 
-    %- setting grid mesh by default -%
-    % x-direction
-    xmin = min(image_data.XData(:));
-    xmax = max(image_data.XData(:));
-    xsize = (xmax - xmin) / (size(image_data.XData, 2) - 1); 
-    obj.data{surfaceIndex}.contours.x.start = xmin;
-    obj.data{surfaceIndex}.contours.x.end = xmax;
-    obj.data{surfaceIndex}.contours.x.size = xsize;
-    obj.data{surfaceIndex}.contours.x.show = true;
-    obj.data{surfaceIndex}.contours.x.color = 'black';
-    % y-direction
-    ymin = min(image_data.YData(:));
-    ymax = max(image_data.YData(:));
-    ysize = (ymax - ymin) / (size(image_data.YData, 2));
-    obj.data{surfaceIndex}.contours.y.start = ymin;
-    obj.data{surfaceIndex}.contours.y.end = ymax;
-    obj.data{surfaceIndex}.contours.y.size = ysize;
-    obj.data{surfaceIndex}.contours.y.show = true;
-    obj.data{surfaceIndex}.contours.y.color = 'black';
-    
-    
-else
-    
-    %-surface type-%
-    obj = updateImage(obj, surfaceIndex);
-    
-    %-surface x-%
-    obj.data{surfaceIndex}.x = image_data.XData(1,:);
-    
-    %-surface y-%
-    obj.data{surfaceIndex}.y = image_data.YData(:,1);
-end
+%---------------------------------------------------------------------%
+
+%-surface y-%
+y = reshape(image_data.YData(1:mden*mden), [mden, mden]);
+obj.data{surfaceIndex}.y = y;
+
+%---------------------------------------------------------------------%
+
+%-surface z-%
+z = reshape(image_data.ZData(1:mden*mden), [mden, mden]);
+obj.data{surfaceIndex}.z = z;
+
+%---------------------------------------------------------------------%
+
+%- setting grid mesh by default -%
+% x-direction
+xmin = min(x(:));
+xmax = max(x(:));
+xsize = (xmax - xmin) / mden; 
+obj.data{surfaceIndex}.contours.x.start = xmin;
+obj.data{surfaceIndex}.contours.x.end = xmax;
+obj.data{surfaceIndex}.contours.x.size = xsize;
+obj.data{surfaceIndex}.contours.x.show = true;
+obj.data{surfaceIndex}.contours.x.color = 'black';
+% y-direction
+ymin = min(y(:));
+ymax = max(y(:));
+ysize = (ymax - ymin) / mden;
+obj.data{surfaceIndex}.contours.y.start = ymin;
+obj.data{surfaceIndex}.contours.y.end = ymax;
+obj.data{surfaceIndex}.contours.y.size = ysize;
+obj.data{surfaceIndex}.contours.y.show = true;
+obj.data{surfaceIndex}.contours.y.color = 'black';
 
 %-------------------------------------------------------------------------%
 
@@ -94,7 +82,7 @@ for c = 1: length(cmap)
     obj.data{surfaceIndex}.colorscale{c} = { (c-1)/len , ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'  ]  };
 end
 
-obj.data{surfaceIndex}.surfacecolor = image_data.CData;
+obj.data{surfaceIndex}.surfacecolor = z;
 
 %-------------------------------------------------------------------------%
 

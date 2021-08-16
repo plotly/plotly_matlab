@@ -1,43 +1,4 @@
-function obj = updateContourgroup(obj,contourIndex)
-
-% z: ...[DONE]
-% x: ...[DONE]
-% y: ...[DONE]
-% name: ...[DONE]
-% zauto: ...[DONE]
-% zmin: ...[DONE]
-% zmax: ...[DONE]
-% autocontour: ...[DONE]
-% ncontours: ...[N/A]
-% contours: ...[DONE]
-% colorscale: ...[DONE]
-% reversescale: ...[DONE]
-% showscale: ...[DONE]
-% colorbar: ...[DONE]
-% opacity: ---[TODO]
-% xaxis: ...[DONE]
-% yaxis: ...[DONE]
-% showlegend: ...[DONE]
-% stream: ...[HANDLED BY PLOTLYSTREAM]
-% visible: ...[DONE]
-% x0: ...[DONE]
-% dx: ...[DONE]
-% y0: ...[DONE]
-% dy: ...[DONE]
-% xtype: ...[DONE]
-% ytype: ...[DONE]
-% type: ...[DONE]
-
-% LINE
-
-% color: ...[DONE]
-% width: ...[DONE]
-% dash: ...[DONE]
-% opacity: ---[TODO]
-% shape: ...[NOT SUPPORTED IN MATLAB]
-% smoothing: ...[DONE]
-% outliercolor: ...[N/A]
-% outlierwidth: ...[N/A]
+function obj = updateFunctionContour(obj,contourIndex)
 
 %-FIGURE DATA STRUCTURE-%
 figure_data = get(obj.State.Figure.Handle);
@@ -75,55 +36,32 @@ obj.data{contourIndex}.name = contour_data.DisplayName;
 
 %-------------------------------------------------------------------------%
 
+%-contour type-%
+obj.data{contourIndex}.type = 'contour';
+
+%-------------------------------------------------------------------------%
+
 %-setting the plot-%
 xdata = contour_data.XData;
 ydata = contour_data.YData;
 zdata = contour_data.ZData;
 
-if isvector(zdata)
-    
-    %-contour type-%
-    obj.data{contourIndex}.type = 'contour';
-    
-    %-contour x data-%
-    if ~isvector(x)
-        obj.data{contourIndex}.xdata = xdata(1,:);
-    else
-        obj.data{contourIndex}.xdata = xdata;
-    end
-
-    %-contour y data-%
-    if ~isvector(y)
-        obj.data{contourIndex}.ydata = ydata';
-    else
-        obj.data{contourIndex}.ydata = ydata';
-    end
-    
-    %-contour z data-%
-    obj.data{contourIndex}.z = zdata;
-    
+%-contour x data-%
+if ~isvector(xdata)
+    obj.data{contourIndex}.x = xdata(1,:);
 else
-    
-    %-contour type-%
-    obj.data{contourIndex}.type = 'surface';
-    
-    %-contour x and y data
-    [xmesh, ymesh] = meshgrid(xdata, ydata);
-    obj.data{contourIndex}.x = xmesh;
-    obj.data{contourIndex}.y = ymesh;
-    
-    %-contour z data-%
-    obj.data{contourIndex}.z = zdata;
-    
-    %-setting for contour lines z-direction-%
-    obj.data{contourIndex}.contours.z.start = contour_data.LevelList(1);
-    obj.data{contourIndex}.contours.z.end = contour_data.LevelList(end);
-    obj.data{contourIndex}.contours.z.size = contour_data.LevelStep;
-    obj.data{contourIndex}.contours.z.show = true;
-    obj.data{contourIndex}.contours.z.usecolormap = true;
-    obj.data{contourIndex}.hidesurface = true;
-    
+    obj.data{contourIndex}.x = xdata;
 end
+
+%-contour y data-%
+if ~isvector(ydata)
+    obj.data{contourIndex}.y = ydata(:,1);
+else
+    obj.data{contourIndex}.y = ydata;
+end
+
+%-contour z data-%
+obj.data{contourIndex}.z = zdata;
 
 %-------------------------------------------------------------------------%
 
@@ -196,13 +134,13 @@ switch contour_data.Fill
 end
 
 %-start-%
-obj.data{contourIndex}.contours.start = contour_data.TextList(1);
+obj.data{contourIndex}.contours.start = contour_data.LevelList(1);
 
 %-end-%
-obj.data{contourIndex}.contours.end = contour_data.TextList(end);
+obj.data{contourIndex}.contours.end = contour_data.LevelList(end);
 
 %-step-%
-obj.data{contourIndex}.contours.size = diff(contour_data.TextList(1:2));
+obj.data{contourIndex}.contours.size = contour_data.LevelStep;
 
 %-------------------------------------------------------------------------%
 

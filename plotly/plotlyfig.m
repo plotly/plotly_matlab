@@ -60,6 +60,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.Visible = 'on';
             obj.PlotOptions.TriangulatePatch = false;
             obj.PlotOptions.StripMargins = false;
+            obj.PlotOptions.TreatAs = '_';
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -195,6 +196,12 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'StripMargins'))
                             obj.PlotOptions.StripMargins = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'TriangulatePatch'))
+                            obj.PlotOptions.TriangulatePatch = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'TreatAs'))
+                            obj.PlotOptions.TreatAs = varargin{a+1};
                         end
                     end
             end
@@ -549,6 +556,16 @@ classdef plotlyfig < handle
                 % find plots of figure
                 plots = findobj(ax(axrev),'-not','Type','Text','-not','Type','axes','-depth',1);
                 
+                % get number of nbars for pie3
+                if strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+                    obj.PlotOptions.nbars = 0;
+                    for i = 1:length(plots)
+                        if strcmpi(getGraphClass(plots(i)), 'surface')
+                            obj.PlotOptions.nbars = obj.PlotOptions.nbars + 1;
+                        end
+                    end
+                end
+                
                 % add baseline objects
                 baselines = findobj(ax(axrev),'-property','BaseLine');
                 
@@ -634,6 +651,9 @@ classdef plotlyfig < handle
             for n = 1:obj.State.Figure.NumAxes
                 try
                     updateAxis(obj,n);
+                catch
+                    % TODO to the future
+                    disp('warning: error in updateAxis')
                 end
             end
             
@@ -646,6 +666,9 @@ classdef plotlyfig < handle
                         obj.data{1, n}.opacity = 0.9;
                         obj.data{1, n}.marker.color = 'rgb(0,113.985,188.955)';
                     end
+                catch
+                    % TODO to the future
+                    disp('warning: error using update_opac')
                 end
                 
             end
@@ -654,6 +677,9 @@ classdef plotlyfig < handle
             for n = 1:obj.State.Figure.NumTexts
                 try
                     updateAnnotation(obj,n);
+                catch
+                    % TODO to the future
+                    disp('warning: error in updateAnnotation')
                 end
             end
             
@@ -983,13 +1009,7 @@ classdef plotlyfig < handle
             catch exception
                 if obj.UserData.Verbose
                     % catch 3D output until integrated into graphref
-%                     if ~( ...
-%                             strcmpi(fieldname,'surface') || strcmpi(fieldname,'scatter3d') ...
-%                         ||  strcmpi(fieldname,'mesh3d') ...
-%                         ||  strcmpi(fieldname,'scatterpolar') || strcmpi(fieldname,'barpolar') ...
-%                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' varargin{1} '\n\n']);
-%                     end
                 end 
             end
         end

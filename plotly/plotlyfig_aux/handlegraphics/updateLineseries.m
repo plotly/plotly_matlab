@@ -74,9 +74,14 @@ if length(x)==5 && length(y)==5 && x(2)==x(4) && y(2)==y(4)
     ispolar = true;
 end
 
-%-if polar ezplot or not-%
-if abs(x(1)-x(end))<1e-5 && abs(y(1)-y(end))<1e-5
-    ispolar = true;
+%-if ezpolar or not-%
+len = length(obj.State.Axis.Handle.Children);
+if len > 1
+    for l = 1:len
+        if strcmpi(obj.State.Axis.Handle.Children(l).Type, 'Text')
+            ispolar = true;
+        end
+    end
 end
 
 %-------------------------------------------------------------------------%
@@ -127,7 +132,10 @@ end
 %-------------------------------------------------------------------------%
 
 if isfield(plot_data,'ZData')
-    if any(plot_data.ZData)
+    
+    numbset = unique(plot_data.ZData);
+    
+    if any(plot_data.ZData) && length(numbset)>1
         %-scatter z-%
         obj.data{plotIndex}.z = plot_data.ZData;
         
@@ -185,6 +193,3 @@ obj.data{plotIndex}.showlegend = showleg;
 %-------------------------------------------------------------------------%
 
 end
-
-
-

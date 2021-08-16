@@ -53,16 +53,47 @@ obj.data{quiverIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) '
 
 %------------------------------------------------------------------------%
 
+%-quiver line width-%
+obj.data{quiverIndex}.line.width = 2 * quiver_data.LineWidth;
+
+%------------------------------------------------------------------------%
+
 % check for x/y vectors
 if isvector(quiver_data.XData)
     [quiver_data.XData, quiver_data.YData] = meshgrid(quiver_data.XData,quiver_data.YData); 
 end
 
+%-get scale factor-%
+if strcmpi(quiver_data.AutoScale, 'on')
+    xdata = quiver_data.XData; 
+    udata = quiver_data.UData;
+
+    nsteps = 45;
+    steps = linspace(1e-3, 1, nsteps);
+    steps = steps(end:-1:1);
+
+    for n = 1:nsteps
+        scalefactor = steps(n);
+
+        x = xdata(:, 2:end, :);
+        u = xdata(:, 1:end-1,:) + scalefactor * udata(:, 1:end-1,:);
+        xflag = x>u;
+
+        if all(xflag(:))
+            break
+        end
+    end
+else
+    scalefactor = 1;
+end
+
+%------------------------------------------------------------------------%
+
 %-format data-%
-xdata = reshape(quiver_data.XData,1,size(quiver_data.XData,1)*size(quiver_data.XData,1)); 
-ydata = reshape(quiver_data.YData,1,size(quiver_data.YData,1)*size(quiver_data.YData,1)); 
-udata = reshape(quiver_data.UData,1,size(quiver_data.UData,1)*size(quiver_data.UData,1)); 
-vdata = reshape(quiver_data.VData,1,size(quiver_data.VData,1)*size(quiver_data.VData,1)); 
+xdata = quiver_data.XData(:);
+ydata = quiver_data.YData(:); 
+udata = quiver_data.UData(:)*scalefactor;
+vdata = quiver_data.VData(:)*scalefactor; 
 
 %------------------------------------------------------------------------%
 
@@ -70,7 +101,7 @@ vdata = reshape(quiver_data.VData,1,size(quiver_data.VData,1)*size(quiver_data.V
 m = 1; 
 for n = 1:length(xdata)
 obj.data{quiverIndex}.x(m) = xdata(n); 
-obj.data{quiverIndex}.x(m+1) = xdata(n) + 0.1*udata(n);
+obj.data{quiverIndex}.x(m+1) = xdata(n) + udata(n);
 obj.data{quiverIndex}.x(m+2) = nan; 
 m = m + 3; 
 end
@@ -81,22 +112,50 @@ end
 m = 1; 
 for n = 1:length(ydata)
 obj.data{quiverIndex}.y(m) = ydata(n); 
-obj.data{quiverIndex}.y(m+1) = ydata(n) + 0.1*vdata(n);
+obj.data{quiverIndex}.y(m+1) = ydata(n) + vdata(n);
 obj.data{quiverIndex}.y(m+2) = nan; 
 m = m + 3; 
+end
+
+%------------------------------------------------------------------------%
+
+%-quiver z-%
+
+% check for 3D plot
+flag3d = ~isempty(quiver_data.ZData);
+
+if flag3d
+    
+    %-format data-%
+    zdata = quiver_data.ZData(:); 
+    wdata = quiver_data.WData(:)*scalefactor;
+    
+    %-set 3d data-%
+    m = 1; 
+    for n = 1:length(ydata)
+    obj.data{quiverIndex}.z(m) = zdata(n); 
+    obj.data{quiverIndex}.z(m+1) = zdata(n) + wdata(n);
+    obj.data{quiverIndex}.z(m+2) = nan; 
+    m = m + 3; 
+    end
+    
+    %-scatter 3d type-%
+    obj.data{quiverIndex}.type = 'scatter3d'; 
 end
 
 %-------------------------------------------------------------------------%
 
 %-quiver barbs-%
-if isHG2()
+if isHG2() && strcmp(quiver_data.ShowArrowHead, 'on')
+ 
     % 'MaxHeadSize' scalar, matlab clips to 0.2 in r2014b
     maxheadsize = quiver_data.MaxHeadSize;
     % barb angular width, not supported by matlab
     head_width = deg2rad(17.5);
+    
     for n = 1:length(xdata)
         % length of arrow
-        l = norm([0.1*udata(n), 0.1*vdata(n)]);
+        l = norm([udata(n), vdata(n)]);
         
         % angle of arrow
         phi = atan2(vdata(n),udata(n));
@@ -113,7 +172,7 @@ if isHG2()
         barb_transformation = affine2d([...
             [cos(phi), sin(phi), 0]; ...
             [-sin(phi), cos(phi), 0]; ...
-            [xdata(n) + 0.1*udata(n), ydata(n) + 0.1*vdata(n), 1];
+            [xdata(n) + udata(n), ydata(n) + vdata(n), 1];
             ]);
         
         % place barb at end of arrow
@@ -123,6 +182,10 @@ if isHG2()
         for col = 1:4
             obj.data{quiverIndex}.x(end+1) = barb(1,col); % point 1
             obj.data{quiverIndex}.y(end+1) = barb(2,col);
+            
+            if flag3d
+                obj.data{quiverIndex}.z(end+1) = zdata(n);
+            end
         end
     end
 end
