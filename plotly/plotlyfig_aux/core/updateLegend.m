@@ -36,11 +36,6 @@ obj.layout.legend.x = legend_data.Position(1);
 
 %-------------------------------------------------------------------------%
 
-%-legend xref-%
-obj.layout.legend.xref = 'paper';
-
-%-------------------------------------------------------------------------%
-
 %-legend xanchor-%
 obj.layout.legend.xanchor = 'left';
 
@@ -48,11 +43,6 @@ obj.layout.legend.xanchor = 'left';
 
 %-legend y-%
 obj.layout.legend.y = legend_data.Position(2);
-
-%-------------------------------------------------------------------------%
-
-%-legend yref-%
-obj.layout.legend.yref = 'paper';
 
 %-------------------------------------------------------------------------%
 

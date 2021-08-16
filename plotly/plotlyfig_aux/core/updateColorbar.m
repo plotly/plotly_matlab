@@ -124,34 +124,34 @@ end
 
 if ~isempty(colorbar_title_data.String)
     %-colorbar titleside-%
-    colorbar.titleside = 'top';
+    colorbar.title.side = 'top';
     %-colorbar titlefont family-%:
-    colorbar.titlefont.family = matlab2plotlyfont(colorbar_title_data.FontName);
+    colorbar.title.font.family = matlab2plotlyfont(colorbar_title_data.FontName);
     %-colorbar titlefont color-%
     col = 255*colorbar_title_data.Color;
-    colorbar.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    colorbar.title.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     %-colorbar titlefont size-%
-    colorbar.titlefont.size = colorbar_title_data.FontSize;
+    colorbar.title.font.size = colorbar_title_data.FontSize;
 elseif ~isempty(colorbar_xlabel_data.String)
     %-colorbar titleside-%
-    colorbar.titleside = 'right';
+    colorbar.title.side = 'right';
     %-colorbar titlefont family-%:
-    colorbar.titlefont.family = matlab2plotlyfont(colorbar_xlabel_data.FontName);
+    colorbar.title.font.family = matlab2plotlyfont(colorbar_xlabel_data.FontName);
     %-colorbar titlefont color-%
     col = 255*colorbar_xlabel_data.Color;
-    colorbar.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    colorbar.title.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     %-colorbar titlefont size-%
-    colorbar.titlefont.size = colorbar_xlabel_data.FontSize;
+    colorbar.title.font.size = colorbar_xlabel_data.FontSize;
 elseif ~isempty(colorbar_ylabel_data.String)
     %-colorbar titleside-%
-    colorbar.titleside = 'bottom';
+    colorbar.title.side = 'bottom';
     %-colorbar titlefont family-%:
-    colorbar.titlefont.family = matlab2plotlyfont(colorbar_ylabel_data.FontName);
+    colorbar.title.font.family = matlab2plotlyfont(colorbar_ylabel_data.FontName);
     %-colorbar titlefont color-%
     col = 255*colorbar_ylabel_data.Color;
-    colorbar.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    colorbar.title.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
     %-colorbar titlefont size-%
-    colorbar.titlefont.size = colorbar_ylabel_data.FontSize;
+    colorbar.title.font.size = colorbar_ylabel_data.FontSize;
 end
 
 %-REVERT UNITS-%

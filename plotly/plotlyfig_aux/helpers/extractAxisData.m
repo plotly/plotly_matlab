@@ -51,7 +51,7 @@ axiscol = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 axis.linecolor = axiscol;
 %-axis tickcolor-%
 axis.tickcolor = axiscol;
-%-axis tickfont-%
+%-axis tick font-%
 axis.tickfont.color = axiscol;
 %-axis grid color-%
 axis.gridcolor = axiscol;
@@ -171,7 +171,7 @@ else
                if (~isduration(temp))              
                    axis.range = temp;
                    axis.type = 'duration';
-                   axis.title = type;
+                   axis.title.text = type;
                else
                    nticks = eval(['length(axis_data.' axisName 'Tick)-1;']);
                    delta = 0.1;
@@ -251,24 +251,24 @@ set(label,'FontUnits','points');
 
 %-title-%
 if ~isempty(label_data.String)
-    axis.title = parseString(label_data.String,label_data.Interpreter);
+    axis.title.text = parseString(label_data.String,label_data.Interpreter);
 end
 
 %-------------------------------------------------------------------------%
 
 %-axis title font color-%
 col = 255*label_data.Color;
-axis.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+axis.title.font.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
 %-------------------------------------------------------------------------%
 
 %-axis title font size-%
-axis.titlefont.size = label_data.FontSize;
+axis.title.font.size = label_data.FontSize;
 
 %-------------------------------------------------------------------------%
 
 %-axis title font family-%
-axis.titlefont.family = matlab2plotlyfont(label_data.FontName);
+axis.title.font.family = matlab2plotlyfont(label_data.FontName);
 
 %-------------------------------------------------------------------------%
 
@@ -296,6 +296,10 @@ else
 end
 
 %-------------------------------------------------------------------------%
+
+% Autotick is depcrecated.
+axis = rmfield(axis,'autotick');
+
 end
 
 

@@ -32,14 +32,14 @@ function cleanFeedTitle(obj)
             first_title = obj.layout.annotations{annotation_index}.text;
             
             % use that as the filename
-            obj.layout.title = first_title;
+            obj.layout.title.text = first_title;
 
             % check for a single plot
             if (obj.State.Figure.NumPlots == 1)
                 
                 % grab the font style if not stripped
                 if ~obj.PlotOptions.Strip
-                    obj.layout.titlefont = ...
+                    obj.layout.title.font = ...
                         obj.layout.annotations{annotation_index}.font;
                 end
                 
@@ -55,7 +55,7 @@ function cleanFeedTitle(obj)
             else
                 
                 % multiple plots ---> make the title invisible
-                obj.layout.titlefont.color = 'rgba(0,0,0,0)';   
+                obj.layout.title.font.color = 'rgba(0,0,0,0)';   
             end
         end
     end
