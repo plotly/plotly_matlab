@@ -661,7 +661,7 @@ classdef plotlyfig < handle
                     end
                 catch
                     % TODO to the future
-                    disp('catch at line 660 in plotlyfog.m file')
+                    % disp('catch at line 664 in plotlyfig.m file')
                 end
                 
             end
