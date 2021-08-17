@@ -78,6 +78,9 @@ if any(nonzeros(patch_data.ZData))
         
     else
         obj.data{patchIndex}.type = 'scatter3d';
+        % No xaxis/yaxis fields in obj.data for scatter3d in updated JSON
+        obj.data{patchIndex} = rmfield(obj.data{patchIndex},'xaxis');
+        obj.data{patchIndex} = rmfield(obj.data{patchIndex},'yaxis');
     end
 else
     obj.data{patchIndex}.type = 'scatter'; 
@@ -149,7 +152,9 @@ if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
     %---------------------------------------------------------------------%
 
     %-patch fill-%
-    obj.data{patchIndex}.fill = 'tozeroy';
+    if ~strcmp(obj.data{patchIndex}.type,'scatter3d')
+        obj.data{patchIndex}.fill = 'tozeroy';
+    end
 
     %-PATCH MODE-%
     if ~strcmpi('none', patch_data.Marker) && ~strcmpi('none', patch_data.LineStyle)
