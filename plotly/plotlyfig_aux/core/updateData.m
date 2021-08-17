@@ -9,6 +9,8 @@ try
     if ~strcmpi(obj.PlotOptions.TreatAs, '_')
         if strcmpi(obj.PlotOptions.TreatAs, 'pie3')
             updatePie3(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'pcolor')
+            updatePColor(obj, dataIndex);
         end
         
     %-update plot based on plot call class-%
