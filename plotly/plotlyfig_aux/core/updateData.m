@@ -11,6 +11,8 @@ try
             updatePie3(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'pcolor')
             updatePColor(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'polarplot')
+            updatePolarplot(obj, dataIndex);
         end
         
     %-update plot based on plot call class-%
@@ -150,7 +152,7 @@ try
     end
 catch
     % TODO to the future
-    disp('waring: error in updateData at AXIS/DATA CLEAN UP section')
+    disp('catch at line 155 in updateData.m file')
 end
 
 %-------------------------------------------------------------------------%
