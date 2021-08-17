@@ -36,11 +36,18 @@ XData = pcolor_data.XData;
 YData = pcolor_data.YData;
 ZData = pcolor_data.ZData;
 CData = pcolor_data.CData;
+usegrid = false;
 
-xdata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
-ydata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
-zdata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
-cdata = zeros(size(XData, 1)-1*2, size(XData, 2)-1*2); 
+if isvector(XData)
+    usegrid = true;
+    [XData, YData] = meshgrid(XData, YData);
+end
+
+sizes = [(size(XData, 1)-1)*2, (size(XData, 2)-1)*2];
+xdata = zeros(sizes); 
+ydata = zeros(sizes); 
+zdata = zeros(sizes); 
+cdata = zeros(sizes); 
 
 for n = 1:size(XData, 2)-1
     for m = 1:size(XData, 1)-1
@@ -86,6 +93,30 @@ obj.data{patchIndex}.surfacecolor = cdata;
 obj.data{patchIndex}.showscale = false;
 obj.data{patchIndex}.cmin = min(CData(:));
 obj.data{patchIndex}.cmax = max(CData(:));
+
+%-------------------------------------------------------------------------%
+
+%-setting grid mesh-%
+if usegrid
+    % x-direction
+    xmin = min(XData(:));
+    xmax = max(XData(:));
+    xsize = (xmax - xmin) / (size(XData, 2) - 1); 
+    obj.data{patchIndex}.contours.x.start = xmin;
+    obj.data{patchIndex}.contours.x.end = xmax;
+    obj.data{patchIndex}.contours.x.size = xsize;
+    obj.data{patchIndex}.contours.x.show = true;
+    obj.data{patchIndex}.contours.x.color = 'black';
+    % y-direction
+    ymin = min(YData(:));
+    ymax = max(YData(:));
+    ysize = (ymax - ymin) / (size(YData, 2)-1);
+    obj.data{patchIndex}.contours.y.start = ymin;
+    obj.data{patchIndex}.contours.y.end = ymax;
+    obj.data{patchIndex}.contours.y.size = ysize;
+    obj.data{patchIndex}.contours.y.show = true;
+    obj.data{patchIndex}.contours.y.color = 'black';
+end
 
 %-------------------------------------------------------------------------%
 
