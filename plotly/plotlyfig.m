@@ -450,7 +450,11 @@ classdef plotlyfig < handle
             
             % handle title (for feed)
             if obj.PlotOptions.CleanFeedTitle
-                cleanFeedTitle(obj);
+                try
+                    cleanFeedTitle(obj);
+                catch
+                    % TODO to the future
+                end
             end
                 
             %get args
@@ -642,7 +646,7 @@ classdef plotlyfig < handle
                     updateAxis(obj,n);
                 catch
                     % TODO to the future
-                    disp('catch at line 643 in plotlyfog.m file')
+                    % disp('catch at line 647 in plotlyfig.m file')
                 end
             end
             
@@ -665,10 +669,14 @@ classdef plotlyfig < handle
             % update annotations
             for n = 1:obj.State.Figure.NumTexts
                 try
-                    updateAnnotation(obj,n);
+                    if ~strcmpi(obj.State.Plot(dataIndex).Class, 'heatmap')
+                        updateAnnotation(obj,n);
+                    else
+                        obj.PlotOptions.CleanFeedTitle = false;
+                    end
                 catch
                     % TODO to the future
-                    disp('catch at line 671 in plotlyfog.m file')
+                    % disp('catch at line 679 in plotlyfig.m file')
                 end
             end
             
@@ -973,6 +981,7 @@ classdef plotlyfig < handle
                         ||  strcmpi(fieldname,'mesh3d') || strcmpi(fieldname,'bar') ...
                         ||  strcmpi(fieldname,'scatterpolar') || strcmpi(fieldname,'barpolar') ...
                         ||  strcmpi(fieldname,'scene') ||  strcmpi(fieldname,'layout') ...
+                        ||  strcmpi(fieldname,'heatmap') ...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end

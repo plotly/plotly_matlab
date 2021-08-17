@@ -247,6 +247,8 @@ if ~isempty(inputStr)
             end
         end
     end
+else
+    formatStr = 'untitled';
 end
 
 

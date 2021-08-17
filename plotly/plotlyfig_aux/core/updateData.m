@@ -22,6 +22,8 @@ try
         switch lower(obj.State.Plot(dataIndex).Class)
 
             %--CORE PLOT OBJECTS--%
+            case 'heatmap'
+                updateHeatmap(obj, dataIndex);
             case 'image'
                 updateImage(obj, dataIndex);
             case 'line'
@@ -152,7 +154,7 @@ try
     end
 catch
     % TODO to the future
-    disp('catch at line 155 in updateData.m file')
+    % disp('catch at line 157 in updateData.m file')
 end
 
 %-------------------------------------------------------------------------%
