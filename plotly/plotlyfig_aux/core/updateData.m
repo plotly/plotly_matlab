@@ -25,7 +25,11 @@ try
             case 'heatmap'
                 updateHeatmap(obj, dataIndex);
             case 'image'
-                updateImage(obj, dataIndex);
+                if ~obj.PlotOptions.Image3D
+                    updateImage(obj, dataIndex);
+                else
+                    updateImage3D(obj, dataIndex);
+                end
             case 'line'
                 updateLineseries(obj, dataIndex);
             case 'categoricalhistogram'
