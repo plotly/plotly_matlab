@@ -70,7 +70,11 @@ try
             case 'baseline'
                 updateBaseline(obj, dataIndex);
             case {'contourgroup','contour'}
-                updateContourgroup(obj,dataIndex);
+                if ~obj.PlotOptions.ContourProjection
+                    updateContourgroup(obj,dataIndex);
+                else
+                    updateContourProjection(obj,dataIndex);
+                end
             case 'functioncontour'
                 updateFunctionContour(obj,dataIndex);
             case 'errorbar'
