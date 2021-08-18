@@ -6,20 +6,20 @@ debug=0;
 if nargin < 2
     imageFormat="png";
     filename='figure.png';
-    height=500;
-    width=800;
+    height=pfObj.layout.height;
+    width=pfObj.layout.width;
     scale=1;
 elseif nargin < 3
     filename=['figure.',char(imageFormat)];
-    height=500;
-    width=800;
+    height=pfObj.layout.height;
+    width=pfObj.layout.width;
     scale=1;
 elseif nargin < 4
-    height=500;
-    width=800;
+    height=pfObj.layout.height;
+    width=pfObj.layout.width;
     scale=1;
 elseif nargin < 5
-    width=800;
+    width=pfObj.layout.width;
     scale=1;
 elseif nargin < 6
     scale=1;
