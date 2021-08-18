@@ -61,6 +61,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.TriangulatePatch = false;
             obj.PlotOptions.StripMargins = false;
             obj.PlotOptions.TreatAs = '_';
+            obj.PlotOptions.Image3D = false;
             
             % offline options
             obj.PlotOptions.Offline = true;

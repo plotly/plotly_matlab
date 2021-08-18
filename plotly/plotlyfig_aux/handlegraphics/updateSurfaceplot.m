@@ -29,18 +29,30 @@ obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
 % check for 3D
 if any(nonzeros(image_data.ZData))
     
+    %---------------------------------------------------------------------%
+    
     %-surface type-%
     obj.data{surfaceIndex}.type = 'surface';
     
     %---------------------------------------------------------------------%
     
+    %-format x an y data-%
+    x = image_data.XData;
+    y = image_data.YData;
+    cdata = image_data.CData;
+    if isvector(x)
+        [x, y] = meshgrid(x,y);
+    end
+    
+    %---------------------------------------------------------------------%
+    
     %-surface x-%
-    obj.data{surfaceIndex}.x = image_data.XData;
+    obj.data{surfaceIndex}.x = x;
 
     %---------------------------------------------------------------------%
     
     %-surface y-%
-    obj.data{surfaceIndex}.y = image_data.YData;
+    obj.data{surfaceIndex}.y = y;
     
     %---------------------------------------------------------------------%
     
@@ -48,21 +60,26 @@ if any(nonzeros(image_data.ZData))
     obj.data{surfaceIndex}.z = image_data.ZData;
     
     %---------------------------------------------------------------------%
+    
+    %-if image comes would a 3D plot-%
+    obj.PlotOptions.Image3D = true;
+    
+    %---------------------------------------------------------------------%
 
     %- setting grid mesh by default -%
     % x-direction
-    xmin = min(image_data.XData(:));
-    xmax = max(image_data.XData(:));
-    xsize = (xmax - xmin) / (size(image_data.XData, 2) - 1); 
+    xmin = min(x(:));
+    xmax = max(x(:));
+    xsize = (xmax - xmin) / (size(x, 2)); 
     obj.data{surfaceIndex}.contours.x.start = xmin;
     obj.data{surfaceIndex}.contours.x.end = xmax;
     obj.data{surfaceIndex}.contours.x.size = xsize;
     obj.data{surfaceIndex}.contours.x.show = true;
     obj.data{surfaceIndex}.contours.x.color = 'black';
     % y-direction
-    ymin = min(image_data.YData(:));
-    ymax = max(image_data.YData(:));
-    ysize = (ymax - ymin) / (size(image_data.YData, 2));
+    ymin = min(y(:));
+    ymax = max(y(:));
+    ysize = (ymax - ymin) / (size(y, 1));
     obj.data{surfaceIndex}.contours.y.start = ymin;
     obj.data{surfaceIndex}.contours.y.end = ymax;
     obj.data{surfaceIndex}.contours.y.size = ysize;
@@ -94,7 +111,10 @@ for c = 1: length(cmap)
     obj.data{surfaceIndex}.colorscale{c} = { (c-1)/len , ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'  ]  };
 end
 
-obj.data{surfaceIndex}.surfacecolor = image_data.CData;
+%-------------------------------------------------------------------------%
+
+%-surface coloring-%
+obj.data{surfaceIndex}.surfacecolor = cdata;
 
 %-------------------------------------------------------------------------%
 
