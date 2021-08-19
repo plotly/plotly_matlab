@@ -27,7 +27,7 @@ axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 %-------------------------------------------------------------------------%
 
 %-axis tick font size-%
-axis.tickfont.size = axis_data.FontSize;
+axis.tickfont.size = axis_data.FontSize*2.085;
 
 %-------------------------------------------------------------------------%
 
@@ -58,15 +58,6 @@ axis.gridcolor = axiscol;
 
 %-------------------------------------------------------------------------%
 
-if strcmp(axis_data.XGrid, 'on') || strcmp(axis_data.XMinorGrid, 'on')
-    %-axis show grid-%
-    axis.showgrid = true;
-else
-    axis.showgrid = false;
-end
-
-%-------------------------------------------------------------------------%
-
 grid = eval(['axis_data.' axisName 'Grid;']);
 minorGrid = eval(['axis_data.' axisName 'MinorGrid;']);
 
@@ -79,7 +70,7 @@ end
 
 %-------------------------------------------------------------------------%
 
-linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
+linewidth = axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor;
 
 %-axis line width-%
 axis.linewidth = linewidth;
@@ -263,7 +254,7 @@ axis.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(c
 %-------------------------------------------------------------------------%
 
 %-axis title font size-%
-axis.titlefont.size = label_data.FontSize;
+axis.titlefont.size = label_data.FontSize*2.085;
 
 %-------------------------------------------------------------------------%
 

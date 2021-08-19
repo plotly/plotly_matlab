@@ -74,8 +74,8 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.MinTitleMargin = 80;
             obj.PlotlyDefaults.TitleHeight = 0.01;
             obj.PlotlyDefaults.TitleFontSizeIncrease = 40; 
-            obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
-            obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5;
+            obj.PlotlyDefaults.FigureIncreaseFactor = 1.5625;
+            obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5625;
             obj.PlotlyDefaults.MarginPad = 0;
             obj.PlotlyDefaults.MaxTickLength = 20;
             obj.PlotlyDefaults.ExponentFormat = 'none';

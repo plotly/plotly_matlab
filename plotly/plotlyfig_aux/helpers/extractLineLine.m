@@ -20,7 +20,7 @@ if(~strcmp(line_data.LineStyle,'none'))
     %---------------------------------------------------------------------%
     
     %-SCATTER LINE WIDTH (STYLE)-%
-    line.width = line_data.LineWidth;
+    line.width = line_data.LineWidth*2.085;
     
     %---------------------------------------------------------------------%
     
