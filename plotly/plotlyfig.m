@@ -62,6 +62,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.StripMargins = false;
             obj.PlotOptions.TreatAs = '_';
             obj.PlotOptions.Image3D = false;
+            obj.PlotOptions.ContourProjection = false;
             
             % offline options
             obj.PlotOptions.Offline = true;

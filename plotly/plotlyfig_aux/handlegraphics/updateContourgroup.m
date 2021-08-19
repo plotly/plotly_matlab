@@ -108,34 +108,51 @@ else
     obj.data{contourIndex}.type = 'surface';
     
     %-contour x and y data
-    [xmesh, ymesh] = meshgrid(xdata, ydata);
-    obj.data{contourIndex}.x = xmesh;
-    obj.data{contourIndex}.y = ymesh;
+    if isvector(xdata)
+        [xdata, ydata] = meshgrid(xdata, ydata);
+    end
+    obj.data{contourIndex}.x = xdata;
+    obj.data{contourIndex}.y = ydata;
     
     %-contour z data-%
     obj.data{contourIndex}.z = zdata;
     
     %-setting for contour lines z-direction-%
-    obj.data{contourIndex}.contours.z.start = contour_data.LevelList(1);
-    obj.data{contourIndex}.contours.z.end = contour_data.LevelList(end);
-    obj.data{contourIndex}.contours.z.size = contour_data.LevelStep;
+    if length(contour_data.LevelList) > 1
+        zstart = contour_data.LevelList(1);
+        zend = contour_data.LevelList(end);
+        zsize = mean(diff(contour_data.LevelList));
+    else
+        zstart = contour_data.LevelList(1) - 1e-3;
+        zend = contour_data.LevelList(end) + 1e-3;
+        zsize = 2e-3;
+    end
+    l = 30;
+    obj.data{contourIndex}.contours.z.start = zstart;
+    obj.data{contourIndex}.contours.z.end = zend;
+    obj.data{contourIndex}.contours.z.size = zsize;
     obj.data{contourIndex}.contours.z.show = true;
     obj.data{contourIndex}.contours.z.usecolormap = true;
+    obj.data{contourIndex}.contours.z.width = contour_data.LineWidth;
     obj.data{contourIndex}.hidesurface = true;
     
 end
 
 %-------------------------------------------------------------------------%
 
-%-contour x type-%
+if isvector(zdata)
+    
+    %-contour x type-%
 
-obj.data{contourIndex}.xtype = 'array';
+    obj.data{contourIndex}.xtype = 'array';
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-contour y type-%
+    %-contour y type-%
 
-obj.data{contourIndex}.ytype = 'array';
+    obj.data{contourIndex}.ytype = 'array';
+    
+end
 
 %-------------------------------------------------------------------------%
 
@@ -150,18 +167,20 @@ obj.data{contourIndex}.showscale = false;
 
 %-------------------------------------------------------------------------%
 
-%-zauto-%
-obj.data{contourIndex}.zauto = false;
+if isvector(zdata)
+    %-zauto-%
+    obj.data{contourIndex}.zauto = false;
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-zmin-%
-obj.data{contourIndex}.zmin = axis_data.CLim(1);
+    %-zmin-%
+    obj.data{contourIndex}.zmin = axis_data.CLim(1);
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-zmax-%
-obj.data{contourIndex}.zmax = axis_data.CLim(2);
+    %-zmax-%
+    obj.data{contourIndex}.zmax = axis_data.CLim(2);
+end
 
 %-------------------------------------------------------------------------%
 
@@ -180,67 +199,77 @@ obj.data{contourIndex}.reversescale = false;
 
 %-------------------------------------------------------------------------%
 
-%-autocontour-%
-obj.data{contourIndex}.autocontour = false;
-
-%-------------------------------------------------------------------------%
-
-%-contour contours-%
-
-%-coloring-%
-switch contour_data.Fill
-    case 'off'
-        obj.data{contourIndex}.contours.coloring = 'lines';
-    case 'on'
-        obj.data{contourIndex}.contours.coloring = 'fill';
+if isvector(zdata)
+    
+    %-autocontour-%
+    obj.data{contourIndex}.autocontour = false;
+    
 end
 
-%-start-%
-obj.data{contourIndex}.contours.start = contour_data.TextList(1);
+%-------------------------------------------------------------------------%
 
-%-end-%
-obj.data{contourIndex}.contours.end = contour_data.TextList(end);
+if isvector(zdata)
+    
+    %-contour contours-%
 
-%-step-%
-obj.data{contourIndex}.contours.size = diff(contour_data.TextList(1:2));
+    %-coloring-%
+    switch contour_data.Fill
+        case 'off'
+            obj.data{contourIndex}.contours.coloring = 'lines';
+        case 'on'
+            obj.data{contourIndex}.contours.coloring = 'fill';
+    end
+
+    %-start-%
+    obj.data{contourIndex}.contours.start = contour_data.TextList(1);
+
+    %-end-%
+    obj.data{contourIndex}.contours.end = contour_data.TextList(end);
+
+    %-step-%
+    obj.data{contourIndex}.contours.size = diff(contour_data.TextList(1:2));
+    
+end
 
 %-------------------------------------------------------------------------%
 
-if(~strcmp(contour_data.LineStyle,'none'))
-    
-    %-contour line colour-%
-    if isnumeric(contour_data.LineColor)
-        col = 255*contour_data.LineColor;
-        obj.data{contourIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+if isvector(zdata)
+    if(~strcmp(contour_data.LineStyle,'none'))
+
+        %-contour line colour-%
+        if isnumeric(contour_data.LineColor)
+            col = 255*contour_data.LineColor;
+            obj.data{contourIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+        else
+            obj.data{contourIndex}.line.color = 'rgba(0,0,0,0)';
+        end
+
+        %-contour line width-%
+        obj.data{contourIndex}.line.width = contour_data.LineWidth;
+
+        %-contour line dash-%
+        switch contour_data.LineStyle
+            case '-'
+                LineStyle = 'solid';
+            case '--'
+                LineStyle = 'dash';
+            case ':'
+                LineStyle = 'dot';
+            case '-.'
+                LineStyle = 'dashdot';
+        end
+
+        obj.data{contourIndex}.line.dash = LineStyle;
+
+        %-contour smoothing-%
+        obj.data{contourIndex}.line.smoothing = 0;
+
     else
-        obj.data{contourIndex}.line.color = 'rgba(0,0,0,0)';
+
+        %-contours showlines-%
+        obj.data{contourIndex}.contours.showlines = false;
+
     end
-    
-    %-contour line width-%
-    obj.data{contourIndex}.line.width = contour_data.LineWidth;
-    
-    %-contour line dash-%
-    switch contour_data.LineStyle
-        case '-'
-            LineStyle = 'solid';
-        case '--'
-            LineStyle = 'dash';
-        case ':'
-            LineStyle = 'dot';
-        case '-.'
-            LineStyle = 'dashdot';
-    end
-    
-    obj.data{contourIndex}.line.dash = LineStyle;
-    
-    %-contour smoothing-%
-    obj.data{contourIndex}.line.smoothing = 0;
-    
-else
-    
-    %-contours showlines-%
-    obj.data{contourIndex}.contours.showlines = false;
-    
 end
 
 %-------------------------------------------------------------------------%

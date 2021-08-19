@@ -64,13 +64,16 @@ if any(nonzeros(image_data.ZData))
     %-if image comes would a 3D plot-%
     obj.PlotOptions.Image3D = true;
     
+    %-if contour comes would a ContourProjection-%
+    obj.PlotOptions.ContourProjection = true;
+    
     %---------------------------------------------------------------------%
 
     %- setting grid mesh by default -%
     % x-direction
     xmin = min(x(:));
     xmax = max(x(:));
-    xsize = (xmax - xmin) / (size(x, 2)); 
+    xsize = (xmax - xmin) / (size(x, 2)-1); 
     obj.data{surfaceIndex}.contours.x.start = xmin;
     obj.data{surfaceIndex}.contours.x.end = xmax;
     obj.data{surfaceIndex}.contours.x.size = xsize;
@@ -79,7 +82,7 @@ if any(nonzeros(image_data.ZData))
     % y-direction
     ymin = min(y(:));
     ymax = max(y(:));
-    ysize = (ymax - ymin) / (size(y, 1));
+    ysize = (ymax - ymin) / (size(y, 1)-1);
     obj.data{surfaceIndex}.contours.y.start = ymin;
     obj.data{surfaceIndex}.contours.y.end = ymax;
     obj.data{surfaceIndex}.contours.y.size = ysize;
