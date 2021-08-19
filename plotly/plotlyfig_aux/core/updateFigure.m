@@ -68,13 +68,22 @@ obj.layout.margin.t = 0;
 
 %-------------------------------------------------------------------------%
 
+if obj.PlotOptions.AxisEqual
+    wh = min(figure_data.Position(3:4));
+    w = wh;
+    h = wh; 
+else
+    w = figure_data.Position(3);
+    h = figure_data.Position(4);
+end
+    
 %-figure width-%
-obj.layout.width = figure_data.Position(3)*obj.PlotlyDefaults.FigureIncreaseFactor;
+obj.layout.width = w * obj.PlotlyDefaults.FigureIncreaseFactor;
 
 %-------------------------------------------------------------------------%
 
 %-figure height-%
-obj.layout.height = figure_data.Position(4)*obj.PlotlyDefaults.FigureIncreaseFactor;
+obj.layout.height = h * obj.PlotlyDefaults.FigureIncreaseFactor;
 
 %-------------------------------------------------------------------------%
 

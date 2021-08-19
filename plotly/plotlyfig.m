@@ -63,6 +63,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.TreatAs = '_';
             obj.PlotOptions.Image3D = false;
             obj.PlotOptions.ContourProjection = false;
+            obj.PlotOptions.AxisEqual = false;
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -204,6 +205,9 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'TreatAs'))
                             obj.PlotOptions.TreatAs = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'AxisEqual'))
+                            obj.PlotOptions.AxisEqual = varargin{a+1};
                         end
                     end
             end
@@ -670,8 +674,14 @@ classdef plotlyfig < handle
             
             % update annotations
             for n = 1:obj.State.Figure.NumTexts
+                try 
+                    plotclass = obj.State.Plot(n).Class;
+                catch
+                    plotclass = ' ';
+                end
+                
                 try
-                    if ~strcmpi(obj.State.Plot(dataIndex).Class, 'heatmap')
+                    if ~strcmpi(plotclass, 'heatmap')
                         updateAnnotation(obj,n);
                     else
                         obj.PlotOptions.CleanFeedTitle = false;
