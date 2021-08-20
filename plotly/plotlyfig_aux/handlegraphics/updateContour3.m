@@ -131,13 +131,13 @@ if ~isempty(ey)
 else
 
     %-define as default-%
-    xey = min(xdata(:)); if xey>0 xfac = -0.2; else xfac = 0.2; end
-    yey = min(ydata(:)); if yey>0 yfac = -0.2; else yfac = 0.2; end
+    xey = min(xdata(:)) - xar; if xey>0 xfac = -0.2; else xfac = 0.2; end
+    yey = min(ydata(:)) - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end
     if zar>0 zfac = -0.15; else zfac = 0.15; end
-
-    obj.layout.scene.camera.eye.x = xey + xfac*xey;
+    
+    obj.layout.scene.camera.eye.x = xey + xfac*xey; 
     obj.layout.scene.camera.eye.y = yey + yfac*yey;
-    obj.layout.scene.camera.eye.z = zar + yfac*zar;
+    obj.layout.scene.camera.eye.z = zar + zfac*zar;
 end
 
 %---------------------------------------------------------------------%
