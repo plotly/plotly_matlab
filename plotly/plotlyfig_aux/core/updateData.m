@@ -13,6 +13,8 @@ try
             updatePColor(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'polarplot')
             updatePolarplot(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'contour3')
+            updateContour3(obj, dataIndex);
         end
         
     %-update plot based on plot call class-%
