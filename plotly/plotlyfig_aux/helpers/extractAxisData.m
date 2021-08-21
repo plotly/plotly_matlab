@@ -223,7 +223,7 @@ else
                     %-range (overwrite)-%
                     axis.autorange = true;
                     %-axis autotick-%
-                    axis.autotick = true;
+                    % axis.autotick = true;
                 end
             end
         end

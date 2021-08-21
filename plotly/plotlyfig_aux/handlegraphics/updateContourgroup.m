@@ -143,7 +143,7 @@ obj.data{contourIndex}.autocontour = false;
 %---------------------------------------------------------------------%
 
 %-colorscale-%
-colormap = figure_data.Colormap;
+colormap = axis_data.Colormap;
 
 for c = 1:size((colormap),1)
     col =  255*(colormap(c,:));
@@ -166,12 +166,12 @@ end
 
 %-contour levels-%
 if length(contour_data.LevelList) > 1
-    cstart = contour_data.LevelList(1);
-    cend = contour_data.LevelList(end);
-    csize = mean(diff(contour_data.LevelList));
+    cstart = contour_data.TextList(1);
+    cend = contour_data.TextList(end);
+    csize = mean(diff(contour_data.TextList));
 else
-    cstart = contour_data.LevelList(1) - 1e-3;
-    cend = contour_data.LevelList(end) + 1e-3;
+    cstart = contour_data.TextList(1) - 1e-3;
+    cend = contour_data.TextList(end) + 1e-3;
     csize = 2e-3;
 end
 
@@ -239,7 +239,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-contour showscale-%
-obj.data{contourIndex}.showscale = false;
+obj.data{contourIndex}.showscale = true;
 
 %-------------------------------------------------------------------------%
 

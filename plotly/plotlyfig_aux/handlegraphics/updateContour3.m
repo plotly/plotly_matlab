@@ -65,12 +65,12 @@ obj.data{contourIndex}.z = zdata;
 
 %-setting for contour lines z-direction-%
 if length(contour_data.LevelList) > 1
-    zstart = contour_data.LevelList(1);
-    zend = contour_data.LevelList(end);
-    zsize = mean(diff(contour_data.LevelList));
+    zstart = contour_data.TextList(1);
+    zend = contour_data.TextList(end);
+    zsize = mean(diff(contour_data.TextList));
 else
-    zstart = contour_data.LevelList(1) - 1e-3;
-    zend = contour_data.LevelList(end) + 1e-3;
+    zstart = contour_data.TextList(1) - 1e-3;
+    zend = contour_data.TextList(end) + 1e-3;
     zsize = 2e-3;
 end
 
@@ -131,13 +131,13 @@ if ~isempty(ey)
 else
 
     %-define as default-%
-    xey = min(xdata(:)); if xey>0 xfac = -0.2; else xfac = 0.2; end
-    yey = min(ydata(:)); if yey>0 yfac = -0.2; else yfac = 0.2; end
-    if zar>0 zfac = -0.15; else zfac = 0.15; end
-
-    obj.layout.scene.camera.eye.x = xey + xfac*xey;
+    xey = - xar; if xey>0 xfac = -0.2; else xfac = 0.2; end
+    yey = - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end
+    if zar>0 zfac = 0.2; else zfac = -0.2; end
+    
+    obj.layout.scene.camera.eye.x = xey + xfac*xey; 
     obj.layout.scene.camera.eye.y = yey + yfac*yey;
-    obj.layout.scene.camera.eye.z = zar + yfac*zar;
+    obj.layout.scene.camera.eye.z = zar + zfac*zar;
 end
 
 %---------------------------------------------------------------------%
