@@ -66,6 +66,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.AxisEqual = false;
             obj.PlotOptions.AspectRatio = [];
             obj.PlotOptions.CameraEye = [];
+            obj.PlotOptions.is_headmap_axis = false;
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -683,16 +684,11 @@ classdef plotlyfig < handle
             
             % update annotations
             for n = 1:obj.State.Figure.NumTexts
-                try 
-                    plotclass = obj.State.Plot(n).Class;
-                catch
-                    plotclass = ' ';
-                end
-                
                 try
-                    if ~strcmpi(plotclass, 'heatmap')
+                    if ~obj.PlotOptions.is_headmap_axis
                         updateAnnotation(obj,n);
                     else
+                        updateHeatmapAnnotation(obj,n);
                         obj.PlotOptions.CleanFeedTitle = false;
                     end
                 catch
