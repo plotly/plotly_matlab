@@ -671,9 +671,8 @@ classdef plotlyfig < handle
                 updateData(obj,n);
                 
                 try
-                    if (strcmp(obj.data{n}.type, 'bar') && update_opac(length(ax)-n))
-                        obj.data{1, n}.opacity = 0.9;
-                        obj.data{1, n}.marker.color = 'rgb(0,113.985,188.955)';
+                    if update_opac(length(ax)-n)
+                        % obj.data{1, n}.opacity = 0.9;
                     end
                 catch
                     % TODO to the future

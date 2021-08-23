@@ -28,8 +28,10 @@ if ~strcmp(line_data.Marker,'none')
     switch line_data.Marker
         case '.'
             marksymbol = 'circle';
+            marker.size = 0.4*line_data.MarkerSize;
         case 'o'
             marksymbol = 'circle';
+            marker.size = 0.4*line_data.MarkerSize;
         case 'x'
             marksymbol = 'x-thin-open';
         case '+'

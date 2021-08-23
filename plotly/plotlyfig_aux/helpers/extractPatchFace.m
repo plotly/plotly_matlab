@@ -50,6 +50,9 @@ else
             end
             
             marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+
+        case 'auto'
+            marker.color = 'rgb(0,113.985,188.955)';
             
     end
 end
@@ -57,7 +60,6 @@ end
 %-------------------------------------------------------------------------%
 
 %-PATCH EDGE COLOR-%
-
 if isnumeric(patch_data.EdgeColor)
     
     col = 255*patch_data.EdgeColor;
