@@ -43,41 +43,64 @@ function obj = updateAxis(obj,axIndex)
 
 %-STANDARDIZE UNITS-%
 axisunits = get(obj.State.Axis(axIndex).Handle,'Units');
-fontunits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
-set(obj.State.Axis(axIndex).Handle,'Units','normalized');
-set(obj.State.Axis(axIndex).Handle,'FontUnits','points');
+set(obj.State.Axis(axIndex).Handle,'Units','normalized')
+
+try
+    fontunits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
+    set(obj.State.Axis(axIndex).Handle,'FontUnits','points')
+catch
+    % TODO
+end
 
 %-AXIS DATA STRUCTURE-%
 axis_data = get(obj.State.Axis(axIndex).Handle);
 
 %-------------------------------------------------------------------------%
 
+%-check if headmap axis-%
+is_headmap_axis = isfield(axis_data, 'XDisplayData');
+obj.PlotOptions.is_headmap_axis = is_headmap_axis;
+
 %-xaxis-%
-xaxis = extractAxisData(obj,axis_data,'X');
+if ~is_headmap_axis
+    xaxis = extractAxisData(obj,axis_data,'X');
+else
+    xaxis = extractHeatmapAxisData(obj,axis_data,'X');
+end
 
 %-------------------------------------------------------------------------%
 
 %-yaxis-%
-yaxis = extractAxisData(obj,axis_data,'Y');
+if ~is_headmap_axis
+    yaxis = extractAxisData(obj,axis_data,'Y');
+else
+    yaxis = extractHeatmapAxisData(obj,axis_data,'Y');
+end
 
 %-------------------------------------------------------------------------%
+
+%-getting and setting postion data-%
+
+xo = axis_data.Position(1);
+yo = axis_data.Position(2);
+w = axis_data.Position(3);
+h = axis_data.Position(4);
 
 if obj.PlotOptions.AxisEqual
     wh = min(axis_data.Position(3:4));
     w = wh;
-    h = wh; 
-else
-    w = axis_data.Position(3);
-    h = axis_data.Position(4);
+    h = wh;
 end
 
+%-------------------------------------------------------------------------%
+
 %-xaxis domain-%
-xaxis.domain = min([axis_data.Position(1) axis_data.Position(1) + w],1);
+xaxis.domain = min([xo xo + w],1);
 
 %-------------------------------------------------------------------------%
 
 %-yaxis domain-%
-yaxis.domain = min([axis_data.Position(2) axis_data.Position(2) + h],1);
+yaxis.domain = min([yo yo + h],1);
 
 %-------------------------------------------------------------------------%
 
@@ -129,6 +152,9 @@ end
 
 %-REVERT UNITS-%
 set(obj.State.Axis(axIndex).Handle,'Units',axisunits);
-set(obj.State.Axis(axIndex).Handle,'FontUnits',fontunits);
 
+try
+    set(obj.State.Axis(axIndex).Handle,'FontUnits',fontunits);
+catch
+    % TODO
 end
