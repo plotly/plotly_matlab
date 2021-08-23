@@ -62,13 +62,22 @@ yaxis = extractAxisData(obj,axis_data,'Y');
 
 %-------------------------------------------------------------------------%
 
+if obj.PlotOptions.AxisEqual
+    wh = min(axis_data.Position(3:4));
+    w = wh;
+    h = wh; 
+else
+    w = axis_data.Position(3);
+    h = axis_data.Position(4);
+end
+
 %-xaxis domain-%
-xaxis.domain = min([axis_data.Position(1) axis_data.Position(1)+axis_data.Position(3)],1);
+xaxis.domain = min([axis_data.Position(1) axis_data.Position(1) + w],1);
 
 %-------------------------------------------------------------------------%
 
 %-yaxis domain-%
-yaxis.domain = min([axis_data.Position(2) axis_data.Position(2)+axis_data.Position(4)],1);
+yaxis.domain = min([axis_data.Position(2) axis_data.Position(2) + h],1);
 
 %-------------------------------------------------------------------------%
 
