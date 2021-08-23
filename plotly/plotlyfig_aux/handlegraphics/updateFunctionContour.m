@@ -133,14 +133,27 @@ switch contour_data.Fill
         obj.data{contourIndex}.contours.coloring = 'fill';
 end
 
+%-------------------------------------------------------------------------%
+
+%-contour levels-%
+if length(contour_data.LevelList) > 1
+    cstart = contour_data.LevelList(1);
+    cend = contour_data.LevelList(end);
+    csize = mean(diff(contour_data.LevelList));
+else
+    cstart = contour_data.LevelList(1) - 1e-3;
+    cend = contour_data.LevelList(end) + 1e-3;
+    csize = 2e-3;
+end
+
 %-start-%
-obj.data{contourIndex}.contours.start = contour_data.LevelList(1);
+obj.data{contourIndex}.contours.start = cstart;
 
 %-end-%
-obj.data{contourIndex}.contours.end = contour_data.LevelList(end);
+obj.data{contourIndex}.contours.end = cend;
 
 %-step-%
-obj.data{contourIndex}.contours.size = contour_data.LevelStep;
+obj.data{contourIndex}.contours.size = csize;
 
 %-------------------------------------------------------------------------%
 
@@ -196,6 +209,20 @@ switch legInfo.IconDisplayStyle
 end
 
 obj.data{contourIndex}.showlegend = showleg;
+
+%-------------------------------------------------------------------------%
+
+%-axis layout-%
+t = 'linear';
+eval(['obj.layout.xaxis' num2str(xsource) '.type=t;']);
+eval(['obj.layout.xaxis' num2str(xsource) '.autorange=true;']);
+eval(['obj.layout.xaxis' num2str(xsource) '.ticktext=axis_data.XTickLabel;']);
+eval(['obj.layout.xaxis' num2str(xsource) '.tickvals=axis_data.XTick;']);
+
+eval(['obj.layout.yaxis' num2str(xsource) '.type=t;']);
+eval(['obj.layout.yaxis' num2str(xsource) '.autorange=true;']);
+eval(['obj.layout.yaxis' num2str(xsource) '.ticktext=axis_data.YTickLabel;']);
+eval(['obj.layout.yaxis' num2str(xsource) '.tickvals=axis_data.YTick;']);
 
 %-------------------------------------------------------------------------%
 

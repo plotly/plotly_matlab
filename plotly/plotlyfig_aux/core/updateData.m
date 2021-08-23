@@ -13,6 +13,8 @@ try
             updatePColor(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'polarplot')
             updatePolarplot(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'contour3')
+            updateContour3(obj, dataIndex);
         end
         
     %-update plot based on plot call class-%
@@ -148,6 +150,7 @@ try
     if strcmpi(xaxis.type, 'category') && ...
             ~strcmp(obj.data{dataIndex}.type,'box')
         obj.data{dataIndex}.x =  get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
+        eval(['obj.layout.xaxis' num2str(xsource) '.autotick=true;']);
     end
 
     % check for yaxis dates
@@ -159,6 +162,7 @@ try
     if strcmpi(yaxis.type, 'category') && ...
             ~strcmp(obj.data{dataIndex}.type,'box')
         obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
+        eval(['obj.layout.yaxis' num2str(xsource) '.autotick=true;']);
     end
 catch
     % TODO to the future

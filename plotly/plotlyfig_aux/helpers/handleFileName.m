@@ -7,6 +7,11 @@ if isempty(obj.PlotOptions.FileName)
             str = get(obj.State.Text(t).Handle,'String');
             interp = get(obj.State.Text(t).Handle,'Interpreter');
             obj.PlotOptions.FileName = parseString(str,interp);
+            
+            % untitle.html if \text exist (special chars)
+            if ~isempty(strfind(obj.PlotOptions.FileName, '\text'))
+                obj.PlotOptions.FileName = 'untitled';
+            end
         end
     end
 end
