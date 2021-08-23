@@ -64,6 +64,8 @@ classdef plotlyfig < handle
             obj.PlotOptions.Image3D = false;
             obj.PlotOptions.ContourProjection = false;
             obj.PlotOptions.AxisEqual = false;
+            obj.PlotOptions.AspectRatio = [];
+            obj.PlotOptions.CameraEye = [];
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -208,6 +210,12 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'AxisEqual'))
                             obj.PlotOptions.AxisEqual = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'AspectRatio'))
+                            obj.PlotOptions.AspectRatio = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'CameraEye'))
+                            obj.PlotOptions.CameraEye = varargin{a+1};
                         end
                     end
             end
