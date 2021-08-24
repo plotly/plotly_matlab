@@ -66,23 +66,14 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 %-------------------------------------------------------------------------%
 
 %-if polar plot or not-%
-ispolar = false;
+treatas = obj.PlotOptions.TreatAs;
+ispolar = strcmpi(treatas, 'compass') || strcmpi(treatas, 'ezpolar');
+
+%-------------------------------------------------------------------------%
+
+%-getting data-%
 x = plot_data.XData;
 y = plot_data.YData;
-
-if length(x)==5 && length(y)==5 && x(2)==x(4) && y(2)==y(4)
-    ispolar = true;
-end
-
-%-if ezpolar or not-%
-len = length(obj.State.Axis.Handle.Children);
-if len > 1
-    for l = 1:len
-        if strcmpi(obj.State.Axis.Handle.Children(l).Type, 'Text')
-            ispolar = true;
-        end
-    end
-end
 
 %-------------------------------------------------------------------------%
 

@@ -15,6 +15,10 @@ try
             updatePolarplot(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'contour3')
             updateContour3(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'compass')
+            updateLineseries(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'ezpolar')
+            updateLineseries(obj, dataIndex);
         end
         
     %-update plot based on plot call class-%
