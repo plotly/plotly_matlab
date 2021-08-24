@@ -10,6 +10,9 @@ function [response] = plotly(varargin)
 %
 % For full documentation and examples, see https://plot.ly/api
 origin = 'plot';
+offline = true;
+struct_provided = false;
+
 if isstruct(varargin{end})
     structargs = varargin{end};
     f = lower(fieldnames(structargs));
@@ -19,12 +22,36 @@ if isstruct(varargin{end})
     if ~any(strcmp('fileopt',f))
         structargs.fileopt = NaN;
     end
+    if any(strcmp('offline', f))
+        offline = getfield(structargs, 'offline');
+    end
+
+    struct_provided = true;
+
     args = varargin(1:(end-1));
 else
-    structargs = struct('filename', NaN,'fileopt',NaN);
+    if offline
+        structargs = struct('filename', 'untitled', 'fileopt', NaN);
+    else
+        structargs = struct('filename', NaN,'fileopt',NaN);
+    end
     args = varargin(1:end);
+    struct_provided = false;
 end
 
-response = makecall(args, origin, structargs);
+if(offline)
+    if struct_provided
+        nofig_obj = plotlynofig(varargin{1:end-1}, structargs);
+    else
+        nofig_obj = plotlynofig(varargin{1:end}, structargs);
+    end
+    nofig_obj.layout.width = 840;
+    nofig_obj.layout.height = 630;
+    response = nofig_obj.plotly;
+    
+else
+    response = makecall(args, origin, structargs);
+end
+
 
 end
