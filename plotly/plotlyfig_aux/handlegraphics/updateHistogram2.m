@@ -58,6 +58,17 @@ obj.data{histIndex}.flatshading = true;
 
 %---------------------------------------------------------------------%
 
+%-lighting settings-%
+obj.data{histIndex}.lighting.diffuse = 0.92;
+obj.data{histIndex}.lighting.ambient = 0.54;
+obj.data{histIndex}.lighting.specular = 1.42;
+obj.data{histIndex}.lighting.roughness = 0.52;
+obj.data{histIndex}.lighting.fresnel = 0.2;
+obj.data{histIndex}.lighting.vertexnormalsepsilon = 1e-12;
+obj.data{histIndex}.lighting.facenormalsepsilon = 1e-6;
+
+%---------------------------------------------------------------------%
+
 %-aspect ratio-%
 ar = obj.PlotOptions.AspectRatio;
 
