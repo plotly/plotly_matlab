@@ -37,16 +37,6 @@ classdef plotlyfig < handle
             obj.layout = struct();
             obj.url = '';
             
-            %-UserData-%
-            try
-                [obj.UserData.Username,...
-                    obj.UserData.ApiKey,...
-                    obj.UserData.PlotlyDomain] = signin;
-            catch
-                errkey = 'plotlyfigConstructor:notSignedIn';
-                error(errkey, plotlymsg(errkey));
-            end
-            
             obj.UserData.Verbose = true;
             
             %-PlotOptions-%
@@ -74,7 +64,23 @@ classdef plotlyfig < handle
             obj.PlotOptions.LinkText = obj.get_link_text; 
             obj.PlotOptions.IncludePlotlyjs = true;
             obj.PlotOptions.SaveFolder = pwd;
-
+            
+            %-UserData-%
+            try
+                [obj.UserData.Username,...
+                    obj.UserData.ApiKey,...
+                    obj.UserData.PlotlyDomain] = signin;
+            catch
+                if obj.PlotOptions.Offline
+                    obj.UserData.Username = 'offlineUser';
+                    obj.UserData.ApiKey = '';
+                    obj.UserData.PlotlyDomain = 'https://plot.ly';
+                else
+                    errkey = 'plotlyfigConstructor:notSignedIn';
+                    error(errkey, plotlymsg(errkey));
+                end
+            end
+            
             %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 80;
             obj.PlotlyDefaults.TitleHeight = 0.01;
@@ -1008,10 +1014,14 @@ classdef plotlyfig < handle
         end
 
         function link_text = get_link_text(obj)
-           plotly_domain = obj.UserData.PlotlyDomain; 
-           link_domain = strrep(plotly_domain, 'https://', ''); 
-           link_domain = strrep(link_domain, 'http://', ''); 
-           link_text = ['Export to ' link_domain]; 
+            if obj.PlotOptions.Offline
+                plotly_domain = 'https://plot.ly';
+            else
+                plotly_domain = obj.UserData.PlotlyDomain;
+            end
+            link_domain = strrep(plotly_domain, 'https://', ''); 
+            link_domain = strrep(link_domain, 'http://', ''); 
+            link_text = ['Export to ' link_domain]; 
         end   
     end
 end
