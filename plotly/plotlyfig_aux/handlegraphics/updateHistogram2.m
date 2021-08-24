@@ -1,51 +1,129 @@
 function obj = updateHistogram2(obj,histIndex)
 
+%---------------------------------------------------------------------%
+
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
+
+%---------------------------------------------------------------------%
 
 %-HIST DATA STRUCTURE- %
 hist_data = get(obj.State.Plot(histIndex).Handle);
 
+%---------------------------------------------------------------------%
+
 %-hist type-%
 obj.data{histIndex}.type = 'mesh3d';
 
+%---------------------------------------------------------------------%
+
 %-required parameters-%
 values = hist_data.Values;
-xedges = hist_data.XBinEdges;
+xedges = hist_data.XBinEdges; 
 yedges = hist_data.YBinEdges;
 
+sx = diff(xedges(2:end-1));
+sy = diff(yedges(2:end-1));
+
+if isinf(xedges(1)) xedges(1) = xedges(2) - sx(1); end
+if isinf(yedges(1)) yedges(1) = yedges(2) - sy(1); end
+
+if isinf(xedges(end)) xedges(end) = xedges(end-1) + sx(1); end
+if isinf(yedges(end)) yedges(end) = yedges(end-1) + sy(1); end
+
+%---------------------------------------------------------------------%
+
 %-get the values to use plotly's mesh3D-%
-bargap = 0.06;
+bargap = 0.05;
 [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap);
+
+%---------------------------------------------------------------------%
 
 %-passing parameters to mesh3D-%
 obj.data{histIndex}.x = X;
 obj.data{histIndex}.y = Y;
 obj.data{histIndex}.z = Z;
-obj.data{histIndex}.i = uint16(I-1);
-obj.data{histIndex}.j = uint16(J-1);
-obj.data{histIndex}.k = uint16(K-1);
+obj.data{histIndex}.i = int16(I-1);
+obj.data{histIndex}.j = int16(J-1);
+obj.data{histIndex}.k = int16(K-1);
+
+%---------------------------------------------------------------------%
 
 %-some settings-%
-obj.data{histIndex}.color=[0.8,0.8,0.8];
+% obj.data{histIndex}.color='rgb(0,255,0)';
 obj.data{histIndex}.contour.show = true;
-obj.data{histIndex}.contour.color = 'black';
 obj.data{histIndex}.contour.width = 6;
+obj.data{histIndex}.contour.color='rgb(0,0,0)';
 obj.data{histIndex}.flatshading = true;
-obj.data{histIndex}.bordercolor = 'black';
-obj.data{histIndex}.borderwidth = 6;
+
+%---------------------------------------------------------------------%
+
+%-aspect ratio-%
+ar = obj.PlotOptions.AspectRatio;
+
+if ~isempty(ar)
+    if ischar(ar)
+        obj.layout.scene.aspectmode = ar;
+    elseif isvector(ar) && length(ar) == 3
+        xar = ar(1);
+        yar = ar(2);
+        zar = ar(3);
+    end
+else
+
+    %-define as default-%
+    xar = max(xedges(:));
+    yar = max(yedges(:));
+    zar = 0.7*max([xar, yar]);
+end
+
+obj.layout.scene.aspectratio.x = xar;
+obj.layout.scene.aspectratio.y = yar;
+obj.layout.scene.aspectratio.z = zar;
+
+%---------------------------------------------------------------------%
+
+%-camera eye-%
+ey = obj.PlotOptions.CameraEye;
+
+if ~isempty(ey)
+    if isvector(ey) && length(ey) == 3
+        obj.layout.scene.camera.eye.x = ey(1);
+        obj.layout.scene.camera.eye.y = ey(2);
+        obj.layout.scene.camera.eye.z = ey(3);
+    end
+else
+
+    %-define as default-%
+    xey = - xar; if xey>0 xfac = -0.2; else xfac = 0.2; end
+    yey = - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end
+    if zar>0 zfac = 0.2; else zfac = -0.2; end
+    
+    obj.layout.scene.camera.eye.x = xey + xfac*xey; 
+    obj.layout.scene.camera.eye.y = yey + yfac*yey;
+    obj.layout.scene.camera.eye.z = zar + zfac*zar;
+end
+
+%---------------------------------------------------------------------%
+
+
+%-zerolines hidded-%
+obj.layout.scene.xaxis.zeroline = false;
+obj.layout.scene.yaxis.zeroline = false;
+obj.layout.scene.zaxis.zeroline = false;
+
+%---------------------------------------------------------------------%
 
 %-layout bargap-%
 obj.layout.bargap = bargap;
-
-%-layout barmode-%
-obj.layout.barmode = 'group';
 
 %-hist name-%
 obj.data{histIndex}.name = hist_data.DisplayName;
 
 %-hist visible-%
 obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
+
+%---------------------------------------------------------------------%
 
 end
 
@@ -131,9 +209,9 @@ function [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap)
     ze = zeros(size(xe));
 
     positions = zeros([size(xe), 3]);
-    positions(:,:,1) = ye';
-    positions(:,:,2) = xe';
-    positions(:,:,3) = ze';
+    positions(:,:,1) = xe;
+    positions(:,:,2) = ye;
+    positions(:,:,3) = ze;
 
     [m, n, p] = size(positions);
     positions = reshape(positions, [m*n, p]);
