@@ -37,7 +37,7 @@ if isstruct(varargin{end})
 else
     
     if offline
-        structargs = struct('filename', 'untitled', 'fileopt', NaN)
+        structargs = struct('filename', 'untitled', 'fileopt', NaN);
     else
         structargs = struct('filename', NaN,'fileopt',NaN);
     end
