@@ -53,8 +53,23 @@ axis.linecolor = axiscol;
 axis.tickcolor = axiscol;
 %-axis tickfont-%
 axis.tickfont.color = axiscol;
+% %-axis tickmode-%
+ axis.tickmode='array';
+ 
+% %-axis tickvals-%
+if axisName=='X'
+    axis.tickvals=obj.State.Axis.Handle.XTick;%axis.tickvals=[1,3,5];
+elseif axisName=='Y'
+    axis.tickvals=obj.State.Axis.Handle.YTick;
+elseif axisName=='Z'
+    axis.tickvals=obj.State.Axis.Handle.ZTick;
+end
+% %axis ticktext-%
+ %axis.ticktext=['one','three','five','sdf','efr'];
+
 %-axis grid color-%
 axis.gridcolor = axiscol;
+
 
 %-------------------------------------------------------------------------%
 

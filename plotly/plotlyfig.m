@@ -451,6 +451,15 @@ classdef plotlyfig < handle
             handleFileName(obj);
             
             % handle title (for feed)
+            
+            % if only 1 plot
+            %obj.layout.title=obj.PlotOptions.FileName;
+            obj.layout.title=obj.State.Axis.Handle.Title.String;
+            obj.layout.titlefont.color='rgb(38.25,38.25,38.25)';%obj.State.Axis.Handle.Title.Color;
+            %obj.layout.title.size=25;%obj.State.Axis.Handle.Title.size;
+            %obj.layout.title.family='Arial, sans-serif';%obj.State.Axis.Handle.Title.FontName          
+
+                       
             if obj.PlotOptions.CleanFeedTitle
                 try
                     cleanFeedTitle(obj);
@@ -482,7 +491,7 @@ classdef plotlyfig < handle
                     web(response.url, '-browser');
                 end
             else
-                obj.url = plotlyoffline(obj);   
+                obj.url = plotlyoffline(obj);   %%
                 if obj.PlotOptions.OpenURL
                     web(obj.url, '-browser');
                 end
@@ -663,7 +672,7 @@ classdef plotlyfig < handle
                     end
                 catch
                     % TODO to the future
-                    % disp('catch at line 664 in plotlyfig.m file')
+                    % disp('catch at line 664 in plotlyfig_correction.m file')
                 end
                 
             end
@@ -678,7 +687,7 @@ classdef plotlyfig < handle
                     end
                 catch
                     % TODO to the future
-                    % disp('catch at line 679 in plotlyfig.m file')
+                    % disp('catch at line 679 in plotlyfig_correction.m file')
                 end
             end
             

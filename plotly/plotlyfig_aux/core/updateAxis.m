@@ -1,4 +1,4 @@
-%----UPDATE AXIS DATA/LAYOUT----%
+%----UPDATE AXIS DATA/layout----%
 
 function obj = updateAxis(obj,axIndex)
 
