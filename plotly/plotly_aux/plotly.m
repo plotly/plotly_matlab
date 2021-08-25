@@ -17,7 +17,11 @@ if isstruct(varargin{end})
     structargs = varargin{end};
     f = lower(fieldnames(structargs));
     if ~any(strcmp('filename',f))
-        structargs.filename = NaN;
+        if offline
+            structargs.filename = 'untitled';
+        else
+            structargs.filename = NaN;
+        end
     end
     if ~any(strcmp('fileopt',f))
         structargs.fileopt = NaN;
@@ -29,9 +33,11 @@ if isstruct(varargin{end})
     struct_provided = true;
 
     args = varargin(1:(end-1));
+    
 else
+    
     if offline
-        structargs = struct('filename', 'untitled', 'fileopt', NaN);
+        structargs = struct('filename', 'untitled', 'fileopt', NaN)
     else
         structargs = struct('filename', NaN,'fileopt',NaN);
     end
@@ -39,10 +45,11 @@ else
     struct_provided = false;
 end
 
-if(offline)
-    if struct_provided
+if offline
+    if (struct_provided)
         nofig_obj = plotlynofig(varargin{1:end-1}, structargs);
     else
+        structargs
         nofig_obj = plotlynofig(varargin{1:end}, structargs);
     end
     nofig_obj.layout.width = 840;
