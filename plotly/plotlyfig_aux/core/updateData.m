@@ -19,6 +19,8 @@ try
             updateLineseries(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'ezpolar')
             updateLineseries(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
+            updateStreamtube(obj, dataIndex);
         end
         
     %-update plot based on plot call class-%
