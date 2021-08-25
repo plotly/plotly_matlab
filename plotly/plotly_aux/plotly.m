@@ -49,7 +49,6 @@ if offline
     if (struct_provided)
         nofig_obj = plotlynofig(varargin{1:end-1}, structargs);
     else
-        structargs
         nofig_obj = plotlynofig(varargin{1:end}, structargs);
     end
     nofig_obj.layout.width = 840;
