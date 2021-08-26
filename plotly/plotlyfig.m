@@ -573,10 +573,10 @@ classdef plotlyfig < handle
                 
                 % get number of nbars for pie3
                 if strcmpi(obj.PlotOptions.TreatAs, 'pie3')
-                    obj.PlotOptions.nbars = 0;
+                    obj.PlotOptions.nbars{a} = 0;
                     for i = 1:length(plots)
                         if strcmpi(getGraphClass(plots(i)), 'surface')
-                            obj.PlotOptions.nbars = obj.PlotOptions.nbars + 1;
+                            obj.PlotOptions.nbars{a} = obj.PlotOptions.nbars{a} + 1;
                         end
                     end
                 end

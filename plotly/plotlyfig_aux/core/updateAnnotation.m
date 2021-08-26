@@ -91,14 +91,28 @@ end
 %-------------------------------------------------------------------------%
 
 %-text-%
-if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+if obj.State.Text(anIndex).Title
     obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
-    if obj.State.Text(anIndex).Title && isempty(text_data.String) 
+    if isempty(text_data.String) 
         obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
     end
 else
-    obj.layout.annotations{anIndex}.text = '<b></b>'; 
+    if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+        obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
+    else
+        obj.layout.annotations{anIndex}.text = '<b></b>'; 
+    end
 end
+
+%-optional code flow-%
+% if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+%     obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
+%     if obj.State.Text(anIndex).Title && isempty(text_data.String) 
+%         obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
+%     end
+% else
+%     obj.layout.annotations{anIndex}.text = '<b></b>'; 
+% end
 
 %-------------------------------------------------------------------------%
 
