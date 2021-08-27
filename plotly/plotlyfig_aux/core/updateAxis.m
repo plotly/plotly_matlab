@@ -96,11 +96,13 @@ end
 
 %-xaxis domain-%
 xaxis.domain = min([xo xo + w],1);
+scene.domain.x = min([xo xo + w],1);
 
 %-------------------------------------------------------------------------%
 
 %-yaxis domain-%
 yaxis.domain = min([yo yo + h],1);
+scene.domain.y = min([yo yo + h],1);
 
 %-------------------------------------------------------------------------%
 
@@ -135,6 +137,7 @@ end
 % update the layout field (do not overwrite source)
 if xsource == axIndex
     obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
+    obj.layout = setfield(obj.layout,['scene' num2str(xsource)],scene);
 else
     
 end
