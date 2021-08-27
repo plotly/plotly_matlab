@@ -704,7 +704,9 @@ classdef plotlyfig < handle
             
             % update legends
             for n = 1:obj.State.Figure.NumLegends
-                updateLegend(obj,n);
+                if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+                    updateLegend(obj,n);
+                end
             end
             
             % update colorbars
