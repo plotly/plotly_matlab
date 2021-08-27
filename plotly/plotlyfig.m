@@ -57,6 +57,8 @@ classdef plotlyfig < handle
             obj.PlotOptions.AspectRatio = [];
             obj.PlotOptions.CameraEye = [];
             obj.PlotOptions.is_headmap_axis = false;
+            obj.PlotOptions.Quality = -1;
+            obj.PlotOptions.Zmin = [];
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -223,6 +225,12 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'CameraEye'))
                             obj.PlotOptions.CameraEye = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'Quality'))
+                            obj.PlotOptions.Quality = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'Zmin'))
+                            obj.PlotOptions.Zmin = varargin{a+1};
                         end
                     end
             end

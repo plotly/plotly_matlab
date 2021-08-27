@@ -10,7 +10,7 @@ function [response] = plotly(varargin)
 %
 % For full documentation and examples, see https://plot.ly/api
 origin = 'plot';
-offline = true;
+offline = false;
 struct_provided = false;
 
 if isstruct(varargin{end})
