@@ -94,7 +94,7 @@ switch orientation
         
         obj.data{histIndex}.x = hist_data.BinEdges(1:end-1) + 0.5*diff(hist_data.BinEdges);
         obj.data{histIndex}.width = diff(hist_data.BinEdges);%[hist_data.BinEdges(2:end), hist_data.Data(end)];
-        obj.data{histIndex}.y = double(hist_data.BinCounts);
+        obj.data{histIndex}.y = double(hist_data.Values);
         
         %-------------------------------------------------------------------------%
 
@@ -186,7 +186,7 @@ obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
 
 %-hist opacity-%
 if ~ischar(hist_data.FaceAlpha)
-    obj.data{histIndex}.opacity = hist_data.FaceAlpha;
+    obj.data{histIndex}.opacity = hist_data.FaceAlpha * 1.25;
 end
 
 %-------------------------------------------------------------------------%

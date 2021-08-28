@@ -80,19 +80,19 @@ obj.data{histIndex}.type = 'bar';
 
 %-hist data-%
 obj.data{histIndex}.width = hist_data.BarWidth;
-obj.data{histIndex}.y = hist_data.BinCounts;
+obj.data{histIndex}.y = hist_data.Values;
 
 %-------------------------------------------------------------------------%
 
 %-hist categorical layout on x-axis-%
-obj.layout.xaxis1.type = 'category';
-obj.layout.xaxis1.autotick = false;
-
 gap = 1 - hist_data.BarWidth;
-xmin = -0.5 * gap;
-xmax = (hist_data.NumDisplayBins - 1) + 0.5 * gap;
+xmin = -gap;
+xmax = (hist_data.NumDisplayBins - 1) + gap;
 
-obj.layout.xaxis1.range = {xmin, xmax};
+t = 'category';
+eval(['obj.layout.xaxis' num2str(xsource) '.type = t;']);
+eval(['obj.layout.xaxis' num2str(xsource) '.autotick = false;']);
+eval(['obj.layout.xaxis' num2str(xsource) '.range = {xmin, xmax};']);
 
 %-------------------------------------------------------------------------%
 
@@ -113,7 +113,7 @@ obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
 
 %-hist opacity-%
 if ~ischar(hist_data.FaceAlpha)
-    obj.data{histIndex}.opacity = hist_data.FaceAlpha;
+    obj.data{histIndex}.opacity = 1.25*hist_data.FaceAlpha;
 end
 
 %-------------------------------------------------------------------------%
