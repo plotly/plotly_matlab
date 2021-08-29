@@ -19,6 +19,10 @@ try
             updateLineseries(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'ezpolar')
             updateLineseries(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'polarhistogram')
+            updateHistogramPolar(obj, dataIndex); 
+
+        % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
             updateStreamtube(obj, dataIndex);
         end
@@ -43,11 +47,7 @@ try
             case 'categoricalhistogram'
                 updateCategoricalHistogram(obj, dataIndex); 
             case 'histogram'
-                if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
-                    updateHistogramPolar(obj, dataIndex); 
-                else
-                    updateHistogram(obj, dataIndex);
-                end
+                updateHistogram(obj, dataIndex);
             case 'histogram2'
                 updateHistogram2(obj, dataIndex);
             case 'patch'
