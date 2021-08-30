@@ -44,16 +44,12 @@ else
                     capCD = max(min(patch_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
                     scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
                     col =  255*(colormap(1+ floor(scalefactor*(length(colormap)-1)),:));
-                case 'direct'
+                case {'direct', 'auto'}
                     col =  255*(colormap(patch_data.FaceVertexCData(1,1),:));
                     
             end
             
             marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-
-        case 'auto'
-            marker.color = 'rgb(0,113.985,188.955)';
-            
     end
 end
 
@@ -64,7 +60,6 @@ if isnumeric(patch_data.EdgeColor)
     
     col = 255*patch_data.EdgeColor;
     marker.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
 else
     switch patch_data.EdgeColor
         
