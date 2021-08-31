@@ -52,7 +52,6 @@ axis.ticklen = 0.1; %ticklength;
 
 % col = eval(['255*axis_data.' axisName 'Color;']);
 axiscol = 'rgb(150, 150, 150)';
-% axiscol = 'black';
 
 %-axis linecolor-%
 axis.linecolor = axiscol;
@@ -61,11 +60,11 @@ axis.tickcolor = axiscol;
 %-axis tickfont-%
 axis.tickfont.color = 'black';
 %-axis grid color-%
-axis.gridcolor = axiscol;
+axis.gridcolor = 'rgb(0, 0, 0)';
 
 %-------------------------------------------------------------------------%
 
-axis.showgrid = false;
+axis.showgrid = true;
 
 %-------------------------------------------------------------------------%
 
@@ -77,10 +76,11 @@ axis.linewidth = linewidth;
 %-axis tick width-%
 axis.tickwidth = linewidth;
 %-axis grid width-%
-axis.gridwidth = linewidth;
+axis.gridwidth = linewidth*1.2;
 
 %-------------------------------------------------------------------------%
 
+%-setting ticks-%
 axis.ticks = 'inside';
 axis.mirror = true;
 
@@ -92,7 +92,8 @@ axis.type = 'category';
 axis.autorange = true;
 axis.ticktext = labels;
 axis.tickvals = vals;
-axis.showtickprefix = 'none';
+axis.autotick = false;
+axis.tickson = 'boundaries';
 
 %-------------------------------LABELS------------------------------------%
 
@@ -111,12 +112,14 @@ axis.titlefont.color = 'black';
 %-------------------------------------------------------------------------%
 
 %-axis title font size-%
-axis.titlefont.size = axis_data.FontSize*1.2;
+axis.titlefont.size = axis_data.FontSize*1.3;
+axis.tickfont.size = axis_data.FontSize*1.15;
 
 %-------------------------------------------------------------------------%
 
 %-axis title font family-%
 axis.titlefont.family = matlab2plotlyfont(axis_data.FontName);
+axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
 
 %-------------------------------------------------------------------------%
 

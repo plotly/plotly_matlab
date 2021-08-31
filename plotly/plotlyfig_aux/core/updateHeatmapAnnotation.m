@@ -33,50 +33,50 @@ function obj = updateHeatmapAnnotation(obj,anIndex)
 
 
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis);
+nanns = length(obj.layout.annotations);
+axIndex = nanns + obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis);
 
 %-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+[xsource, ysource] = findSourceAxis(obj,anIndex);
 
 %-get heatmap title name-%
 title_name = obj.State.Text(anIndex).Handle;
 
 %-show arrow-%
-obj.layout.annotations{anIndex}.showarrow = false;
+obj.layout.annotations{axIndex}.showarrow = false;
 
 %-------------------------------------------------------------------------%
 
 %-anchor title to paper-%
 if obj.State.Text(anIndex).Title
     %-xref-%
-    obj.layout.annotations{anIndex}.xref = 'paper';
+    obj.layout.annotations{axIndex}.xref = 'paper';
     %-yref-%
-    obj.layout.annotations{anIndex}.yref = 'paper';
+    obj.layout.annotations{axIndex}.yref = 'paper';
 else
     %-xref-%
-    obj.layout.annotations{anIndex}.xref = ['x' num2str(xsource)];
+    obj.layout.annotations{axIndex}.xref = ['x' num2str(xsource)];
     %-yref-%
-    obj.layout.annotations{anIndex}.yref = ['y' num2str(ysource)];
+    obj.layout.annotations{axIndex}.yref = ['y' num2str(ysource)];
 end
 
 %-------------------------------------------------------------------------%
 
 %-xanchor-%
-obj.layout.annotations{anIndex}.xanchor = 'middle';
+obj.layout.annotations{axIndex}.xanchor = 'middle';
 
 %-align-%
-obj.layout.annotations{anIndex}.align = 'middle';
+obj.layout.annotations{axIndex}.align = 'middle';
 
 %-xanchor-%
-obj.layout.annotations{anIndex}.yanchor = 'top';
+obj.layout.annotations{axIndex}.yanchor = 'top';
 
 
 %-------------------------------------------------------------------------%
 
 %-text-%
-obj.layout.annotations{anIndex}.text = title_name;
+obj.layout.annotations{axIndex}.text = sprintf('<b>%s</b>', title_name);
+obj.layout.annotations{axIndex}.font.size = 14;
 
 %-------------------------------------------------------------------------%
 
@@ -87,15 +87,15 @@ if obj.State.Text(anIndex).Title
     eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
     
     %-x position-%
-    obj.layout.annotations{anIndex}.x = mean(xaxis.domain);
+    obj.layout.annotations{axIndex}.x = mean(xaxis.domain);
     %-y position-%
-    % obj.layout.annotations{anIndex}.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
-    obj.layout.annotations{anIndex}.y = (yaxis.domain(2) + 0.04);
+    obj.layout.annotations{axIndex}.y = (yaxis.domain(2) + 0.04);
 else
     %-x position-%
-    obj.layout.annotations{anIndex}.x = text_data.Position(1);
+    obj.layout.annotations{axIndex}.x = text_data.Position(1);
     %-y position-%
-    obj.layout.annotations{anIndex}.y = text_data.Position(2);
+    obj.layout.annotations{axIndex}.y = text_data.Position(2);
 end
 
+%-------------------------------------------------------------------------%
 end
