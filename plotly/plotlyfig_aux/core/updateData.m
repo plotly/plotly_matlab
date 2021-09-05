@@ -36,7 +36,9 @@ try
         switch lower(obj.State.Plot(dataIndex).Class)
 
             %--CORE PLOT OBJECTS--%
-        case 'wordcloud'
+            case 'scatterhistogram'
+                updateScatterhistogram(obj, dataIndex); 
+            case 'wordcloud'
                 updateWordcloud(obj, dataIndex);
             case 'heatmap'
                 updateHeatmap(obj, dataIndex);
