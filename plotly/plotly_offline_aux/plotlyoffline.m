@@ -85,6 +85,6 @@ function response = plotlyoffline(plotlyfig)
     plotly_offline_file = strrep(plotly_offline_file, ' ', '%20'); 
     
     % return the local file url to be rendered in the browser
-    response = ['file://' plotly_offline_file]; 
+    response = ['file:///' plotly_offline_file]; 
     
 end
