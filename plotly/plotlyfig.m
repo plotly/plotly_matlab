@@ -47,6 +47,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.ShowURL = true;
             obj.PlotOptions.OpenURL = true;
             obj.PlotOptions.Strip = false;
+            obj.PlotOptions.WriteFile = true;
             obj.PlotOptions.Visible = 'on';
             obj.PlotOptions.TriangulatePatch = false;
             obj.PlotOptions.StripMargins = false;
@@ -199,6 +200,9 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'strip'))
                             obj.PlotOptions.Strip = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'writeFile'))
+                            obj.PlotOptions.WriteFile = varargin{a+1};
                         end
                         if(strcmpi(varargin{a},'visible'))
                             obj.PlotOptions.Visible = varargin{a+1};
@@ -512,27 +516,28 @@ classdef plotlyfig < handle
             %layout
             args.layout = obj.layout;
             
-            %send to plotly
-            if ~obj.PlotOptions.Offline
-                response = plotly(obj.data, args);
-                
-                %update response
-                obj.url = response.url;
-                obj.error = response.error;
-                obj.warning = response.warning;
-                obj.message = response.message;
-                
-                %open url in browser
-                if obj.PlotOptions.OpenURL
-                    web(response.url, '-browser');
-                end
-            else
-                obj.url = plotlyoffline(obj);   
-                if obj.PlotOptions.OpenURL
-                    web(obj.url, '-browser');
-                end
-            end 
-           
+            if obj.PlotOptions.WriteFile
+                %send to plotly
+                if ~obj.PlotOptions.Offline
+                    response = plotly(obj.data, args);
+
+                    %update response
+                    obj.url = response.url;
+                    obj.error = response.error;
+                    obj.warning = response.warning;
+                    obj.message = response.message;
+
+                    %open url in browser
+                    if obj.PlotOptions.OpenURL
+                        web(response.url, '-browser');
+                    end
+                else
+                    obj.url = plotlyoffline(obj);   
+                    if obj.PlotOptions.OpenURL
+                        web(obj.url, '-browser');
+                    end
+                end 
+            end           
         end
         
         %-----------------------FIGURE CONVERSION-------------------------%

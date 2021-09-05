@@ -11,30 +11,37 @@ function [response] = plotly(varargin)
 % For full documentation and examples, see https://plot.ly/api
 origin = 'plot';
 offline_given = true;
+writeFile=true;
 
 if isstruct(varargin{end})
     structargs = varargin{end};
-    f = lower(fieldnames(structargs));
-
-    if any(strcmp('offline', f))
-        offline = structargs.offline;
+    f = fieldnames(structargs);
+    
+    idx = cellfun(@(x) strcmpi(x,'offline'), f);
+    if sum(idx)==1
+        offline = structargs.(f{idx});
         offline_given = offline;
     else
         offline = false;
         offline_given = offline;
     end
 
-    if ~any(strcmp('filename',f))
+    if ~any(strcmp('filename',lower(f)))
         if offline
             structargs.filename = 'untitled';
         else
             structargs.filename = NaN;
         end
     end
-    if ~any(strcmp('fileopt',f))
+    if ~any(strcmp('fileopt',lower(f)))
         structargs.fileopt = NaN;
     end
-
+    
+    idx = cellfun(@(x) strcmpi(x,'writefile'),f);
+    if sum(idx)==1
+        writeFile=structargs.(f{idx});
+    end
+    
     args = varargin(1:(end-1));
     
 else
@@ -46,6 +53,10 @@ else
     args = varargin(1:end);
 end
 
+if ~writeFile
+    offline_given = true;
+end
+
 if offline_given
     obj = plotlyfig(args, structargs);
     obj.layout.width = 840;
@@ -54,6 +65,5 @@ if offline_given
 else
     response = makecall(args, origin, structargs);
 end
-
 
 end
