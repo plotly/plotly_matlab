@@ -31,7 +31,7 @@ classdef plotlyfig < handle
         
         %----CONSTRUCTOR---%
         function obj = plotlyfig(varargin)
-            
+
             %-Core-%
             obj.data = {};
             obj.layout = struct();
@@ -47,6 +47,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.ShowURL = true;
             obj.PlotOptions.OpenURL = true;
             obj.PlotOptions.Strip = false;
+            obj.PlotOptions.WriteFile = true;
             obj.PlotOptions.Visible = 'on';
             obj.PlotOptions.TriangulatePatch = false;
             obj.PlotOptions.StripMargins = false;
@@ -73,7 +74,8 @@ classdef plotlyfig < handle
                     obj.UserData.ApiKey,...
                     obj.UserData.PlotlyDomain] = signin;
             catch
-                if obj.PlotOptions.Offline
+                idx=find(cellfun(@(x) strcmpi(x,'offline'), varargin))+1;
+                if (nargin>1 && ~isempty(idx) && varargin{idx}) || (obj.PlotOptions.Offline)
                     obj.UserData.Username = 'offlineUser';
                     obj.UserData.ApiKey = '';
                     obj.UserData.PlotlyDomain = 'https://plot.ly';
@@ -127,6 +129,8 @@ classdef plotlyfig < handle
             % initialize autoupdate key
             updatekey = false;
             
+            noFig = false;
+            
             % parse inputs
             switch nargin
                 
@@ -152,6 +156,16 @@ classdef plotlyfig < handle
                             updatekey = true;
                             parseinit = 2;
                         end
+                    elseif iscell(varargin{1}) && isstruct(varargin{2})
+                        obj.data = varargin{1}{:};
+                        structargs = varargin{2};
+                        ff=fieldnames(structargs);
+                        for i=1:length(ff)
+                            varargin{2*i-1}=ff{i};
+                            varargin{2*i}=structargs.(ff{i});
+                        end
+                        noFig=true;
+                        parseinit = 1;
                     else
                         parseinit = 1;
                     end
@@ -163,7 +177,7 @@ classdef plotlyfig < handle
                     end
                     
                     % parse property/values
-                    for a = parseinit:2:nargin
+                    for a = parseinit:2:length(varargin)
                         if(strcmpi(varargin{a},'filename'))
                             obj.PlotOptions.FileName = varargin{a+1};
                             % overwrite if filename provided
@@ -186,6 +200,9 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'strip'))
                             obj.PlotOptions.Strip = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'writeFile'))
+                            obj.PlotOptions.WriteFile = varargin{a+1};
                         end
                         if(strcmpi(varargin{a},'visible'))
                             obj.PlotOptions.Visible = varargin{a+1};
@@ -235,32 +252,36 @@ classdef plotlyfig < handle
                     end
             end
             
-            % create figure/axes if empty
-            if isempty(fig_han)
-                fig_han = figure;
-                axes;
+            if ~noFig
+                % create figure/axes if empty
+                if isempty(fig_han)
+                    fig_han = figure;
+                    axes;
+                end
+
+                % plotly figure default style
+                set(fig_han,'Name',obj.PlotOptions.FileName,'Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
+
+                % figure state
+                obj.State.Figure.Handle = fig_han;
             end
-            
-            % plotly figure default style
-            set(fig_han,'Name',obj.PlotOptions.FileName,'Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
-            
-            % figure state
-            obj.State.Figure.Handle = fig_han;
             
             % update
             if updatekey
                 obj.update;
             end
             
-            % add figure listeners
-            addlistener(obj.State.Figure.Handle,'Visible','PostSet',@(src,event)updateFigureVisible(obj,src,event));
-            addlistener(obj.State.Figure.Handle,'Name','PostSet',@(src,event)updateFigureName(obj,src,event));
-            
-            % add plot options listeners
-            addlistener(obj,'PlotOptions','PostSet',@(src,event)updatePlotOptions(obj,src,event));
-            
-            % add user data listeners
-            addlistener(obj,'UserData','PostSet',@(src,event)updateUserData(obj,src,event));
+            if ~noFig
+                % add figure listeners
+                addlistener(obj.State.Figure.Handle,'Visible','PostSet',@(src,event)updateFigureVisible(obj,src,event));
+                addlistener(obj.State.Figure.Handle,'Name','PostSet',@(src,event)updateFigureName(obj,src,event));
+
+                % add plot options listeners
+                addlistener(obj,'PlotOptions','PostSet',@(src,event)updatePlotOptions(obj,src,event));
+
+                % add user data listeners
+                addlistener(obj,'UserData','PostSet',@(src,event)updateUserData(obj,src,event));
+            end
         end
         
         %-------------------------USER METHODS----------------------------%
@@ -495,27 +516,28 @@ classdef plotlyfig < handle
             %layout
             args.layout = obj.layout;
             
-            %send to plotly
-            if ~obj.PlotOptions.Offline
-                response = plotly(obj.data, args);
-            
-                %update response
-                obj.url = response.url;
-                obj.error = response.error;
-                obj.warning = response.warning;
-                obj.message = response.message;
-                
-                %open url in browser
-                if obj.PlotOptions.OpenURL
-                    web(response.url, '-browser');
-                end
-            else
-                obj.url = plotlyoffline(obj);   
-                if obj.PlotOptions.OpenURL
-                    web(obj.url, '-browser');
-                end
-            end 
-           
+            if obj.PlotOptions.WriteFile
+                %send to plotly
+                if ~obj.PlotOptions.Offline
+                    response = plotly(obj.data, args);
+
+                    %update response
+                    obj.url = response.url;
+                    obj.error = response.error;
+                    obj.warning = response.warning;
+                    obj.message = response.message;
+
+                    %open url in browser
+                    if obj.PlotOptions.OpenURL
+                        web(response.url, '-browser');
+                    end
+                else
+                    obj.url = plotlyoffline(obj);   
+                    if obj.PlotOptions.OpenURL
+                        web(obj.url, '-browser');
+                    end
+                end 
+            end           
         end
         
         %-----------------------FIGURE CONVERSION-------------------------%

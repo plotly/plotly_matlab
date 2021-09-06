@@ -11,61 +11,59 @@ function [response] = plotly(varargin)
 % For full documentation and examples, see https://plot.ly/api
 origin = 'plot';
 offline_given = true;
-struct_provided = false;
+writeFile=true;
 
 if isstruct(varargin{end})
     structargs = varargin{end};
-    f = lower(fieldnames(structargs));
-
-    if any(strcmp('offline', f))
-        offline = getfield(structargs, 'offline');
+    f = fieldnames(structargs);
+    
+    idx = cellfun(@(x) strcmpi(x,'offline'), f);
+    if sum(idx)==1
+        offline = structargs.(f{idx});
         offline_given = offline;
     else
         offline = false;
         offline_given = offline;
     end
 
-
-    if ~any(strcmp('filename',f))
+    if ~any(strcmp('filename',lower(f)))
         if offline
             structargs.filename = 'untitled';
         else
             structargs.filename = NaN;
         end
     end
-    if ~any(strcmp('fileopt',f))
+    if ~any(strcmp('fileopt',lower(f)))
         structargs.fileopt = NaN;
     end
     
-
-    struct_provided = true;
-
+    idx = cellfun(@(x) strcmpi(x,'writefile'),f);
+    if sum(idx)==1
+        writeFile=structargs.(f{idx});
+    end
+    
     args = varargin(1:(end-1));
     
 else
-    
     if offline_given
         structargs = struct('filename', 'untitled', 'fileopt', NaN);
     else
-        structargs = struct('filename', NaN,'fileopt',NaN);
+        structargs = struct('filename', NaN, 'fileopt', NaN);
     end
     args = varargin(1:end);
-    struct_provided = false;
+end
+
+if ~writeFile
+    offline_given = true;
 end
 
 if offline_given
-    if (struct_provided)
-        nofig_obj = plotlynofig(varargin{1:end-1}, structargs);
-    else
-        nofig_obj = plotlynofig(varargin{1:end}, structargs);
-    end
-    nofig_obj.layout.width = 840;
-    nofig_obj.layout.height = 630;
-    response = nofig_obj.plotly;
-    
+    obj = plotlyfig(args, structargs);
+    obj.layout.width = 840;
+    obj.layout.height = 630;
+    response = obj.plotly;
 else
     response = makecall(args, origin, structargs);
 end
-
 
 end
