@@ -113,6 +113,7 @@ for t=1:length(xdata)
       obj.data{p}.name = char(string(gs(t)));
     end
 
+    obj.data{p}.legendgroup = obj.data{p}.name;
     obj.data{p}.showlegend = true;
   end
 
@@ -174,7 +175,6 @@ yaxis.title.font.size = 1.2*scatter_data.FontSize;
 
 if ~ycateg
   yaxis.range = scatter_data.YLimits;
-  % yaxis.nticks = 20;
 else
   yaxis.range = [min(yplot)-0.5, max(yplot)+0.5];
   yaxis.tickvals = 1:max(yplot);
@@ -275,9 +275,7 @@ for t=1:length(xdata)
   %-----------------------------------------------------------------------%
 
   %-plot setting-%
-  obj.data{p}.marker.color = 'rgba(0,0,0,0)';
-  obj.data{p}.marker.line.color = sprintf('rgb(%f,%f,%f)', scatter_data.Color(t, :));
-  obj.data{p}.marker.line.width = scatter_data.LineWidth(t);
+  obj.data{p}.marker.color = sprintf('rgba(%f,%f,%f,0.7)', scatter_data.Color(t, :));
   obj.data{p}.histnorm = 'probability';
   obj.data{p}.histfunc = 'count';
 
@@ -294,6 +292,8 @@ for t=1:length(xdata)
     catch
       obj.data{p}.name = char(string(gs(t)));
     end
+
+    obj.data{p}.legendgroup = obj.data{p}.name;
   end
 
   %-----------------------------------------------------------------------%
@@ -355,9 +355,8 @@ end
 obj.layout = setfield(obj.layout, sprintf('xaxis%d', ps), xaxis1);
 obj.layout = setfield(obj.layout, sprintf('yaxis%d', ps), yaxis1);
 
-obj.layout.plot_bgcolor = 'rgba(0,0,0,0)';
-obj.layout.paper_bgcolor = 'rgba(0,0,0,0)';
 obj.layout.barmode = 'overlay';
+obj.layout.bargap = 0.05;
 
 
 %=========================================================================%
@@ -390,9 +389,7 @@ for t=1:length(xdata)
   %-----------------------------------------------------------------------%
 
   %-plot setting-%
-  obj.data{p}.marker.color = 'rgba(0,0,0,0)';
-  obj.data{p}.marker.line.color = sprintf('rgb(%f,%f,%f)', scatter_data.Color(t, :));
-  obj.data{p}.marker.line.width = scatter_data.LineWidth(t);
+  obj.data{p}.marker.color = sprintf('rgba(%f,%f,%f, 0.7)', scatter_data.Color(t, :));
   obj.data{p}.histnorm = 'probability';
   obj.data{p}.histfunc = 'count';
   obj.data{p}.orientation = 'h';
@@ -410,6 +407,8 @@ for t=1:length(xdata)
     catch
       obj.data{p}.name = char(string(gs(t)));
     end
+
+    obj.data{p}.legendgroup = obj.data{p}.name;
   end
 
   %-----------------------------------------------------------------------%
