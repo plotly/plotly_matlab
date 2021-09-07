@@ -31,7 +31,6 @@ if ~strcmp(line_data.Marker,'none')
             marker.size = 0.4*line_data.MarkerSize;
         case 'o'
             marksymbol = 'circle';
-            marker.size = 0.4*line_data.MarkerSize;
         case 'x'
             marksymbol = 'x-thin-open';
         case '+'
@@ -70,7 +69,7 @@ marker.line.width = line_data.LineWidth;
 %-------------------------------------------------------------------------%
 
 filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
+    'v','^', '<','>','hexagram','pentagram', '*', '+'};
 
 filledMarker = ismember(line_data.Marker,filledMarkerSet);
 
