@@ -260,7 +260,7 @@ function obj = updateStem3(obj,dataIndex)
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
 
   else
-    yaxis.zeroline = false;
+    yaxis.zeroline = true;
 
     xaxis.linecolor = 'rgba(0,0,0,0.4)';
     yaxis.linecolor = 'rgba(0,0,0,0.4)';
