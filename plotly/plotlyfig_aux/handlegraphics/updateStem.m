@@ -142,13 +142,19 @@ function obj = updateStem3(obj,dataIndex)
   linecolor = cell(3*npoints,1);
   hidecolor = 'rgba(0,0,0,0)';
 
-  markercolor(1:3:3*npoints) = {hidecolor};
-  markercolor(2:3:3*npoints) = {stem_data.marker.color};
-  markercolor(3:3:3*npoints) = {hidecolor};
-
   linecolor(1:3:3*npoints) = {hidecolor};
-  linecolor(2:3:3*npoints) = {stem_data.marker.line.color};
+  markercolor(1:3:3*npoints) = {hidecolor};
+
+  try
+    linecolor(2:3:3*npoints) = {stem_data.marker.line.color};
+    markercolor(2:3:3*npoints) = {stem_data.marker.color};
+  catch
+    linecolor(2:3:3*npoints) = {stem_data.marker.color};
+    markercolor(2:3:3*npoints) = {hidecolor};
+  end
+  
   linecolor(3:3:3*npoints) = {hidecolor};
+  markercolor(3:3:3*npoints) = {hidecolor};
 
   %-add new marker/line colors-%
   stem_data.marker.color = markercolor;

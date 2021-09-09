@@ -91,7 +91,6 @@ axis.gridwidth = linewidth;
 %-------------------------------------------------------------------------%
 
 %-axis type-%
-
 axis.type = eval(['axis_data.' axisName 'Scale']);
 
 %-------------------------------------------------------------------------%
@@ -120,6 +119,9 @@ if isempty(tick)
     %---------------------------------------------------------------------%
 
 else
+
+    %-get axis limits-%
+    dataLim = eval( sprintf('axis_data.%sLim', axisName) );
     
     %-axis tick direction-%
     switch axis_data.TickDir
@@ -140,10 +142,11 @@ else
     
     %---------------------------------------------------------------------%
     
+    %-LOG TYPE-%
     if strcmp(axis.type,'log')
         
         %-axis range-%
-        axis.range = eval(['log10(axis_data.' axisName 'Lim);']);
+        axis.range = eval( sprintf('log10(dataLim)') ); %['log10(axis_data.' axisName 'Lim);']);
         %-axis autotick-%
         axis.autotick = true;
         %-axis nticks-%
@@ -151,12 +154,18 @@ else
      
     %---------------------------------------------------------------------%
     
+    %-LINEAR TYPE-%
     elseif strcmp(axis.type,'linear')
+
+        %-----------------------------------------------------------------%
+
+        %-get tick label mode-%
         TickLabelMode = eval(['axis_data.' axisName 'TickLabelMode;']);
+
+        %-----------------------------------------------------------------%
+
+        %-AUTO MODE-%
         if strcmp(TickLabelMode,'auto')
-            
-            %-axis range-%
-            dataLim = eval(['axis_data.' axisName 'Lim']);
             
             %-------------------------------------------------------------%
             
@@ -192,39 +201,94 @@ else
             axis.autotick = true;
             %-axis numticks-%       
             axis.nticks = eval(['length(axis_data.' axisName 'Tick)+1']);
+
         %-----------------------------------------------------------------%
         
+        %-CUSTOM MODE-%
         else
-            %-axis show tick labels-%
-            Tick = eval(['axis_data.' axisName 'TickLabel;']);
-            if isempty(Tick)
+
+            %-------------------------------------------------------------%
+
+            %-get tick labels-%
+            tickLabels = eval(['axis_data.' axisName 'TickLabel;']);
+
+            %-------------------------------------------------------------%
+
+            %-hide tick labels as lichkLabels field is empty-%
+            if isempty(tickLabels)
+                
+                %-------------------------------------------------------------%
+
                 %-hide tick labels-%
                 axis.showticklabels = false;
+
+                %-------------------------------------------------------------%
+
                 %-axis autorange-%
                 axis.autorange = true;
+
+                %-------------------------------------------------------------%
+
+            %-axis show tick labels as tickLabels matlab field-%
             else
-                %-axis labels
-                labels = str2double(axis_data.YTickLabel);
-                try 
-                    %find numbers in labels
-                    labelnums = find(~isnan(labels));
-                    %-axis type linear-%
-                    axis.type = 'linear';
-                    %-range (overwrite)-%
-                    delta = (labels(labelnums(2)) - labels(labelnums(1)))/(labelnums(2)-labelnums(1));
-                    axis.range = [labels(labelnums(1))-delta*(labelnums(1)-1) labels(labelnums(1)) + (length(labels)-labelnums(1))*delta];
-                    %-axis autotick-%
-                    axis.autotick = true;
-                    %-axis numticks-%
-                    axis.nticks = eval(['length(axis_data.' axisName 'Tick) + 1;']);
-                catch
-                    %-axis type category-%
-                    axis.type = 'category';
-                    %-range (overwrite)-%
+
+                %-------------------------------------------------------------%
+
+                axis.showticklabels = true;
+                axis.type = 'linear';
+
+                %-------------------------------------------------------------%
+
+                if isnumeric(dataLim)
+                    axis.range = eval(['axis_data.' axisName 'Lim;']);
+                else
                     axis.autorange = true;
-                    %-axis autotick-%
-                    % axis.autotick = true;
                 end
+                
+                %-------------------------------------------------------------%
+
+                axis.tickvals = tick;
+                axis.ticktext = tickLabels;
+
+                %-------------------------------------------------------------%
+
+                %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+                % NOTE: 
+                %    The next piece of code was replaced by the previous one. 
+                %    I think that the new piece of code is better, optimal and 
+                %    extends to all cases. However, I will leave this piece of 
+                %    code commented in case there is a problem in the future.
+                %
+                %    If there is a problem with the new piece of code, please 
+                %    comment and uncomment the next piece of code.
+                %
+                %    If everything goes well with the new gripping piece, at 
+                %    the end of the development we will be able to remove the 
+                %    commented lines
+                %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+
+                %-axis labels
+                % labels = str2double(tickLabels);
+                % try 
+                %     %find numbers in labels
+                %     labelnums = find(~isnan(labels));
+                %     %-axis type linear-%
+                %     axis.type = 'linear';
+                %     %-range (overwrite)-%
+                %     delta = (labels(labelnums(2)) - labels(labelnums(1)))/(labelnums(2)-labelnums(1));
+                %     axis.range = [labels(labelnums(1))-delta*(labelnums(1)-1) labels(labelnums(1)) + (length(labels)-labelnums(1))*delta];
+                %     %-axis autotick-%
+                %     axis.autotick = true;
+                %     %-axis numticks-%
+                %     axis.nticks = eval(['length(axis_data.' axisName 'Tick) + 1;']);
+                % catch
+                %     %-axis type category-%
+                %     axis.type = 'category';
+                %     %-range (overwrite)-%
+                %     axis.autorange = true;
+                %     %-axis autotick-%
+                %     % axis.autotick = true;
+                % end
             end
         end
     end
