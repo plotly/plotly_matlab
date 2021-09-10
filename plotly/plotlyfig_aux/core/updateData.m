@@ -24,7 +24,9 @@ try
         elseif strcmpi(obj.PlotOptions.TreatAs, 'coneplot')
             updateConeplot(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'bar3')
-            updateBar3(obj, dataIndex); 
+            updateBar3(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'bar3h')
+            updateBar3h(obj, dataIndex); 
 
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
