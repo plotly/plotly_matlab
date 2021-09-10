@@ -69,7 +69,7 @@ marker.line.width = line_data.LineWidth;
 %-------------------------------------------------------------------------%
 
 filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram', '*', '+'};
+    'v','^', '<','>','hexagram','pentagram'};
 
 filledMarker = ismember(line_data.Marker,filledMarkerSet);
 

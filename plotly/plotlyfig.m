@@ -562,17 +562,21 @@ classdef plotlyfig < handle
             temp_ax = ax; deleted_idx = 0;
             for i = 1:length(ax)
                 for j = i:length(ax)
-                    if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j) && strcmp(ax(i).Children.Type, 'histogram'))
-                        temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
-                        if isprop(temp_plots, 'FaceAlpha')
-                            update_opac(i) = true;
-                        else
-                            update_opac(i) = false;
+                    try
+                        if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j) && strcmp(ax(i).Children.Type, 'histogram'))
+                            temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
+                            if isprop(temp_plots, 'FaceAlpha')
+                                update_opac(i) = true;
+                            else
+                                update_opac(i) = false;
+                            end
+                            temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
+                            temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
+                            temp_ax(j - deleted_idx) = []; 
+                            deleted_idx = deleted_idx + 1;
                         end
-                        temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
-                        temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
-                        temp_ax(j - deleted_idx) = []; 
-                        deleted_idx = deleted_idx + 1;
+                    catch
+                        % TODO: error with ax(i).Children.Type. isfield is no enogh
                     end
                 end
             end
@@ -624,6 +628,13 @@ classdef plotlyfig < handle
                     obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
                     obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
                     obj.State.Plot(obj.State.Figure.NumPlots).Class = getGraphClass(plots(nprev));
+                end
+
+                % this works for pareto
+                if length(plots) == 0
+                    if obj.State.Figure.NumPlots ~=0
+                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                    end
                 end
                 
                 % find text of figure
