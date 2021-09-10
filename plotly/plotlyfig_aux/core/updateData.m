@@ -22,7 +22,9 @@ try
         elseif strcmpi(obj.PlotOptions.TreatAs, 'polarhistogram')
             updateHistogramPolar(obj, dataIndex); 
         elseif strcmpi(obj.PlotOptions.TreatAs, 'coneplot')
-            updateConeplot(obj, dataIndex); 
+            updateConeplot(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'bar3')
+            updateBar3(obj, dataIndex); 
 
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
