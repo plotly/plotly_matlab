@@ -79,6 +79,8 @@ try
                 updateArea(obj, dataIndex); 
             case 'areaseries'
                 updateAreaseries(obj, dataIndex);
+            case 'animatedline'
+                updateAnimatedLine(obj, dataIndex);
             case 'bar'
                 updateBar(obj, dataIndex); 
             case 'barseries'
