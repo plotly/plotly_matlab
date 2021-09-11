@@ -7,7 +7,7 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-SURFACE DATA STRUCTURE- %
-meshData = get(obj.State.Plot(surfaceIndex).Handle)
+meshData = get(obj.State.Plot(surfaceIndex).Handle);
 figureData = get(obj.State.Figure.Handle);
 
 %-AXIS STRUCTURE-%
