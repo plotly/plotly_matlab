@@ -93,7 +93,7 @@ else
     switch bar_data.FaceColor
         
         case 'none'
-            marker.color = 'rgba(0,0,0,0)';
+            col = 'rgba(0,0,0,0)';
             
         case {'flat','interp'}
             
@@ -207,12 +207,8 @@ if ~isempty(ey)
 else
 
     %-define as default-%
-    xey = xar; if xey>0 xfac = 5; else xfac = 0.5*length(values); end
-    yey = yar; if yey>0 yfac = 0.1; else yfac = -0.1; end
-    if zar>0 zfac = -0.05; else zfac = 0.1; end
-    
-    scene.camera.eye.x = xey + 7; 
-    scene.camera.eye.y = yey + 0;
+    scene.camera.eye.x = xar + 7; 
+    scene.camera.eye.y = yar + 0;
     scene.camera.eye.z = zar + 0.5;
 end
 
@@ -232,7 +228,7 @@ scene.yaxis.ticktext = axis_data.YTickLabel;
 scene.zaxis.tickvals = axis_data.ZTick;
 scene.zaxis.ticktext = axis_data.ZTickLabel;
 
-scene.yaxis.zeroline = false;
+scene.xaxis.zeroline = false;
 scene.yaxis.zeroline = false;
 scene.zaxis.zeroline = false;
 

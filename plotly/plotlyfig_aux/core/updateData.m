@@ -27,6 +27,8 @@ try
             updateBar3(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'bar3h')
             updateBar3h(obj, dataIndex); 
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'surf')
+            updateSurf(obj, dataIndex); 
 
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
