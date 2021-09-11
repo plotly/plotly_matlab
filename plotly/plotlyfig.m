@@ -4,6 +4,7 @@ classdef plotlyfig < handle
     properties
         data; % data of the plot
         layout;  % layout of the plot
+        frames;  % for animations
         url; % url response of making post request
         error; % error response of making post request
         warning; % warning response of making post request
@@ -35,6 +36,7 @@ classdef plotlyfig < handle
             %-Core-%
             obj.data = {};
             obj.layout = struct();
+            obj.frames = {};
             obj.url = '';
             
             obj.UserData.Verbose = true;
