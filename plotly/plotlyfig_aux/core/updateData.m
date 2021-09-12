@@ -196,10 +196,10 @@ try
     if obj.layout.isAnimation
         %- Play Button Options-%
         opts{1} = nan;
-        opts{2}.frame.duration = 5;
+        opts{2}.frame.duration = 10;
         opts{2}.frame.redraw = false;
         opts{2}.mode = 'immediate';
-        opts{2}.transition.duration = 5;
+        opts{2}.transition.duration = 0;
 
         button{1}.label = '&#9654;';
         button{1}.method = 'animate';
