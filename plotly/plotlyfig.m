@@ -714,7 +714,7 @@ classdef plotlyfig < handle
             end
             
             % update plots
-            obj.PlotOptions.nplots = obj.State.Figure.NumPlots;
+            obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
 
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
@@ -1051,7 +1051,7 @@ classdef plotlyfig < handle
                         ||  strcmpi(fieldname,'heatmap') ||  strcmpi(fieldname,'xaxis') ...
                         ||  strcmpi(fieldname,'yaxis') ||  strcmpi(fieldname,'cone')...
                         ||  strcmpi(fieldname,'legend') ||  strcmpi(fieldname,'histogram')...
-                        ||  strcmpi(fieldname,'scatter')...
+                        ||  strcmpi(fieldname,'scatter') ||  strcmpi(fieldname,'line')...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
