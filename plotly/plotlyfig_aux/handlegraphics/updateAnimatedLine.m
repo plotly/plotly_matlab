@@ -53,10 +53,16 @@ function updateAnimatedLine(obj,plotIndex)
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
-animLine = obj.State.Plot(plotIndex).AssociatedAxis.Children(plotIndex);
-
 %-PLOT DATA STRUCTURE- %
 plot_data = get(obj.State.Plot(plotIndex).Handle);
+
+animObjs = obj.State.Plot(plotIndex).AssociatedAxis.Children;
+
+for i=1:numel(animObjs)
+    if isequaln(get(animObjs(i)),plot_data)
+        animObj = animObjs(i);
+    end
+end
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -74,7 +80,13 @@ ispolar = strcmpi(treatas, 'compass') || strcmpi(treatas, 'ezpolar');
 %-------------------------------------------------------------------------%
 
 %-getting data-%
-[x,y] = getpoints(animLine);
+try
+    [x,y,z] = getpoints(animObj);
+catch
+    x=plot_data.XData;
+    y=plot_data.YData;
+    z=plot_data.ZData;
+end
 
 %-------------------------------------------------------------------------%
 
@@ -108,7 +120,7 @@ if ispolar
     r = sqrt(x.^2 + y.^2);
     obj.data{plotIndex}.r = r;
 else
-    obj.data{plotIndex}.x = x(1);
+    obj.data{plotIndex}.x = [x(1) x(1)];
 end
 
 %-------------------------------------------------------------------------%
@@ -118,21 +130,19 @@ if ispolar
     theta = atan2(x,y);
     obj.data{plotIndex}.theta = -(rad2deg(theta) - 90);
 else
-    obj.data{plotIndex}.y = y(1);
+    obj.data{plotIndex}.y = [y(1) y(1)];
 end
 
 %-------------------------------------------------------------------------%
 
-%-Fro 3D plots-%
+%-For 3D plots-%
 obj.PlotOptions.is3d = false; % by default
 
-if isfield(plot_data,'ZData')
-    
-    numbset = unique(plot_data.ZData);
-    
-    if any(plot_data.ZData) && length(numbset)>1
+numbset = unique(z);
+if numel(numbset)>1
+    if any(z)
         %-scatter z-%
-        obj.data{plotIndex}.z = plot_data.ZData;
+        obj.data{plotIndex}.z = [z(1) z(1)];
         
         %-overwrite type-%
         obj.data{plotIndex}.type = 'scatter3d';
@@ -189,35 +199,24 @@ end
 obj.data{plotIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
-%- Play Button Options-%
 
-opts{1} = nan;
-opts{2}.frame.duration = 0;
-opts{2}.frame.redraw = false;
-opts{2}.mode = 'immediate';
-opts{2}.transition.duration = 0;
+%-Add a temporary tag-%
+obj.layout.isAnimation = true;
 
-button{1}.label = '&#9654;';
-button{1}.method = 'animate';
-button{1}.args = opts;
+%-------------------------------------------------------------------------%
 
-obj.layout.updatemenus{1}.type = 'buttons';
-obj.layout.updatemenus{1}.buttons = button;
-obj.layout.updatemenus{1}.pad.r = 70;
-obj.layout.updatemenus{1}.pad.t = 10;
-obj.layout.updatemenus{1}.direction = 'left';
-obj.layout.updatemenus{1}.showactive = true;
-obj.layout.updatemenus{1}.x = 0.01;
-obj.layout.updatemenus{1}.y = 0.01;
-obj.layout.updatemenus{1}.xanchor = 'left';
-obj.layout.updatemenus{1}.yanchor = 'top';
-
-DD{plotIndex} = obj.data{plotIndex};
+%-Create Frames-%
+DD = obj.data{plotIndex};
 
 for i = 1:length(x)
-    DD{plotIndex}.x=x(1:i);
-    DD{plotIndex}.y=y(1:i);
-    obj.frames{end+1} = struct('name',['f',num2str(i)],'data',{DD});
+    sIdx = i - plot_data.MaximumNumPoints;
+    if sIdx < 0
+        sIdx=0;
+    end
+    DD.x=x(sIdx+1:i);
+    DD.y=y(sIdx+1:i);
+    obj.frames{i}.name = ['f',num2str(i)];
+    obj.frames{i}.data{plotIndex} = DD;
 end
 
 end

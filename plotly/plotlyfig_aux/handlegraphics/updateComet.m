@@ -1,4 +1,4 @@
-function updateAnimatedLine(obj,plotIndex)
+function updateComet(obj,plotIndex)
 
 %----SCATTER FIELDS----%
 
@@ -53,10 +53,22 @@ function updateAnimatedLine(obj,plotIndex)
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
-animLine = obj.State.Plot(plotIndex).AssociatedAxis.Children(plotIndex);
-
 %-PLOT DATA STRUCTURE- %
 plot_data = get(obj.State.Plot(plotIndex).Handle);
+
+animObjs = obj.State.Plot(plotIndex).AssociatedAxis.Children;
+
+for i=1:numel(animObjs)
+    if isequaln(get(animObjs(i)),plot_data)
+        animObj = animObjs(i);
+    end
+    if strcmpi(animObjs(i).Tag,'tail')
+        tail = animObjs(i);
+    end
+    if strcmpi(animObjs(i).Tag,'body')
+        body = animObjs(i);
+    end
+end
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -67,14 +79,8 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-------------------------------------------------------------------------%
 
-%-if polar plot or not-%
-treatas = obj.PlotOptions.TreatAs;
-ispolar = strcmpi(treatas, 'compass') || strcmpi(treatas, 'ezpolar');
-
-%-------------------------------------------------------------------------%
-
 %-getting data-%
-[x,y] = getpoints(animLine);
+[x,y,z] = getpoints(tail);
 
 %-------------------------------------------------------------------------%
 
@@ -91,10 +97,6 @@ obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
 %-scatter type-%
 obj.data{plotIndex}.type = 'scatter';
 
-if ispolar
-    obj.data{plotIndex}.type = 'scatterpolar';
-end
-
 %-------------------------------------------------------------------------%
 
 %-scatter visible-%
@@ -103,36 +105,23 @@ obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-scatter x-%
-
-if ispolar
-    r = sqrt(x.^2 + y.^2);
-    obj.data{plotIndex}.r = r;
-else
-    obj.data{plotIndex}.x = x(1);
-end
+obj.data{plotIndex}.x = x(1);
 
 %-------------------------------------------------------------------------%
 
 %-scatter y-%
-if ispolar
-    theta = atan2(x,y);
-    obj.data{plotIndex}.theta = -(rad2deg(theta) - 90);
-else
-    obj.data{plotIndex}.y = y(1);
-end
+obj.data{plotIndex}.y = y(1);
 
 %-------------------------------------------------------------------------%
 
-%-Fro 3D plots-%
+%-For 3D plots-%
 obj.PlotOptions.is3d = false; % by default
 
-if isfield(plot_data,'ZData')
-    
-    numbset = unique(plot_data.ZData);
-    
-    if any(plot_data.ZData) && length(numbset)>1
+numbset = unique(z);
+if numel(numbset)>1
+    if any(z)
         %-scatter z-%
-        obj.data{plotIndex}.z = plot_data.ZData;
+        obj.data{plotIndex}.z = z(1);
         
         %-overwrite type-%
         obj.data{plotIndex}.type = 'scatter3d';
@@ -145,7 +134,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-scatter name-%
-obj.data{plotIndex}.name = plot_data.DisplayName;
+obj.data{plotIndex}.name = plot_data.Tag;
 
 %-------------------------------------------------------------------------%
 
@@ -189,35 +178,67 @@ end
 obj.data{plotIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
-%- Play Button Options-%
 
-opts{1} = nan;
-opts{2}.frame.duration = 0;
-opts{2}.frame.redraw = false;
-opts{2}.mode = 'immediate';
-opts{2}.transition.duration = 0;
+%-Add a temporary tag-%
+obj.layout.isAnimation = true;
 
-button{1}.label = '&#9654;';
-button{1}.method = 'animate';
-button{1}.args = opts;
+%-------------------------------------------------------------------------%
 
-obj.layout.updatemenus{1}.type = 'buttons';
-obj.layout.updatemenus{1}.buttons = button;
-obj.layout.updatemenus{1}.pad.r = 70;
-obj.layout.updatemenus{1}.pad.t = 10;
-obj.layout.updatemenus{1}.direction = 'left';
-obj.layout.updatemenus{1}.showactive = true;
-obj.layout.updatemenus{1}.x = 0.01;
-obj.layout.updatemenus{1}.y = 0.01;
-obj.layout.updatemenus{1}.xanchor = 'left';
-obj.layout.updatemenus{1}.yanchor = 'top';
+%-Create Frames-%
+DD = obj.data{plotIndex};
 
-DD{plotIndex} = obj.data{plotIndex};
-
-for i = 1:length(x)
-    DD{plotIndex}.x=x(1:i);
-    DD{plotIndex}.y=y(1:i);
-    obj.frames{end+1} = struct('name',['f',num2str(i)],'data',{DD});
+switch(plot_data.Tag)
+    case 'head'
+        for i = 1:length(x)
+            DD.x=[x(i) x(i)];
+            DD.y=[y(i) y(i)];
+            if obj.PlotOptions.is3d
+                DD.z=[z(i) z(i)];
+            end
+            obj.frames{i}.data{plotIndex} = DD;
+            obj.frames{i}.name=['f',num2str(i)];
+        end
+    case 'body'
+        for i = 1:length(x)
+            sIdx = i-animObj.MaximumNumPoints;
+            if sIdx < 0
+                sIdx=0;
+            end
+            DD.x=x(sIdx+1:i);
+            DD.y=y(sIdx+1:i);
+            if obj.PlotOptions.is3d
+                DD.z=z(sIdx+1:i);
+            end
+            if i==length(x)
+                DD.x=nan;
+                DD.y=nan;
+                if obj.PlotOptions.is3d
+                    DD.z=nan;
+                end
+            end
+            obj.frames{i}.data{plotIndex} = DD;
+        end
+    case 'tail'
+        for i = 1:length(x)
+            DD.x=x(1:i);
+            DD.y=y(1:i);
+            if obj.PlotOptions.is3d
+                DD.z=z(1:i);
+            end
+            if i < body.MaximumNumPoints
+                rIdx = i;
+            else
+                rIdx = body.MaximumNumPoints;
+            end
+            if i ~= length(x)
+                val = nan(rIdx,1);
+                DD.x(end-rIdx+1:end)=val;
+                DD.y(end-rIdx+1:end)=val;
+                if obj.PlotOptions.is3d
+                    DD.z(end-rIdx+1:end)=val;
+                end
+            end
+            obj.frames{i}.data{plotIndex} = DD;
+        end
 end
-
 end

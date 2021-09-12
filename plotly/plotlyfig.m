@@ -534,7 +534,7 @@ classdef plotlyfig < handle
                         web(response.url, '-browser');
                     end
                 else
-                    obj.url = plotlyoffline(obj);   
+                    obj.url = plotlyoffline(obj);
                     if obj.PlotOptions.OpenURL
                         web(obj.url, '-browser');
                     end
