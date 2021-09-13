@@ -90,7 +90,6 @@ for c = 1: length(cMap)
 end
 
 %-------------------------------------------------------------------------%
-
 %-get edge color-%
 if isnumeric(meshData.EdgeColor)
     cDataContour = sprintf('rgb(%f,%f,%f)', 255*meshData.EdgeColor);
@@ -98,6 +97,9 @@ if isnumeric(meshData.EdgeColor)
 elseif strcmpi(meshData.EdgeColor, 'interp')
     cDataContour = zDataContour(:);
     obj.data{contourIndex}.line.colorscale = colorScale;
+elseif strcmpi(meshData.EdgeColor, 'none')
+    
+    cDataContour = 'rgba(0,0,0,0)';
 end
 
 %-set edge color-%
@@ -123,8 +125,25 @@ if isnumeric(meshData.FaceColor)
     obj.data{surfaceIndex}.cmin = 0;
     obj.data{surfaceIndex}.cmax = 255;
 
-elseif strcmpi(meshData.FaseColor, 'interp')
+elseif strcmpi(meshData.FaceColor, 'interp')
     cDataSurface = zDataSurface;
+
+    if surfaceIndex > xsource
+        cData = [];
+
+        for idx = xsource:surfaceIndex
+            cData = [cData; obj.data{idx}.z];
+        end
+
+        cMin = min(cData(:));
+        cMax = max(cData(:));
+
+        for idx = xsource:surfaceIndex
+            obj.data{idx}.cmin = cMin;
+            obj.data{idx}.cmax = cMax;
+        end
+    end
+    
 end
 
 %-set face color-%
@@ -132,8 +151,24 @@ obj.data{surfaceIndex}.colorscale = colorScale;
 obj.data{surfaceIndex}.surfacecolor = cDataSurface;
 
 %-lighting settings-%
-obj.data{surfaceIndex}.lighting.diffuse = 0.5;%0.5;
-obj.data{surfaceIndex}.lighting.ambient = 0.725 + (1-meshData.FaceAlpha);%0.7;
+
+if isnumeric(meshData.FaceColor) && all(meshData.FaceColor == [1, 1, 1])
+    obj.data{surfaceIndex}.lighting.diffuse = 0.5;
+    obj.data{surfaceIndex}.lighting.ambient = 0.725;
+else
+    % obj.data{surfaceIndex}.lighting.diffuse = 1.0;
+    % obj.data{surfaceIndex}.lighting.ambient = 0.9;
+end
+
+if meshData.FaceAlpha ~= 1
+    obj.data{surfaceIndex}.lighting.diffuse = 0.5;
+    obj.data{surfaceIndex}.lighting.ambient = 0.725 + (1-meshData.FaceAlpha);
+end
+
+if obj.PlotlyDefaults.IsLight
+    obj.data{surfaceIndex}.lighting.diffuse = 1.0;
+    obj.data{surfaceIndex}.lighting.ambient = 0.3;
+end
 
 %-opacity-%
 obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
@@ -153,6 +188,32 @@ switch meshData.LineStyle
         obj.data{contourIndex}.line.dash = 'dashdot';
     case ':'
         obj.data{contourIndex}.line.dash = 'dot';
+end
+
+%-------------------------------------------------------------------------%
+
+%-show contours-%
+
+if strcmpi(meshData.ShowContours, 'on')
+    obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+    projectionIndex = obj.PlotOptions.nPlots;
+
+    obj.data{projectionIndex}.type = 'surface';
+    obj.data{projectionIndex}.scene = sprintf('scene%d', xsource);
+
+    obj.data{projectionIndex}.x = xDataSurface;
+    obj.data{projectionIndex}.y = yDataSurface;
+    obj.data{projectionIndex}.z = zDataSurface;
+
+    obj.data{projectionIndex}.colorscale = colorScale;
+    obj.data{projectionIndex}.hidesurface = true;
+    obj.data{projectionIndex}.surfacecolor = zDataSurface;
+    obj.data{projectionIndex}.showscale = false;
+
+    obj.data{projectionIndex}.contours.z.show = true;
+    obj.data{projectionIndex}.contours.z.width = 15;
+    obj.data{projectionIndex}.contours.z.usecolormap = true;
+    obj.data{projectionIndex}.contours.z.project.z = true;
 end
 
 %-------------------------------------------------------------------------%
@@ -201,7 +262,7 @@ else
     %-define as default-%
     xey = - xyar; if xey>0 xfac = 0.0; else xfac = 0.0; end
     yey = - xyar; if yey>0 yfac = -0.3; else yfac = 0.3; end
-    if zar>0 zfac = 0.2; else zfac = -0.2; end
+    if zar>0 zfac = 0.1; else zfac = -0.1; end
     
     scene.camera.eye.x = xey + xfac*xey; 
     scene.camera.eye.y = yey + yfac*yey;
@@ -261,6 +322,7 @@ obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
 %-------------------------------------------------------------------------%
 
 %-surface name-%
+obj.data{surfaceIndex}.name = meshData.DisplayName;
 obj.data{contourIndex}.name = meshData.DisplayName;
 
 %-------------------------------------------------------------------------%
@@ -272,6 +334,7 @@ obj.data{contourIndex}.showscale = false;
 %-------------------------------------------------------------------------%
 
 %-surface visible-%
+obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
 obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 
 %-------------------------------------------------------------------------%
@@ -286,7 +349,7 @@ switch legInfo.IconDisplayStyle
         showleg = false;
 end
 
-obj.data{contourIndex}.showlegend = showleg;
+obj.data{surfaceIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
