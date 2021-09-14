@@ -99,6 +99,7 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.Bargap = 0;
             obj.PlotlyDefaults.CaptionMarginIncreaseFactor = 1.2; 
             obj.PlotlyDefaults.MinCaptionMargin = 80;
+            obj.PlotlyDefaults.IsLight = false;
             
             %-State-%
             obj.State.Figure = [];
@@ -622,12 +623,16 @@ classdef plotlyfig < handle
                     
                     % reverse plots
                     nprev = length(plots) - np + 1;
-                    
+
                     % update the plot fields
-                    obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
-                    obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
-                    obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
-                    obj.State.Plot(obj.State.Figure.NumPlots).Class = getGraphClass(plots(nprev));
+                    if ~strcmpi(getGraphClass(plots(nprev)), 'light')
+                        obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
+                        obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).Class = getGraphClass(plots(nprev));
+                    else
+                        obj.PlotlyDefaults.IsLight = true;
+                    end
                 end
 
                 % this works for pareto

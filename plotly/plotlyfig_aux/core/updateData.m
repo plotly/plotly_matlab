@@ -75,7 +75,7 @@ try
                 updateRectangle(obj,dataIndex);
             case 'surface'
                 updateSurfaceplot(obj,dataIndex);
-            case 'functionsurface'
+            case {'functionsurface', 'parameterizedfunctionsurface'}
                 updateFunctionSurface(obj,dataIndex);
             case 'implicitfunctionsurface'
                 updateImplicitFunctionSurface(obj,dataIndex);
