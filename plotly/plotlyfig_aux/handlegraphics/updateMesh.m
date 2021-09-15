@@ -1,4 +1,4 @@
-function obj = updateSurf(obj, surfaceIndex)
+function obj = updateMesh(obj, surfaceIndex)
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
