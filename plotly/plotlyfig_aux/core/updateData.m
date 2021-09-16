@@ -30,7 +30,9 @@ try
         elseif strcmpi(obj.PlotOptions.TreatAs, 'surf')
             updateSurf(obj, dataIndex); 
         elseif strcmpi(obj.PlotOptions.TreatAs, 'fmesh')
-            updateFmesh(obj, dataIndex); 
+            updateFmesh(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'mesh')
+            updateMesh(obj, dataIndex); 
 
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
