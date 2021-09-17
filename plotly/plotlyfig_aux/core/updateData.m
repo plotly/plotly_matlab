@@ -33,6 +33,8 @@ try
             updateFmesh(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'mesh')
             updateMesh(obj, dataIndex); 
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'surfc')
+            updateSurfc(obj, dataIndex); 
 
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
