@@ -232,12 +232,14 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.x.start = xData(1);
     obj.data{surfaceIndex}.contours.x.end = xData(end);
     obj.data{surfaceIndex}.contours.x.size = mean(diff(xData));
+    obj.data{surfaceIndex}.contours.x.show = true;
 
     % y-direction
     yData = yData(:, 1);
     obj.data{surfaceIndex}.contours.y.start = yData(1);
     obj.data{surfaceIndex}.contours.y.end = yData(end);
     obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
+    obj.data{surfaceIndex}.contours.y.show = true;
 
     %-------------------------------------------------------------------------%
 
@@ -273,6 +275,9 @@ function updateSurfOnly(obj, surfaceIndex)
         obj.data{surfaceIndex}.contours.x.colorscale = cDataContour;
         obj.data{surfaceIndex}.contours.y.colorscale = cDataContour;
 
+        obj.data{surfaceIndex}.contours.x.show = false;
+        obj.data{surfaceIndex}.contours.y.show = false;
+
     elseif strcmpi(meshData.EdgeColor, 'flat')
         cData = meshData.CData;
 
@@ -291,20 +296,19 @@ function updateSurfOnly(obj, surfaceIndex)
             obj.data{surfaceIndex}.line.cmin = 0;
             obj.data{surfaceIndex}.line.cmax = 255;
             obj.data{contourIndex}.line.colorscale = edgeColorScale;
-            obj.data{surfaceIndex}.contours.x.colorscale = edgeColorScale;
-            obj.data{surfaceIndex}.contours.y.colorscale = edgeColorScale;
         else
             obj.data{contourIndex}.line.cmin = axisData.CLim(1);
             obj.data{contourIndex}.line.cmax = axisData.CLim(2);
             obj.data{contourIndex}.line.colorscale = colorScale;
-            obj.data{surfaceIndex}.contours.x.colorscale = colorScale;
-            obj.data{surfaceIndex}.contours.y.colorscale = colorScale;
         end
 
         cDataContourDir1 = [cData; NaN(1, size(cData, 2))];
         cDataContourDir2 = cDataContourDir1(1:end-1,:)';
         cDataContourDir2 = [cDataContourDir2; NaN(1, size(cDataContourDir2, 2))];
         cDataContour = [cDataContourDir1(:); cDataContourDir2(:)];
+
+        obj.data{surfaceIndex}.contours.x.show = false;
+        obj.data{surfaceIndex}.contours.y.show = false;
 
     elseif strcmpi(meshData.EdgeColor, 'none')
         cDataContour = 'rgba(0,0,0,0)';
@@ -412,12 +416,10 @@ function updateSurfOnly(obj, surfaceIndex)
     %-------------------------------------------------------------------------%
 
     %-line style-%
-    obj.data{contourIndex}.line.width = 1.5*meshData.LineWidth;
+    obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
 
     if strcmpi(meshData.LineStyle, '-')
         obj.data{contourIndex}.line.dash = 'solid';
-        obj.data{surfaceIndex}.contours.x.show = true;
-        obj.data{surfaceIndex}.contours.y.show = true;
     else
         obj.data{contourIndex}.line.dash = 'dot';
         obj.data{surfaceIndex}.contours.x.show = false;
