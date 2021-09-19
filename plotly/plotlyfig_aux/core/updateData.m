@@ -48,6 +48,8 @@ try
         switch lower(obj.State.Plot(dataIndex).Class)
 
             %--CORE PLOT OBJECTS--%
+            case 'bubblecloud'
+                updateBubblecloud(obj,dataIndex);
             case 'scatterhistogram'
                 updateScatterhistogram(obj, dataIndex); 
             case 'wordcloud'
