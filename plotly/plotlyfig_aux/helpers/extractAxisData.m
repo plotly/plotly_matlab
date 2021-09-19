@@ -7,8 +7,15 @@ function [axis] = extractAxisData(obj,axis_data,axisName)
 %-------------------------------------------------------------------------%
 
 %-axis-side-%
-axis.side = eval(['axis_data.' axisName 'AxisLocation;']);
-
+try
+    axis.side = eval(['axis_data.' axisName 'AxisLocation;']);
+catch
+    if axisName == 'X'
+        axis.side = 'bottom';
+    elseif axisName == 'Y'
+        axis.side = 'left';
+    end
+end
 %-------------------------------------------------------------------------%
 
 %-axis zeroline-%
@@ -36,16 +43,23 @@ axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
 
 %-------------------------------------------------------------------------%
 
-ticklength = min(obj.PlotlyDefaults.MaxTickLength,...
-    max(axis_data.TickLength(1)*axis_data.Position(3)*obj.layout.width,...
-    axis_data.TickLength(1)*axis_data.Position(4)*obj.layout.height));
+try
+    ticklength = min(obj.PlotlyDefaults.MaxTickLength,...
+        max(axis_data.TickLength(1)*axis_data.Position(3)*obj.layout.width,...
+        axis_data.TickLength(1)*axis_data.Position(4)*obj.layout.height));
 %-axis ticklen-%
-axis.ticklen = ticklength;
-
+    axis.ticklen = ticklength;
+catch
+    axis.ticklen = 0;
+end
 %-------------------------------------------------------------------------%
 
-col = eval(['255*axis_data.' axisName 'Color;']);
-axiscol = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+try
+    col = eval(['255*axis_data.' axisName 'Color;']);
+catch
+    col = [0,0,0];
+end
+axiscol = sprintf('rgb(%i,%i,%i)',col);
 
 %-axis linecolor-%
 axis.linecolor = axiscol;
@@ -57,29 +71,38 @@ axis.tickfont.color = axiscol;
 axis.gridcolor = axiscol;
 
 %-------------------------------------------------------------------------%
+try
+    if strcmp(axis_data.XGrid, 'on') || strcmp(axis_data.XMinorGrid, 'on')
+        %-axis show grid-%
+        axis.showgrid = true;
+    else
+        axis.showgrid = false;
+    end
+catch
+   axis.showgrid = false; 
+end
+%-------------------------------------------------------------------------%
 
-if strcmp(axis_data.XGrid, 'on') || strcmp(axis_data.XMinorGrid, 'on')
-    %-axis show grid-%
-    axis.showgrid = true;
-else
+try
+    grid = eval(['axis_data.' axisName 'Grid;']);
+    minorGrid = eval(['axis_data.' axisName 'MinorGrid;']);
+
+    if strcmp(grid, 'on') || strcmp(minorGrid, 'on')
+        %-axis show grid-%
+        axis.showgrid = true;
+    else
+        axis.showgrid = false;
+    end
+catch
     axis.showgrid = false;
 end
 
 %-------------------------------------------------------------------------%
-
-grid = eval(['axis_data.' axisName 'Grid;']);
-minorGrid = eval(['axis_data.' axisName 'MinorGrid;']);
-
-if strcmp(grid, 'on') || strcmp(minorGrid, 'on')
-    %-axis show grid-%
-    axis.showgrid = true;
-else
-    axis.showgrid = false;
+try
+    linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
+catch
+    linewidth = 0;
 end
-
-%-------------------------------------------------------------------------%
-
-linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
 %-axis line width-%
 axis.linewidth = linewidth;
@@ -91,12 +114,21 @@ axis.gridwidth = linewidth;
 %-------------------------------------------------------------------------%
 
 %-axis type-%
-axis.type = eval(['axis_data.' axisName 'Scale']);
+try
+    axis.type = eval(['axis_data.' axisName 'Scale']);
+catch
+    axis.type = 'linear';
+end
 
 %-------------------------------------------------------------------------%
 
 %-axis showtick labels / ticks-%
-tick = eval(['axis_data.' axisName 'Tick']);
+try
+    tick = eval(['axis_data.' axisName 'Tick']);
+catch
+    tick=[];
+end
+
 if isempty(tick)
     
     %-axis ticks-%
@@ -107,13 +139,16 @@ if isempty(tick)
     axis.autorange = true; 
     
     %---------------------------------------------------------------------%
-    
-    switch axis_data.Box
-        case 'on'
-            %-axis mirror-%
-            axis.mirror = true;
-        case 'off'
-            axis.mirror = false;
+    try
+        switch axis_data.Box
+            case 'on'
+                %-axis mirror-%
+                axis.mirror = true;
+            case 'off'
+                axis.mirror = false;
+        end
+    catch
+        axis.mirror = true;
     end
     
     %---------------------------------------------------------------------%
@@ -295,62 +330,62 @@ else
 end
 
 %-------------------------------------------------------------------------%
-
-Dir = eval(['axis_data.' axisName 'Dir;']);
+try
+    Dir = eval(['axis_data.' axisName 'Dir;']);
+catch
+    Dir = '';
+end
 if strcmp(Dir,'reverse')
     axis.range = [axis.range(2) axis.range(1)];
 end
 
 %-------------------------------LABELS------------------------------------%
-
-label = eval(['axis_data.' axisName 'Label;']);
-
-label_data = get(label);
-
-%STANDARDIZE UNITS
-fontunits = get(label,'FontUnits');
-set(label,'FontUnits','points');
-
-%-------------------------------------------------------------------------%
-
-%-title-%
-if ~isempty(label_data.String)
-    axis.title = parseString(label_data.String,label_data.Interpreter);
+try
+    label = eval(['axis_data.' axisName 'Label;']);
+catch
+    label=[];
 end
+if ~isempty(label)
+    label_data = get(label);
 
-%-------------------------------------------------------------------------%
+    %STANDARDIZE UNITS
+    fontunits = get(label,'FontUnits');
+    set(label,'FontUnits','points');
 
-%-axis title font color-%
-col = 255*label_data.Color;
-axis.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-title-%
+    if ~isempty(label_data.String)
+        axis.title = parseString(label_data.String,label_data.Interpreter);
+    end
 
-%-axis title font size-%
-axis.titlefont.size = label_data.FontSize;
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-axis title font color-%
+    col = 255*label_data.Color;
+    axis.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
 
-%-axis title font family-%
-axis.titlefont.family = matlab2plotlyfont(label_data.FontName);
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-axis title font size-%
+    axis.titlefont.size = label_data.FontSize;
 
-%REVERT UNITS
-set(label,'FontUnits',fontunits);
+    %-------------------------------------------------------------------------%
 
+    %-axis title font family-%
+    axis.titlefont.family = matlab2plotlyfont(label_data.FontName);
+
+    %-------------------------------------------------------------------------%
+
+    %REVERT UNITS
+    set(label,'FontUnits',fontunits);
+end
 %-------------------------------------------------------------------------%
 
 if strcmp(axis_data.Visible,'on')
     %-axis showline-%
     axis.showline = true;
 else
-    %-axis showline-%
-    axis.showline = false;
-    %-axis showticklabels-%
-    axis.showticklabels = false;
-    %-axis ticks-%
-    axis.ticks = '';
     %-axis showline-%
     axis.showline = false;
     %-axis showticklabels-%

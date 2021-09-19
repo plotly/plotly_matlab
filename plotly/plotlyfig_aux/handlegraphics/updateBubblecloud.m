@@ -13,27 +13,32 @@ bcData = get(obj.State.Plot(bcIndex).Handle);
 % eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
 % eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
-obj.layout.xaxis.side = 'bottom';
-obj.layout.xaxis.zeroline = 0;
-obj.layout.xaxis.autorange = 0;
-obj.layout.xaxis.linecolor='rgb(38.25,38.25,38.25)';
-obj.layout.xaxis.showgrid = 0;
-obj.layout.xaxis.linewidth = 1;
-obj.layout.xaxis.type = 'linear';
-obj.layout.xaxis.showline = 0;
-obj.layout.xaxis.anchor = 'y1';
+% obj.layout.xaxis.side = 'bottom';
+obj.layout.xaxis1.showline = false;
+obj.layout.xaxis1.zeroline = false;
+% obj.layout.xaxis.autorange = false;
+% % obj.layout.xaxis.linecolor='rgb(0,0,0)';
+% obj.layout.xaxis.showgrid = true;
+% obj.layout.xaxis.linewidth = 1;
+% obj.layout.xaxis.type = 'linear';
+% obj.layout.xaxis.anchor = 'y1';
+obj.layout.xaxis1.mirror = true;
+% 
+% 
+% obj.layout.yaxis.side = 'left';
+obj.layout.yaxis1.showline = false;
+obj.layout.yaxis1.zeroline = false;
+% obj.layout.yaxis.autorange = false;
+% % obj.layout.yaxis.linecolor='rgb(0,0,0)';
+% obj.layout.yaxis.showgrid = true;
+% obj.layout.yaxis.linewidth = 1;
+% obj.layout.yaxis.type = 'linear';
+% obj.layout.yaxis.anchor = 'x1';
+obj.layout.yaxis1.mirror = true;
 
-obj.layout.yaxis.side = 'left';
-obj.layout.yaxis.zeroline = 0;
-obj.layout.yaxis.autorange = 0;
-obj.layout.yaxis.linecolor='rgb(38.25,38.25,38.25)';
-obj.layout.yaxis.showgrid = 0;
-obj.layout.yaxis.linewidth = 1;
-obj.layout.yaxis.type = 'linear';
-obj.layout.yaxis.showline = 0;
-obj.layout.yaxis.anchor = 'x1';
-obj.layout.title='<b><b></b></b>';
+obj.layout.title.text='<b><b></b></b>';
 obj.layout.margin.t=80;
+obj.layout.annotations{1}.text='';
 
 %-------------------------------------------------------------------------%
 
@@ -87,17 +92,19 @@ ar = 840/630;
 xy = matlab.graphics.internal.layoutBubbleCloud(sortedradii,ar);
 fac=2*ar;
 rads = 2*sortedradii * (840 / ( fac*max(xy(1,:)) - fac*min(xy(1,:))));
-xy = matlab.graphics.internal.layoutBubbleCloud(rads,ar);
+% xy = matlab.graphics.internal.layoutBubbleCloud(rads,ar);
 
-obj.layout.xaxis.range=[fac*min(xy(1,:)), fac*max(xy(1,:))];
-obj.layout.yaxis.range=[(fac/ar)*min(xy(2,:)), (fac/ar)*max(xy(2,:))];
+obj.layout.xaxis1.range=[fac*min(xy(1,:)), fac*max(xy(1,:))];
+obj.layout.yaxis1.range=[(fac/ar)*min(xy(2,:)), (fac/ar)*max(xy(2,:))];
 
-rads = 2*rads * (840 / ( fac*max(xy(1,:)) - fac*min(xy(1,:))));
+% rads = 2*rads * (840 / ( fac*max(xy(1,:)) - fac*min(xy(1,:))));
 
 %-------------------------------------------------------------------------%
 
 labels = bcData.LabelData(RadiusIndex);
 obj.data{bcIndex}.text = arrayfun(@(x) {char(x)}, labels);
+
+obj.data{bcIndex}.textfont = matlab2plotlyfont(bcData.FontName);
 
 %-------------------------------------------------------------------------%
 
@@ -167,35 +174,24 @@ end
 
 %---------------------------------------------------------------------%
 
-%-bc marker-%
-childmarker = extractScatterMarker(bcData);
-
-%---------------------------------------------------------------------%
-
 %-line color-%
 if length(bcData) > 1
     obj.data{bcIndex}.marker.line.color{m} = childmarker.line.color{1};
 else
-    if length(childmarker.line.color) > 3
-        obj.data{bcIndex}.marker.line.color = childmarker.line.color;
-    else
-        obj.data{bcIndex}.marker.line.color = childmarker.line.color{1};
-    end
+    col=uint8(bcData.EdgeColor*255);
+    obj.data{bcIndex}.marker.line.color = sprintf('rgb(%i,%i,%i)',col);
 end
 
 %---------------------------------------------------------------------%
 
 %-marker color-%
-if length(bcData) > 1
-    obj.data{bcIndex}.marker.color{m} = childmarker.color{1};
-else
-    obj.data{bcIndex}.marker.color = childmarker.color;
-end
+col=uint8(bcData.ColorOrder(1,:)*255);
+obj.data{bcIndex}.marker.color = sprintf('rgb(%i,%i,%i)',col);
 
 %---------------------------------------------------------------------%
 
 %-sizeref-%
-obj.data{bcIndex}.marker.sizeref = 1; %2*max(bcData.SizeData)/(33^2);
+obj.data{bcIndex}.marker.sizeref = 1;
 
 %---------------------------------------------------------------------%
 
@@ -205,28 +201,17 @@ obj.data{bcIndex}.marker.sizemode = 'diameter';
 %---------------------------------------------------------------------%
 
 %-symbol-%
-obj.data{bcIndex}.marker.symbol = childmarker.symbol;
+obj.data{bcIndex}.marker.symbol = 'circle';
 
 %---------------------------------------------------------------------%
 
 %-size-%
-%     if length(bcData) > 1
-    obj.data{bcIndex}.marker.size = rads; %sort(bcData.sizeData,'descend');
-
-%max(bcData.SizeData)*sortedradii;
-
-
-%     else
-%         obj.data{bcIndex}.marker.size = childmarker.size * 0.15;
-%     end
+obj.data{bcIndex}.marker.size = rads;
 
 %---------------------------------------------------------------------%
 
 %-line width-%
-
 obj.data{bcIndex}.marker.line.width = 1.5;
-% obj.data{bcIndex}.marker.line.width(1:length(childmarker.line.color)) = childmarker.line.width;
-
 
 %---------------------------------------------------------------------%
 
