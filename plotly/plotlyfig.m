@@ -513,13 +513,16 @@ classdef plotlyfig < handle
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
             args.world_readable = obj.PlotOptions.WorldReadable;
+            args.offline = obj.PlotOptions.Offline;
             
             %layout
             args.layout = obj.layout;
             
             if obj.PlotOptions.WriteFile
+                
                 %send to plotly
                 if ~obj.PlotOptions.Offline
+                    
                     response = plotly(obj.data, args);
 
                     %update response
