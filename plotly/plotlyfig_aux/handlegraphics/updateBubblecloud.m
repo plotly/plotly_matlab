@@ -10,33 +10,30 @@ bcData = get(obj.State.Plot(bcIndex).Handle);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 % %-AXIS DATA-%
-% eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-% eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
+eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
-% obj.layout.xaxis.side = 'bottom';
-obj.layout.xaxis1.showline = false;
+obj.layout.xaxis1.showline = true;
 obj.layout.xaxis1.zeroline = false;
-% obj.layout.xaxis.autorange = false;
-% % obj.layout.xaxis.linecolor='rgb(0,0,0)';
-% obj.layout.xaxis.showgrid = true;
-% obj.layout.xaxis.linewidth = 1;
-% obj.layout.xaxis.type = 'linear';
-% obj.layout.xaxis.anchor = 'y1';
+obj.layout.xaxis1.autorange = false;
 obj.layout.xaxis1.mirror = true;
-% 
-% 
-% obj.layout.yaxis.side = 'left';
-obj.layout.yaxis1.showline = false;
+
+obj.layout.yaxis1.showline = true;
 obj.layout.yaxis1.zeroline = false;
-% obj.layout.yaxis.autorange = false;
-% % obj.layout.yaxis.linecolor='rgb(0,0,0)';
-% obj.layout.yaxis.showgrid = true;
-% obj.layout.yaxis.linewidth = 1;
-% obj.layout.yaxis.type = 'linear';
-% obj.layout.yaxis.anchor = 'x1';
+obj.layout.yaxis1.autorange = false;
 obj.layout.yaxis1.mirror = true;
 
-obj.layout.title.text='<b><b></b></b>';
+%%%%%%%%%%%%%%%
+%Useful for debugging!!!
+obj.layout.xaxis1.tickmode='auto';
+obj.layout.xaxis1.nticks=11;
+obj.layout.xaxis1.showticklabels=0;
+obj.layout.yaxis1.tickmode='auto';
+obj.layout.yaxis1.nticks=11;
+obj.layout.yaxis1.showticklabels=0;
+%%%%%%%%%%%%%%%
+
+% obj.layout.title.text='<b><b></b></b>';
 obj.layout.margin.t=80;
 obj.layout.annotations{1}.text='';
 
@@ -72,39 +69,49 @@ obj.data{bcIndex}.name = bcData.LegendTitle;
 
 %-------------------------------------------------------------------------%
 
-[sortedradii,sortind]=sort(sqrt(real(bcData.SizeData)),'descend');
-validind=isfinite(sortedradii) & sortedradii>0;
-sortind=sortind(validind);
-sortedradii=sortedradii(validind);
+[sortedradii,RadiusIndex]=sort(sqrt(bcData.SizeData),'descend');
 
-if bcData.MaxDisplayBubbles < numel(sortind)
-    sortind=sortind(1:bcData.MaxDisplayBubbles);
-    sortedradii=sortedradii(1:bcData.MaxDisplayBubbles);
-end
-RadiusIndex=sortind;
+sortedradii=sortedradii/max(sortedradii);
 
-% Normalize radii so that the largest bubble has a radius of 1
-if ~isempty(sortedradii)
-    sortedradii=sortedradii/max(sortedradii);
-end
+ar = obj.layout.width/obj.layout.height;
 
-ar = 840/630;
+xIN = xaxis.domain(2) - xaxis.domain(1);
+yIN = yaxis.domain(2) - yaxis.domain(1);
+axAR =  ar*xIN/yIN;
+
 xy = matlab.graphics.internal.layoutBubbleCloud(sortedradii,ar);
-fac=2*ar;
-rads = 2*sortedradii * (840 / ( fac*max(xy(1,:)) - fac*min(xy(1,:))));
-% xy = matlab.graphics.internal.layoutBubbleCloud(rads,ar);
 
-obj.layout.xaxis1.range=[fac*min(xy(1,:)), fac*max(xy(1,:))];
-obj.layout.yaxis1.range=[(fac/ar)*min(xy(2,:)), (fac/ar)*max(xy(2,:))];
+xR = [min(xy(1,:)-sortedradii), max(xy(1,:)+sortedradii)];
+yR = [min(xy(2,:)-sortedradii), max(xy(2,:)+sortedradii)];
 
-% rads = 2*rads * (840 / ( fac*max(xy(1,:)) - fac*min(xy(1,:))));
+xR = xR + [-0.025, 0.025]*abs(diff(xR));
+yR = yR + [-0.025, 0.025]*abs(diff(yR));
+
+dataAR = abs(diff(xR))/abs(diff(yR));
+
+if dataAR > axAR
+    amounttopad = abs(diff(yR)) * dataAR/axAR - abs(diff(yR));
+    yR = yR + [-amounttopad/2, amounttopad/2];
+else
+    amounttopad = abs(diff(xR)) * axAR/dataAR - abs(diff(xR));
+    xR = xR + [-amounttopad/2, amounttopad/2];
+end
+
+radX = (2*sortedradii * (xIN*840) / abs(diff(xR)));
+% yR = [(yR(1)+yR(2))/2 - abs(diff(xR))/2, (yR(1)+yR(2))/2 + abs(diff(xR))/2];
+
+% radY = (2*sortedradii * (yIN*630) / abs(diff(yR)));
+
+obj.layout.xaxis1.range=xR;
+obj.layout.yaxis1.range=yR + [0.32,-0.32];
+rads=radX;
 
 %-------------------------------------------------------------------------%
 
 labels = bcData.LabelData(RadiusIndex);
 obj.data{bcIndex}.text = arrayfun(@(x) {char(x)}, labels);
 
-obj.data{bcIndex}.textfont = matlab2plotlyfont(bcData.FontName);
+% obj.data{bcIndex}.textfont = matlab2plotlyfont(bcData.FontName);
 
 %-------------------------------------------------------------------------%
 
