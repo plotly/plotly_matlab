@@ -71,6 +71,21 @@ obj.data{surfaceIndex}.x = xDataSurface;
 obj.data{surfaceIndex}.y = yDataSurface;
 obj.data{surfaceIndex}.z = zDataSurface;
 
+%- setting grid mesh by default -%
+% x-direction
+xData = xData(1, :);
+obj.data{surfaceIndex}.contours.x.start = xData(1);
+obj.data{surfaceIndex}.contours.x.end = xData(end);
+obj.data{surfaceIndex}.contours.x.size = mean(diff(xData));
+obj.data{surfaceIndex}.contours.x.show = true;
+
+% y-direction
+yData = yData(:, 1);
+obj.data{surfaceIndex}.contours.y.start = yData(1);
+obj.data{surfaceIndex}.contours.y.end = yData(end);
+obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
+obj.data{surfaceIndex}.contours.y.show = true;
+
 %-------------------------------------------------------------------------%
 
 %-set data on scatter3d-%
@@ -103,6 +118,9 @@ elseif strcmpi(meshData.EdgeColor, 'interp')
     cDataContour = zDataContour(:);
     obj.data{contourIndex}.line.colorscale = colorScale;
 
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
+
 elseif strcmpi(meshData.EdgeColor, 'flat')
     cData = meshData.CData;
 
@@ -132,13 +150,20 @@ elseif strcmpi(meshData.EdgeColor, 'flat')
     cDataContourDir2 = [cDataContourDir2; NaN(1, size(cDataContourDir2, 2))];
     cDataContour = [cDataContourDir1(:); cDataContourDir2(:)];
 
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
+
 elseif strcmpi(meshData.EdgeColor, 'none')
     cDataContour = 'rgba(0,0,0,0)';
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
 
 end
 
 %-set edge color-%
 obj.data{contourIndex}.line.color = cDataContour;
+obj.data{surfaceIndex}.contours.x.color = cDataContour;
+obj.data{surfaceIndex}.contours.y.color = cDataContour;
 
 %-------------------------------------------------------------------------%
 
@@ -202,6 +227,8 @@ elseif strcmpi(faceColor, 'flat')
         end
     else
         cDataSurface = cData;
+        obj.data{surfaceIndex}.cmin = axisData.CLim(1);
+        obj.data{surfaceIndex}.cmax = axisData.CLim(2);
     end
     
 end
@@ -239,15 +266,12 @@ obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
 
 obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
 
-switch meshData.LineStyle
-    case '-'
-        obj.data{contourIndex}.line.dash = 'solid';
-    case '--'
-        obj.data{contourIndex}.line.dash = 'dash';
-    case '-.'
-        obj.data{contourIndex}.line.dash = 'dashdot';
-    case ':'
-        obj.data{contourIndex}.line.dash = 'dot';
+if strcmpi(meshData.LineStyle, '-')
+    obj.data{contourIndex}.line.dash = 'solid';
+else
+    obj.data{contourIndex}.line.dash = 'dot';
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
 end
 
 %-------------------------------------------------------------------------%
