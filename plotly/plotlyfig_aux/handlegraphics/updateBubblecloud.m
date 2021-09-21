@@ -1,4 +1,4 @@
-function updateBubblecloud(obj,bcIndex)
+    function updateBubblecloud(obj,bcIndex)
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(bcIndex).AssociatedAxis);
@@ -25,12 +25,12 @@ obj.layout.yaxis1.mirror = true;
 
 %%%%%%%%%%%%%%%
 %Useful for debugging!!!
-obj.layout.xaxis1.tickmode='auto';
-obj.layout.xaxis1.nticks=11;
-obj.layout.xaxis1.showticklabels=0;
-obj.layout.yaxis1.tickmode='auto';
-obj.layout.yaxis1.nticks=11;
-obj.layout.yaxis1.showticklabels=0;
+% obj.layout.xaxis1.tickmode='auto';
+% obj.layout.xaxis1.nticks=11;
+% obj.layout.xaxis1.showticklabels=0;
+% obj.layout.yaxis1.tickmode='auto';
+% obj.layout.yaxis1.nticks=11;
+% obj.layout.yaxis1.showticklabels=0;
 %%%%%%%%%%%%%%%
 
 % obj.layout.title.text='<b><b></b></b>';
@@ -84,8 +84,8 @@ xy = matlab.graphics.internal.layoutBubbleCloud(sortedradii,ar);
 xR = [min(xy(1,:)-sortedradii), max(xy(1,:)+sortedradii)];
 yR = [min(xy(2,:)-sortedradii), max(xy(2,:)+sortedradii)];
 
-xR = xR + [-0.025, 0.025]*abs(diff(xR));
-yR = yR + [-0.025, 0.025]*abs(diff(yR));
+xR = xR + [-0.125, 0.125]*abs(diff(xR));
+yR = yR + [-0.125, 0.125]*abs(diff(yR));
 
 dataAR = abs(diff(xR))/abs(diff(yR));
 
@@ -98,12 +98,13 @@ else
 end
 
 radX = (2*sortedradii * (xIN*840) / abs(diff(xR)));
+% radX = 0.8*radX;
 % yR = [(yR(1)+yR(2))/2 - abs(diff(xR))/2, (yR(1)+yR(2))/2 + abs(diff(xR))/2];
 
 % radY = (2*sortedradii * (yIN*630) / abs(diff(yR)));
 
 obj.layout.xaxis1.range=xR;
-obj.layout.yaxis1.range=yR + [0.32,-0.32];
+obj.layout.yaxis1.range=yR + [0.38,-0.38];
 rads=radX;
 
 %-------------------------------------------------------------------------%
