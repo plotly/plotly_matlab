@@ -37,6 +37,8 @@ try
             updateSurfc(obj, dataIndex); 
         elseif strcmpi(obj.PlotOptions.TreatAs, 'meshc')
             updateSurfc(obj, dataIndex); 
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'surfl')
+            updateSurfl(obj, dataIndex);
 
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
