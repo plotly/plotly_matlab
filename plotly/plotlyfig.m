@@ -742,11 +742,13 @@ classdef plotlyfig < handle
             % update annotations
             for n = 1:obj.State.Figure.NumTexts
                 try
-                    if ~obj.PlotOptions.is_headmap_axis
-                        updateAnnotation(obj,n);
-                    else
+                    if obj.PlotOptions.is_headmap_axis
                         updateHeatmapAnnotation(obj,n);
                         obj.PlotOptions.CleanFeedTitle = false;
+                    elseif obj.PlotlyDefaults.isGeoaxis
+                        % TODO    
+                    else
+                        updateAnnotation(obj,n);
                     end
                 catch
                     % TODO to the future

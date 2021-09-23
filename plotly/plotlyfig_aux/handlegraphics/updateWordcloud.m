@@ -123,7 +123,7 @@ obj.data{scatterIndex}.textfont.color = col;
 %-------------------------------------------------------------------------%
 
 %-det font family-%
-obj.data{scatterIndex}.textfont.family = matlab2plotlyfont(scatter_data.FontName);;
+obj.data{scatterIndex}.textfont.family = matlab2plotlyfont(scatter_data.FontName);
 
 %-------------------------------------------------------------------------%
 

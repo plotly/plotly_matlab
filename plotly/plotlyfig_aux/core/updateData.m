@@ -69,7 +69,11 @@ try
                     updateImage3D(obj, dataIndex);
                 end
             case 'line'
-                updateLineseries(obj, dataIndex);
+                if obj.PlotlyDefaults.isGeoaxis
+                    updateGeoPlot(obj, dataIndex);
+                else
+                    updateLineseries(obj, dataIndex);
+                end
             case 'categoricalhistogram'
                 updateCategoricalHistogram(obj, dataIndex); 
             case 'histogram'
