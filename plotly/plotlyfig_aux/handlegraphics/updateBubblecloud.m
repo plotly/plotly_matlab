@@ -97,26 +97,22 @@ else
     xR = xR + [-amounttopad/2, amounttopad/2];
 end
 
-radX = (2*sortedradii * (xIN*840) / abs(diff(xR)));
-% radX = 0.8*radX;
-% yR = [(yR(1)+yR(2))/2 - abs(diff(xR))/2, (yR(1)+yR(2))/2 + abs(diff(xR))/2];
-
-% radY = (2*sortedradii * (yIN*630) / abs(diff(yR)));
+radX = (2*sortedradii * (xIN*obj.layout.width) / abs(diff(xR)));
 
 obj.layout.xaxis1.range=xR;
-obj.layout.yaxis1.range=yR + [0.38,-0.38];
+obj.layout.yaxis1.range=yR + [0.38, -0.38];
 rads=radX;
 
 %-------------------------------------------------------------------------%
 
 labels = bcData.LabelData(RadiusIndex);
 obj.data{bcIndex}.text = arrayfun(@(x) {char(x)}, labels);
-
-% obj.data{bcIndex}.textfont = matlab2plotlyfont(bcData.FontName);
+obj.data{bcIndex}.textfont.family = matlab2plotlyfont(bcData.FontName);
+obj.data{bcIndex}.textfont.color = sprintf('rgb(%i,%i,%i)',255*bcData.FontColor);
+obj.data{bcIndex}.textfont.size = bcData.FontSize*1.5;
 
 %-------------------------------------------------------------------------%
 
-% obj.data{bcIndex}.hoverinfo = '';
 obj.data{bcIndex}.hovertemplate = 'Size: %{hovertext}<br>Label: %{text}';
 obj.data{bcIndex}.hovertext = arrayfun(@(x) {num2str(x)}, bcData.SizeData(RadiusIndex));
 
