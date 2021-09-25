@@ -46,7 +46,7 @@ function UpdateGeoAxes(obj, geoIndex)
 
     %-------------------------------------------------------------------------%
 
-    %-setting latitude axis
+    %-setting latitude axis-%
     latTick = geoData.LatitudeAxis.TickValues;
 
     geo.lataxis.range = geoData.LatitudeLimits;
@@ -61,7 +61,7 @@ function UpdateGeoAxes(obj, geoIndex)
 
     %-------------------------------------------------------------------------%
     
-    %-setting longitude axis
+    %-setting longitude axis-%
     lonTick = geoData.LongitudeAxis.TickValues;
 
     geo.lonaxis.range = geoData.LongitudeLimits;
@@ -75,10 +75,61 @@ function UpdateGeoAxes(obj, geoIndex)
     end
 
     %-------------------------------------------------------------------------%
+    
+    %-set map center-%
+    geo.center.lat = geoData.MapCenter(1);
+    geo.center.lon = geoData.MapCenter(2);
+
+    %-------------------------------------------------------------------------%
+    
+    %-set better resolution-%
+    geo.resolution = '50';
+
+    %-------------------------------------------------------------------------%
 
     %-set geo axes to layout-%
-
     obj.layout = setfield(obj.layout, sprintf('geo%d', xsource+1), geo);
 
     %-------------------------------------------------------------------------%
+
+    %-TEXT STTINGS-%
+    isText = false;
+    child = geoData.Children;
+    t = 1;
+
+    for n=1:length(child)
+        if strcmpi(child(n).Type, 'text')
+            isText = true;
+            texts{t} = child(t).String;
+            lats(t) = child(t).Position(1);
+            lons(t) = child(t).Position(2);
+            sizes(t) = child(t).FontSize;
+            families{t} = matlab2plotlyfont(child(t).FontName);
+            colors{t} = sprintf('rgb(%f,%f,%f)', child(t).Color);
+
+            if strcmpi(child(t).HorizontalAlignment, 'left')
+                pos{t} = 'right';
+            elseif strcmpi(child(t).HorizontalAlignment, 'right')
+                pos{t} = 'left';
+            else
+                pos{t} = child(t).HorizontalAlignment;
+            end
+
+            t = t + 1;
+        end
+    end
+
+    if isText
+        obj.data{geoIndex}.type = 'scattergeo';
+        obj.data{geoIndex}.mode = 'text';
+        obj.data{geoIndex}.text = texts;
+        obj.data{geoIndex}.lat = lats;
+        obj.data{geoIndex}.lon = lons;
+        obj.data{geoIndex}.geo = obj.data{geoIndex-1}.geo;
+
+        obj.data{geoIndex}.textfont.size = sizes;
+        obj.data{geoIndex}.textfont.color = colors;
+        obj.data{geoIndex}.textfont.family = families;
+        obj.data{geoIndex}.textposition = pos;
+    end
 end
