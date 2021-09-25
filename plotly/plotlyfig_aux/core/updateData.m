@@ -56,6 +56,8 @@ try
                 UpdateGeoAxes(obj, dataIndex);
 
             %--CORE PLOT OBJECTS--%
+            case 'geobubble'
+                updateGeobubble(obj, dataIndex);
             case 'scatterhistogram'
                 updateScatterhistogram(obj, dataIndex); 
             case 'wordcloud'
