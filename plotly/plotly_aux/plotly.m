@@ -57,7 +57,7 @@ if ~writeFile
     offline_given = true;
 end
 
-if offline_given
+if ~offline_given
     obj = plotlyfig(args, structargs);
     obj.layout.width = 840;
     obj.layout.height = 630;

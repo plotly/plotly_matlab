@@ -100,6 +100,7 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.CaptionMarginIncreaseFactor = 1.2; 
             obj.PlotlyDefaults.MinCaptionMargin = 80;
             obj.PlotlyDefaults.IsLight = false;
+            obj.PlotlyDefaults.isGeoaxis = false;
             
             %-State-%
             obj.State.Figure = [];
@@ -1060,6 +1061,7 @@ classdef plotlyfig < handle
                         ||  strcmpi(fieldname,'yaxis') ||  strcmpi(fieldname,'cone')...
                         ||  strcmpi(fieldname,'legend') ||  strcmpi(fieldname,'histogram')...
                         ||  strcmpi(fieldname,'scatter') ||  strcmpi(fieldname,'line')...
+                        ||  strcmpi(fieldname,'scattergeo') ...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end

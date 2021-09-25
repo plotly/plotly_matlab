@@ -61,20 +61,28 @@ axis_data = get(obj.State.Axis(axIndex).Handle);
 is_headmap_axis = isfield(axis_data, 'XDisplayData');
 obj.PlotOptions.is_headmap_axis = is_headmap_axis;
 
+%-------------------------------------------------------------------------%
+
+%-check if geo-axis-%
+isGeoaxis = isfield(axis_data, 'Type') && strcmpi(axis_data.Type, 'geoaxes');
+obj.PlotlyDefaults.isGeoaxis = isGeoaxis;
+
+%-------------------------------------------------------------------------%
+
 %-xaxis-%
-if ~is_headmap_axis
-    xaxis = extractAxisData(obj,axis_data,'X');
+if is_headmap_axis
+    xaxis = extractHeatmapAxisData(obj,axis_data, 'X');
 else
-    xaxis = extractHeatmapAxisData(obj,axis_data,'X');
+    xaxis = extractAxisData(obj,axis_data, 'X');
 end
 
 %-------------------------------------------------------------------------%
 
 %-yaxis-%
-if ~is_headmap_axis
-    yaxis = extractAxisData(obj,axis_data,'Y');
+if is_headmap_axis
+    yaxis = extractHeatmapAxisData(obj,axis_data, 'Y');
 else
-    yaxis = extractHeatmapAxisData(obj,axis_data,'Y');
+    yaxis = extractAxisData(obj,axis_data, 'Y');
 end
 
 %-------------------------------------------------------------------------%

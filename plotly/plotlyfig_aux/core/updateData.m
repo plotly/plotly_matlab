@@ -51,6 +51,10 @@ try
         
         switch lower(obj.State.Plot(dataIndex).Class)
 
+            %--GEOAXES SPECIAL CASE--%
+            case 'geoaxes'
+                UpdateGeoAxes(obj, dataIndex);
+
             %--CORE PLOT OBJECTS--%
             case 'scatterhistogram'
                 updateScatterhistogram(obj, dataIndex); 
@@ -119,7 +123,9 @@ try
                 updateQuivergroup(obj, dataIndex);
             case 'scatter'
                 if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
-                    updateScatterPolar(obj, dataIndex); 
+                    updateScatterPolar(obj, dataIndex);
+                elseif obj.PlotlyDefaults.isGeoaxis
+                    updateGeoScatter(obj, dataIndex);
                 else
                     updateScatter(obj, dataIndex); 
                 end
