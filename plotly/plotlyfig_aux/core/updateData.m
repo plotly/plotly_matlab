@@ -34,7 +34,9 @@ try
         elseif strcmpi(obj.PlotOptions.TreatAs, 'mesh')
             updateMesh(obj, dataIndex); 
         elseif strcmpi(obj.PlotOptions.TreatAs, 'surfc')
-            updateSurfc(obj, dataIndex); 
+            updateSurfc(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'bubblecloud')
+            updateBubblecloud(obj,dataIndex);
 
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
@@ -48,8 +50,6 @@ try
         switch lower(obj.State.Plot(dataIndex).Class)
 
             %--CORE PLOT OBJECTS--%
-            case 'bubblecloud'
-                updateBubblecloud(obj,dataIndex);
             case 'scatterhistogram'
                 updateScatterhistogram(obj, dataIndex); 
             case 'wordcloud'
