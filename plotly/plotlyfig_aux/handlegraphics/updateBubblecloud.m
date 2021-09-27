@@ -25,12 +25,12 @@ obj.layout.yaxis1.mirror = true;
 
 %%%%%%%%%%%%%%%
 %Useful for debugging!!!
-obj.layout.xaxis1.tickmode='auto';
-obj.layout.xaxis1.nticks=11;
-obj.layout.xaxis1.showticklabels=0;
-obj.layout.yaxis1.tickmode='auto';
-obj.layout.yaxis1.nticks=11;
-obj.layout.yaxis1.showticklabels=0;
+% obj.layout.xaxis1.tickmode='auto';
+% obj.layout.xaxis1.nticks=11;
+% obj.layout.xaxis1.showticklabels=0;
+% obj.layout.yaxis1.tickmode='auto';
+% obj.layout.yaxis1.nticks=11;
+% obj.layout.yaxis1.showticklabels=0;
 %%%%%%%%%%%%%%%
 
 % obj.layout.title.text='<b><b></b></b>';
