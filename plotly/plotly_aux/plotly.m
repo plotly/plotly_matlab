@@ -22,7 +22,7 @@ if isstruct(varargin{end})
         offline = structargs.(f{idx});
         offline_given = offline;
     else
-        offline = false;
+        offline = true;
         offline_given = offline;
     end
 

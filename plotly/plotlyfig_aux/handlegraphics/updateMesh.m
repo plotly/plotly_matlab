@@ -1,4 +1,4 @@
-function obj = updateFunctionSurface(obj, surfaceIndex)
+function obj = updateMesh(obj, surfaceIndex)
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
@@ -19,6 +19,7 @@ eval( sprintf('scene = obj.layout.scene%d;', xsource) );
 %-GET CONTOUR INDEX-%
 obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
 contourIndex = obj.PlotOptions.nPlots;
+obj.PlotOptions.contourIndex(surfaceIndex) = contourIndex;
 
 %-------------------------------------------------------------------------%
 
@@ -38,27 +39,30 @@ obj.data{contourIndex}.mode = 'lines';
 %-------------------------------------------------------------------------%
 
 %-get plot data-%
-meshDensity = meshData.MeshDensity;
-xData = meshData.XData(1:meshDensity^2);
-yData = meshData.YData(1:meshDensity^2);
-zData = meshData.ZData(1:meshDensity^2);
+xData = meshData.XData;
+yData = meshData.YData;
+zData = meshData.ZData;
 
 %-reformat data to mesh-%
-xDataSurface = reshape(xData, [meshDensity, meshDensity])';
-yDataSurface = reshape(yData, [meshDensity, meshDensity])';
-zDataSurface = reshape(zData, [meshDensity, meshDensity])';
+xDataSurface = xData;
+yDataSurface = yData;
+zDataSurface = zData;
 
-xDataContour = [xDataSurface; NaN(1, size(xDataSurface, 2))];
-yDataContour = [yDataSurface; NaN(1, size(yDataSurface, 2))];
-zDataContour = [zDataSurface; NaN(1, size(zDataSurface, 2))];
+xDataContourDir1 = [xDataSurface; NaN(1, size(xDataSurface, 2))];
+yDataContourDir1 = [yDataSurface; NaN(1, size(yDataSurface, 2))];
+zDataContourDir1 = [zDataSurface; NaN(1, size(zDataSurface, 2))];
 
-xDataContour = [xDataContour; xDataContour(1:end-1,:)'];
-yDataContour = [yDataContour; yDataContour(1:end-1,:)'];
-zDataContour = [zDataContour; zDataContour(1:end-1,:)'];
+xDataContourDir2 = xDataContourDir1(1:end-1,:)';
+yDataContourDir2 = yDataContourDir1(1:end-1,:)';
+zDataContourDir2 = zDataContourDir1(1:end-1,:)';
 
-xDataContour = [xDataContour; NaN(1, size(xDataContour, 2))];
-yDataContour = [yDataContour; NaN(1, size(yDataContour, 2))];
-zDataContour = [zDataContour; NaN(1, size(zDataContour, 2))];
+xDataContourDir2 = [xDataContourDir2; NaN(1, size(xDataContourDir2, 2))];
+yDataContourDir2 = [yDataContourDir2; NaN(1, size(yDataContourDir2, 2))];
+zDataContourDir2 = [zDataContourDir2; NaN(1, size(zDataContourDir2, 2))];
+
+xDataContour = [xDataContourDir1(:); xDataContourDir2(:)];
+yDataContour = [yDataContourDir1(:); yDataContourDir2(:)];
+zDataContour = [zDataContourDir1(:); zDataContourDir2(:)];
 
 %-------------------------------------------------------------------------%
 
@@ -66,6 +70,21 @@ zDataContour = [zDataContour; NaN(1, size(zDataContour, 2))];
 obj.data{surfaceIndex}.x = xDataSurface;
 obj.data{surfaceIndex}.y = yDataSurface;
 obj.data{surfaceIndex}.z = zDataSurface;
+
+%- setting grid mesh by default -%
+% x-direction
+xData = xData(1, :);
+obj.data{surfaceIndex}.contours.x.start = xData(1);
+obj.data{surfaceIndex}.contours.x.end = xData(end);
+obj.data{surfaceIndex}.contours.x.size = mean(diff(xData));
+obj.data{surfaceIndex}.contours.x.show = true;
+
+% y-direction
+yData = yData(:, 1);
+obj.data{surfaceIndex}.contours.y.start = yData(1);
+obj.data{surfaceIndex}.contours.y.end = yData(end);
+obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
+obj.data{surfaceIndex}.contours.y.show = true;
 
 %-------------------------------------------------------------------------%
 
@@ -90,6 +109,7 @@ for c = 1: length(cMap)
 end
 
 %-------------------------------------------------------------------------%
+
 %-get edge color-%
 if isnumeric(meshData.EdgeColor)
     cDataContour = sprintf('rgb(%f,%f,%f)', 255*meshData.EdgeColor);
@@ -97,35 +117,82 @@ if isnumeric(meshData.EdgeColor)
 elseif strcmpi(meshData.EdgeColor, 'interp')
     cDataContour = zDataContour(:);
     obj.data{contourIndex}.line.colorscale = colorScale;
+
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
+
+elseif strcmpi(meshData.EdgeColor, 'flat')
+    cData = meshData.CData;
+
+    if size(cData, 3) ~= 1
+        cMap = unique( reshape(cData, ...
+            [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
+        cData = rgb2ind(cData, cMap);
+
+        edgeColorScale = {};
+        fac = 1/(length(cMap)-1);
+
+        for c = 1: length(cMap)
+            edgeColorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        end
+
+        obj.data{surfaceIndex}.line.cmin = 0;
+        obj.data{surfaceIndex}.line.cmax = 255;
+        obj.data{contourIndex}.line.colorscale = edgeColorScale;
+    else
+        obj.data{contourIndex}.line.cmin = axisData.CLim(1);
+        obj.data{contourIndex}.line.cmax = axisData.CLim(2);
+        obj.data{contourIndex}.line.colorscale = colorScale;
+    end
+
+    cDataContourDir1 = [cData; NaN(1, size(cData, 2))];
+    cDataContourDir2 = cDataContourDir1(1:end-1,:)';
+    cDataContourDir2 = [cDataContourDir2; NaN(1, size(cDataContourDir2, 2))];
+    cDataContour = [cDataContourDir1(:); cDataContourDir2(:)];
+
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
+
 elseif strcmpi(meshData.EdgeColor, 'none')
-    
     cDataContour = 'rgba(0,0,0,0)';
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
+
 end
 
 %-set edge color-%
 obj.data{contourIndex}.line.color = cDataContour;
+obj.data{surfaceIndex}.contours.x.color = cDataContour;
+obj.data{surfaceIndex}.contours.y.color = cDataContour;
 
 %-------------------------------------------------------------------------%
 
 %-get face color-%
-if isnumeric(meshData.FaceColor)
+faceColor = meshData.FaceColor;
+
+if isnumeric(faceColor)
+
+    if all(faceColor == [1, 1, 1])
+        faceColor = [0.96, 0.96, 0.96];
+    end
 
     for n = 1:size(zDataSurface, 2)
         for m = 1:size(zDataSurface, 1)
-            cDataSurface(m, n, :) = meshData.FaceColor;
+            cDataSurface(m, n, :) = faceColor;
         end
     end
 
     [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
+    cDataSurface = double(cDataSurface) + axisData.CLim(1);
 
     for c = 1: size(cMapSurface, 1)
         colorScale{c} = { (c-1)*fac , sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
     end
 
-    obj.data{surfaceIndex}.cmin = 0;
-    obj.data{surfaceIndex}.cmax = 255;
+    obj.data{surfaceIndex}.cmin = axisData.CLim(1);
+    obj.data{surfaceIndex}.cmax = axisData.CLim(2);
 
-elseif strcmpi(meshData.FaceColor, 'interp')
+elseif strcmpi(faceColor, 'interp')
     cDataSurface = zDataSurface;
 
     if surfaceIndex > xsource
@@ -142,6 +209,26 @@ elseif strcmpi(meshData.FaceColor, 'interp')
             obj.data{idx}.cmin = cMin;
             obj.data{idx}.cmax = cMax;
         end
+    end
+
+elseif strcmpi(faceColor, 'flat')
+    cData = meshData.CData;
+
+    if size(cData, 3) ~= 1
+        cMap = unique( reshape(cData, ...
+            [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
+        cDataSurface = rgb2ind(cData, cMap);
+
+        colorScale = {};
+        fac = 1/(length(cMap)-1);
+
+        for c = 1: length(cMap)
+            colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        end
+    else
+        cDataSurface = cData;
+        obj.data{surfaceIndex}.cmin = axisData.CLim(1);
+        obj.data{surfaceIndex}.cmax = axisData.CLim(2);
     end
     
 end
@@ -179,41 +266,12 @@ obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
 
 obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
 
-switch meshData.LineStyle
-    case '-'
-        obj.data{contourIndex}.line.dash = 'solid';
-    case '--'
-        obj.data{contourIndex}.line.dash = 'dash';
-    case '-.'
-        obj.data{contourIndex}.line.dash = 'dashdot';
-    case ':'
-        obj.data{contourIndex}.line.dash = 'dot';
-end
-
-%-------------------------------------------------------------------------%
-
-%-show contours-%
-
-if strcmpi(meshData.ShowContours, 'on')
-    obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
-    projectionIndex = obj.PlotOptions.nPlots;
-
-    obj.data{projectionIndex}.type = 'surface';
-    obj.data{projectionIndex}.scene = sprintf('scene%d', xsource);
-
-    obj.data{projectionIndex}.x = xDataSurface;
-    obj.data{projectionIndex}.y = yDataSurface;
-    obj.data{projectionIndex}.z = zDataSurface;
-
-    obj.data{projectionIndex}.colorscale = colorScale;
-    obj.data{projectionIndex}.hidesurface = true;
-    obj.data{projectionIndex}.surfacecolor = zDataSurface;
-    obj.data{projectionIndex}.showscale = false;
-
-    obj.data{projectionIndex}.contours.z.show = true;
-    obj.data{projectionIndex}.contours.z.width = 15;
-    obj.data{projectionIndex}.contours.z.usecolormap = true;
-    obj.data{projectionIndex}.contours.z.project.z = true;
+if strcmpi(meshData.LineStyle, '-')
+    obj.data{contourIndex}.line.dash = 'solid';
+else
+    obj.data{contourIndex}.line.dash = 'dot';
+    obj.data{surfaceIndex}.contours.x.show = false;
+    obj.data{surfaceIndex}.contours.y.show = false;
 end
 
 %-------------------------------------------------------------------------%
@@ -260,9 +318,9 @@ if ~isempty(ey)
 else
 
     %-define as default-%
-    xey = - xyar; if xey>0 xfac = 0.0; else xfac = 0.0; end
+    xey = - xyar; if xey>0 xfac = -0.0; else xfac = 0.0; end
     yey = - xyar; if yey>0 yfac = -0.3; else yfac = 0.3; end
-    if zar>0 zfac = 0.1; else zfac = -0.1; end
+    if zar>0 zfac = -0.1; else zfac = 0.1; end
     
     scene.camera.eye.x = xey + xfac*xey; 
     scene.camera.eye.y = yey + yfac*yey;

@@ -101,6 +101,8 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.Bargap = 0;
             obj.PlotlyDefaults.CaptionMarginIncreaseFactor = 1.2; 
             obj.PlotlyDefaults.MinCaptionMargin = 80;
+            obj.PlotlyDefaults.IsLight = false;
+            obj.PlotlyDefaults.isGeoaxis = false;
             
             %-State-%
             obj.State.Figure = [];
@@ -514,13 +516,16 @@ classdef plotlyfig < handle
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
             args.world_readable = obj.PlotOptions.WorldReadable;
+            args.offline = obj.PlotOptions.Offline;
             
             %layout
             args.layout = obj.layout;
             
             if obj.PlotOptions.WriteFile
+                
                 %send to plotly
                 if ~obj.PlotOptions.Offline
+                    
                     response = plotly(obj.data, args);
 
                     %update response
@@ -624,12 +629,16 @@ classdef plotlyfig < handle
                     
                     % reverse plots
                     nprev = length(plots) - np + 1;
-                    
+
                     % update the plot fields
-                    obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
-                    obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
-                    obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
-                    obj.State.Plot(obj.State.Figure.NumPlots).Class = getGraphClass(plots(nprev));
+                    if ~strcmpi(getGraphClass(plots(nprev)), 'light')
+                        obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
+                        obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).Class = getGraphClass(plots(nprev));
+                    else
+                        obj.PlotlyDefaults.IsLight = true;
+                    end
                 end
 
                 % this works for pareto
@@ -716,7 +725,7 @@ classdef plotlyfig < handle
             end
             
             % update plots
-            obj.PlotOptions.nplots = obj.State.Figure.NumPlots;
+            obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
 
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
@@ -735,11 +744,13 @@ classdef plotlyfig < handle
             % update annotations
             for n = 1:obj.State.Figure.NumTexts
                 try
-                    if ~obj.PlotOptions.is_headmap_axis
-                        updateAnnotation(obj,n);
-                    else
+                    if obj.PlotOptions.is_headmap_axis
                         updateHeatmapAnnotation(obj,n);
                         obj.PlotOptions.CleanFeedTitle = false;
+                    elseif obj.PlotlyDefaults.isGeoaxis
+                        % TODO    
+                    else
+                        updateAnnotation(obj,n);
                     end
                 catch
                     % TODO to the future
@@ -1053,7 +1064,8 @@ classdef plotlyfig < handle
                         ||  strcmpi(fieldname,'heatmap') ||  strcmpi(fieldname,'xaxis') ...
                         ||  strcmpi(fieldname,'yaxis') ||  strcmpi(fieldname,'cone')...
                         ||  strcmpi(fieldname,'legend') ||  strcmpi(fieldname,'histogram')...
-                        ||  strcmpi(fieldname,'scatter')...
+                        ||  strcmpi(fieldname,'scatter') ||  strcmpi(fieldname,'line')...
+                        ||  strcmpi(fieldname,'scattergeo') ...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end

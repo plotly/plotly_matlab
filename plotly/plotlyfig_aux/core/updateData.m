@@ -28,9 +28,20 @@ try
         elseif strcmpi(obj.PlotOptions.TreatAs, 'bar3h')
             updateBar3h(obj, dataIndex); 
         elseif strcmpi(obj.PlotOptions.TreatAs, 'surf')
-            updateSurf(obj, dataIndex); 
+            updateSurf(obj, dataIndex);
         elseif strcmpi(obj.PlotOptions.TreatAs, 'comet') || strcmpi(obj.PlotOptions.TreatAs, 'comet3')
             updateComet(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'fmesh')
+            updateFmesh(obj, dataIndex);
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'mesh')
+            updateMesh(obj, dataIndex); 
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'surfc')
+            updateSurfc(obj, dataIndex); 
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'meshc')
+            updateSurfc(obj, dataIndex); 
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'surfl')
+            updateSurfl(obj, dataIndex);
+
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
             updateStreamtube(obj, dataIndex);
@@ -42,7 +53,13 @@ try
         
         switch lower(obj.State.Plot(dataIndex).Class)
 
+            %--GEOAXES SPECIAL CASE--%
+            case 'geoaxes'
+                UpdateGeoAxes(obj, dataIndex);
+
             %--CORE PLOT OBJECTS--%
+            case 'geobubble'
+                updateGeobubble(obj, dataIndex);
             case 'scatterhistogram'
                 updateScatterhistogram(obj, dataIndex); 
             case 'wordcloud'
@@ -56,7 +73,11 @@ try
                     updateImage3D(obj, dataIndex);
                 end
             case 'line'
-                updateLineseries(obj, dataIndex);
+                if obj.PlotlyDefaults.isGeoaxis
+                    updateGeoPlot(obj, dataIndex);
+                else
+                    updateLineseries(obj, dataIndex);
+                end
             case 'categoricalhistogram'
                 updateCategoricalHistogram(obj, dataIndex); 
             case 'histogram'
@@ -74,7 +95,7 @@ try
                 updateRectangle(obj,dataIndex);
             case 'surface'
                 updateSurfaceplot(obj,dataIndex);
-            case 'functionsurface'
+            case {'functionsurface', 'parameterizedfunctionsurface'}
                 updateFunctionSurface(obj,dataIndex);
             case 'implicitfunctionsurface'
                 updateImplicitFunctionSurface(obj,dataIndex);
@@ -112,7 +133,9 @@ try
                 updateQuivergroup(obj, dataIndex);
             case 'scatter'
                 if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
-                    updateScatterPolar(obj, dataIndex); 
+                    updateScatterPolar(obj, dataIndex);
+                elseif obj.PlotlyDefaults.isGeoaxis
+                    updateGeoScatter(obj, dataIndex);
                 else
                     updateScatter(obj, dataIndex); 
                 end

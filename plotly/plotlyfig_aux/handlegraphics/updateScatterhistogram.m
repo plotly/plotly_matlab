@@ -65,8 +65,8 @@ for t=1:length(xdata)
 
   p = t;
   if t > 1
-    obj.PlotOptions.nplots = obj.PlotOptions.nplots + 1;
-    p = obj.PlotOptions.nplots;
+    obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+    p = obj.PlotOptions.nPlots;
   end
 
   %-----------------------------------------------------------------------%
@@ -253,8 +253,8 @@ end
 
 for t=1:length(xdata)
 
-  obj.PlotOptions.nplots = obj.PlotOptions.nplots + 1;
-  p = obj.PlotOptions.nplots;
+  obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+  p = obj.PlotOptions.nPlots;
 
   if t == 1
     ps = p;
@@ -367,8 +367,8 @@ obj.layout.bargap = 0.05;
 
 for t=1:length(xdata)
 
-  obj.PlotOptions.nplots = obj.PlotOptions.nplots + 1;
-  p = obj.PlotOptions.nplots;
+  obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+  p = obj.PlotOptions.nPlots;
 
   if t == 1
     ps = p;
