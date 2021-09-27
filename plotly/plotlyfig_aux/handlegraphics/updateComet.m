@@ -50,8 +50,9 @@ function updateComet(obj,plotIndex)
 
 %-------------------------------------------------------------------------%
 
+ax = obj.State.Plot(plotIndex).AssociatedAxis;
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
+axIndex = obj.getAxisIndex(ax);
 
 %-PLOT DATA STRUCTURE- %
 plot_data = get(obj.State.Plot(plotIndex).Handle);
@@ -241,4 +242,5 @@ switch(plot_data.Tag)
             obj.frames{i}.data{plotIndex} = DD;
         end
 end
+
 end

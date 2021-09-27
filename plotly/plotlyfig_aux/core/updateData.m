@@ -29,7 +29,7 @@ try
             updateBar3h(obj, dataIndex); 
         elseif strcmpi(obj.PlotOptions.TreatAs, 'surf')
             updateSurf(obj, dataIndex); 
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'comet')
+        elseif strcmpi(obj.PlotOptions.TreatAs, 'comet') || strcmpi(obj.PlotOptions.TreatAs, 'comet3')
             updateComet(obj, dataIndex);
         % this one will be revomed
         elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
@@ -197,7 +197,7 @@ try
         %- Play Button Options-%
         opts{1} = nan;
         opts{2}.frame.duration = 10;
-        opts{2}.frame.redraw = false;
+        opts{2}.frame.redraw = true;
         opts{2}.fromcurrent = true;
         opts{2}.mode = 'immediate';
         opts{2}.transition.duration = 0;
