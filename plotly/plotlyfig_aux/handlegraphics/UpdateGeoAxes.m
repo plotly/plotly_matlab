@@ -17,78 +17,96 @@ function UpdateGeoAxes(obj, geoIndex)
     w = geoData.Position(3);
     h = geoData.Position(4);
 
-    geo.domain.x = min([xo xo + w],1);
-    geo.domain.y = min([yo yo + h],1);
+    geoaxes.domain.x = min([xo xo + w],1);
+    geoaxes.domain.y = min([yo yo + h],1);
 
     %-------------------------------------------------------------------------%
 
     %-setting projection-%
-    geo.projection.type = 'mercator';
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        geoaxes.projection.type = 'mercator';
+    end
 
     %-------------------------------------------------------------------------%
 
     %-setting basemap-%
-    geo.framecolor = 'rgb(120,120,120)';
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        geoaxes.framecolor = 'rgb(120,120,120)';
 
-    if strcmpi(geoData.Basemap, 'streets-light')    
-        geo.oceancolor = 'rgba(20,220,220,1)';
-        geo.landcolor = 'rgba(20,220,220,0.2)';
-    elseif strcmpi(geoData.Basemap, 'colorterrain')
-        geo.oceancolor = 'rgba(118,165,225,0.6)';
-        geo.landcolor = 'rgba(190,180,170,1)';
-        geo.showcountries = true;
-        geo.showlakes = true;
+        if strcmpi(geoData.Basemap, 'streets-light')    
+            geoaxes.oceancolor = 'rgba(20,220,220,1)';
+            geoaxes.landcolor = 'rgba(20,220,220,0.2)';
+        elseif strcmpi(geoData.Basemap, 'colorterrain')
+            geoaxes.oceancolor = 'rgba(118,165,225,0.6)';
+            geoaxes.landcolor = 'rgba(190,180,170,1)';
+            geoaxes.showcountries = true;
+            geoaxes.showlakes = true;
+        end
+
+        geoaxes.showocean = true;
+        geoaxes.showcoastlines = false;
+        geoaxes.showland = true;
     end
-
-    geo.showocean = true;
-    geo.showcoastlines = false;
-    geo.showland = true;
 
     %-------------------------------------------------------------------------%
 
     %-setting latitude axis-%
-    latTick = geoData.LatitudeAxis.TickValues;
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        latTick = geoData.LatitudeAxis.TickValues;
 
-    geo.lataxis.range = geoData.LatitudeLimits;
-    geo.lataxis.tick0 = latTick(1);
-    geo.lataxis.dtick = mean(diff(latTick));
+        geoaxes.lataxis.range = geoData.LatitudeLimits;
+        geoaxes.lataxis.tick0 = latTick(1);
+        geoaxes.lataxis.dtick = mean(diff(latTick));
 
-    if strcmpi(geoData.Grid, 'on')
-        geo.lataxis.showgrid = true;
-        geo.lataxis.gridwidth = geoData.LineWidth;
-        geo.lataxis.gridcolor = sprintf('rgba(%f,%f,%f,%f)', 255*geoData.GridColor, geoData.GridAlpha);
+        if strcmpi(geoData.Grid, 'on')
+            geoaxes.lataxis.showgrid = true;
+            geoaxes.lataxis.gridwidth = geoData.LineWidth;
+            geoaxes.lataxis.gridcolor = sprintf('rgba(%f,%f,%f,%f)', 255*geoData.GridColor, geoData.GridAlpha);
+        end
     end
 
     %-------------------------------------------------------------------------%
     
     %-setting longitude axis-%
-    lonTick = geoData.LongitudeAxis.TickValues;
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        lonTick = geoData.LongitudeAxis.TickValues;
 
-    geo.lonaxis.range = geoData.LongitudeLimits;
-    geo.lonaxis.tick0 = lonTick(1);
-    geo.lonaxis.dtick = mean(diff(lonTick));
+        geoaxes.lonaxis.range = geoData.LongitudeLimits;
+        geoaxes.lonaxis.tick0 = lonTick(1);
+        geoaxes.lonaxis.dtick = mean(diff(lonTick));
 
-    if strcmpi(geoData.Grid, 'on')
-        geo.lonaxis.showgrid = true;
-        geo.lonaxis.gridwidth = geoData.LineWidth;
-        geo.lonaxis.gridcolor = sprintf('rgba(%f,%f,%f,%f)', 255*geoData.GridColor, geoData.GridAlpha);
+        if strcmpi(geoData.Grid, 'on')
+            geoaxes.lonaxis.showgrid = true;
+            geoaxes.lonaxis.gridwidth = geoData.LineWidth;
+            geoaxes.lonaxis.gridcolor = sprintf('rgba(%f,%f,%f,%f)', 255*geoData.GridColor, geoData.GridAlpha);
+        end
     end
 
     %-------------------------------------------------------------------------%
     
     %-set map center-%
-    geo.center.lat = geoData.MapCenter(1);
-    geo.center.lon = geoData.MapCenter(2);
+    geoaxes.center.lat = geoData.MapCenter(1);
+    geoaxes.center.lon = geoData.MapCenter(2);
 
     %-------------------------------------------------------------------------%
     
     %-set better resolution-%
-    geo.resolution = '50';
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        geoaxes.resolution = '50';
+    end
 
-    %-------------------------------------------------------------------------%
+    %-----------------------------------------------------------------------------%
 
-    %-set geo axes to layout-%
-    obj.layout = setfield(obj.layout, sprintf('geo%d', xsource+1), geo);
+    %-set mapbox style-%
+    if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
+        geoaxes.zoom = geoData.ZoomLevel - 1.4;
+
+        if strcmpi(geoData.Basemap, 'streets-light')
+            geoaxes.style = 'carto-positron';
+        elseif strcmpi(geoData.Basemap, 'colorterrain')
+            geoaxes.style = 'stamen-terrain';
+        end
+    end
 
     %-------------------------------------------------------------------------%
 
@@ -120,16 +138,38 @@ function UpdateGeoAxes(obj, geoIndex)
     end
 
     if isText
-        obj.data{geoIndex}.type = 'scattergeo';
+
+        if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+            obj.data{geoIndex}.type = 'scattergeo';
+        elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
+            obj.data{geoIndex}.type = 'scattermapbox';
+        end
+
         obj.data{geoIndex}.mode = 'text';
         obj.data{geoIndex}.text = texts;
         obj.data{geoIndex}.lat = lats;
         obj.data{geoIndex}.lon = lons;
-        obj.data{geoIndex}.geo = obj.data{geoIndex-1}.geo;
 
         obj.data{geoIndex}.textfont.size = sizes;
         obj.data{geoIndex}.textfont.color = colors;
         obj.data{geoIndex}.textfont.family = families;
         obj.data{geoIndex}.textposition = pos;
+
+        if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+            obj.data{geoIndex}.geo = obj.data{geoIndex-1}.geo;
+        elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
+            obj.data{geoIndex}.subplot = obj.data{geoIndex-1}.subplot;
+        end
     end
+
+    %-------------------------------------------------------------------------%
+
+    %-set geo axes to layout-%
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        obj.layout = setfield(obj.layout, sprintf('geo%d', xsource+1), geoaxes);
+    elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
+        obj.layout = setfield(obj.layout, sprintf('mapbox%d', xsource+1), geoaxes);
+    end
+
+    %-------------------------------------------------------------------------%
 end

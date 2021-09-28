@@ -60,6 +60,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.is_headmap_axis = false;
             obj.PlotOptions.Quality = -1;
             obj.PlotOptions.Zmin = [];
+            obj.PlotOptions.geoRenderType = 'geo';
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -250,6 +251,9 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'Zmin'))
                             obj.PlotOptions.Zmin = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'geoRenderType'))
+                            obj.PlotOptions.geoRenderType = varargin{a+1};
                         end
                     end
             end
@@ -1063,7 +1067,7 @@ classdef plotlyfig < handle
                         ||  strcmpi(fieldname,'yaxis') ||  strcmpi(fieldname,'cone')...
                         ||  strcmpi(fieldname,'legend') ||  strcmpi(fieldname,'histogram')...
                         ||  strcmpi(fieldname,'scatter') ||  strcmpi(fieldname,'line')...
-                        ||  strcmpi(fieldname,'scattergeo') ...
+                        ||  strcmpi(fieldname,'scattergeo') ||  strcmpi(fieldname,'scattermapbox')...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
