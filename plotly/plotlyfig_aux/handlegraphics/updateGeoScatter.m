@@ -12,17 +12,27 @@ function updateGeoScatter(obj,geoIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-ASSOCIATE GEO-AXES LAYOUT-%
-    obj.data{geoIndex}.geo = sprintf('geo%d', xsource+1);
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        obj.data{geoIndex}.geo = sprintf('geo%d', xsource+1);
+    elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
+        obj.data{geoIndex}.subplot = sprintf('mapbox%d', xsource+1);
+    end
 
     %-------------------------------------------------------------------------%
 
     %-set scattergeo type-%
-    obj.data{geoIndex}.type = 'scattergeo';
+    if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
+        obj.data{geoIndex}.type = 'scattergeo';
+
+    %-set scattermapbox type-%
+    elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
+        obj.data{geoIndex}.type = 'scattermapbox';
+    end
 
     %-------------------------------------------------------------------------%
 
     %-set scattergeo mode-%
-    obj.data{geoIndex}.mode = 'markers';
+    obj.data{geoIndex}.mode = 'markers+text';
 
     %-------------------------------------------------------------------------%
 
@@ -35,10 +45,19 @@ function updateGeoScatter(obj,geoIndex)
     %-get marker setting-%
     marker = extractGeoMarker(geoData, axisData);
 
+    if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
+        marker.allowoverlap = true;
+        marker = rmfield(marker, 'symbol');
+
+        if strcmp(marker.color, 'rgba(0,0,0,0)') && isfield(marker, 'line')
+            marker.color = marker.line.color;
+        end
+    end
+
     %-------------------------------------------------------------------------%
 
     %-set marker field-%
-    obj.data{geoIndex}.marker = marker;   
+    obj.data{geoIndex}.marker = marker;
 
     %-------------------------------------------------------------------------%
 end
