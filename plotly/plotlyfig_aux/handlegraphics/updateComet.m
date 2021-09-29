@@ -50,17 +50,17 @@ function updateComet(obj,plotIndex)
 
 %-------------------------------------------------------------------------%
 
-ax = obj.State.Plot(plotIndex).AssociatedAxis;
+axisData = obj.State.Plot(plotIndex).AssociatedAxis;
 %-AXIS INDEX-%
-axIndex = obj.getAxisIndex(ax);
+axIndex = obj.getAxisIndex(axisData);
 
 %-PLOT DATA STRUCTURE- %
-plot_data = get(obj.State.Plot(plotIndex).Handle);
+plotData = get(obj.State.Plot(plotIndex).Handle);
 
 animObjs = obj.State.Plot(plotIndex).AssociatedAxis.Children;
 
 for i=1:numel(animObjs)
-    if isequaln(get(animObjs(i)),plot_data)
+    if isequaln(get(animObjs(i)),plotData)
         animObj = animObjs(i);
     end
     if strcmpi(animObjs(i).Tag,'tail')
@@ -101,7 +101,7 @@ obj.data{plotIndex}.type = 'scatter';
 %-------------------------------------------------------------------------%
 
 %-scatter visible-%
-obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
+obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
@@ -118,8 +118,8 @@ obj.data{plotIndex}.y = y(1);
 %-For 3D plots-%
 obj.PlotOptions.is3d = false; % by default
 
-numbset = unique(z);
-if numel(numbset)>1
+nSet = unique(z);
+if numel(nSet)>1
     if any(z)
         %-scatter z-%
         obj.data{plotIndex}.z = z(1);
@@ -135,17 +135,17 @@ end
 %-------------------------------------------------------------------------%
 
 %-scatter name-%
-obj.data{plotIndex}.name = plot_data.Tag;
+obj.data{plotIndex}.name = plotData.Tag;
 
 %-------------------------------------------------------------------------%
 
 %-scatter mode-%
-if ~strcmpi('none', plot_data.Marker) ...
-        && ~strcmpi('none', plot_data.LineStyle)
+if ~strcmpi('none', plotData.Marker) ...
+        && ~strcmpi('none', plotData.LineStyle)
     mode = 'lines+markers';
-elseif ~strcmpi('none', plot_data.Marker)
+elseif ~strcmpi('none', plotData.Marker)
     mode = 'markers';
-elseif ~strcmpi('none', plot_data.LineStyle)
+elseif ~strcmpi('none', plotData.LineStyle)
     mode = 'lines';
 else
     mode = 'none';
@@ -156,17 +156,17 @@ obj.data{plotIndex}.mode = mode;
 %-------------------------------------------------------------------------%
 
 %-scatter line-%
-obj.data{plotIndex}.line = extractLineLine(plot_data);
+obj.data{plotIndex}.line = extractLineLine(plotData);
 
 %-------------------------------------------------------------------------%
 
 %-scatter marker-%
-obj.data{plotIndex}.marker = extractLineMarker(plot_data);
+obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
 %-------------------------------------------------------------------------%
 
 %-scatter showlegend-%
-leg = get(plot_data.Annotation);
+leg = get(plotData.Annotation);
 legInfo = get(leg.LegendInformation);
 
 switch legInfo.IconDisplayStyle
@@ -180,23 +180,132 @@ obj.data{plotIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
 
+%-SCENE CONFIGUTATION-% for 3D animations, like comet3
+
+%-------------------------------------------------------------------------%
+if obj.PlotOptions.is3d
+
+    %-aspect ratio-%
+    asr = obj.PlotOptions.AspectRatio;
+
+    if ~isempty(asr)
+        if ischar(asr)
+            scene.aspectmode = asr;
+        elseif isvector(ar) && length(asr) == 3
+            xar = asr(1);
+            yar = asr(2);
+            zar = asr(3);
+        end
+    else
+
+        %-define as default-%
+        xar = max(x(:));
+        yar = max(y(:));
+        xyar = max([xar, yar]);
+        zar = 0.75*xyar;
+    end
+
+    scene.aspectratio.x = 1.1*xyar;
+    scene.aspectratio.y = 1.0*xyar;
+    scene.aspectratio.z = zar;
+
+    %---------------------------------------------------------------------%
+
+    %-camera eye-%
+    ey = obj.PlotOptions.CameraEye;
+
+    if ~isempty(ey)
+        if isvector(ey) && length(ey) == 3
+            scene.camera.eye.x = ey(1);
+            scene.camera.eye.y = ey(2);
+            scene.camera.eye.z = ey(3);
+        end
+    else
+
+        %-define as default-%
+        xey = - xyar; if xey>0, xfac = -0.0; else, xfac = 0.0; end
+        yey = - xyar; if yey>0, yfac = -0.3; else, yfac = 0.3; end
+        if zar>0, zfac = -0.1; else, zfac = 0.1; end
+
+        scene.camera.eye.x = xey + xfac*xey; 
+        scene.camera.eye.y = yey + yfac*yey;
+        scene.camera.eye.z = zar + zfac*zar;
+    end
+
+    %-------------------------------------------------------------------------%
+
+    %-scene axis configuration-%
+
+    scene.xaxis.range = axisData.XLim;
+    scene.yaxis.range = axisData.YLim;
+    scene.zaxis.range = axisData.ZLim;
+
+    scene.xaxis.tickvals = axisData.XTick;
+    scene.xaxis.ticktext = axisData.XTickLabel;
+
+    scene.yaxis.tickvals = axisData.YTick;
+    scene.yaxis.ticktext = axisData.YTickLabel;
+
+    scene.zaxis.tickvals = axisData.ZTick;
+    scene.zaxis.ticktext = axisData.ZTickLabel;
+
+    scene.xaxis.zeroline = false;
+    scene.yaxis.zeroline = false;
+    scene.zaxis.zeroline = false;
+
+    scene.xaxis.showgrid = strcmpi(axisData.XGrid,'on');
+    scene.yaxis.showgrid = strcmpi(axisData.YGrid,'on');
+    scene.zaxis.showgrid = strcmpi(axisData.ZGrid,'on');
+
+    scene.xaxis.showline = true;
+    scene.yaxis.showline = true;
+    scene.zaxis.showline = true;
+
+    scene.xaxis.tickcolor = 'rgba(0,0,0,1)';
+    scene.yaxis.tickcolor = 'rgba(0,0,0,1)';
+    scene.zaxis.tickcolor = 'rgba(0,0,0,1)';
+
+    scene.xaxis.ticklabelposition = 'outside';
+    scene.yaxis.ticklabelposition = 'outside';
+    scene.zaxis.ticklabelposition = 'outside';
+
+    scene.xaxis.title = axisData.XLabel.String;
+    scene.yaxis.title = axisData.YLabel.String;
+    scene.zaxis.title = axisData.ZLabel.String;
+
+    scene.xaxis.tickfont.size = axisData.FontSize;
+    scene.yaxis.tickfont.size = axisData.FontSize;
+    scene.zaxis.tickfont.size = axisData.FontSize;
+
+    scene.xaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+    scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+    scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+
+    %-------------------------------------------------------------------------%
+
+    %-SET SCENE TO LAYOUT-%
+    obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
+end
+
+%-------------------------------------------------------------------------%
+
 %-Add a temporary tag-%
 obj.layout.isAnimation = true;
 
 %-------------------------------------------------------------------------%
 
 %-Create Frames-%
-DD = obj.data{plotIndex};
+frameData = obj.data{plotIndex};
 
-switch(plot_data.Tag)
+switch(plotData.Tag)
     case 'head'
         for i = 1:length(x)
-            DD.x=[x(i) x(i)];
-            DD.y=[y(i) y(i)];
+            frameData.x=[x(i) x(i)];
+            frameData.y=[y(i) y(i)];
             if obj.PlotOptions.is3d
-                DD.z=[z(i) z(i)];
+                frameData.z=[z(i) z(i)];
             end
-            obj.frames{i}.data{plotIndex} = DD;
+            obj.frames{i}.data{plotIndex} = frameData;
             obj.frames{i}.name=['f',num2str(i)];
         end
     case 'body'
@@ -205,26 +314,26 @@ switch(plot_data.Tag)
             if sIdx < 0
                 sIdx=0;
             end
-            DD.x=x(sIdx+1:i);
-            DD.y=y(sIdx+1:i);
+            frameData.x=x(sIdx+1:i);
+            frameData.y=y(sIdx+1:i);
             if obj.PlotOptions.is3d
-                DD.z=z(sIdx+1:i);
+                frameData.z=z(sIdx+1:i);
             end
             if i==length(x)
-                DD.x=nan;
-                DD.y=nan;
+                frameData.x=nan;
+                frameData.y=nan;
                 if obj.PlotOptions.is3d
-                    DD.z=nan;
+                    frameData.z=nan;
                 end
             end
-            obj.frames{i}.data{plotIndex} = DD;
+            obj.frames{i}.data{plotIndex} = frameData;
         end
     case 'tail'
         for i = 1:length(x)
-            DD.x=x(1:i);
-            DD.y=y(1:i);
+            frameData.x=x(1:i);
+            frameData.y=y(1:i);
             if obj.PlotOptions.is3d
-                DD.z=z(1:i);
+                frameData.z=z(1:i);
             end
             if i < body.MaximumNumPoints
                 rIdx = i;
@@ -233,13 +342,13 @@ switch(plot_data.Tag)
             end
             if i ~= length(x)
                 val = nan(rIdx,1);
-                DD.x(end-rIdx+1:end)=val;
-                DD.y(end-rIdx+1:end)=val;
+                frameData.x(end-rIdx+1:end)=val;
+                frameData.y(end-rIdx+1:end)=val;
                 if obj.PlotOptions.is3d
-                    DD.z(end-rIdx+1:end)=val;
+                    frameData.z(end-rIdx+1:end)=val;
                 end
             end
-            obj.frames{i}.data{plotIndex} = DD;
+            obj.frames{i}.data{plotIndex} = frameData;
         end
 end
 

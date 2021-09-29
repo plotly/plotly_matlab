@@ -219,11 +219,11 @@ try
     if obj.layout.isAnimation
         %- Play Button Options-%
         opts{1} = nan;
-        opts{2}.frame.duration = 10;
+        opts{2}.frame.duration = obj.PlotOptions.FrameDuration;
         opts{2}.frame.redraw = true;
         opts{2}.fromcurrent = true;
         opts{2}.mode = 'immediate';
-        opts{2}.transition.duration = 0;
+        opts{2}.transition.duration = obj.PlotOptions.FrameTransitionDuration;
 
         button{1}.label = '&#9654;';
         button{1}.method = 'animate';

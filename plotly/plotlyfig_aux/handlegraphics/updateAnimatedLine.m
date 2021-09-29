@@ -1,65 +1,15 @@
 function updateAnimatedLine(obj,plotIndex)
 
-%----SCATTER FIELDS----%
-
-% x - [DONE]
-% y - [DONE]
-% r - [HANDLED BY SCATTER]
-% t - [HANDLED BY SCATTER]
-% mode - [DONE]
-% name - [NOT SUPPORTED IN MATLAB]
-% text - [DONE]
-% error_y - [HANDLED BY ERRORBAR]
-% error_x - [NOT SUPPORTED IN MATLAB]
-% connectgaps - [NOT SUPPORTED IN MATLAB]
-% fill - [HANDLED BY AREA]
-% fillcolor - [HANDLED BY AREA]
-% opacity --- [TODO]
-% textfont - [NOT SUPPORTED IN MATLAB]
-% textposition - [NOT SUPPORTED IN MATLAB]
-% xaxis [DONE]
-% yaxis [DONE]
-% showlegend [DONE]
-% stream - [HANDLED BY PLOTLYSTREAM]
-% visible [DONE]
-% type [DONE]
-
-% MARKER
-% marler.color - [DONE]
-% marker.size - [DONE]
-% marker.line.color - [DONE]
-% marker.line.width - [DONE]
-% marker.line.dash - [NOT SUPPORTED IN MATLAB]
-% marker.line.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
-% marker.line.shape - [NOT SUPPORTED IN MATLAB]
-% marker.opacity --- [TODO]
-% marker.colorscale - [NOT SUPPORTED IN MATLAB]
-% marker.sizemode - [NOT SUPPORTED IN MATLAB]
-% marker.sizeref - [NOT SUPPORTED IN MATLAB]
-% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
-
-% LINE
-
-% line.color - [DONE]
-% line.width - [DONE]
-% line.dash - [DONE]
-% line.opacity --- [TODO]
-% line.smoothing - [NOT SUPPORTED IN MATLAB]
-% line.shape - [NOT SUPPORTED IN MATLAB]
-
-%-------------------------------------------------------------------------%
-
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
 %-PLOT DATA STRUCTURE- %
-plot_data = get(obj.State.Plot(plotIndex).Handle);
+plotData = get(obj.State.Plot(plotIndex).Handle);
 
 animObjs = obj.State.Plot(plotIndex).AssociatedAxis.Children;
 
 for i=1:numel(animObjs)
-    if isequaln(get(animObjs(i)),plot_data)
+    if isequaln(get(animObjs(i)),plotData)
         animObj = animObjs(i);
     end
 end
@@ -83,9 +33,9 @@ ispolar = strcmpi(treatas, 'compass') || strcmpi(treatas, 'ezpolar');
 try
     [x,y,z] = getpoints(animObj);
 catch
-    x=plot_data.XData;
-    y=plot_data.YData;
-    z=plot_data.ZData;
+    x = plotData.XData;
+    y = plotData.YData;
+    z = plotData.ZData;
 end
 
 %-------------------------------------------------------------------------%
@@ -110,7 +60,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-scatter visible-%
-obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
+obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
@@ -155,17 +105,17 @@ end
 %-------------------------------------------------------------------------%
 
 %-scatter name-%
-obj.data{plotIndex}.name = plot_data.DisplayName;
+obj.data{plotIndex}.name = plotData.DisplayName;
 
 %-------------------------------------------------------------------------%
 
 %-scatter mode-%
-if ~strcmpi('none', plot_data.Marker) ...
-        && ~strcmpi('none', plot_data.LineStyle)
+if ~strcmpi('none', plotData.Marker) ...
+        && ~strcmpi('none', plotData.LineStyle)
     mode = 'lines+markers';
-elseif ~strcmpi('none', plot_data.Marker)
+elseif ~strcmpi('none', plotData.Marker)
     mode = 'markers';
-elseif ~strcmpi('none', plot_data.LineStyle)
+elseif ~strcmpi('none', plotData.LineStyle)
     mode = 'lines';
 else
     mode = 'none';
@@ -176,17 +126,17 @@ obj.data{plotIndex}.mode = mode;
 %-------------------------------------------------------------------------%
 
 %-scatter line-%
-obj.data{plotIndex}.line = extractLineLine(plot_data);
+obj.data{plotIndex}.line = extractLineLine(plotData);
 
 %-------------------------------------------------------------------------%
 
 %-scatter marker-%
-obj.data{plotIndex}.marker = extractLineMarker(plot_data);
+obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
 %-------------------------------------------------------------------------%
 
 %-scatter showlegend-%
-leg = get(plot_data.Annotation);
+leg = get(plotData.Annotation);
 legInfo = get(leg.LegendInformation);
 
 switch legInfo.IconDisplayStyle
@@ -206,17 +156,17 @@ obj.layout.isAnimation = true;
 %-------------------------------------------------------------------------%
 
 %-Create Frames-%
-DD = obj.data{plotIndex};
+frameData = obj.data{plotIndex};
 
 for i = 1:length(x)
-    sIdx = i - plot_data.MaximumNumPoints;
+    sIdx = i - plotData.MaximumNumPoints;
     if sIdx < 0
         sIdx=0;
     end
-    DD.x=x(sIdx+1:i);
-    DD.y=y(sIdx+1:i);
+    frameData.x=x(sIdx+1:i);
+    frameData.y=y(sIdx+1:i);
     obj.frames{i}.name = ['f',num2str(i)];
-    obj.frames{i}.data{plotIndex} = DD;
+    obj.frames{i}.data{plotIndex} = frameData;
 end
 
 end

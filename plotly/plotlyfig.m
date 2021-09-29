@@ -62,6 +62,8 @@ classdef plotlyfig < handle
             obj.PlotOptions.is_headmap_axis = false;
             obj.PlotOptions.Quality = -1;
             obj.PlotOptions.Zmin = [];
+            obj.PlotOptions.FrameDuration = 1;      % in ms.
+            obj.PlotOptions.FrameTransitionDuration = 0;      % in ms.
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -252,6 +254,16 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'Zmin'))
                             obj.PlotOptions.Zmin = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'FrameDuration'))
+                            if varargin{a+1} > 0
+                                obj.PlotOptions.FrameDuration = varargin{a+1};
+                            end
+                        end
+                        if(strcmpi(varargin{a},'FrameTransitionDuration'))
+                            if varargin{a+1} >= 0
+                                obj.PlotOptions.FrameTransitionDuration = varargin{a+1};
+                            end
                         end
                     end
             end
