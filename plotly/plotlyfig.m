@@ -4,6 +4,7 @@ classdef plotlyfig < handle
     properties
         data; % data of the plot
         layout;  % layout of the plot
+        frames;  % for animations
         url; % url response of making post request
         error; % error response of making post request
         warning; % warning response of making post request
@@ -35,6 +36,7 @@ classdef plotlyfig < handle
             %-Core-%
             obj.data = {};
             obj.layout = struct();
+            obj.frames = {};
             obj.url = '';
             
             obj.UserData.Verbose = true;
@@ -60,6 +62,8 @@ classdef plotlyfig < handle
             obj.PlotOptions.is_headmap_axis = false;
             obj.PlotOptions.Quality = -1;
             obj.PlotOptions.Zmin = [];
+            obj.PlotOptions.FrameDuration = 1;      % in ms.
+            obj.PlotOptions.FrameTransitionDuration = 0;      % in ms.
             obj.PlotOptions.geoRenderType = 'geo';
             
             % offline options
@@ -251,6 +255,16 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'Zmin'))
                             obj.PlotOptions.Zmin = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'FrameDuration'))
+                            if varargin{a+1} > 0
+                                obj.PlotOptions.FrameDuration = varargin{a+1};
+                            end
+                        end
+                        if(strcmpi(varargin{a},'FrameTransitionDuration'))
+                            if varargin{a+1} >= 0
+                                obj.PlotOptions.FrameTransitionDuration = varargin{a+1};
+                            end
                         end
                         if(strcmpi(varargin{a},'geoRenderType'))
                             obj.PlotOptions.geoRenderType = varargin{a+1};
@@ -541,7 +555,7 @@ classdef plotlyfig < handle
                         web(response.url, '-browser');
                     end
                 else
-                    obj.url = plotlyoffline(obj);   
+                    obj.url = plotlyoffline(obj);
                     if obj.PlotOptions.OpenURL
                         web(obj.url, '-browser');
                     end
