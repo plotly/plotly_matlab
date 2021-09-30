@@ -265,6 +265,7 @@ classdef plotlyfig < handle
                             if varargin{a+1} >= 0
                                 obj.PlotOptions.FrameTransitionDuration = varargin{a+1};
                             end
+                        end
                         if(strcmpi(varargin{a},'geoRenderType'))
                             obj.PlotOptions.geoRenderType = varargin{a+1};
                         end
