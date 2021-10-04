@@ -5,7 +5,7 @@ function obj = updateData(obj, dataIndex)
 try
     
     %-update plot based on TreatAs PlotOpts-%
-    
+   
     if ismember('pie3', lower(obj.PlotOptions.TreatAs))
         updatePie3(obj, dataIndex);
     elseif ismember('pcolor', lower(obj.PlotOptions.TreatAs))
@@ -108,6 +108,8 @@ try
                 updateArea(obj, dataIndex); 
             case 'areaseries'
                 updateAreaseries(obj, dataIndex);
+            case 'animatedline'
+                updateAnimatedLine(obj, dataIndex);
             case 'bar'
                 updateBar(obj, dataIndex); 
             case 'barseries'
@@ -217,5 +219,43 @@ catch
 end
 
 %-------------------------------------------------------------------------%
+
+try
+    if obj.layout.isAnimation
+        %- Play Button Options-%
+        opts{1} = nan;
+        opts{2}.frame.duration = obj.PlotOptions.FrameDuration;
+        opts{2}.frame.redraw = true;
+        opts{2}.fromcurrent = true;
+        opts{2}.mode = 'immediate';
+        opts{2}.transition.duration = obj.PlotOptions.FrameTransitionDuration;
+
+        button{1}.label = '&#9654;';
+        button{1}.method = 'animate';
+        button{1}.args = opts;
+        
+        opts{1} = {nan};
+        opts{2}.transition.duration = 0;
+        opts{2}.frame.duration = 0;
+        
+        button{2}.label = '&#9724;';
+        button{2}.method = 'animate';
+        button{2}.args = opts;
+
+        obj.layout.updatemenus{1}.type = 'buttons';
+        obj.layout.updatemenus{1}.buttons = button;
+        obj.layout.updatemenus{1}.pad.r = 70;
+        obj.layout.updatemenus{1}.pad.t = 10;
+        obj.layout.updatemenus{1}.direction = 'left';
+        obj.layout.updatemenus{1}.showactive = true;
+        obj.layout.updatemenus{1}.x = 0.01;
+        obj.layout.updatemenus{1}.y = 0.01;
+        obj.layout.updatemenus{1}.xanchor = 'left';
+        obj.layout.updatemenus{1}.yanchor = 'top';
+        
+        obj.layout = rmfield(obj.layout,'isAnimation');
+    end
+catch
+end
 
 end
