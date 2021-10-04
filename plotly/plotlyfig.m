@@ -51,7 +51,7 @@ classdef plotlyfig < handle
             obj.PlotOptions.Visible = 'on';
             obj.PlotOptions.TriangulatePatch = false;
             obj.PlotOptions.StripMargins = false;
-            obj.PlotOptions.TreatAs = '_';
+            obj.PlotOptions.TreatAs = {'_'};
             obj.PlotOptions.Image3D = false;
             obj.PlotOptions.ContourProjection = false;
             obj.PlotOptions.AxisEqual = false;
@@ -102,6 +102,7 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.MinCaptionMargin = 80;
             obj.PlotlyDefaults.IsLight = false;
             obj.PlotlyDefaults.isGeoaxis = false;
+            obj.PlotlyDefaults.isTernary = false;
             
             %-State-%
             obj.State.Figure = [];
@@ -235,7 +236,11 @@ classdef plotlyfig < handle
                             obj.PlotOptions.TriangulatePatch = varargin{a+1};
                         end
                         if(strcmpi(varargin{a},'TreatAs'))
-                            obj.PlotOptions.TreatAs = varargin{a+1};
+                            if ~iscell(varargin{a+1})
+                                obj.PlotOptions.TreatAs = {varargin{a+1}};
+                            else
+                                obj.PlotOptions.TreatAs = varargin{a+1};
+                            end
                         end
                         if(strcmpi(varargin{a},'AxisEqual'))
                             obj.PlotOptions.AxisEqual = varargin{a+1};
@@ -752,7 +757,9 @@ classdef plotlyfig < handle
                     elseif obj.PlotlyDefaults.isGeoaxis
                         % TODO    
                     else
-                        updateAnnotation(obj,n);
+                        if ~obj.PlotlyDefaults.isTernary
+                            updateAnnotation(obj,n);
+                        end
                     end
                 catch
                     % TODO to the future
@@ -773,7 +780,11 @@ classdef plotlyfig < handle
             
             % update colorbars
             for n = 1:obj.State.Figure.NumColorbars
-                updateColorbar(obj,n);
+                if ~obj.PlotlyDefaults.isTernary
+                    updateColorbar(obj,n);
+                else
+                    updateTernaryColorbar(obj,n);
+                end
             end
             
         end
@@ -1072,6 +1083,7 @@ classdef plotlyfig < handle
                         ||  strcmpi(fieldname,'legend') ||  strcmpi(fieldname,'histogram')...
                         ||  strcmpi(fieldname,'scatter') ||  strcmpi(fieldname,'line')...
                         ||  strcmpi(fieldname,'scattergeo') ||  strcmpi(fieldname,'scattermapbox')...
+                        ||  strcmpi(fieldname,'scatterternary')...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end
