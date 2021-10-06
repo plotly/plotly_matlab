@@ -568,6 +568,7 @@ classdef plotlyfig < handle
             
             % find axes of figure
             ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
+
             if isempty(ax)
                 ax = gca;
             end
@@ -601,7 +602,7 @@ classdef plotlyfig < handle
             
             % update number of annotations (one title per axis)
             obj.State.Figure.NumTexts = length(ax);
-            
+
             % find children of figure axes
             for a = 1:length(ax)
                 
@@ -620,10 +621,10 @@ classdef plotlyfig < handle
                 plots = findobj(ax(axrev),'-not','Type','Text','-not','Type','axes','-depth',1);
                 
                 % get number of nbars for pie3
-                if strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+                if ismember('pie3', lower(obj.PlotOptions.TreatAs))
                     obj.PlotOptions.nbars{a} = 0;
                     for i = 1:length(plots)
-                        if strcmpi(getGraphClass(plots(i)), 'surface')
+                        if ismember('surface', lower(obj.PlotOptions.TreatAs))
                             obj.PlotOptions.nbars{a} = obj.PlotOptions.nbars{a} + 1;
                         end
                     end
@@ -631,7 +632,15 @@ classdef plotlyfig < handle
                 
                 % add baseline objects
                 baselines = findobj(ax(axrev),'-property','BaseLine');
-                
+
+                % check is current axes have multiple y-axes
+                try 
+                    obj.PlotlyDefaults.isMultipleYAxes(axrev) = length(ax(axrev).YAxis) == 2;
+                catch
+                    obj.PlotlyDefaults.isMultipleYAxes(axrev) = false;
+                end
+
+                % update structures for each plot in current axes
                 for np = 1:length(plots)
                     
                     % reverse plots
@@ -649,9 +658,19 @@ classdef plotlyfig < handle
                 end
 
                 % this works for pareto
-                if length(plots) == 0
-                    if obj.State.Figure.NumPlots ~=0
+                if length(plots) == 0 & obj.State.Figure.NumPlots ~= 0
+                    isPareto = length(ax) >= 2 & obj.State.Figure.NumPlots >= 2;
+                    isBar = strcmpi(lower(obj.State.Plot(obj.State.Figure.NumPlots).Class), 'line');
+                    isLine = strcmpi(lower(obj.State.Plot(obj.State.Figure.NumPlots-1).Class), 'bar');
+                    isPareto = isPareto & isBar & isLine;
+
+                    if isPareto
                         obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                    else
+                        obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
+                        obj.State.Plot(obj.State.Figure.NumPlots).Handle = {};
+                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).Class = 'nothing';
                     end
                 end
                 
@@ -714,6 +733,7 @@ classdef plotlyfig < handle
             
             % reset dataget(obj.State.Figure.Handle,'Children')
             obj.data = {};
+            obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
             
             % reset layout
             obj.layout = struct();
@@ -724,7 +744,14 @@ classdef plotlyfig < handle
             % update axes
             for n = 1:obj.State.Figure.NumAxes
                 try
-                    updateAxis(obj,n);
+                    if ~obj.PlotlyDefaults.isMultipleYAxes(n)
+                        updateAxis(obj,n);
+
+                    else
+                        for yax = 1:2
+                            updateAxisMultipleYAxes(obj,n,yax);
+                        end
+                    end
                 catch
                     % TODO to the future
                     % disp('catch at line 647 in plotlyfig.m file')
@@ -732,8 +759,6 @@ classdef plotlyfig < handle
             end
             
             % update plots
-            obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
-
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
                 

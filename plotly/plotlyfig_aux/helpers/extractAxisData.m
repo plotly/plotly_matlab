@@ -53,8 +53,13 @@ axis.linecolor = axiscol;
 axis.tickcolor = axiscol;
 %-axis tickfont-%
 axis.tickfont.color = axiscol;
+
 %-axis grid color-%
-axis.gridcolor = axiscol;
+try
+    axis.gridcolor = sprintf('rgba(%f,,%f,%f,%f)', 255*axis_data.GridColor, axis_data.GridAlpha);
+catch
+    axis.gridcolor = axiscol;
+end
 
 %-------------------------------------------------------------------------%
 
@@ -170,6 +175,7 @@ else
             %-------------------------------------------------------------%
             
             if isnumeric(dataLim)
+                % axis.title = 'axis';
                 axis.range = dataLim;
                 
             %-------------------------------------------------------------%
