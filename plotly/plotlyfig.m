@@ -775,10 +775,14 @@ classdef plotlyfig < handle
             end
             
             % update legends
-            for n = 1:obj.State.Figure.NumLegends
-                if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
-                    updateLegend(obj,n);
+            if obj.State.Figure.NumLegends < 2
+                for n = 1:obj.State.Figure.NumLegends
+                    if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
+                        updateLegend(obj,n);
+                    end
                 end
+            else
+                updateLegendMultipleAxes(obj,1);
             end
             
             % update colorbars
