@@ -45,7 +45,6 @@ else
                     scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
                     col =  255*(colormap(1+ floor(scalefactor*(length(colormap)-1)),:));
                 case 'direct'
-                    patch_data.FaceVertexCData
                     col =  255*(colormap(patch_data.FaceVertexCData(1,1),:));
                     
             end

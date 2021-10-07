@@ -5,47 +5,44 @@ function obj = updateData(obj, dataIndex)
 try
     
     %-update plot based on TreatAs PlotOpts-%
-    
-    if ~strcmpi(obj.PlotOptions.TreatAs, '_')
-        if strcmpi(obj.PlotOptions.TreatAs, 'pie3')
-            updatePie3(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'pcolor')
-            updatePColor(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'polarplot')
-            updatePolarplot(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'contour3')
-            updateContour3(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'compass')
-            updateLineseries(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'ezpolar')
-            updateLineseries(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'polarhistogram')
-            updateHistogramPolar(obj, dataIndex); 
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'coneplot')
-            updateConeplot(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'bar3')
-            updateBar3(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'bar3h')
-            updateBar3h(obj, dataIndex); 
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'surf')
-            updateSurf(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'comet') || strcmpi(obj.PlotOptions.TreatAs, 'comet3')
-            updateComet(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'fmesh')
-            updateFmesh(obj, dataIndex);
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'mesh')
-            updateMesh(obj, dataIndex); 
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'surfc')
-            updateSurfc(obj, dataIndex); 
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'meshc')
-            updateSurfc(obj, dataIndex); 
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'surfl')
-            updateSurfl(obj, dataIndex);
+   
+    if ismember('pie3', lower(obj.PlotOptions.TreatAs))
+        updatePie3(obj, dataIndex);
+    elseif ismember('pcolor', lower(obj.PlotOptions.TreatAs))
+        updatePColor(obj, dataIndex);
+    elseif ismember('polarplot', lower(obj.PlotOptions.TreatAs))
+        updatePolarplot(obj, dataIndex);
+    elseif ismember('contour3', lower(obj.PlotOptions.TreatAs))
+        updateContour3(obj, dataIndex);
+    elseif ismember('compass', lower(obj.PlotOptions.TreatAs))
+        updateLineseries(obj, dataIndex);
+    elseif ismember('ezpolar', lower(obj.PlotOptions.TreatAs))
+        updateLineseries(obj, dataIndex);
+    elseif ismember('polarhistogram', lower(obj.PlotOptions.TreatAs))
+        updateHistogramPolar(obj, dataIndex); 
+    elseif ismember('coneplot', lower(obj.PlotOptions.TreatAs))
+        updateConeplot(obj, dataIndex);
+    elseif ismember('bar3', lower(obj.PlotOptions.TreatAs))
+        updateBar3(obj, dataIndex);
+    elseif ismember('bar3h', lower(obj.PlotOptions.TreatAs))
+        updateBar3h(obj, dataIndex); 
+    elseif ismember('surf', lower(obj.PlotOptions.TreatAs))
+        updateSurf(obj, dataIndex); 
+    elseif ismember('fmesh', lower(obj.PlotOptions.TreatAs))
+        updateFmesh(obj, dataIndex);
+    elseif ismember('mesh', lower(obj.PlotOptions.TreatAs))
+        updateMesh(obj, dataIndex); 
+    elseif ismember('surfc', lower(obj.PlotOptions.TreatAs))
+        updateSurfc(obj, dataIndex); 
+    elseif ismember('meshc', lower(obj.PlotOptions.TreatAs))
+        updateSurfc(obj, dataIndex); 
+    elseif ismember('surfl', lower(obj.PlotOptions.TreatAs))
+        updateSurfl(obj, dataIndex);
 
-        % this one will be revomed
-        elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
-            updateStreamtube(obj, dataIndex);
-        end
+    % this one will be revomed
+    % elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
+    %     updateStreamtube(obj, dataIndex);
+    % end
         
     %-update plot based on plot call class-%
     
@@ -75,6 +72,8 @@ try
             case 'line'
                 if obj.PlotlyDefaults.isGeoaxis
                     updateGeoPlot(obj, dataIndex);
+                elseif ismember('ternplot', lower(obj.PlotOptions.TreatAs))
+                    updateTernaryPlot(obj, dataIndex);
                 else
                     updateLineseries(obj, dataIndex);
                 end
@@ -88,6 +87,10 @@ try
                 % check for histogram
                 if isHistogram(obj,dataIndex)
                     updateHistogram(obj,dataIndex);
+                elseif ismember('ternplotpro', lower(obj.PlotOptions.TreatAs))
+                    updateTernaryPlotPro(obj, dataIndex);
+                elseif ismember('ternpcolor', lower(obj.PlotOptions.TreatAs))
+                    updateTernaryPlotPro(obj, dataIndex);
                 else
                     updatePatch(obj, dataIndex);
                 end
@@ -114,10 +117,12 @@ try
             case 'baseline'
                 updateBaseline(obj, dataIndex);
             case {'contourgroup','contour'}
-                if ~obj.PlotOptions.ContourProjection
-                    updateContourgroup(obj,dataIndex);
-                else
+                if obj.PlotOptions.ContourProjection
                     updateContourProjection(obj,dataIndex);
+                elseif ismember('terncontour', lower(obj.PlotOptions.TreatAs))
+                    updateTernaryContour(obj, dataIndex);
+                else
+                    updateContourgroup(obj,dataIndex);
                 end
             case 'functioncontour'
                 updateFunctionContour(obj,dataIndex);
