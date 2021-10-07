@@ -137,7 +137,7 @@ try
             case 'quivergroup'
                 updateQuivergroup(obj, dataIndex);
             case 'scatter'
-                if strcmpi(obj.State.Axis(dataIndex).Handle.Type, 'polaraxes')
+                if ismember('polaraxes', lower(obj.PlotOptions.TreatAs))
                     updateScatterPolar(obj, dataIndex);
                 elseif obj.PlotlyDefaults.isGeoaxis
                     updateGeoScatter(obj, dataIndex);

@@ -54,10 +54,20 @@ function updateLineseries(obj,plotIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
 %-PLOT DATA STRUCTURE- %
-plot_data = get(obj.State.Plot(plotIndex).Handle);
+plotData = get(obj.State.Plot(plotIndex).Handle);
 
 %-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
+try
+    for yax = 1:2
+        yaxIndex(yax) = sum(plotData.Parent.YAxis(yax).Color == plotData.Color);
+    end
+
+    [~, yaxIndex] = max(yaxIndex);
+    [xsource, ysource] = findSourceAxis(obj, axIndex, yaxIndex);
+
+catch
+    [xsource, ysource] = findSourceAxis(obj,axIndex);
+end
 
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
@@ -67,13 +77,13 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 
 %-if polar plot or not-%
 treatas = obj.PlotOptions.TreatAs;
-ispolar = strcmpi(treatas, 'compass') || strcmpi(treatas, 'ezpolar');
+ispolar = ismember('compass', lower(treatas)) || ismember('ezpolar', lower(treatas));
 
 %-------------------------------------------------------------------------%
 
 %-getting data-%
-x = plot_data.XData;
-y = plot_data.YData;
+x = plotData.XData;
+y = plotData.YData;
 
 %-------------------------------------------------------------------------%
 
@@ -97,7 +107,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-scatter visible-%
-obj.data{plotIndex}.visible = strcmp(plot_data.Visible,'on');
+obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
@@ -117,7 +127,7 @@ if ispolar
     theta = atan2(x,y);
     obj.data{plotIndex}.theta = -(rad2deg(theta) - 90);
 else
-    obj.data{plotIndex}.y = plot_data.YData;
+    obj.data{plotIndex}.y = plotData.YData;
 end
 
 %-------------------------------------------------------------------------%
@@ -125,13 +135,13 @@ end
 %-Fro 3D plots-%
 obj.PlotOptions.is3d = false; % by default
 
-if isfield(plot_data,'ZData')
+if isfield(plotData,'ZData')
     
-    numbset = unique(plot_data.ZData);
+    numbset = unique(plotData.ZData);
     
-    if any(plot_data.ZData) && length(numbset)>1
+    if any(plotData.ZData) && length(numbset)>1
         %-scatter z-%
-        obj.data{plotIndex}.z = plot_data.ZData;
+        obj.data{plotIndex}.z = plotData.ZData;
         
         %-overwrite type-%
         obj.data{plotIndex}.type = 'scatter3d';
@@ -144,17 +154,17 @@ end
 %-------------------------------------------------------------------------%
 
 %-scatter name-%
-obj.data{plotIndex}.name = plot_data.DisplayName;
+obj.data{plotIndex}.name = plotData.DisplayName;
 
 %-------------------------------------------------------------------------%
 
 %-scatter mode-%
-if ~strcmpi('none', plot_data.Marker) ...
-        && ~strcmpi('none', plot_data.LineStyle)
+if ~strcmpi('none', plotData.Marker) ...
+        && ~strcmpi('none', plotData.LineStyle)
     mode = 'lines+markers';
-elseif ~strcmpi('none', plot_data.Marker)
+elseif ~strcmpi('none', plotData.Marker)
     mode = 'markers';
-elseif ~strcmpi('none', plot_data.LineStyle)
+elseif ~strcmpi('none', plotData.LineStyle)
     mode = 'lines';
 else
     mode = 'none';
@@ -165,17 +175,17 @@ obj.data{plotIndex}.mode = mode;
 %-------------------------------------------------------------------------%
 
 %-scatter line-%
-obj.data{plotIndex}.line = extractLineLine(plot_data);
+obj.data{plotIndex}.line = extractLineLine(plotData);
 
 %-------------------------------------------------------------------------%
 
 %-scatter marker-%
-obj.data{plotIndex}.marker = extractLineMarker(plot_data);
+obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
 %-------------------------------------------------------------------------%
 
 %-scatter showlegend-%
-leg = get(plot_data.Annotation);
+leg = get(plotData.Annotation);
 legInfo = get(leg.LegendInformation);
 
 switch legInfo.IconDisplayStyle
