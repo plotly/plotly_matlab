@@ -42,60 +42,61 @@ function obj = updateAxis(obj,axIndex)
 % position:...[NOT SUPPORTED IN MATLAB]
 
 %-STANDARDIZE UNITS-%
-axisunits = get(obj.State.Axis(axIndex).Handle,'Units');
+axisUnits = get(obj.State.Axis(axIndex).Handle,'Units');
 set(obj.State.Axis(axIndex).Handle,'Units','normalized')
 
 try
-    fontunits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
+    fontUnits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
     set(obj.State.Axis(axIndex).Handle,'FontUnits','points')
 catch
     % TODO
 end
 
 %-AXIS DATA STRUCTURE-%
-axis_data = get(obj.State.Axis(axIndex).Handle);
+axisData = get(obj.State.Axis(axIndex).Handle);
 
 %-------------------------------------------------------------------------%
 
 %-check if headmap axis-%
-is_headmap_axis = isfield(axis_data, 'XDisplayData');
+is_headmap_axis = isfield(axisData, 'XDisplayData');
 obj.PlotOptions.is_headmap_axis = is_headmap_axis;
 
 %-------------------------------------------------------------------------%
 
 %-check if geo-axis-%
-isGeoaxis = isfield(axis_data, 'Type') && strcmpi(axis_data.Type, 'geoaxes');
+isGeoaxis = isfield(axisData, 'Type') && strcmpi(axisData.Type, 'geoaxes');
 obj.PlotlyDefaults.isGeoaxis = isGeoaxis;
 
 %-------------------------------------------------------------------------%
 
 %-xaxis-%
 if is_headmap_axis
-    xaxis = extractHeatmapAxisData(obj,axis_data, 'X');
+    xaxis = extractHeatmapAxisData(obj,axisData, 'X');
+    xExponentFormat = 0;
 else
-    xaxis = extractAxisData(obj,axis_data, 'X');
+    [xaxis, xExponentFormat] = extractAxisData(obj,axisData, 'X');
 end
 
 %-------------------------------------------------------------------------%
 
 %-yaxis-%
 if is_headmap_axis
-    yaxis = extractHeatmapAxisData(obj,axis_data, 'Y');
+    yaxis = extractHeatmapAxisData(obj,axisData, 'Y');
+    yExponentFormat = 0;
 else
-    yaxis = extractAxisData(obj,axis_data, 'Y');
+    [yaxis, yExponentFormat] = extractAxisData(obj,axisData, 'Y');
 end
 
 %-------------------------------------------------------------------------%
 
 %-getting and setting postion data-%
-
-xo = axis_data.Position(1);
-yo = axis_data.Position(2);
-w = axis_data.Position(3);
-h = axis_data.Position(4);
+xo = axisData.Position(1);
+yo = axisData.Position(2);
+w = axisData.Position(3);
+h = axisData.Position(4);
 
 if obj.PlotOptions.AxisEqual
-    wh = min(axis_data.Position(3:4));
+    wh = min(axisData.Position(3:4));
     w = wh;
     h = wh;
 end
@@ -114,7 +115,53 @@ scene.domain.y = min([yo yo + h],1);
 
 %-------------------------------------------------------------------------%
 
+%-get source axis-%
 [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj,axIndex);
+
+%-------------------------------------------------------------------------%
+
+%-set exponent format-%
+anIndex = obj.State.Figure.NumTexts;
+
+if yExponentFormat ~= 0
+    anIndex = anIndex + 1;
+    exponentText = sprintf('x10^%d', yExponentFormat);
+
+    obj.layout.annotations{anIndex}.text = exponentText;
+    obj.layout.annotations{anIndex}.xref = ['x' num2str(xsource)];
+    obj.layout.annotations{anIndex}.yref = ['y' num2str(ysource)];
+    obj.layout.annotations{anIndex}.xanchor = 'left';
+    obj.layout.annotations{anIndex}.yanchor = 'bottom';
+    obj.layout.annotations{anIndex}.font.size = yaxis.tickfont.size;
+    obj.layout.annotations{anIndex}.font.color = yaxis.tickfont.color;
+    obj.layout.annotations{anIndex}.font.family = yaxis.tickfont.family;
+    obj.layout.annotations{anIndex}.showarrow = false;
+
+    if isfield(xaxis, 'range') && isfield(yaxis, 'range')
+        obj.layout.annotations{anIndex}.x = min(xaxis.range);
+        obj.layout.annotations{anIndex}.y = max(yaxis.range);
+    end
+end
+
+if xExponentFormat ~= 0
+    anIndex = anIndex + 1;
+    exponentText = sprintf('x10^%d', xExponentFormat);
+
+    obj.layout.annotations{anIndex}.text = exponentText;
+    obj.layout.annotations{anIndex}.xref = ['x' num2str(xsource)];
+    obj.layout.annotations{anIndex}.yref = ['y' num2str(ysource)];
+    obj.layout.annotations{anIndex}.xanchor = 'left';
+    obj.layout.annotations{anIndex}.yanchor = 'bottom';
+    obj.layout.annotations{anIndex}.font.size = xaxis.tickfont.size;
+    obj.layout.annotations{anIndex}.font.color = xaxis.tickfont.color;
+    obj.layout.annotations{anIndex}.font.family = xaxis.tickfont.family;
+    obj.layout.annotations{anIndex}.showarrow = false;
+
+    if isfield(xaxis, 'range') && isfield(yaxis, 'range')
+        obj.layout.annotations{anIndex}.x = max(xaxis.range);
+        obj.layout.annotations{anIndex}.y = min(yaxis.range);
+    end
+end
 
 %-------------------------------------------------------------------------%
 
@@ -145,9 +192,7 @@ end
 % update the layout field (do not overwrite source)
 if xsource == axIndex
     obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
-    obj.layout = setfield(obj.layout,['scene' num2str(xsource)],scene);
-else
-    
+    obj.layout = setfield(obj.layout,['scene' num2str(xsource)],scene); 
 end
 
 %-------------------------------------------------------------------------%
@@ -155,17 +200,15 @@ end
 % update the layout field (do not overwrite source)
 if ysource == axIndex
     obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
-else
-    
 end
 
 %-------------------------------------------------------------------------%
 
 %-REVERT UNITS-%
-set(obj.State.Axis(axIndex).Handle,'Units',axisunits);
+set(obj.State.Axis(axIndex).Handle,'Units',axisUnits);
 
 try
-    set(obj.State.Axis(axIndex).Handle,'FontUnits',fontunits);
+    set(obj.State.Axis(axIndex).Handle,'FontUnits',fontUnits);
 catch
     % TODO
 end

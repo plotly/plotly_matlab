@@ -1,371 +1,282 @@
-function [axis] = extractAxisData(obj,axis_data,axisName)
-%extract information related to each axis
-%   axis_data is the data extrated from the figure, axisName take the
-%   values 'x' 'y' or 'z'
+function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
+    % extract information related to each axis
+    %   axisData is the data extrated from the figure, axisName take the
+    %   values 'x' 'y' or 'z'
 
+    %=========================================================================%
+    %
+    % AXIS INITIALIZATION
+    %
+    %=========================================================================%
 
-%-------------------------------------------------------------------------%
+    %-general axis settings-%
+    axisColor = 255 * eval(sprintf('axisData.%sColor', axisName));
+    axisColor = sprintf('rgb(%f,%f,%f)', axisColor);
+    lineWidth = max(1,axisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
+    exponentFormat = eval(sprintf('axisData.%sAxis.Exponent', axisName));
 
-%-axis-side-%
-axis.side = eval(['axis_data.' axisName 'AxisLocation;']);
+    axis.side = eval(sprintf('axisData.%sAxisLocation', axisName));
+    axis.zeroline = false;
+    axis.autorange = false;
+    axis.linecolor = axisColor;
+    axis.linewidth = lineWidth;
+    axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-axis zeroline-%
-axis.zeroline = false;
+    %-general tick settings-%
+    tickRotation = eval(sprintf('axisData.%sTickLabelRotation', axisName));
+    tickLength = min(obj.PlotlyDefaults.MaxTickLength,...
+        max(axisData.TickLength(1)*axisData.Position(3)*obj.layout.width,...
+        axisData.TickLength(1)*axisData.Position(4)*obj.layout.height));
 
-%-------------------------------------------------------------------------%
+    axis.tickfont.size = axisData.FontSize;
+    axis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+    axis.tickfont.color = axisColor;
 
-%-axis autorange-%
-axis.autorange = false;
+    axis.ticklen = tickLength;
+    axis.tickcolor = axisColor;
+    axis.tickwidth = lineWidth;
+    axis.tickangle = -tickRotation;
 
-%-------------------------------------------------------------------------%
-
-%-axis exponent format-%
-axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
-
-%-------------------------------------------------------------------------%
-
-%-axis tick font size-%
-axis.tickfont.size = axis_data.FontSize;
-
-%-------------------------------------------------------------------------%
-
-%-axis tick font family-%
-axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
-
-%-------------------------------------------------------------------------%
-
-ticklength = min(obj.PlotlyDefaults.MaxTickLength,...
-    max(axis_data.TickLength(1)*axis_data.Position(3)*obj.layout.width,...
-    axis_data.TickLength(1)*axis_data.Position(4)*obj.layout.height));
-%-axis ticklen-%
-axis.ticklen = ticklength;
-
-%-------------------------------------------------------------------------%
-
-col = eval(['255*axis_data.' axisName 'Color;']);
-axiscol = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-
-%-axis linecolor-%
-axis.linecolor = axiscol;
-%-axis tickcolor-%
-axis.tickcolor = axiscol;
-%-axis tickfont-%
-axis.tickfont.color = axiscol;
-
-%-axis grid color-%
-try
-    axis.gridcolor = sprintf('rgba(%f,,%f,%f,%f)', 255*axis_data.GridColor, axis_data.GridAlpha);
-catch
-    axis.gridcolor = axiscol;
-end
-
-%-------------------------------------------------------------------------%
-
-if strcmp(axis_data.XGrid, 'on') || strcmp(axis_data.XMinorGrid, 'on')
-    %-axis show grid-%
-    axis.showgrid = true;
-else
-    axis.showgrid = false;
-end
-
-%-------------------------------------------------------------------------%
-
-grid = eval(['axis_data.' axisName 'Grid;']);
-minorGrid = eval(['axis_data.' axisName 'MinorGrid;']);
-
-if strcmp(grid, 'on') || strcmp(minorGrid, 'on')
-    %-axis show grid-%
-    axis.showgrid = true;
-else
-    axis.showgrid = false;
-end
-
-%-------------------------------------------------------------------------%
-
-linewidth = max(1,axis_data.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
-
-%-axis line width-%
-axis.linewidth = linewidth;
-%-axis tick width-%
-axis.tickwidth = linewidth;
-%-axis grid width-%
-axis.gridwidth = linewidth;
-
-%-------------------------------------------------------------------------%
-
-%-axis type-%
-axis.type = eval(['axis_data.' axisName 'Scale']);
-
-%-------------------------------------------------------------------------%
-
-%-axis showtick labels / ticks-%
-tick = eval(['axis_data.' axisName 'Tick']);
-if isempty(tick)
-    
-    %-axis ticks-%
-    axis.ticks = '';
-    axis.showticklabels = false;
-    
-    %-axis autorange-%
-    axis.autorange = true; 
-    
-    %---------------------------------------------------------------------%
-    
-    switch axis_data.Box
-        case 'on'
-            %-axis mirror-%
-            axis.mirror = true;
-        case 'off'
-            axis.mirror = false;
-    end
-    
-    %---------------------------------------------------------------------%
-
-else
-
-    %-get axis limits-%
-    dataLim = eval( sprintf('axis_data.%sLim', axisName) );
-    
-    %-axis tick direction-%
-    switch axis_data.TickDir
+    switch axisData.TickDir
         case 'in'
             axis.ticks = 'inside';
         case 'out'
             axis.ticks = 'outside';
     end
-    
-    %---------------------------------------------------------------------%
-    switch axis_data.Box
-        case 'on'
-            %-axis mirror-%
-            axis.mirror = 'ticks';
-        case 'off'
-            axis.mirror = false;
+
+    %-------------------------------------------------------------------------%
+
+    %-set axis grid-%
+
+    isGrid = sprintf('axisData.%sGrid', axisName);
+    isMinorGrid = sprintf('axisData.%sMinorGrid', axisName);
+
+    if strcmp(isGrid, 'on') || strcmp(isMinorGrid, 'on')
+        axis.showgrid = true;
+        axis.gridwidth = lineWidth;
+    else
+        axis.showgrid = false;
     end
-    
-    %---------------------------------------------------------------------%
-    
-    %-LOG TYPE-%
-    if strcmp(axis.type,'log')
+
+    %-------------------------------------------------------------------------%
+
+    %-axis grid color-%
+    try
+        gridColor = 255*axisData.GridColor;
+        gridAlpha = axisData.GridAlpha;
+        axis.gridcolor = sprintf('rgba(%f,,%f,%f,%f)', gridColor, gridAlpha);
+    catch
+        axis.gridcolor = axisColor;
+    end
+
+    %-------------------------------------------------------------------------%
+
+    %-axis type-%
+    axis.type = eval(sprintf('axisData.%sScale', axisName));
+
+    %=========================================================================%
+    %
+    % SET TICK LABELS
+    %
+    %=========================================================================%
+
+    %-get tick label data-%
+    tickValues = eval(sprintf('axisData.%sTick', axisName));
+    tickLabels = eval(sprintf('axisData.%sTickLabel', axisName));
+
+    %-------------------------------------------------------------------------%
+
+    %-there is not tick label case-%
+    if isempty(tickValues) && isempty(tickLabels)
         
-        %-axis range-%
-        axis.range = eval( sprintf('log10(dataLim)') ); %['log10(axis_data.' axisName 'Lim);']);
-        %-axis autotick-%
-        axis.autotick = true;
-        %-axis nticks-%
-        axis.nticks = eval(['length(axis_data.' axisName 'Tick) + 1;']);
-     
-    %---------------------------------------------------------------------%
-    
-    %-LINEAR TYPE-%
-    elseif strcmp(axis.type,'linear')
-
-        %-----------------------------------------------------------------%
-
-        %-get tick label mode-%
-        TickLabelMode = eval(['axis_data.' axisName 'TickLabelMode;']);
-
-        %-----------------------------------------------------------------%
-
-        %-AUTO MODE-%
-        if strcmp(TickLabelMode,'auto')
-            
-            %-------------------------------------------------------------%
-            
-            if isnumeric(dataLim)
-                % axis.title = 'axis';
-                axis.range = dataLim;
-                
-            %-------------------------------------------------------------%
-            
-            elseif isduration(dataLim)
-               [temp,type] = convertDuration(dataLim);
-
-               if (~isduration(temp))              
-                   axis.range = temp;
-                   axis.type = 'duration';
-                   axis.title = type;
-               else
-                   nticks = eval(['length(axis_data.' axisName 'Tick)-1;']);
-                   delta = 0.1;
-                   axis.range = [-delta nticks+delta];
-                   axis.type = 'duration - specified format';     
-               end
-               
-            %-------------------------------------------------------------%
-            
-            elseif isdatetime(dataLim)
-                axis.range = convertDate(dataLim);
-                axis.type = 'date'; 
-            else 
-                % data is a category type other then duration and datetime
-            end
-
-            %-axis autotick-%
-            axis.autotick = true;
-            %-axis numticks-%       
-            axis.nticks = eval(['length(axis_data.' axisName 'Tick)+1']);
-
-        %-----------------------------------------------------------------%
+        axis.ticks = '';
+        axis.showticklabels = false;
+        axis.autorange = true; 
         
-        %-CUSTOM MODE-%
+        switch axisData.Box
+            case 'on'
+                axis.mirror = true;
+            case 'off'
+                axis.mirror = false;
+        end
+
+    %-------------------------------------------------------------------------%
+
+    %-there is tick labels-%
+    else
+
+        %---------------------------------------------------------------------%
+
+        %-some tick label settings-%
+        axisLim = eval( sprintf('axisData.%sLim', axisName) );
+
+        switch axisData.Box
+            case 'on'
+                axis.mirror = 'ticks';
+            case 'off'
+                axis.mirror = false;
+        end
+
+        if isnumeric(axisLim)
+            axis.range = axisLim;
         else
+            axis.autorange = true;
+        end
 
-            %-------------------------------------------------------------%
+        axis.showticklabels = true;
 
-            %-get tick labels-%
-            tickLabels = eval(['axis_data.' axisName 'TickLabel;']);
+        %---------------------------------------------------------------------%
 
-            %-------------------------------------------------------------%
+        %-set tick labels by using tick values and tick texts-%
+        if ~isempty(tickValues) && ~isempty(tickLabels)
 
-            %-hide tick labels as lichkLabels field is empty-%
-            if isempty(tickLabels)
+            
+            axis.tickmode = 'array';
+            axis.tickvals = tickValues;
+            axis.ticktext = tickLabels;
+
+        %---------------------------------------------------------------------%
+
+        %-set tick labels by using only tick values-%
+        elseif ~isempty(tickValues) && isempty(tickLabels)
+
+            axis.showticklabels = true;
+            axis.tickmode = 'array';
+            axis.tickvals = tickValues;
+
+            %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+            %
+            % TODO: determine if following code piece is necessary. For this we need 
+            %       to test fig2plotly with more examples
+            %
+            %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+
+            % %-LOG TYPE-%
+            % if strcmp(axis.type,'log')
+
+            %     axis.range = log10(axisLim);
+            %     axis.autotick = true;
+            %     axis.nticks = eval(['length(axisData.' axisName 'Tick) + 1;']);
+
+            % %---------------------------------------------------------------------%
+
+            % %-LINEAR TYPE-%
+            % elseif strcmp(axis.type,'linear')
+
+            %     %-----------------------------------------------------------------%
+
+            %     % %-get tick label mode-%
+            %     % tickLabelMode = eval(['axisData.' axisName 'TickLabelMode;']);
+
+            %     % %-----------------------------------------------------------------%
+
+            %     % %-AUTO MODE-%
+            %     % if strcmp(tickLabelMode,'auto')
+
+            %         %-------------------------------------------------------------%
                 
-                %-------------------------------------------------------------%
-
-                %-hide tick labels-%
-                axis.showticklabels = false;
-
-                %-------------------------------------------------------------%
-
-                %-axis autorange-%
-                axis.autorange = true;
-
-                %-------------------------------------------------------------%
-
-            %-axis show tick labels as tickLabels matlab field-%
-            else
-
-                %-------------------------------------------------------------%
-
-                axis.showticklabels = true;
-                axis.type = 'linear';
-
-                %-------------------------------------------------------------%
-
-                if isnumeric(dataLim)
-                    axis.range = eval(['axis_data.' axisName 'Lim;']);
-                else
-                    axis.autorange = true;
-                end
+            %         if isnumeric(axisLim)
+            %             %-axis range-%
+            %             axis.range = axisLim;
+            %             %-axis tickvals-%
+            %             axis.tickvals = tick;
+                    
+            %         %-------------------------------------------------------------%
                 
-                %-------------------------------------------------------------%
+            %         elseif isduration(axisLim)
+            %            [temp,type] = convertDuration(axisLim);
 
-                axis.tickvals = tick;
-                axis.ticktext = tickLabels;
+            %            if (~isduration(temp))              
+            %                axis.range = temp;
+            %                axis.type = 'duration';
+            %                axis.title = type;
+            %            else
+            %                nticks = eval(['length(axisData.' axisName 'Tick)-1;']);
+            %                delta = 0.1;
+            %                axis.range = [-delta nticks+delta];
+            %                axis.type = 'duration - specified format';     
+            %            end
+                   
+            %         %-------------------------------------------------------------%
+                
+            %         elseif isdatetime(axisLim)
+            %             axis.range = convertDate(axisLim);
+            %             axis.type = 'date'; 
+            %         else 
+            %             % data is a category type other then duration and datetime
+            %         end
 
-                %-------------------------------------------------------------%
+            %         %-------------------------------------------------------------%
 
-                %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-                % NOTE: 
-                %    The next piece of code was replaced by the previous one. 
-                %    I think that the new piece of code is better, optimal and 
-                %    extends to all cases. However, I will leave this piece of 
-                %    code commented in case there is a problem in the future.
-                %
-                %    If there is a problem with the new piece of code, please 
-                %    comment and uncomment the next piece of code.
-                %
-                %    If everything goes well with the new gripping piece, at 
-                %    the end of the development we will be able to remove the 
-                %    commented lines
-                %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+            %         if ~isnumeric(axisLim)
+            %             %-axis autotick-%
+            %             axis.autotick = true;
+            %             %-axis numticks-%       
+            %             axis.nticks = eval(['length(axisData.' axisName 'Tick)+1']);
+            %         end
+            %     end
+            % end
 
-                %-axis labels
-                % labels = str2double(tickLabels);
-                % try 
-                %     %find numbers in labels
-                %     labelnums = find(~isnan(labels));
-                %     %-axis type linear-%
-                %     axis.type = 'linear';
-                %     %-range (overwrite)-%
-                %     delta = (labels(labelnums(2)) - labels(labelnums(1)))/(labelnums(2)-labelnums(1));
-                %     axis.range = [labels(labelnums(1))-delta*(labelnums(1)-1) labels(labelnums(1)) + (length(labels)-labelnums(1))*delta];
-                %     %-axis autotick-%
-                %     axis.autotick = true;
-                %     %-axis numticks-%
-                %     axis.nticks = eval(['length(axis_data.' axisName 'Tick) + 1;']);
-                % catch
-                %     %-axis type category-%
-                %     axis.type = 'category';
-                %     %-range (overwrite)-%
-                %     axis.autorange = true;
-                %     %-axis autotick-%
-                %     % axis.autotick = true;
-                % end
-            end
+            %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+
         end
     end
-end
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-Dir = eval(['axis_data.' axisName 'Dir;']);
-if strcmp(Dir,'reverse')
-    axis.range = [axis.range(2) axis.range(1)];
-end
+    %-axis direction-%
+    axisDirection = eval(sprintf('axisData.%sDir', axisName));
 
-%-------------------------------LABELS------------------------------------%
+    if strcmp(axisDirection,'reverse')
+        axis.range = [axis.range(2) axis.range(1)];
+    end
 
-label = eval(['axis_data.' axisName 'Label;']);
+    %=========================================================================%
+    %
+    % SET AXIS LABEL
+    %
+    %=========================================================================%
 
-label_data = get(label);
+    %-get label data-%
+    label = eval(sprintf('axisData.%sLabel', axisName));
+    labelData = get(label);
 
-%STANDARDIZE UNITS
-fontunits = get(label,'FontUnits');
-set(label,'FontUnits','points');
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-STANDARDIZE UNITS-%
+    fontunits = get(label,'FontUnits');
+    set(label,'FontUnits','points');
 
-%-title-%
-if ~isempty(label_data.String)
-    axis.title = parseString(label_data.String,label_data.Interpreter);
-end
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-title label settings-%
+    if ~isempty(labelData.String)
+        axis.title = parseString(labelData.String,labelData.Interpreter);
+    end
 
-%-axis title font color-%
-col = 255*label_data.Color;
-axis.titlefont.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    axis.titlefont.color = sprintf('rgb(%f,%f,%f)', 255*labelData.Color);
+    axis.titlefont.size = labelData.FontSize;
+    axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-axis title font size-%
-axis.titlefont.size = label_data.FontSize;
+    %-REVERT UNITS-%
+    set(label,'FontUnits',fontunits);
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-axis title font family-%
-axis.titlefont.family = matlab2plotlyfont(label_data.FontName);
+    %-set visibility conditions-%
+    if strcmp(axisData.Visible,'on')
+        axis.showline = true;
+    else
+        axis.showticklabels = false;
+        axis.showline = false;
+        axis.ticks = '';
+    end
 
-%-------------------------------------------------------------------------%
-
-%REVERT UNITS
-set(label,'FontUnits',fontunits);
-
-%-------------------------------------------------------------------------%
-
-if strcmp(axis_data.Visible,'on')
-    %-axis showline-%
-    axis.showline = true;
-else
-    %-axis showline-%
-    axis.showline = false;
-    %-axis showticklabels-%
-    axis.showticklabels = false;
-    %-axis ticks-%
-    axis.ticks = '';
-    %-axis showline-%
-    axis.showline = false;
-    %-axis showticklabels-%
-    axis.showticklabels = false;
-    %-axis ticks-%
-    axis.ticks = '';
-end
-
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 end
 
 

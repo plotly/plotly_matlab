@@ -26,12 +26,8 @@ try
         updateBar3(obj, dataIndex);
     elseif ismember('bar3h', lower(obj.PlotOptions.TreatAs))
         updateBar3h(obj, dataIndex); 
-    elseif ismember('surf', lower(obj.PlotOptions.TreatAs))
-        updateSurf(obj, dataIndex); 
     elseif ismember('fmesh', lower(obj.PlotOptions.TreatAs))
         updateFmesh(obj, dataIndex);
-    elseif ismember('mesh', lower(obj.PlotOptions.TreatAs))
-        updateMesh(obj, dataIndex); 
     elseif ismember('surfc', lower(obj.PlotOptions.TreatAs))
         updateSurfc(obj, dataIndex); 
     elseif ismember('meshc', lower(obj.PlotOptions.TreatAs))
@@ -97,7 +93,13 @@ try
             case 'rectangle'
                 updateRectangle(obj,dataIndex);
             case 'surface'
-                updateSurfaceplot(obj,dataIndex);
+                if ismember('surf', lower(obj.PlotOptions.TreatAs))
+                    updateSurf(obj, dataIndex); 
+                elseif ismember('mesh', lower(obj.PlotOptions.TreatAs))
+                    updateMesh(obj, dataIndex);
+                else
+                    updateSurfaceplot(obj,dataIndex);
+                end
             case {'functionsurface', 'parameterizedfunctionsurface'}
                 updateFunctionSurface(obj,dataIndex);
             case 'implicitfunctionsurface'

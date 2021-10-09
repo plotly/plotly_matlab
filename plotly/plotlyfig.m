@@ -91,7 +91,7 @@ classdef plotlyfig < handle
             end
             
             %-PlotlyDefaults-%
-            obj.PlotlyDefaults.MinTitleMargin = 80;
+            obj.PlotlyDefaults.MinTitleMargin = 10;
             obj.PlotlyDefaults.TitleHeight = 0.01;
             obj.PlotlyDefaults.TitleFontSizeIncrease = 40; 
             obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
@@ -802,7 +802,6 @@ classdef plotlyfig < handle
                     end
                 catch
                     % TODO to the future
-                    % disp('catch at line 679 in plotlyfig.m file')
                 end
             end
             
@@ -1122,7 +1121,7 @@ classdef plotlyfig < handle
                         ||  strcmpi(fieldname,'legend') ||  strcmpi(fieldname,'histogram')...
                         ||  strcmpi(fieldname,'scatter') ||  strcmpi(fieldname,'line')...
                         ||  strcmpi(fieldname,'scattergeo') ||  strcmpi(fieldname,'scattermapbox')...
-                        ||  strcmpi(fieldname,'scatterternary')...
+                        ||  strcmpi(fieldname,'scatterternary') ||  strcmpi(fieldname,'colorbar')...
                         )
                         fprintf(['\nWhoops! ' exception.message(1:end-1) ' in ' fieldname '\n\n']);
                     end

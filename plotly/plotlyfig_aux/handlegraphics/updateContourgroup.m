@@ -239,7 +239,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-contour showscale-%
-obj.data{contourIndex}.showscale = true;
+obj.data{contourIndex}.showscale = false;
 
 %-------------------------------------------------------------------------%
 
