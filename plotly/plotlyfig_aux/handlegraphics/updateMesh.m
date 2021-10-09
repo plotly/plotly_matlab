@@ -43,6 +43,10 @@ xData = meshData.XData;
 yData = meshData.YData;
 zData = meshData.ZData;
 
+if isvector(xData)
+    [xData, yData] = meshgrid(xData, yData);
+end
+
 %-reformat data to mesh-%
 xDataSurface = xData;
 yDataSurface = yData;
