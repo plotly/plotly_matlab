@@ -570,7 +570,11 @@ classdef plotlyfig < handle
             ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
 
             if isempty(ax)
-                ax = gca;
+                try
+                    ax = get(obj.State.Figure.Handle,'Children');
+                catch
+                    ax = gca;
+                end
             end
             
             %---------- checking the overlaping of the graphs ----------%
@@ -647,7 +651,9 @@ classdef plotlyfig < handle
                     nprev = length(plots) - np + 1;
 
                     % update the plot fields
-                    if ~strcmpi(getGraphClass(plots(nprev)), 'light')
+                    plotClass = lower(getGraphClass(plots(nprev)));
+
+                    if ~ismember(plotClass, {'light', 'polaraxes'})
                         obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
                         obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
                         obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
@@ -658,11 +664,16 @@ classdef plotlyfig < handle
                 end
 
                 % this works for pareto
-                if length(plots) == 0 & obj.State.Figure.NumPlots ~= 0
-                    isPareto = length(ax) >= 2 & obj.State.Figure.NumPlots >= 2;
-                    isBar = strcmpi(lower(obj.State.Plot(obj.State.Figure.NumPlots).Class), 'line');
-                    isLine = strcmpi(lower(obj.State.Plot(obj.State.Figure.NumPlots-1).Class), 'bar');
-                    isPareto = isPareto & isBar & isLine;
+                if length(plots) == 0
+
+                    try
+                        isPareto = length(ax) >= 2 & obj.State.Figure.NumPlots >= 2;
+                        isBar = strcmpi(lower(obj.State.Plot(obj.State.Figure.NumPlots).Class), 'line');
+                        isLine = strcmpi(lower(obj.State.Plot(obj.State.Figure.NumPlots-1).Class), 'bar');
+                        isPareto = isPareto & isBar & isLine;
+                    catch
+                        isPareto = false;
+                    end
 
                     if isPareto
                         obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
@@ -784,6 +795,9 @@ classdef plotlyfig < handle
                     else
                         if ~obj.PlotlyDefaults.isTernary
                             updateAnnotation(obj,n);
+                            if obj.State.Figure.NumAxes == 1
+                                obj.PlotOptions.CleanFeedTitle = false;
+                            end
                         end
                     end
                 catch

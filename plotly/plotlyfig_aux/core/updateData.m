@@ -10,8 +10,6 @@ try
         updatePie3(obj, dataIndex);
     elseif ismember('pcolor', lower(obj.PlotOptions.TreatAs))
         updatePColor(obj, dataIndex);
-    elseif ismember('polarplot', lower(obj.PlotOptions.TreatAs))
-        updatePolarplot(obj, dataIndex);
     elseif ismember('contour3', lower(obj.PlotOptions.TreatAs))
         updateContour3(obj, dataIndex);
     elseif ismember('compass', lower(obj.PlotOptions.TreatAs))
@@ -50,6 +48,10 @@ try
             case 'geoaxes'
                 UpdateGeoAxes(obj, dataIndex);
 
+            %-EMULATE AXES-%
+            case 'nothing'
+                updateOnlyAxes(obj, dataIndex);
+
             %--CORE PLOT OBJECTS--%
             case 'geobubble'
                 updateGeobubble(obj, dataIndex);
@@ -68,6 +70,8 @@ try
             case 'line'
                 if obj.PlotlyDefaults.isGeoaxis
                     updateGeoPlot(obj, dataIndex);
+                elseif ismember('polarplot', lower(obj.PlotOptions.TreatAs))
+                    updatePolarplot(obj, dataIndex);
                 elseif ismember('ternplot', lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlot(obj, dataIndex);
                 else
@@ -137,7 +141,7 @@ try
             case 'quivergroup'
                 updateQuivergroup(obj, dataIndex);
             case 'scatter'
-                if ismember('polaraxes', lower(obj.PlotOptions.TreatAs))
+                if ismember('scatterpolar', lower(obj.PlotOptions.TreatAs))
                     updateScatterPolar(obj, dataIndex);
                 elseif obj.PlotlyDefaults.isGeoaxis
                     updateGeoScatter(obj, dataIndex);
