@@ -579,6 +579,14 @@ classdef plotlyfig < handle
             obj.State.Figure.NumLegends = 0;
             obj.State.Figure.NumColorbars = 0;
             obj.State.Figure.NumTexts = 0;
+
+            % check if there is tiledlayout
+            try
+                tiledLayoutStruct = get(obj.State.Figure.Handle.Children);
+                isTiledLayout = strcmp(tiledLayoutStruct.Type, 'tiledlayout');
+            catch
+                isTiledLayout = false;
+            end
             
             % find axes of figure
             ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
@@ -616,6 +624,7 @@ classdef plotlyfig < handle
             ax = temp_ax;
             %---------- checking the overlaping of the graphs ----------%
             
+            % update number of axes
             obj.State.Figure.NumAxes = length(ax);
             
             % update number of annotations (one title per axis)
@@ -712,7 +721,7 @@ classdef plotlyfig < handle
                 obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + length(texts);
                 
             end
-            
+
             % find legends of figure
             if isHG2
                 legs = findobj(obj.State.Figure.Handle,'Type','Legend');
@@ -778,24 +787,13 @@ classdef plotlyfig < handle
                         end
                     end
                 catch
-                    % TODO to the future
-                    % disp('catch at line 647 in plotlyfig.m file')
+                    % TODO 
                 end
             end
             
             % update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
-                
-                try
-                    if update_opac(length(ax)-n)
-                        % obj.data{1, n}.opacity = 0.9;
-                    end
-                catch
-                    % TODO to the future
-                    % disp('catch at line 664 in plotlyfig.m file')
-                end
-                
             end
             
             % update annotations
@@ -804,19 +802,27 @@ classdef plotlyfig < handle
                     if obj.PlotOptions.is_headmap_axis
                         updateHeatmapAnnotation(obj,n);
                         obj.PlotOptions.CleanFeedTitle = false;
+
                     elseif obj.PlotlyDefaults.isGeoaxis
-                        % TODO    
+                        % TODO
+
                     else
                         if ~obj.PlotlyDefaults.isTernary
                             updateAnnotation(obj,n);
+
                             if obj.State.Figure.NumAxes == 1
                                 obj.PlotOptions.CleanFeedTitle = false;
                             end
                         end
                     end
                 catch
-                    % TODO to the future
+                    % TODO
                 end
+            end
+
+            % update tiled layout annotations
+            if isTiledLayout
+                updateTiledLayoutAnnotation(obj, tiledLayoutStruct);
             end
             
             % update legends
@@ -826,6 +832,7 @@ classdef plotlyfig < handle
                         updateLegend(obj,n);
                     end
                 end
+
             else
                 updateLegendMultipleAxes(obj,1);
             end
@@ -834,6 +841,7 @@ classdef plotlyfig < handle
             for n = 1:obj.State.Figure.NumColorbars
                 if ~obj.PlotlyDefaults.isTernary
                     updateColorbar(obj,n);
+
                 else
                     updateTernaryColorbar(obj,n);
                 end
