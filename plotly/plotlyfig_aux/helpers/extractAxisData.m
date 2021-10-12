@@ -83,8 +83,9 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %=========================================================================%
 
     %-get tick label data-%
-    tickValues = eval(sprintf('axisData.%sTick', axisName));
     tickLabels = eval(sprintf('axisData.%sTickLabel', axisName));
+    tickValues = eval(sprintf('axisData.%sTick', axisName));
+    if isduration(tickValues), tickValues = datenum(tickValues); end
 
     %-------------------------------------------------------------------------%
 
@@ -111,6 +112,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
         %-some tick label settings-%
         axisLim = eval( sprintf('axisData.%sLim', axisName) );
+        if isduration(axisLim), axisLim = datenum(axisLim); end
 
         switch axisData.Box
             case 'on'
@@ -132,7 +134,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         %-set tick labels by using tick values and tick texts-%
         if ~isempty(tickValues) && ~isempty(tickLabels)
 
-            
             axis.tickmode = 'array';
             axis.tickvals = tickValues;
             axis.ticktext = tickLabels;
@@ -142,7 +143,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         %-set tick labels by using only tick values-%
         elseif ~isempty(tickValues) && isempty(tickLabels)
 
-            axis.showticklabels = true;
             axis.tickmode = 'array';
             axis.tickvals = tickValues;
 

@@ -76,14 +76,17 @@ eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
 %-------------------------------------------------------------------------%
 
 %-if polar plot or not-%
-treatas = obj.PlotOptions.TreatAs;
-ispolar = ismember('compass', lower(treatas)) || ismember('ezpolar', lower(treatas));
+treatAs = obj.PlotOptions.TreatAs;
+ispolar = ismember('compass', lower(treatAs)) || ismember('ezpolar', lower(treatAs));
 
 %-------------------------------------------------------------------------%
 
 %-getting data-%
-x = plotData.XData;
-y = plotData.YData;
+xData = plotData.XData;
+yData = plotData.YData;
+
+if isduration(xData), xData = datenum(xData); end
+if isduration(yData), yData = datenum(yData); end
 
 %-------------------------------------------------------------------------%
 
@@ -114,20 +117,20 @@ obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
 %-scatter x-%
 
 if ispolar
-    r = sqrt(x.^2 + y.^2);
-    obj.data{plotIndex}.r = r;
+    rData = sqrt(x.^2 + y.^2);
+    obj.data{plotIndex}.r = rData;
 else
-    obj.data{plotIndex}.x = x;
+    obj.data{plotIndex}.x = xData;
 end
 
 %-------------------------------------------------------------------------%
 
 %-scatter y-%
 if ispolar
-    theta = atan2(x,y);
-    obj.data{plotIndex}.theta = -(rad2deg(theta) - 90);
+    thetaData = atan2(xData,yData);
+    obj.data{plotIndex}.theta = -(rad2deg(thetaData) - 90);
 else
-    obj.data{plotIndex}.y = plotData.YData;
+    obj.data{plotIndex}.y = yData;
 end
 
 %-------------------------------------------------------------------------%
@@ -190,12 +193,12 @@ legInfo = get(leg.LegendInformation);
 
 switch legInfo.IconDisplayStyle
     case 'on'
-        showleg = true;
+        showLeg = true;
     case 'off'
-        showleg = false;
+        showLeg = false;
 end
 
-obj.data{plotIndex}.showlegend = showleg;
+obj.data{plotIndex}.showlegend = showLeg;
 
 %-------------------------------------------------------------------------%
 
