@@ -1,10 +1,27 @@
 function f = addtheme(f, theme)
     
-    % validate theme name
-    
-    S = dir('plotly/themes');
-    N = {S.name};
+    %-------------------------------------------------------------------------%
+
+    %-validate theme name-%
+
+    themePath = 'plotly/themes';
+    S = dir(themePath);
+
+    if isempty(S)
+        paths = split(path, ':');
         
+        for p = 1:length(paths)
+            if ~isempty(strfind(paths{p}, themePath))
+                themePath = paths{p};
+                break;
+            end
+        end
+
+        S = dir(themePath);
+    end
+
+    N = {S.name};
+
     if ~any(strcmp(N,strcat(theme, '.json'))) == 1
         ME = MException('MyComponent:noSuchVariable',...
             [strcat('\n<strong>', theme,...
@@ -13,10 +30,13 @@ function f = addtheme(f, theme)
             strrep(strrep([S.name], '...', ''), '.json', ' | ')]);
         throw(ME)
     end
+
+    %-------------------------------------------------------------------------%
         
-    % add theme to figure
+    %-add theme to figure-%
     
-    fname = strcat('plotly/themes/', theme, '.json');
+    fname = sprintf('%s/%s.json', themePath, theme);
+    % fname = strcat('plotly/themes/', theme, '.json');
     fid = fopen(fname); 
     raw = fread(fid,inf); 
     str = char(raw'); 
@@ -33,5 +53,7 @@ function f = addtheme(f, theme)
     if isfield(f.layout.template.layout, 'plot_bgcolor')
         disp(strcat('layout.plot_bgcolor:::',...
             f.layout.template.layout.plot_bgcolor))
-    end    
+    end
+
+    %-------------------------------------------------------------------------%
 end
