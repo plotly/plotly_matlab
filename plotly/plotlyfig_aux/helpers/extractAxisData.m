@@ -122,7 +122,12 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         end
 
         if isnumeric(axisLim)
-            axis.range = axisLim;
+            if strcmp(axis.type, 'linear')
+                axis.range = axisLim;
+            elseif strcmp(axis.type, 'log')
+                axis.range = log10(axisLim);
+            end
+
         else
             axis.autorange = true;
         end
@@ -133,7 +138,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
         %-set tick labels by using tick values and tick texts-%
         if ~isempty(tickValues) && ~isempty(tickLabels)
-
             axis.tickmode = 'array';
             axis.tickvals = tickValues;
             axis.ticktext = tickLabels;
@@ -142,7 +146,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
         %-set tick labels by using only tick values-%
         elseif ~isempty(tickValues) && isempty(tickLabels)
-
             axis.tickmode = 'array';
             axis.tickvals = tickValues;
 
