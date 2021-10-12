@@ -1,196 +1,265 @@
-function updateScatterPolar(obj,scatterIndex)
+function updateScatterPolar(obj, plotIndex)
 
-%check: http://undocumentedmatlab.com/blog/undocumented-scatter-plot-behavior
+    %-AXIS INDEX-%
+    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
-%----SCATTER FIELDS----%
+    %-PLOT DATA STRUCTURE- %
+    plotData = get(obj.State.Plot(plotIndex).Handle);
 
-% x - [DONE]
-% y - [DONE]
-% r - [HANDLED BY SCATTER]
-% t - [HANDLED BY SCATTER]
-% mode - [DONE]
-% name - [DONE]
-% text - [NOT SUPPORTED IN MATLAB]
-% error_y - [HANDLED BY ERRORBAR]
-% error_x - [NOT SUPPORTED IN MATLAB]
-% textfont - [NOT SUPPORTED IN MATLAB]
-% textposition - [NOT SUPPORTED IN MATLAB]
-% xaxis [DONE]
-% yaxis [DONE]
-% showlegend [DONE]
-% stream - [HANDLED BY PLOTLYSTREAM]
-% visible [DONE]
-% type [DONE]
-% opacity ---[TODO]
+    %-CHECK FOR MULTIPLE AXES-%
+    [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-% MARKER
-% marler.color - [DONE]
-% marker.size - [DONE]
-% marker.opacity - [NOT SUPPORTED IN MATLAB]
-% marker.colorscale - [NOT SUPPORTED IN MATLAB]
-% marker.sizemode - [DONE]
-% marker.sizeref - [DONE]
-% marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
+    %-ASSOCIATE POLAR-AXES LAYOUT-%
+    obj.data{plotIndex}.subplot = sprintf('polar%d', xsource+1);
 
-% MARKER LINE
-% marker.line.color - [DONE]
-% marker.line.width - [DONE]
-% marker.line.dash - [NOT SUPPORTED IN MATLAB]
-% marker.line.opacity - [DONE]
-% marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
-% marker.line.shape - [NOT SUPPORTED IN MATLAB]
+    %-------------------------------------------------------------------------%
 
-% LINE
-% line.color - [NA]
-% line.width - [NA]
-% line.dash - [NA]
-% line.opacity [NA]
-% line.smoothing - [NOT SUPPORTED IN MATLAB]
-% line.shape - [NOT SUPPORTED IN MATLAB]
-% connectgaps - [NOT SUPPORTED IN MATLAB]
-% fill - [HANDLED BY AREA]
-% fillcolor - [HANDLED BY AREA]
+    %-parse plot data-%
+    rData = plotData.RData;
+    thetaData = rad2deg(plotData.ThetaData);
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(scatterIndex).AssociatedAxis);
+    thetaData(rData<0) = mod(thetaData(rData<0)+180, 360);
+    rData = abs(rData);
 
-%-SCATTER DATA STRUCTURE- %
-scatter_data = get(obj.State.Plot(scatterIndex).Handle);
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-scatterpolar trace setting-%
+    obj.data{plotIndex}.type = 'scatterpolar';
+    obj.data{plotIndex}.mode = 'markers';
+    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.name = plotData.DisplayName;
 
-%-scatterpolar type-%
-obj.data{scatterIndex}.type = 'scatterpolar';
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-set scatterpolar data-%
+    obj.data{plotIndex}.r = rData;
+    obj.data{plotIndex}.theta = thetaData;
 
-%-scatter mode-%
-obj.data{scatterIndex}.mode = 'markers';
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-trace settings-%
+    markerStruct = extractScatterMarker(plotData);
 
-%-scatter visible-%
-obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
+    obj.data{plotIndex}.marker = markerStruct;
 
-%-------------------------------------------------------------------------%
-
-%-scatter name-%
-obj.data{scatterIndex}.name = scatter_data.DisplayName;
-
-%-------------------------------------------------------------------------%
-
-%-scatter patch data-%
-for m = 1:length(scatter_data)
-
-    %reverse counter
-    n = length(scatter_data) - m + 1;
-    
-    %---------------------------------------------------------------------%
-    
-    %-scatter r-%
-    if length(scatter_data) > 1
-        obj.data{scatterIndex}.r(m) = scatter_data(n).RData;
-    else
-        obj.data{scatterIndex}.r = scatter_data.RData;
+    if length(markerStruct.size) == 1
+        obj.data{plotIndex}.marker.size = markerStruct.size * 0.2;
     end
-    
-    %---------------------------------------------------------------------%
-    
-    %-scatter theta-%
-    if length(scatter_data) > 1
-        obj.data{scatterIndex}.theta(m) = rad2deg(scatter_data(n).ThetaData);
-    else
-        obj.data{scatterIndex}.theta = rad2deg(scatter_data.ThetaData);
+
+    if length(markerStruct.line.color) > 1
+        obj.data{plotIndex}.marker.line.color = markerStruct.line.color{1};
     end
-    
-    
-    %---------------------------------------------------------------------%
-    
-    %-scatter showlegend-%
-    leg = get(scatter_data.Annotation);
+
+    %-------------------------------------------------------------------------%
+
+    %-legend setting-%
+    leg = get(plotData.Annotation);
     legInfo = get(leg.LegendInformation);
-    
+
     switch legInfo.IconDisplayStyle
         case 'on'
-            showleg = true;
+            obj.data{plotIndex}.showlegend = true;
         case 'off'
-            showleg = false;
+            obj.data{plotIndex}.showlegend = false;
     end
-    
-    if isfield(scatter_data,'ZData')
-        if isempty(scatter_data.ZData)
-            obj.data{scatterIndex}.showlegend = showleg;
-        end
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-scatter marker-%
-    childmarker = extractScatterMarker(scatter_data(n));
-    
-    %---------------------------------------------------------------------%
-    
-    %-line color-%
-    if length(scatter_data) > 1
-        obj.data{scatterIndex}.marker.line.color{m} = childmarker.line.color{1};
-    else
-        if length(childmarker.line.color) > 3
-            obj.data{scatterIndex}.marker.line.color = childmarker.line.color;
-        else
-            obj.data{scatterIndex}.marker.line.color = childmarker.line.color{1};
-        end
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-marker color-%
-    if length(scatter_data) > 1
-        obj.data{scatterIndex}.marker.color{m} = childmarker.color{1};
-    else
-        obj.data{scatterIndex}.marker.color = childmarker.color;
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-sizeref-%
-    obj.data{scatterIndex}.marker.sizeref = childmarker.sizeref;
-    
-    %---------------------------------------------------------------------%
-    
-    %-sizemode-%
-    obj.data{scatterIndex}.marker.sizemode = childmarker.sizemode;
-    
-    %---------------------------------------------------------------------%
-    
-    %-symbol-%
-    if length(scatter_data) > 1
-        obj.data{scatterIndex}.marker.symbol{m} = childmarker.symbol;
-    else
-        obj.data{scatterIndex}.marker.symbol = childmarker.symbol;
-    end
-    
-    %---------------------------------------------------------------------%
-    
-    %-size-%
-    if length(scatter_data) > 1
-        obj.data{scatterIndex}.marker.size = childmarker.size;
-    else
-        obj.data{scatterIndex}.marker.size = childmarker.size * 0.15;
-    end
-  
-    %---------------------------------------------------------------------%
-    
-    %-line width-%
-    
-    if length(scatter_data) > 1 || ischar(childmarker.line.color)
-        obj.data{scatterIndex}.marker.line.width(m) = childmarker.line.width;
-    else
-        obj.data{scatterIndex}.marker.line.width = childmarker.line.width;
-        % obj.data{scatterIndex}.marker.line.width(1:length(childmarker.line.color)) = childmarker.line.width;
-    end
-    
-    %---------------------------------------------------------------------%
 
+    %-------------------------------------------------------------------------%
+
+    %-set polar axes-%
+    updatePolaraxes(obj, plotIndex);
+
+    %-------------------------------------------------------------------------%
 end
+
+%-------------------------------------------------------------------------%
+%
+%-SET POLAR AXIS-%
+%
+%-------------------------------------------------------------------------%
+
+function updatePolaraxes(obj, plotIndex)
+
+    %-------------------------------------------------------------------------%
+
+    %-AXIS INDEX-%
+    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
+
+    %-CHECK FOR MULTIPLE AXES-%
+    [xsource, ysource] = findSourceAxis(obj, axIndex);
+        
+    %-GET DATA STRUCTURES-%
+    plotData = get(obj.State.Plot(plotIndex).Handle);
+    axisData = get(plotData.Parent);
+    thetaAxis = get(axisData.ThetaAxis);
+    rAxis = get(axisData.RAxis);
+
+    %-------------------------------------------------------------------------%
+
+    %-set domain plot-%
+    xo = axisData.Position(1);
+    yo = axisData.Position(2);
+    w = axisData.Position(3);
+    h = axisData.Position(4);
+
+    polarAxis.domain.x = min([xo xo + w], 1);
+    polarAxis.domain.y = min([yo yo + h], 1);
+
+    %-------------------------------------------------------------------------%
+        
+    %-setting angular axis-%
+    gridColor = sprintf('rgba(%f,%f,%f,%f)', 255*axisData.GridColor, ...
+        axisData.GridAlpha);
+    gridWidth = axisData.LineWidth;
+    thetaLim = thetaAxis.Limits;
+    
+    polarAxis.angularaxis.linecolor = gridColor;
+    polarAxis.angularaxis.ticklen = mean(thetaAxis.TickLength);
+
+    if isnumeric(thetaLim)
+        polarAxis.angularaxis.range = thetaLim;
+    else
+        polarAxis.angularaxis.autorange = true;
+    end
+
+    if strcmp(axisData.ThetaGrid, 'on')
+        polarAxis.angularaxis.gridwidth = gridWidth;
+        polarAxis.angularaxis.gridcolor = gridColor;
+    end
+
+    %-------------------------------------------------------------------------%
+
+    %-set angular axis label-%
+    thetaLabel = thetaAxis.Label;
+
+    polarAxis.angularaxis.title.text = thetaLabel.String;
+    polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
+        thetaLabel.FontName);
+    polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
+    polarAxis.radialaxis.title.font.color = sprintf('rgb(%f,%f,%f)', ...
+        255*thetaLabel.Color);
+
+    %-------------------------------------------------------------------------%
+        
+    %-setting radial axis-%
+    rLim = rAxis.Limits;
+
+    polarAxis.radialaxis.showline = false;
+    polarAxis.radialaxis.angle = axisData.RAxisLocation+6;
+    polarAxis.radialaxis.tickangle = 90-rAxis.TickLabelRotation;
+    polarAxis.radialaxis.ticklen = mean(rAxis.TickLength);
+
+    if isnumeric(rLim)
+        polarAxis.radialaxis.range = rLim;
+    else
+        polarAxis.radialaxis.autorange = true;
+    end
+
+    if strcmp(axisData.RGrid, 'on')
+        polarAxis.radialaxis.gridwidth = gridWidth;
+        polarAxis.radialaxis.gridcolor = gridColor;
+    end
+
+    %-------------------------------------------------------------------------%
+
+    %-set radial axis label-%
+    rLabel = thetaAxis.Label;
+
+    polarAxis.angularaxis.title.text = 'label';%rLabel.String;
+    polarAxis.angularaxis.title.font.family = matlab2plotlyfont(...
+        rLabel.FontName);
+    polarAxis.angularaxis.title.font.size = rLabel.FontSize;
+    polarAxis.angularaxis.title.font.color = sprintf('rgb(%f,%f,%f)', ...
+        255*rLabel.Color);
+
+    %-------------------------------------------------------------------------%
+
+    %-angular tick labels settings-%
+    tickValues = axisData.ThetaTick; 
+    tickLabels = axisData.ThetaTickLabel;
+    showTickLabels = true;
+
+    try
+        if tickValues(1) == 0 && tickValues(end) == 360
+            tickValues = tickValues(1:end-1);
+        end
+    catch
+        tickValues = tickValues;
+    end
+
+    if isempty(tickValues) 
+        showTickLabels = false;
+        polarAxis.angularaxis.showticklabels = showTickLabels;
+        polarAxis.angularaxis.ticks = '';
+
+    elseif isempty(tickLabels)
+        polarAxis.angularaxis.tickvals = tickValues;
+
+    else
+        polarAxis.angularaxis.tickvals = tickValues;
+        polarAxis.angularaxis.ticktext = tickLabels;
+
+    end
+
+    if showTickLabels
+        switch thetaAxis.TickDirection
+            case 'in'
+                polarAxis.angularaxis.ticks = 'inside';
+            case 'out'
+                polarAxis.angularaxis.ticks = 'outside';
+        end
+
+        %-tick font-%
+        polarAxis.angularaxis.tickfont.family = matlab2plotlyfont(...
+            thetaAxis.FontName);
+        polarAxis.angularaxis.tickfont.size = thetaAxis.FontSize;
+        polarAxis.angularaxis.tickfont.color = sprintf('rgb(%f,%f,%f)', ...
+            255*thetaAxis.Color);
+    end
+
+
+    %-------------------------------------------------------------------------%
+
+    %-radial tick labels settings-%
+    tickValues = axisData.RTick;
+    tickLabels = axisData.RTickLabel;
+    showTickLabels = true;
+
+    if isempty(tickValues) 
+        showTickLabels = false;
+        polarAxis.radialaxis.showticklabels = showTickLabels;
+        polarAxis.radialaxis.ticks = '';
+
+    elseif isempty(tickLabels)
+        polarAxis.radialaxis.tickvals = tickValues;
+
+    else
+        polarAxis.radialaxis.tickvals = tickValues;
+        polarAxis.radialaxis.ticktext = tickLabels;
+    end
+
+    if showTickLabels
+        switch rAxis.TickDirection
+            case 'in'
+                polarAxis.radialaxis.ticks = 'inside';
+            case 'out'
+                polarAxis.radialaxis.ticks = 'outside';
+        end
+
+        %-tick font-%
+        polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
+            rAxis.FontName);
+        polarAxis.radialaxis.tickfont.size = rAxis.FontSize;
+        polarAxis.radialaxis.tickfont.color = sprintf('rgb(%f,%f,%f)', ...
+            255*rAxis.Color);
+    end
+
+
+    %-------------------------------------------------------------------------%
+
+    %-set polaraxes to layout-%
+    obj.layout = setfield(obj.layout, sprintf('polar%d', xsource+1), polarAxis);
+
+    %-------------------------------------------------------------------------%
 end
+
 

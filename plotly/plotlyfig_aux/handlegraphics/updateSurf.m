@@ -8,7 +8,6 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
 %-SURFACE DATA STRUCTURE- %
 meshData = get(obj.State.Plot(surfaceIndex).Handle);
-figureData = get(obj.State.Figure.Handle);
 
 %-AXIS STRUCTURE-%
 axisData = get(ancestor(meshData.Parent,'axes'));
@@ -104,7 +103,7 @@ obj.data{contourIndex}.z = zDataContour(:);
 %-------------------------------------------------------------------------%
 
 %-get colormap-%
-cMap = figureData.Colormap;
+cMap = axisData.Colormap;
 fac = 1/(length(cMap)-1);
 colorScale = {};
 
