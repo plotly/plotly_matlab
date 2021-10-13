@@ -13,7 +13,12 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     axisColor = 255 * eval(sprintf('axisData.%sColor', axisName));
     axisColor = sprintf('rgb(%f,%f,%f)', axisColor);
     lineWidth = max(1,axisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
-    exponentFormat = eval(sprintf('axisData.%sAxis.Exponent', axisName));
+
+    try
+        exponentFormat = eval(sprintf('axisData.%sAxis.Exponent', axisName));
+    catch
+        exponentFormat = 0;
+    end
 
     axis.side = eval(sprintf('axisData.%sAxisLocation', axisName));
     axis.zeroline = false;
@@ -49,7 +54,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %-------------------------------------------------------------------------%
 
     %-set axis grid-%
-
     isGrid = sprintf('axisData.%sGrid', axisName);
     isMinorGrid = sprintf('axisData.%sMinorGrid', axisName);
 
@@ -90,7 +94,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %-------------------------------------------------------------------------%
 
     %-there is not tick label case-%
-    if isempty(tickValues) && isempty(tickLabels)
+    if isempty(tickValues)
         
         axis.ticks = '';
         axis.showticklabels = false;
@@ -105,21 +109,19 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
     %-------------------------------------------------------------------------%
 
-    %-there is tick labels-%
+    %-there is tick labels case-%
     else
 
-        %---------------------------------------------------------------------%
+        %-set tick values-%
+        axis.showticklabels = true;
+        axis.tickmode = 'array';
 
-        %-some tick label settings-%
-        axisLim = eval( sprintf('axisData.%sLim', axisName) );
-        if isduration(axisLim), axisLim = datenum(axisLim); end
-
-        switch axisData.Box
-            case 'on'
-                axis.mirror = 'ticks';
-            case 'off'
-                axis.mirror = false;
+        if ~iscategorical(tickValues)
+            axis.tickvals = tickValues;
         end
+
+        %-set axis limits-%
+        axisLim = eval( sprintf('axisData.%sLim', axisName) );
 
         if isnumeric(axisLim)
             if strcmp(axis.type, 'linear')
@@ -128,104 +130,107 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 axis.range = log10(axisLim);
             end
 
+        elseif isduration(axisLim)
+            axis.range = datenum(axisLim);
+
+        elseif iscategorical(axisLim)
+            axis.autorange = true;
+            axis.type = 'category';
+
         else
             axis.autorange = true;
         end
 
-        axis.showticklabels = true;
+        %-box setting-%
+        switch axisData.Box
+            case 'on'
+                axis.mirror = 'ticks';
+            case 'off'
+                axis.mirror = false;
+        end
 
-        %---------------------------------------------------------------------%
-
-        %-set tick labels by using tick values and tick texts-%
-        if ~isempty(tickValues) && ~isempty(tickLabels)
-            axis.tickmode = 'array';
-            axis.tickvals = tickValues;
+        %-set tick labels by using tick texts-%
+        if ~isempty(tickLabels)
             axis.ticktext = tickLabels;
-
-        %---------------------------------------------------------------------%
-
-        %-set tick labels by using only tick values-%
-        elseif ~isempty(tickValues) && isempty(tickLabels)
-            axis.tickmode = 'array';
-            axis.tickvals = tickValues;
-
-            %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-            %
-            % TODO: determine if following code piece is necessary. For this we need 
-            %       to test fig2plotly with more examples
-            %
-            %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-
-            % %-LOG TYPE-%
-            % if strcmp(axis.type,'log')
-
-            %     axis.range = log10(axisLim);
-            %     axis.autotick = true;
-            %     axis.nticks = eval(['length(axisData.' axisName 'Tick) + 1;']);
-
-            % %---------------------------------------------------------------------%
-
-            % %-LINEAR TYPE-%
-            % elseif strcmp(axis.type,'linear')
-
-            %     %-----------------------------------------------------------------%
-
-            %     % %-get tick label mode-%
-            %     % tickLabelMode = eval(['axisData.' axisName 'TickLabelMode;']);
-
-            %     % %-----------------------------------------------------------------%
-
-            %     % %-AUTO MODE-%
-            %     % if strcmp(tickLabelMode,'auto')
-
-            %         %-------------------------------------------------------------%
-                
-            %         if isnumeric(axisLim)
-            %             %-axis range-%
-            %             axis.range = axisLim;
-            %             %-axis tickvals-%
-            %             axis.tickvals = tick;
-                    
-            %         %-------------------------------------------------------------%
-                
-            %         elseif isduration(axisLim)
-            %            [temp,type] = convertDuration(axisLim);
-
-            %            if (~isduration(temp))              
-            %                axis.range = temp;
-            %                axis.type = 'duration';
-            %                axis.title = type;
-            %            else
-            %                nticks = eval(['length(axisData.' axisName 'Tick)-1;']);
-            %                delta = 0.1;
-            %                axis.range = [-delta nticks+delta];
-            %                axis.type = 'duration - specified format';     
-            %            end
-                   
-            %         %-------------------------------------------------------------%
-                
-            %         elseif isdatetime(axisLim)
-            %             axis.range = convertDate(axisLim);
-            %             axis.type = 'date'; 
-            %         else 
-            %             % data is a category type other then duration and datetime
-            %         end
-
-            %         %-------------------------------------------------------------%
-
-            %         if ~isnumeric(axisLim)
-            %             %-axis autotick-%
-            %             axis.autotick = true;
-            %             %-axis numticks-%       
-            %             axis.nticks = eval(['length(axisData.' axisName 'Tick)+1']);
-            %         end
-            %     end
-            % end
-
-            %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-
         end
     end
+
+    %---------------------------------------------------------------------%
+
+    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+    %
+    % TODO: determine if following code piece is necessary. For this we need 
+    %       to test fig2plotly with more examples
+    %
+    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+
+    % %-LOG TYPE-%
+    % if strcmp(axis.type,'log')
+
+    %     axis.range = log10(axisLim);
+    %     axis.autotick = true;
+    %     axis.nticks = eval(['length(axisData.' axisName 'Tick) + 1;']);
+
+    % %---------------------------------------------------------------------%
+
+    % %-LINEAR TYPE-%
+    % elseif strcmp(axis.type,'linear')
+
+    %     %-----------------------------------------------------------------%
+
+    %     % %-get tick label mode-%
+    %     % tickLabelMode = eval(['axisData.' axisName 'TickLabelMode;']);
+
+    %     % %-----------------------------------------------------------------%
+
+    %     % %-AUTO MODE-%
+    %     % if strcmp(tickLabelMode,'auto')
+
+    %         %-------------------------------------------------------------%
+        
+    %         if isnumeric(axisLim)
+    %             %-axis range-%
+    %             axis.range = axisLim;
+    %             %-axis tickvals-%
+    %             axis.tickvals = tick;
+            
+    %         %-------------------------------------------------------------%
+        
+    %         elseif isduration(axisLim)
+    %            [temp,type] = convertDuration(axisLim);
+
+    %            if (~isduration(temp))              
+    %                axis.range = temp;
+    %                axis.type = 'duration';
+    %                axis.title = type;
+    %            else
+    %                nticks = eval(['length(axisData.' axisName 'Tick)-1;']);
+    %                delta = 0.1;
+    %                axis.range = [-delta nticks+delta];
+    %                axis.type = 'duration - specified format';     
+    %            end
+           
+    %         %-------------------------------------------------------------%
+        
+    %         elseif isdatetime(axisLim)
+    %             axis.range = convertDate(axisLim);
+    %             axis.type = 'date'; 
+    %         else 
+    %             % data is a category type other then duration and datetime
+    %         end
+
+    %         %-------------------------------------------------------------%
+
+    %         if ~isnumeric(axisLim)
+    %             %-axis autotick-%
+    %             axis.autotick = true;
+    %             %-axis numticks-%       
+    %             axis.nticks = eval(['length(axisData.' axisName 'Tick)+1']);
+    %         end
+    %     end
+    % end
+
+    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
 
     %-------------------------------------------------------------------------%
 
