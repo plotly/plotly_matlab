@@ -44,11 +44,15 @@ try
         
         switch lower(obj.State.Plot(dataIndex).Class)
 
-            %--GEOAXES SPECIAL CASE--%
+            %--SPIDER PLOT -> SPECIAL CASE--%            
+            case 'spider_plot_class'
+                updateSpiderPlot(obj, dataIndex);
+
+            %--GEOAXES -> SPECIAL CASE--%
             case 'geoaxes'
                 UpdateGeoAxes(obj, dataIndex);
 
-            %-EMULATE AXES-%
+            %-EMULATE AXES -> SPECIAL CASE--%
             case 'nothing'
                 updateOnlyAxes(obj, dataIndex);
 

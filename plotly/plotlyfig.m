@@ -640,9 +640,13 @@ classdef plotlyfig < handle
                 obj.State.Axis(a).Handle = ax(axrev);
                 
                 % add title
-                obj.State.Text(a).Handle = get(ax(axrev),'Title');
-                obj.State.Text(a).AssociatedAxis = handle(ax(axrev));
-                obj.State.Text(a).Title = true;
+                try
+                    obj.State.Text(a).Handle = get(ax(axrev),'Title');
+                    obj.State.Text(a).AssociatedAxis = handle(ax(axrev));
+                    obj.State.Text(a).Title = true;
+                catch
+                    % TODO
+                end
                 
                 % find plots of figure
                 plots = findobj(ax(axrev),'-not','Type','Text','-not','Type','axes','-depth',1);
@@ -768,6 +772,7 @@ classdef plotlyfig < handle
             % reset dataget(obj.State.Figure.Handle,'Children')
             obj.data = {};
             obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
+            obj.PlotlyDefaults.anIndex = obj.State.Figure.NumTexts + 1;
             
             % reset layout
             obj.layout = struct();
