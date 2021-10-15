@@ -1,209 +1,173 @@
-function marker = extractScatterMarker(patch_data)
+function marker = extractScatterMarker(plotData)
 
-% EXTRACTS THE MARKER STYLE USED FOR MATLAB OBJECTS
-% OF TYPE "PATCH". THESE OBJECTS ARE USED IN AREASERIES
-% BARSERIES, CONTOURGROUP, SCATTERGROUP.
+    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+    %                                                                         %
+    % %-DESCRIPTION-%                                                         %
+    %                                                                         %
+    % EXTRACTS THE MARKER STYLE USED FOR MATLAB OBJECTS OF TYPE "PATCH".      %
+    % THESE OBJECTS ARE USED IN AREASERIES BARSERIES, CONTOURGROUP,           %
+    % SCATTERGROUP.                                                           %
+    %                                                                         %
+    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
 
-%-------------------------------------------------------------------------%
+    %-INITIALIZATIONS-%
+    axisData = get(ancestor(plotData.Parent,'axes'));
+    figureData = get(ancestor(plotData.Parent,'figure'));
+    marker = struct();
 
-%-AXIS STRUCTURE-%
-axis_data = get(ancestor(patch_data.Parent,'axes'));
+    marker.sizeref = 1;
+    marker.sizemode = 'area';
+    marker.size = plotData.SizeData;
+    marker.line.width = plotData.LineWidth;
 
-%-FIGURE STRUCTURE-%
-figure_data = get(ancestor(patch_data.Parent,'figure'));
+    markerFaceColor = plotData.MarkerFaceColor;
+    markerFaceAlpha = plotData.MarkerFaceAlpha;
+    markerEdgeColor = plotData.MarkerEdgeColor;
+    markerEdgeAlpha = plotData.MarkerEdgeAlpha;
+    cData = plotData.CData;
 
-%-INITIALIZE OUTPUT-%
-marker = struct();
+    colorMap = axisData.Colormap;
+    cLim = axisData.CLim;
 
-%-------------------------------------------------------------------------%
+    filledMarkerSet = {'o', 'square', 's', 'diamond', 'd', 'v', '^', ...
+        '<', '>', 'hexagram', 'pentagram'};
+    filledMarker = ismember(plotData.Marker, filledMarkerSet);
+    nColors = size(colorMap, 1);
 
-%-MARKER SIZEREF-%
-marker.sizeref = 1;
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-get marker symbol-%
+    if ~strcmp(plotData.Marker,'none')
 
-%-MARKER SIZEMODE-%
-marker.sizemode = 'area';
-
-%-------------------------------------------------------------------------%
-
-%-MARKER SIZE (STYLE)-%
-marker.size = patch_data.SizeData;
-
-%-------------------------------------------------------------------------%
-
-%-MARKER SYMBOL (STYLE)-%
-if ~strcmp(patch_data.Marker,'none')
-
-    switch patch_data.Marker
-        case '.'
-            marksymbol = 'circle';
-        case 'o'
-            marksymbol = 'circle';
-        case 'x'
-            marksymbol = 'x-thin-open';
-        case '+'
-            marksymbol = 'cross-thin-open';
-        case '*'
-            marksymbol = 'asterisk-open';
-        case {'s','square'}
-            marksymbol = 'square';
-        case {'d','diamond'}
-            marksymbol = 'diamond';
-        case 'v'
-            marksymbol = 'triangle-down';
-        case '^'
-            marksymbol = 'triangle-up';
-        case '<'
-            marksymbol = 'triangle-left';
-        case '>'
-            marksymbol = 'triangle-right';
-        case {'p','pentagram'}
-            marksymbol = 'star';
-        case {'h','hexagram'}
-            marksymbol = 'hexagram';
+        switch plotData.Marker
+            case '.'
+                markerSymbol = 'circle';
+            case 'o'
+                markerSymbol = 'circle';
+            case 'x'
+                markerSymbol = 'x-thin-open';
+            case '+'
+                markerSymbol = 'cross-thin-open';
+            case '*'
+                markerSymbol = 'asterisk-open';
+            case {'s','square'}
+                markerSymbol = 'square';
+            case {'d','diamond'}
+                markerSymbol = 'diamond';
+            case 'v'
+                markerSymbol = 'triangle-down';
+            case '^'
+                markerSymbol = 'triangle-up';
+            case '<'
+                markerSymbol = 'triangle-left';
+            case '>'
+                markerSymbol = 'triangle-right';
+            case {'p','pentagram'}
+                markerSymbol = 'star';
+            case {'h','hexagram'}
+                markerSymbol = 'hexagram';
+        end
+        
+        marker.symbol = markerSymbol;
     end
-    
-    marker.symbol = marksymbol;
-end
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-MARKER LINE WIDTH (STYLE)-%
-marker.line.width = patch_data.LineWidth;
+    %-get marker fillColor-%
+    if filledMarker
+        
+        if isnumeric(markerFaceColor)
+            fillColor = sprintf('rgb(%f,%f,%f)', 255*markerFaceColor);
 
-%-------------------------------------------------------------------------%
-
-%--MARKER FILL COLOR--%
-
-%-figure colormap-%
-colormap = figure_data.Colormap;
-
-% marker face color
-MarkerColor = patch_data.MarkerFaceColor;
-
-filledMarkerSet = {'o','square','s','diamond','d',...
-    'v','^', '<','>','hexagram','pentagram'};
-
-filledMarker = ismember(patch_data.Marker,filledMarkerSet);
-
-if filledMarker
-    
-    if isnumeric(MarkerColor)
-        col = 255*MarkerColor;
-        markercolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    else
-
-        switch MarkerColor
-            
-            case 'none'
+        else
+            switch markerFaceColor
                 
-                markercolor = 'rgba(0,0,0,0)';
+                case 'none'        
+                    fillColor = 'rgba(0,0,0,0)';
+                    
+                case 'auto'
+                    if ~strcmp(axisData.Color,'none')
+                        fillColor = 255*axisData.Color;
+                    else
+                        fillColor = 255*figureData.Color;
+                    end
+
+                    fillColor = sprintf('rgb(%f,%f,%f)', fillColor);
+                    
+                case 'flat'
+
+                    for n = 1:size(cData, 1)
+                        if size(cData, 2) == 1
+                            cIndex = max( min( cData(n), cLim(2) ), cLim(1) );
+                            scaleColor = (cIndex - cLim(1)) / diff(cLim);
+                            cIndex = 1 + floor(scaleColor*(nColors-1));
+                            numColor =  255 * colorMap(cIndex, :);
+
+                        elseif size(cData, 2) == 3
+                            numColor = 255*cData(n, :);
+                        end
+
+                        fillColor{n} = sprintf('rgb(%f,%f,%f)', numColor);
+                    end
+
+            end
+        end
+        
+        marker.color = fillColor;
+        marker.opacity = markerFaceAlpha;
+        
+    end
+
+    %-------------------------------------------------------------------------%
+
+    %-get marker lineColor-%
+    if isnumeric(markerEdgeColor)
+        lineColor = sprintf('rgb(%f,%f,%f)', 255*markerEdgeColor);
+
+    else
+        switch markerEdgeColor
+
+            case 'none'
+                lineColor = 'rgba(0,0,0,0)';
                 
             case 'auto'
                 
-                if ~strcmp(axis_data.Color,'none')
-                    col = 255*axis_data.Color;
+                EdgeColor = plotData.EdgeColor;
+
+                if ~strcmp(axisData.Color,'none')
+                    lineColor = 255*axisData.Color;
                 else
-                    col = 255*figure_data.Color;
+                    lineColor = 255*figureData.Color;
                 end
-                
-                markercolor  = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                
+
+                lineColor = sprintf('rgba(%f,%f,%f,%f)', lineColor, ...
+                    markerEdgeAlpha);
                 
             case 'flat'
+                
+                for n = 1:size(cData, 1)
+                    if size(cData, 2) == 1
+                        cIndex = max( min( cData(n), cLim(2) ), cLim(1) );
+                        scaleColor = (cIndex - cLim(1)) / diff(cLim);
+                        cIndex = 1 + floor(scaleColor*(nColors-1));
+                        numColor =  255 * colorMap(cIndex, :);
 
-                for n = 1:length(patch_data.CData)
+                    elseif size(cData, 2) == 3
+                        numColor = 255*cData(n, :);
+                    end
 
-                    capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
-                    scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                    col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
-                    
-                    markercolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                    
+                    lineColor{n} = sprintf('rgba(%f,%f,%f,%f)', numColor, ...
+                        markerEdgeAlpha);
                 end
+
         end
     end
-    
-    marker.color = markercolor;
-    
-end
 
-%-------------------------------------------------------------------------%
-
-%-MARKER LINE COLOR-%
-
-% marker edge color
-MarkerLineColor = patch_data.MarkerEdgeColor;
-
-filledMarker = ismember(patch_data.Marker,filledMarkerSet);
-
-if isnumeric(MarkerLineColor)
-    col = 255*MarkerLineColor;
-    markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-else
-    switch MarkerLineColor
-        
-        case 'none'
-          
-            markerlinecolor = 'rgba(0,0,0,0)';
-            
-        case 'auto'
-            
-            EdgeColor = patch_data.EdgeColor;
-            
-            if isnumeric(EdgeColor)
-                col = 255*EdgeColor;
-                markerlinecolor = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-            else
-                
-                switch EdgeColor
-                    
-                    case 'none'
-                        
-                        markerlinecolor = 'rgba(0,0,0,0)';
-                        
-                    case {'flat', 'interp'}
-                        
-                        for n = 1:length(patch_data.CData)
-                            
-                            capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
-                            scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                            col =  255*(colormap(1 + floor(scalefactor*(length(colormap)-1)),:));
-                            
-                            markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                            
-                        end
-                        
-                end
-            end
-            
-        case 'flat'
-            
-            for n = 1:length(patch_data.CData)
-                
-                try
-                    capCD = max(min(patch_data.CData(n),axis_data.CLim(2)),axis_data.CLim(1));
-                    scalefactor = (capCD - axis_data.CLim(1))/diff(axis_data.CLim);
-                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
-                catch
-                    capCD = patch_data.CData(n); 
-                    scalefactor = capCD; 
-                    col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
-                end
-                
-                markerlinecolor{n} = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-                
-            end
+    if filledMarker
+        marker.line.color = lineColor;
+    else
+        marker.color = lineColor;
     end
-end
 
-if filledMarker
-    marker.line.color = markerlinecolor;
-else
-    marker.color = markerlinecolor;
-end
-
-%-------------------------------------------------------------------------%
-
+    %-------------------------------------------------------------------------%
 end
