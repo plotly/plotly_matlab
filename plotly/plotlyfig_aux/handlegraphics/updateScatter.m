@@ -5,7 +5,7 @@ function updateScatter(obj,scatterIndex)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(scatterIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj,axIndex);
-    scatterData = get(obj.State.Plot(scatterIndex).Handle)
+    scatterData = get(obj.State.Plot(scatterIndex).Handle);
 
     try
         isScatter3D = isfield(scatterData,'ZData');
@@ -52,11 +52,11 @@ function updateScatter(obj,scatterIndex)
     end
 
     if length(markerColor) == 1 
-        obj.data{scatterIndex}.marker.color = markerColor{1}
+        obj.data{scatterIndex}.marker.color = markerColor{1};
     end
 
     if length(markerLineColor) == 1 
-        obj.data{scatterIndex}.marker.line.color = markerLineColor{1}
+        obj.data{scatterIndex}.marker.line.color = markerLineColor{1};
     end
     
     %-------------------------------------------------------------------------%
