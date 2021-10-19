@@ -54,8 +54,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %-------------------------------------------------------------------------%
 
     %-set axis grid-%
-    isGrid = sprintf('axisData.%sGrid', axisName);
-    isMinorGrid = sprintf('axisData.%sMinorGrid', axisName);
+    isGrid = eval(sprintf('axisData.%sGrid', axisName));
+    isMinorGrid = eval(sprintf('axisData.%sMinorGrid', axisName));
 
     if strcmp(isGrid, 'on') || strcmp(isMinorGrid, 'on')
         axis.showgrid = true;
@@ -89,7 +89,10 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %-get tick label data-%
     tickLabels = eval(sprintf('axisData.%sTickLabel', axisName));
     tickValues = eval(sprintf('axisData.%sTick', axisName));
-    if isduration(tickValues), tickValues = datenum(tickValues); end
+
+    if isduration(tickValues) || isdatetime(tickValues)
+        tickValues = datenum(tickValues); 
+    end
 
     %-------------------------------------------------------------------------%
 
@@ -130,7 +133,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 axis.range = log10(axisLim);
             end
 
-        elseif isduration(axisLim)
+        elseif isduration(axisLim) || isdatetime(axisLim)
             axis.range = datenum(axisLim);
 
         elseif iscategorical(axisLim)
