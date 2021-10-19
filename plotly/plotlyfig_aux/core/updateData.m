@@ -95,6 +95,8 @@ try
                     updateTernaryPlotPro(obj, dataIndex);
                 elseif ismember('ternpcolor', lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlotPro(obj, dataIndex);
+                elseif ismember('isosurface', lower(obj.PlotOptions.TreatAs))
+                    updateIsosurface(obj, dataIndex);
                 else
                     updatePatch(obj, dataIndex);
                 end
