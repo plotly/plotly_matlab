@@ -69,17 +69,22 @@ function obj = updateBar(obj,barIndex)
     %-------------------------------------------------------------------------%
 
     %-set plot data-%
+    xData = barData.XData;
+    yData = barData.YData;
+
+    if isduration(xData) || isdatetime(xData), xData = datenum(xData); end
+    if isduration(yData) || isdatetime(yData), yData = datenum(yData); end
+
     switch barData.Horizontal
-        
         case 'off'
             obj.data{barIndex}.orientation = 'v';
-            obj.data{barIndex}.x = barData.XData;
-            obj.data{barIndex}.y = barData.YData;
+            obj.data{barIndex}.x = xData;
+            obj.data{barIndex}.y = yData;
             
         case 'on'
             obj.data{barIndex}.orientation = 'h';
-            obj.data{barIndex}.x = barData.YData;
-            obj.data{barIndex}.y = barData.XData;
+            obj.data{barIndex}.x = yData;
+            obj.data{barIndex}.y = xData;
     end
 
     %-------------------------------------------------------------------------%

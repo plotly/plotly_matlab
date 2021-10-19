@@ -85,8 +85,8 @@ function updateLineseries(obj, plotIndex)
     xData = plotData.XData;
     yData = plotData.YData;
 
-    if isduration(xData), xData = datenum(xData); end
-    if isduration(yData), yData = datenum(yData); end
+    if isduration(xData) || isdatetime(xData), xData = datenum(xData); end
+    if isduration(yData) || isdatetime(yData), yData = datenum(yData); end
 
     %-------------------------------------------------------------------------%
 
