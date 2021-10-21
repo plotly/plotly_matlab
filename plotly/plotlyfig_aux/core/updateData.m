@@ -107,6 +107,8 @@ try
                     updateSurf(obj, dataIndex); 
                 elseif ismember('mesh', lower(obj.PlotOptions.TreatAs))
                     updateMesh(obj, dataIndex);
+                elseif ismember('slice', lower(obj.PlotOptions.TreatAs))
+                    updateSlice(obj, dataIndex);
                 else
                     updateSurfaceplot(obj,dataIndex);
                 end
