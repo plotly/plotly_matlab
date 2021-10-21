@@ -390,7 +390,11 @@ classdef plotlyfig < handle
             
             % validate data fields
             for d = 1:length(obj.data)
-                obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+                try
+                    obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
+                catch
+                    % TODO
+                end
             end
             
             % validate layout fields
@@ -1068,7 +1072,7 @@ classdef plotlyfig < handle
     methods (Access=private)
         %----STRIP THE FIELDS OF A SPECIFIED KEY-----%
         function stripped = stripkeys(obj, fields, fieldname, key)
-            
+
             %plorlt reference
             pr = obj.PlotlyReference;
             
