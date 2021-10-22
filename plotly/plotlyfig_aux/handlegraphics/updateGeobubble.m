@@ -155,8 +155,8 @@ function updateGeobubble(obj,geoIndex)
         geoaxes.framecolor = 'rgb(120,120,120)';
 
         if strcmpi(geoData.Basemap, 'streets-light')
-            geoaxes.oceancolor = 'rgba(20,220,220,1)';
-            geoaxes.landcolor = 'rgba(20,220,220,0.2)';
+            geoaxes.oceancolor = 'rgba(215,215,220,1)';
+            geoaxes.landcolor = 'rgba(220,220,220,0.4)';
         elseif strcmpi(geoData.Basemap, 'colorterrain')
             geoaxes.oceancolor = 'rgba(118,165,225,0.6)';
             geoaxes.landcolor = 'rgba(190,180,170,1)';
