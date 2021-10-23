@@ -145,18 +145,24 @@ function updateScene(obj, dataIndex)
     [xSource, ~] = findSourceAxis(obj, axIndex);
     scene = eval( sprintf('obj.layout.scene%d', xSource) );
 
+    position = axisData.Position;
     aspectRatio = axisData.PlotBoxAspectRatio;
     cameraPosition = axisData.CameraPosition;
     dataAspectRatio = axisData.DataAspectRatio;
     cameraUpVector = axisData.CameraUpVector;
     cameraEye = cameraPosition./dataAspectRatio;
-
+    normFac = abs(min(cameraEye));
+    
     try
-        normFac = 0.42 - 0.105 * (size(axisData.Layout.TileSpan, 2) - 1);
-        normFac = normFac * abs(min(cameraEye));
+        fac = size(axisData.Layout.TileSpan, 2);
     catch
-        normFac = 0.42 * abs(min(cameraEye));
+        fac = 1;
     end
+
+    r1 = range([ 1, prod(aspectRatio([1,2])) ]);
+    r2 = range([ 1, prod(aspectRatio([1,3])) ]);
+    r3 = range([ 1, prod(aspectRatio([2,3])) ]);
+    r = max([r1, r2, r3]);
 
     %-------------------------------------------------------------------------%
 
@@ -166,9 +172,9 @@ function updateScene(obj, dataIndex)
     scene.aspectratio.z = 1.0*aspectRatio(3);
 
     %-camera eye-%
-    scene.camera.eye.x = cameraEye(1) / normFac;
-    scene.camera.eye.y = cameraEye(2) / normFac;
-    scene.camera.eye.z = cameraEye(3) / normFac;
+    scene.camera.eye.x = cameraEye(1) / normFac * (1.4 + r * fac);
+    scene.camera.eye.y = cameraEye(2) / normFac * (1.4 + r * fac);
+    scene.camera.eye.z = cameraEye(3) / normFac * (1.4 + r * fac);
 
     %-camera up-%
     scene.camera.up.x = cameraUpVector(1); 
@@ -422,7 +428,8 @@ end
 
 
 function scaleFactor = getScaleFactor(xData, uData, nSteps)
-    xStep = max( abs(diff( mean(xData, 1) )) );
+
+    xStep = max( abs(diff( mean(xData(:,:,1), 1) )) );
     uStep = max(abs(uData(:)));
 
     scaleFactor = 0.8 * xStep/uStep;
