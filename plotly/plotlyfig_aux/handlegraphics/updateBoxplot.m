@@ -60,6 +60,7 @@ if isCompact
     bpnum = length(box_child)/bpcompnum;
     % check for assumed box structure
     if mod(length(box_child), bpcompnum)~=0
+        updateAlternativeBoxplot(obj, boxIndex);
         return
     end
 else
@@ -67,6 +68,7 @@ else
     bpnum = length(box_child)/bpcompnum;
     % check for assumed box structure
     if mod(length(box_child),bpcompnum)~=0
+        updateAlternativeBoxplot(obj, boxIndex);
         return
     end
 end
