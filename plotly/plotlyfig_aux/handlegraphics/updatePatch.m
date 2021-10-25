@@ -135,11 +135,7 @@ if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
     %---------------------------------------------------------------------%
 
     %-patch name-%
-    if ~isempty(patch_data.DisplayName)
-        obj.data{patchIndex}.name = patch_data.DisplayName;
-    else
-        obj.data{patchIndex}.name = patch_data.DisplayName;
-    end
+    obj.data{patchIndex}.name = patch_data.DisplayName;
 
     %---------------------------------------------------------------------%
 
@@ -234,6 +230,7 @@ switch legInfo.IconDisplayStyle
         showleg = false;
 end
 
+showleg = showleg & ~isempty(obj.data{patchIndex}.name);
 obj.data{patchIndex}.showlegend = showleg;
 
 %-------------------------------------------------------------------------%
