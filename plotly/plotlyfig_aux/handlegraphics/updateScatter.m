@@ -13,6 +13,7 @@ function updateScatter(obj,scatterIndex)
     catch
         isScatter3D = false;
     end
+    
     %-------------------------------------------------------------------------%
 
     %-set trace-%

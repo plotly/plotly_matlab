@@ -252,17 +252,9 @@ function updateScene(obj, dataIndex)
     %-------------------------------------------------------------------------%
 
     %-scene axis configuration-%
-    xRange = axisData.XLim;
-    if isduration(xRange) || isdatetime(xRange), xRange = datenum(xRange); end
-    scene.xaxis.range = xRange;
-
-    yRange = axisData.YLim;
-    if isduration(yRange) || isdatetime(yRange), yRange = datenum(yRange); end
-    scene.yaxis.range = yRange;
-
-    zRange = axisData.ZLim;
-    if isduration(zRange) || isdatetime(zRange), zRange = datenum(zRange); end
-    scene.zaxis.range = zRange;
+    scene.xaxis.range = date2NumData(axisData.XLim);
+    scene.yaxis.range = date2NumData(axisData.YLim);
+    scene.zaxis.range = date2NumData(axisData.ZLim);
 
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;
