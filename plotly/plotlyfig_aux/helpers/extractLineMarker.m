@@ -20,6 +20,10 @@ marker = struct();
 %-MARKER SIZE-%
 marker.size = line_data.MarkerSize;
 
+if length(marker.size) == 1
+    marker.size = 0.6*marker.size;
+end
+
 %-------------------------------------------------------------------------%
 
 %-MARKER SYMBOL-%
@@ -28,7 +32,6 @@ if ~strcmp(line_data.Marker,'none')
     switch line_data.Marker
         case '.'
             marksymbol = 'circle';
-            marker.size = 0.4*line_data.MarkerSize;
         case 'o'
             marksymbol = 'circle';
         case 'x'
