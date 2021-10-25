@@ -1,213 +1,99 @@
 function updateLineseries(obj, plotIndex)
 
-    %----SCATTER FIELDS----%
-
-    % x - [DONE]
-    % y - [DONE]
-    % r - [HANDLED BY SCATTER]
-    % t - [HANDLED BY SCATTER]
-    % mode - [DONE]
-    % name - [NOT SUPPORTED IN MATLAB]
-    % text - [DONE]
-    % error_y - [HANDLED BY ERRORBAR]
-    % error_x - [NOT SUPPORTED IN MATLAB]
-    % connectgaps - [NOT SUPPORTED IN MATLAB]
-    % fill - [HANDLED BY AREA]
-    % fillcolor - [HANDLED BY AREA]
-    % opacity --- [TODO]
-    % textfont - [NOT SUPPORTED IN MATLAB]
-    % textposition - [NOT SUPPORTED IN MATLAB]
-    % xaxis [DONE]
-    % yaxis [DONE]
-    % showlegend [DONE]
-    % stream - [HANDLED BY PLOTLYSTREAM]
-    % visible [DONE]
-    % type [DONE]
-
-    % MARKER
-    % marler.color - [DONE]
-    % marker.size - [DONE]
-    % marker.line.color - [DONE]
-    % marker.line.width - [DONE]
-    % marker.line.dash - [NOT SUPPORTED IN MATLAB]
-    % marker.line.opacity - [NOT SUPPORTED IN MATLAB]
-    % marker.line.smoothing - [NOT SUPPORTED IN MATLAB]
-    % marker.line.shape - [NOT SUPPORTED IN MATLAB]
-    % marker.opacity --- [TODO]
-    % marker.colorscale - [NOT SUPPORTED IN MATLAB]
-    % marker.sizemode - [NOT SUPPORTED IN MATLAB]
-    % marker.sizeref - [NOT SUPPORTED IN MATLAB]
-    % marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
-
-    % LINE
-
-    % line.color - [DONE]
-    % line.width - [DONE]
-    % line.dash - [DONE]
-    % line.opacity --- [TODO]
-    % line.smoothing - [NOT SUPPORTED IN MATLAB]
-    % line.shape - [NOT SUPPORTED IN MATLAB]
-
     %-------------------------------------------------------------------------%
 
-    %-AXIS INDEX-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
+    %-INITIALIZATIONS-%
 
-    %-PLOT DATA STRUCTURE- %
+    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = get(obj.State.Plot(plotIndex).Handle);
 
-    %-CHECK FOR MULTIPLE AXES-%
+    %-check for multiple axes-%
     try
         for yax = 1:2
-            yaxIndex(yax) = sum(plotData.Parent.YAxis(yax).Color == plotData.Color);
+            yAxisColor = plotData.Parent.YAxis(yax).Color;
+            yaxIndex(yax) = sum(yAxisColor == plotData.Color);
         end
 
         [~, yaxIndex] = max(yaxIndex);
-        [xsource, ysource] = findSourceAxis(obj, axIndex, yaxIndex);
+        [xSource, ySource] = findSourceAxis(obj, axIndex, yaxIndex);
 
     catch
-        [xsource, ysource] = findSourceAxis(obj,axIndex);
+        [xSource, ySource] = findSourceAxis(obj,axIndex);
     end
 
-    %-AXIS DATA-%
-    eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-    eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+    %-check if polar plot-%
+    treatAs = lower(obj.PlotOptions.TreatAs);
+    isPolar = ismember('compass', treatAs) || ismember('ezpolar', treatAs);
+
+    %-check is 3D plot-%
+    try
+        isPlot3D = isfield(plotData,'ZData');
+        isPlot3D = isPlot3D & ~isempty(plotData.ZData);
+    catch
+        isPlot3D = false;
+    end
+
+    %-get trace data-%
+    xData = date2NumData(plotData.XData);
+    yData = date2NumData(plotData.YData);
+
+    if isPolar
+        rData = sqrt(xData.^2 + yData.^2);
+        thetaData = atan2(xData, yData);
+        thetaData = -(rad2deg(thetaData) - 90);
+    end
+
+    if isPlot3D
+        zData = date2NumData(plotData.ZData);
+    end
 
     %-------------------------------------------------------------------------%
 
-    %-if polar plot or not-%
-    treatAs = obj.PlotOptions.TreatAs;
-    isPolar = ismember('compass', lower(treatAs)) || ismember('ezpolar', lower(treatAs));
-
-    %-------------------------------------------------------------------------%
-
-    %-getting data-%
-    xData = plotData.XData;
-    yData = plotData.YData;
-
-    if isduration(xData) || isdatetime(xData), xData = datenum(xData); end
-    if isduration(yData) || isdatetime(yData), yData = datenum(yData); end
-
-    %-------------------------------------------------------------------------%
-
-    %-scatter xaxis-%
-    obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
-
-    %-------------------------------------------------------------------------%
-
-    %-scatter yaxis-%
-    obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
-
-    %-------------------------------------------------------------------------%
-
-    %-scatter type-%
-    obj.data{plotIndex}.type = 'scatter';
-
+    %-set trace-%
     if isPolar
         obj.data{plotIndex}.type = 'scatterpolar';
+
+    elseif ~isPlot3D
+        obj.data{plotIndex}.type = 'scatter';
+        obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
+        obj.data{plotIndex}.yaxis = sprintf('y%d', ySource);
+    else
+        obj.data{plotIndex}.type = 'scatter3d';
+        obj.data{plotIndex}.scene = sprintf('scene%d', xSource);
+
+        updateScene(obj, plotIndex);
     end
 
-    %-------------------------------------------------------------------------%
-
-    %-scatter visible-%
     obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.name = plotData.DisplayName;
+    obj.data{plotIndex}.mode = getScatterMode(plotData);
 
     %-------------------------------------------------------------------------%
 
-    %-scatter x-%
-
+    %-set trace data-%
     if isPolar
-        rData = sqrt(x.^2 + y.^2);
         obj.data{plotIndex}.r = rData;
+        obj.data{plotIndex}.theta = thetaData;
     else
         obj.data{plotIndex}.x = xData;
-    end
-
-    %-------------------------------------------------------------------------%
-
-    %-scatter y-%
-    if isPolar
-        thetaData = atan2(xData,yData);
-        obj.data{plotIndex}.theta = -(rad2deg(thetaData) - 90);
-    else
         obj.data{plotIndex}.y = yData;
-    end
 
-    %-------------------------------------------------------------------------%
-
-    %-Fro 3D plots-%
-    obj.PlotOptions.is3d = false; % by default
-
-    if isfield(plotData,'ZData')
-        zData = plotData.ZData;
-        if isduration(zData) || isdatetime(zData), zData = datenum(zData); end
-
-        numbset = unique(zData);
-        
-        if any(zData) && length(numbset)>1
-            %-scatter z-%
+        if isPlot3D
             obj.data{plotIndex}.z = zData;
-            
-            %-overwrite type-%
-            obj.data{plotIndex}.type = 'scatter3d';
-            obj.data{plotIndex}.scene = sprintf('scene%d', xsource);
-
-            updateScene(obj, plotIndex);
-            
-            %-flag to manage 3d plots-%
             obj.PlotOptions.is3d = true;
         end
     end
 
     %-------------------------------------------------------------------------%
 
-    %-scatter name-%
-    obj.data{plotIndex}.name = plotData.DisplayName;
-
-    %-------------------------------------------------------------------------%
-
-    %-scatter mode-%
-    if ~strcmpi('none', plotData.Marker) ...
-            && ~strcmpi('none', plotData.LineStyle)
-        mode = 'lines+markers';
-    elseif ~strcmpi('none', plotData.Marker)
-        mode = 'markers';
-    elseif ~strcmpi('none', plotData.LineStyle)
-        mode = 'lines';
-    else
-        mode = 'none';
-    end
-
-    obj.data{plotIndex}.mode = mode;
-
-    %-------------------------------------------------------------------------%
-
-    %-scatter line-%
+    %-set trace line-%
     obj.data{plotIndex}.line = extractLineLine(plotData);
 
-    %-------------------------------------------------------------------------%
-
-    %-scatter marker-%
+    %-set trace marker-%
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
-    %-------------------------------------------------------------------------%
-
-    %-scatter showlegend-%
-    leg = get(plotData.Annotation);
-    legInfo = get(leg.LegendInformation);
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showLeg = true;
-        case 'off'
-            showLeg = false;
-    end
-
-    obj.data{plotIndex}.showlegend = showLeg;
-
-    if isempty(obj.data{plotIndex}.name)
-        obj.data{plotIndex}.showlegend = false;
-    end
+    %-set trace legend-%
+    obj.data{plotIndex}.showlegend = getShowLegend(plotData);
 
     %-------------------------------------------------------------------------%
 end
@@ -230,7 +116,10 @@ function updateScene(obj, dataIndex)
     dataAspectRatio = axisData.DataAspectRatio;
     cameraUpVector = axisData.CameraUpVector;
     cameraEye = cameraPosition./dataAspectRatio;
-    normFac = 0.7 * abs(min(cameraEye));
+
+    cameraOffset = 0.5;
+    normFac = abs(min(cameraEye));
+    normFac = normFac / (max(aspectRatio)/min(aspectRatio) + cameraOffset);
 
     %-------------------------------------------------------------------------%
 
@@ -240,9 +129,9 @@ function updateScene(obj, dataIndex)
     scene.aspectratio.z = 1.0*aspectRatio(3);
 
     %-camera eye-%
-    scene.camera.eye.x = cameraEye(1) / normFac;
-    scene.camera.eye.y = cameraEye(2) / normFac;
-    scene.camera.eye.z = cameraEye(3) / normFac;
+    scene.camera.eye.x = cameraEye(1)/normFac;
+    scene.camera.eye.y = cameraEye(2)/normFac;
+    scene.camera.eye.z = cameraEye(3)/normFac;
 
     %-camera up-%
     scene.camera.up.x = cameraUpVector(1); 
