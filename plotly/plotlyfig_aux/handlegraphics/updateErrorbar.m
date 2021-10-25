@@ -1,75 +1,63 @@
-function obj = updateErrorbar(obj, errorbarIndex)
+function obj = updateErrorbar(obj, plotIndex)
 
-% type: ...[DONE]
-% symmetric: ...[DONE]
-% array: ...[DONE]
-% value: ...[NA]
-% arrayminus: ...{DONE]
-% valueminus: ...[NA]
-% color: ...[DONE]
-% thickness: ...[DONE]
-% width: ...[DONE]
-% opacity: ---[TODO]
-% visible: ...[DONE]
+	%-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+	%-INITIALIZATION-%
 
-%-ERRORBAR STRUCTURE-%
-errorbar_data = get(obj.State.Plot(errorbarIndex).Handle);
+	%-get data structures-%
+	plotData = get(obj.State.Plot(plotIndex).Handle);
 
-%-------------------------------------------------------------------------%
+	%-get error data-%
+	yPositiveDelta = date2NumData(plotData.YPositiveDelta);
+	yNegativeDelta = date2NumData(plotData.YNegativeDelta);
 
-%-UPDATE LINESERIES-%
-updateLineseries(obj, errorbarIndex);
+	xPositiveDelta = date2NumData(plotData.XPositiveDelta);
+	xNegativeDelta = date2NumData(plotData.XNegativeDelta);
 
-%-------------------------------------------------------------------------%
+	%-------------------------------------------------------------------------%
 
-%-errorbar visible-%
-obj.data{errorbarIndex}.error_y.visible = true;
-obj.data{errorbarIndex}.error_x.visible = true;
+	%-set trace-%
 
-%-------------------------------------------------------------------------%
+	updateLineseries(obj, plotIndex);
 
-%-errorbar type-%
-obj.data{errorbarIndex}.error_y.type = 'data';
-obj.data{errorbarIndex}.error_x.type = 'data';
+	%-errorbar visible-%
+	obj.data{plotIndex}.error_y.visible = true;
+	obj.data{plotIndex}.error_x.visible = true;
 
-%-------------------------------------------------------------------------%
+	%-errorbar type-%
+	obj.data{plotIndex}.error_y.type = 'data';
+	obj.data{plotIndex}.error_x.type = 'data';
 
-%-errorbar symmetry-%
-obj.data{errorbarIndex}.error_y.symmetric = false;
+	%-errorbar symmetry-%
+	obj.data{plotIndex}.error_y.symmetric = false;
 
-%-------------------------------------------------------------------------%
 
-%-errorbar value-%
-obj.data{errorbarIndex}.error_y.array = errorbar_data.YPositiveDelta;
-obj.data{errorbarIndex}.error_x.array = errorbar_data.XPositiveDelta;
+	%-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+	%-set errorbar data-%
 
-%-errorbar valueminus-%
-obj.data{errorbarIndex}.error_y.arrayminus = errorbar_data.YNegativeDelta;
-obj.data{errorbarIndex}.error_x.arrayminus = errorbar_data.XNegativeDelta;
+	obj.data{plotIndex}.error_y.array = yPositiveDelta;
+	obj.data{plotIndex}.error_x.array = xPositiveDelta;
 
-%-------------------------------------------------------------------------%
+	obj.data{plotIndex}.error_x.arrayminus = xNegativeDelta;
+	obj.data{plotIndex}.error_y.arrayminus = yNegativeDelta;
 
-%-errorbar thickness-%
-obj.data{errorbarIndex}.error_y.thickness = errorbar_data.LineWidth;
-obj.data{errorbarIndex}.error_x.thickness = errorbar_data.LineWidth;
+	%-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+	%-errorbar thickness-%
+	obj.data{plotIndex}.error_y.thickness = plotData.LineWidth;
+	obj.data{plotIndex}.error_x.thickness = plotData.LineWidth;
 
-%-errorbar width-%
-obj.data{errorbarIndex}.error_y.width = obj.PlotlyDefaults.ErrorbarWidth;
-obj.data{errorbarIndex}.error_x.width = obj.PlotlyDefaults.ErrorbarWidth;
+	%-errorbar width-%
+	obj.data{plotIndex}.error_y.width = obj.PlotlyDefaults.ErrorbarWidth;
+	obj.data{plotIndex}.error_x.width = obj.PlotlyDefaults.ErrorbarWidth;
 
-%-------------------------------------------------------------------------%
+	%-errorbar color-%
+	errorColor = getStringColor(255*plotData.Color);
+	obj.data{plotIndex}.error_y.color = errorColor;
+	obj.data{plotIndex}.error_x.color = errorColor;
 
-%-errorbar color-%
-col = 255*errorbar_data.Color;
-obj.data{errorbarIndex}.error_y.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-obj.data{errorbarIndex}.error_x.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-
-%-------------------------------------------------------------------------%
+	%-------------------------------------------------------------------------%
 
 end
+		
