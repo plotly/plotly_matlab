@@ -1,72 +1,72 @@
-function updateScatter(obj,scatterIndex)
+function updateScatter(obj,plotIndex)
 
     %-------------------------------------------------------------------------%
 
     %-INITIALIZATIONS-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(scatterIndex).AssociatedAxis);
+    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj,axIndex);
-    scatterData = get(obj.State.Plot(scatterIndex).Handle);
+    plotData = get(obj.State.Plot(plotIndex).Handle);
 
     try
-        isScatter3D = isfield(scatterData,'ZData');
-        isScatter3D = isScatter3D & ~isempty(scatterData.ZData);
+        isScatter3D = isfield(plotData,'ZData');
+        isScatter3D = isScatter3D & ~isempty(plotData.ZData);
     catch
         isScatter3D = false;
     end
-    
+
     %-------------------------------------------------------------------------%
 
     %-set trace-%
     if ~isScatter3D
-        obj.data{scatterIndex}.type = 'scatter';    
-        obj.data{scatterIndex}.xaxis = sprintf('x%d', xSource);
-        obj.data{scatterIndex}.yaxis = sprintf('y%d', ySource);
+        obj.data{plotIndex}.type = 'scatter';    
+        obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
+        obj.data{plotIndex}.yaxis = sprintf('y%d', ySource);
     else
-        obj.data{scatterIndex}.type = 'scatter3d';
-        obj.data{scatterIndex}.scene = sprintf('scene%d', xSource);
+        obj.data{plotIndex}.type = 'scatter3d';
+        obj.data{plotIndex}.scene = sprintf('scene%d', xSource);
 
-        updateScene(obj, scatterIndex);
+        updateScene(obj, plotIndex);
     end
 
-    obj.data{scatterIndex}.mode = 'markers';
-    obj.data{scatterIndex}.visible = strcmp(scatterData.Visible,'on');
-    obj.data{scatterIndex}.name = scatterData.DisplayName;
+    obj.data{plotIndex}.mode = 'markers';
+    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.name = plotData.DisplayName;
 
     %-------------------------------------------------------------------------%
         
     %-set plot data-%
-    obj.data{scatterIndex}.x = scatterData.XData;
-    obj.data{scatterIndex}.y = scatterData.YData;
+    obj.data{plotIndex}.x = plotData.XData;
+    obj.data{plotIndex}.y = plotData.YData;
 
     if isScatter3D
-        obj.data{scatterIndex}.z = scatterData.ZData;
+        obj.data{plotIndex}.z = plotData.ZData;
     end
         
     %-------------------------------------------------------------------------%
     
     %-set marker property-%
-    obj.data{scatterIndex}.marker = extractScatterMarker(scatterData);
-    markerSize = obj.data{scatterIndex}.marker.size;
-    markerColor = obj.data{scatterIndex}.marker.color;
-    markerLineColor = obj.data{scatterIndex}.marker.line.color;
+    obj.data{plotIndex}.marker = extractScatterMarker(plotData);
+    markerSize = obj.data{plotIndex}.marker.size;
+    markerColor = obj.data{plotIndex}.marker.color;
+    markerLineColor = obj.data{plotIndex}.marker.line.color;
 
     if length(markerSize) == 1
-        obj.data{scatterIndex}.marker.size = markerSize * 0.11;
+        obj.data{plotIndex}.marker.size = markerSize * 0.11;
     end
 
     if length(markerColor) == 1 
-        obj.data{scatterIndex}.marker.color = markerColor{1};
+        obj.data{plotIndex}.marker.color = markerColor{1};
     end
 
     if length(markerLineColor) == 1 
-        obj.data{scatterIndex}.marker.line.color = markerLineColor{1};
+        obj.data{plotIndex}.marker.line.color = markerLineColor{1};
     end
     
     %-------------------------------------------------------------------------%
         
     %-set showlegend property-%
     if isScatter3D
-        leg = get(scatterData.Annotation);
+        leg = get(plotData.Annotation);
         legInfo = get(leg.LegendInformation);
         
         switch legInfo.IconDisplayStyle
@@ -76,7 +76,7 @@ function updateScatter(obj,scatterIndex)
                 showleg = false;
         end
 
-        obj.data{scatterIndex}.showlegend = showleg;
+        obj.data{plotIndex}.showlegend = showleg;
     end
 
     %-------------------------------------------------------------------------%
@@ -100,8 +100,10 @@ function updateScene(obj, dataIndex)
     dataAspectRatio = axisData.DataAspectRatio;
     cameraUpVector = axisData.CameraUpVector;
     cameraEye = cameraPosition./dataAspectRatio;
-    normFac = min(cameraTarget) / max(cameraTarget);
-    normFac = 1.1 * normFac * abs(min(cameraEye));
+
+    cameraOffset = 0.5;
+    normFac = abs(min(cameraEye));
+    normFac = normFac / (max(aspectRatio)/min(aspectRatio) + cameraOffset);
 
     %-------------------------------------------------------------------------%
 
@@ -111,9 +113,9 @@ function updateScene(obj, dataIndex)
     scene.aspectratio.z = 1.0*aspectRatio(3);
 
     %-camera eye-%
-    scene.camera.eye.x = cameraEye(1) / normFac;
-    scene.camera.eye.y = cameraEye(2) / normFac;
-    scene.camera.eye.z = cameraEye(3) / normFac;
+    scene.camera.eye.x = cameraEye(1)/normFac;
+    scene.camera.eye.y = cameraEye(2)/normFac;
+    scene.camera.eye.z = cameraEye(3)/normFac;
 
     %-camera up-%
     scene.camera.up.x = cameraUpVector(1); 
@@ -123,19 +125,9 @@ function updateScene(obj, dataIndex)
     %-------------------------------------------------------------------------%
 
     %-scene axis configuration-%
-    rangeFac = 0.0;
-
-    xRange = range(axisData.XLim);
-    scene.xaxis.range(1) = axisData.XLim(1) - rangeFac * xRange;
-    scene.xaxis.range(2) = axisData.XLim(2) + rangeFac * xRange;
-
-    yRange = range(axisData.YLim);
-    scene.yaxis.range(1) = axisData.YLim(1) - rangeFac * yRange;
-    scene.yaxis.range(2) = axisData.YLim(2) + rangeFac * yRange;
-
-    zRange = range(axisData.ZLim);
-    scene.zaxis.range(1) = axisData.ZLim(1) - rangeFac * zRange;
-    scene.zaxis.range(2) = axisData.ZLim(2) + rangeFac * zRange;
+    scene.xaxis.range = date2NumData(axisData.XLim);
+    scene.yaxis.range = date2NumData(axisData.YLim);
+    scene.zaxis.range = date2NumData(axisData.ZLim);
 
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;
@@ -164,11 +156,60 @@ function updateScene(obj, dataIndex)
     scene.zaxis.titlefont.family = matlab2plotlyfont(axisData.ZLabel.FontName);
 
     %-tick labels-%
-    scene.xaxis.tickvals = axisData.XTick;
+    xTick = axisData.XTick;
+    if isduration(xTick) || isdatetime(xTick)
+        xTickChar = char(xTick);
+        xTickLabel = axisData.XTickLabel;
+
+        for n = 1:length(xTickLabel)
+            for m = 1:size(xTickChar, 1)
+                if ~isempty(strfind(string(xTickChar(m, :)), xTickLabel{n}))
+                    idx(n) = m;
+                end
+            end
+        end
+
+        xTick = datenum(xTick(idx));
+    end
+
+    yTick = axisData.YTick;
+    if isduration(yTick) || isdatetime(yTick)
+        yTickChar = char(yTick);
+        yTickLabel = axisData.YTickLabel;
+
+        for n = 1:length(yTickLabel)
+            for m = 1:size(yTickChar, 1)
+                if ~isempty(strfind(string(yTickChar(m, :)), yTickLabel{n}))
+                    idx(n) = m;
+                end
+            end
+        end
+
+        yTick = datenum(yTick(idx));
+    end
+
+
+    zTick = axisData.ZTick;
+    if isduration(zTick) || isdatetime(zTick)
+        zTickChar = char(zTick);
+        zTickLabel = axisData.ZTickLabel;
+
+        for n = 1:length(zTickLabel)
+            for m = 1:size(zTickChar, 1)
+                if ~isempty(strfind(string(zTickChar(m, :)), zTickLabel{n}))
+                    idx(n) = m;
+                end
+            end
+        end
+
+        zTick = datenum(zTick(idx));
+    end
+
+    scene.xaxis.tickvals = xTick;
     scene.xaxis.ticktext = axisData.XTickLabel;
-    scene.yaxis.tickvals = axisData.YTick;
+    scene.yaxis.tickvals = yTick;
     scene.yaxis.ticktext = axisData.YTickLabel;
-    scene.zaxis.tickvals = axisData.ZTick;
+    scene.zaxis.tickvals = zTick;
     scene.zaxis.ticktext = axisData.ZTickLabel;
 
     scene.xaxis.tickcolor = 'rgba(0,0,0,1)';
