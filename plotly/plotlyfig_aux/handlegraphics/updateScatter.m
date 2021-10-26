@@ -7,6 +7,7 @@ function updateScatter(obj,plotIndex)
     [xSource, ySource] = findSourceAxis(obj,axIndex);
     plotData = get(obj.State.Plot(plotIndex).Handle);
 
+    %-check is 3D scatter-%
     try
         isScatter3D = isfield(plotData,'ZData');
         isScatter3D = isScatter3D & ~isempty(plotData.ZData);
@@ -34,7 +35,7 @@ function updateScatter(obj,plotIndex)
 
     %-------------------------------------------------------------------------%
         
-    %-set plot data-%
+    %-set trace data-%
     obj.data{plotIndex}.x = plotData.XData;
     obj.data{plotIndex}.y = plotData.YData;
 
@@ -44,39 +45,17 @@ function updateScatter(obj,plotIndex)
         
     %-------------------------------------------------------------------------%
     
-    %-set marker property-%
+    %-set trace marker-%
     obj.data{plotIndex}.marker = extractScatterMarker(plotData);
-    markerSize = obj.data{plotIndex}.marker.size;
-    markerColor = obj.data{plotIndex}.marker.color;
-    markerLineColor = obj.data{plotIndex}.marker.line.color;
 
-    if length(markerSize) == 1
-        obj.data{plotIndex}.marker.size = markerSize * 0.11;
-    end
-
-    if length(markerColor) == 1 
-        obj.data{plotIndex}.marker.color = markerColor{1};
-    end
-
-    if length(markerLineColor) == 1 
-        obj.data{plotIndex}.marker.line.color = markerLineColor{1};
-    end
-    
-    %-------------------------------------------------------------------------%
-        
-    %-set showlegend property-%
     if isScatter3D
-        leg = get(plotData.Annotation);
-        legInfo = get(leg.LegendInformation);
+        markerSize = obj.data{plotIndex}.marker.size;
+        obj.data{plotIndex}.marker.size = 2*markerSize;
+    end
         
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
-        end
-
-        obj.data{plotIndex}.showlegend = showleg;
+    %-set trace legend-%
+    if isScatter3D
+        obj.data{plotIndex}.showlegend = getShowLegend(plotData);
     end
 
     %-------------------------------------------------------------------------%
