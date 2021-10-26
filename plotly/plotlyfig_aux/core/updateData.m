@@ -12,8 +12,6 @@ try
         updatePColor(obj, dataIndex);
     elseif ismember('contour3', lower(obj.PlotOptions.TreatAs))
         updateContour3(obj, dataIndex);
-    elseif ismember('compass', lower(obj.PlotOptions.TreatAs))
-        updateLineseries(obj, dataIndex);
     elseif ismember('ezpolar', lower(obj.PlotOptions.TreatAs))
         updateLineseries(obj, dataIndex);
     elseif ismember('polarhistogram', lower(obj.PlotOptions.TreatAs))
@@ -32,16 +30,11 @@ try
         updateSurfc(obj, dataIndex); 
     elseif ismember('surfl', lower(obj.PlotOptions.TreatAs))
         updateSurfl(obj, dataIndex);
-
-    % this one will be revomed
-    % elseif strcmpi(obj.PlotOptions.TreatAs, 'streamtube')
-    %     updateStreamtube(obj, dataIndex);
-    % end
         
     %-update plot based on plot call class-%
     
     else
-        
+
         switch lower(obj.State.Plot(dataIndex).Class)
 
             %--SPIDER PLOT -> SPECIAL CASE--%            
