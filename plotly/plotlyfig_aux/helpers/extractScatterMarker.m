@@ -13,26 +13,16 @@ function marker = extractScatterMarker(plotData)
     %-INITIALIZATIONS-%
     axisData = get(ancestor(plotData.Parent,'axes'));
     figureData = get(ancestor(plotData.Parent,'figure'));
-    marker = struct();
 
+    marker = struct();
     marker.sizeref = 1;
     marker.sizemode = 'area';
-    marker.size = plotData.SizeData;
-    marker.line.width = plotData.LineWidth;
-
-    markerFaceColor = plotData.MarkerFaceColor;
-    markerFaceAlpha = plotData.MarkerFaceAlpha;
-    markerEdgeColor = plotData.MarkerEdgeColor;
-    markerEdgeAlpha = plotData.MarkerEdgeAlpha;
-    cData = plotData.CData;
-
-    colorMap = axisData.Colormap;
-    cLim = axisData.CLim;
+    marker.size = getmarkerSize(plotData);
+    marker.line.width = 1.5*plotData.LineWidth;
 
     filledMarkerSet = {'o', 'square', 's', 'diamond', 'd', 'v', '^', ...
         '<', '>', 'hexagram', 'pentagram'};
     filledMarker = ismember(plotData.Marker, filledMarkerSet);
-    nColors = size(colorMap, 1);
 
     %-------------------------------------------------------------------------%
 
@@ -73,54 +63,65 @@ function marker = extractScatterMarker(plotData)
 
     %-------------------------------------------------------------------------%
 
-    %-get marker fillColor-%
+    %-marker fill-%
+    markerFaceColor = plotData.MarkerFaceColor;
+    markerFaceAlpha = plotData.MarkerFaceAlpha;
+
     if filledMarker
         
+        %-get face color-%
         if isnumeric(markerFaceColor)
-            fillColor = sprintf('rgb(%f,%f,%f)', 255*markerFaceColor);
+            faceColor = sprintf('rgb(%f,%f,%f)', 255*markerFaceColor);
 
         else
             switch markerFaceColor
                 
                 case 'none'        
-                    fillColor = 'rgba(0,0,0,0)';
+                    faceColor = 'rgba(0,0,0,0)';
                     
                 case 'auto'
                     if ~strcmp(axisData.Color,'none')
-                        fillColor = 255*axisData.Color;
+                        faceColor = 255*axisData.Color;
                     else
-                        fillColor = 255*figureData.Color;
+                        faceColor = 255*figureData.Color;
                     end
 
-                    fillColor = sprintf('rgb(%f,%f,%f)', fillColor);
+                    faceColor = getStringColor(faceColor);
                     
                 case 'flat'
-
-                    for n = 1:size(cData, 1)
-                        if size(cData, 2) == 1
-                            cIndex = max( min( cData(n), cLim(2) ), cLim(1) );
-                            scaleColor = (cIndex - cLim(1)) / diff(cLim);
-                            cIndex = 1 + floor(scaleColor*(nColors-1));
-                            numColor =  255 * colorMap(cIndex, :);
-
-                        elseif size(cData, 2) == 3
-                            numColor = 255*cData(n, :);
-                        end
-
-                        fillColor{n} = sprintf('rgb(%f,%f,%f)', numColor);
-                    end
+                    faceColor = getScatterFlatColor(plotData, axisData);
 
             end
         end
+
+        %-get face alpha-%
+        if isnumeric(markerFaceAlpha)
+            faceAlpha = markerFaceAlpha;
+        else
+            switch markerFaceColor
+                
+                case 'none'        
+                    faceAlpha = 1;
+                    
+                case 'flat'
+                    aLim = axisData.ALim;
+                    faceAlpha = plotData.AlphaData;
+                    faceAlpha = rescaleData(faceAlpha, aLim);
+            end
+        end
         
-        marker.color = fillColor;
-        marker.opacity = markerFaceAlpha;
+        %-set marker fill-%
+        marker.color = faceColor;
+        marker.opacity = faceAlpha;
         
     end
 
     %-------------------------------------------------------------------------%
 
-    %-get marker lineColor-%
+    %-marker line-%
+    markerEdgeColor = plotData.MarkerEdgeColor;
+    markerEdgeAlpha = plotData.MarkerEdgeAlpha;
+
     if isnumeric(markerEdgeColor)
         lineColor = sprintf('rgb(%f,%f,%f)', 255*markerEdgeColor);
 
@@ -131,8 +132,6 @@ function marker = extractScatterMarker(plotData)
                 lineColor = 'rgba(0,0,0,0)';
                 
             case 'auto'
-                
-                EdgeColor = plotData.EdgeColor;
 
                 if ~strcmp(axisData.Color,'none')
                     lineColor = 255*axisData.Color;
@@ -140,25 +139,11 @@ function marker = extractScatterMarker(plotData)
                     lineColor = 255*figureData.Color;
                 end
 
-                lineColor = sprintf('rgba(%f,%f,%f,%f)', lineColor, ...
-                    markerEdgeAlpha);
+                lineColor = getStringColor(lineColor, markerEdgeAlpha);
                 
             case 'flat'
-                
-                for n = 1:size(cData, 1)
-                    if size(cData, 2) == 1
-                        cIndex = max( min( cData(n), cLim(2) ), cLim(1) );
-                        scaleColor = (cIndex - cLim(1)) / diff(cLim);
-                        cIndex = 1 + floor(scaleColor*(nColors-1));
-                        numColor =  255 * colorMap(cIndex, :);
 
-                    elseif size(cData, 2) == 3
-                        numColor = 255*cData(n, :);
-                    end
-
-                    lineColor{n} = sprintf('rgba(%f,%f,%f,%f)', numColor, ...
-                        markerEdgeAlpha);
-                end
+                lineColor = getScatterFlatColor(plotData, axisData);
 
         end
     end
@@ -170,4 +155,59 @@ function marker = extractScatterMarker(plotData)
     end
 
     %-------------------------------------------------------------------------%
+end
+
+function flatColor = getScatterFlatColor(plotData, axisData, opacity)
+
+    %-------------------------------------------------------------------------%
+
+    cData = plotData.CData;
+    colorMap = axisData.Colormap;
+    cLim = axisData.CLim;
+    nColors = size(colorMap, 1);
+    cDataByIndex = false;
+
+    if isvector(cData)
+        lenCData = length(cData);
+        nMarkers = length(plotData.XData);
+        cDataByIndex = lenCData == nMarkers || lenCData == 1;
+    end
+
+    %-------------------------------------------------------------------------%
+
+    if cDataByIndex
+        cMapInd = getcMapInd(cData, cLim, nColors);
+        numColor = 255 * colorMap(cMapInd, :);
+    else
+        numColor = 255*cData;
+    end
+
+    if size(numColor, 1) == 1
+        flatColor = getStringColor(numColor);
+
+    else
+        for n = 1:size(numColor, 1)
+            flatColor{n} = getStringColor(numColor(n, :));
+        end
+    end
+
+    %-------------------------------------------------------------------------%
+end
+
+function cMapInd = getcMapInd(cData, cLim, nColors)
+    scaledCData = rescaleData(cData, cLim);
+    cMapInd = 1 + floor(scaledCData*(nColors-1));
+end
+
+function outData = rescaleData(inData, dataLim)
+    outData = max( min( inData, dataLim(2) ), dataLim(1) );
+    outData = (outData - dataLim(1)) / diff(dataLim);
+end
+
+function markerSize = getmarkerSize(plotData)
+    markerSize = plotData.SizeData;
+
+    if length(markerSize) == 1
+        markerSize = markerSize * ones(size(plotData.XData));
+    end
 end
