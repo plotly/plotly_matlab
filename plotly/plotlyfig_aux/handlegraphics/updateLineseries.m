@@ -52,6 +52,8 @@ function updateLineseries(obj, plotIndex)
     %-set trace-%
     if isPolar
         obj.data{plotIndex}.type = 'scatterpolar';
+        updateDefaultPolaraxes(obj, plotIndex)
+        obj.data{plotIndex}.subplot = sprintf('polar%d', xSource+1);
 
     elseif ~isPlot3D
         obj.data{plotIndex}.type = 'scatter';
@@ -74,6 +76,7 @@ function updateLineseries(obj, plotIndex)
     if isPolar
         obj.data{plotIndex}.r = rData;
         obj.data{plotIndex}.theta = thetaData;
+
     else
         obj.data{plotIndex}.x = xData;
         obj.data{plotIndex}.y = yData;
@@ -88,6 +91,9 @@ function updateLineseries(obj, plotIndex)
 
     %-set trace line-%
     obj.data{plotIndex}.line = extractLineLine(plotData);
+    if isPolar
+        obj.data{plotIndex}.line.width = obj.data{plotIndex}.line.width * 1.5;
+    end
 
     %-set trace marker-%
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
@@ -247,6 +253,106 @@ function updateScene(obj, dataIndex)
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
+
+    %-------------------------------------------------------------------------%
+end
+
+function updateDefaultPolaraxes(obj, plotIndex)
+
+    %-------------------------------------------------------------------------%
+
+    %-INITIALIZATIONS-%
+    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
+    [xSource, ysource] = findSourceAxis(obj, axIndex);
+    plotData = get(obj.State.Plot(plotIndex).Handle);
+    axisData = get(plotData.Parent);
+
+    thetaAxis = axisData.XAxis;
+    rAxis = axisData.YAxis;
+
+    %-------------------------------------------------------------------------%
+
+    %-set domain plot-%
+    xo = axisData.Position(1);
+    yo = axisData.Position(2);
+    w = axisData.Position(3);
+    h = axisData.Position(4);
+
+    polarAxis.domain.x = min([xo xo + w], 1);
+    polarAxis.domain.y = min([yo yo + h], 1);
+
+    tickValues = rAxis.TickValues;
+    tickValues = tickValues(find(tickValues==0) + 1 : end);
+
+    %-------------------------------------------------------------------------%
+        
+    %-SET ANGULAR AXIS-%
+
+    gridColor = getStringColor(255*axisData.GridColor, axisData.GridAlpha);
+    gridWidth = axisData.LineWidth;
+
+    polarAxis.angularaxis.ticklen = 0;
+    polarAxis.angularaxis.autorange = true;
+    polarAxis.angularaxis.linecolor = gridColor;
+    polarAxis.angularaxis.gridwidth = gridWidth;
+    polarAxis.angularaxis.gridcolor = gridColor;
+    polarAxis.angularaxis.rotation = -axisData.View(1);
+
+    %-axis tick-%
+    polarAxis.angularaxis.showticklabels = true;
+    polarAxis.angularaxis.nticks = 16;
+    polarAxis.angularaxis.tickfont.size = thetaAxis.FontSize;
+    polarAxis.angularaxis.tickfont.color = getStringColor(...
+        255*thetaAxis.Color);
+    polarAxis.angularaxis.tickfont.family = matlab2plotlyfont(...
+        thetaAxis.FontName);
+
+    %-axis label-%
+    thetaLabel = thetaAxis.Label;
+
+    polarAxis.angularaxis.title.text = thetaLabel.String;
+    polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
+    polarAxis.radialaxis.title.font.color = getStringColor(...
+        255*thetaLabel.Color);
+    polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
+        thetaLabel.FontName);
+
+    %-------------------------------------------------------------------------%
+        
+    %-SET RADIAL AXIS-%
+
+    polarAxis.radialaxis.ticklen = 0;
+    polarAxis.radialaxis.range = [0,  tickValues(end)];
+    polarAxis.radialaxis.showline = false;
+
+    polarAxis.radialaxis.angle = 80;
+    polarAxis.radialaxis.tickangle = 80;
+
+    polarAxis.radialaxis.gridwidth = gridWidth;
+    polarAxis.radialaxis.gridcolor = gridColor;
+
+    %-axis tick-%
+    polarAxis.radialaxis.showticklabels = true;
+    polarAxis.radialaxis.tickvals = tickValues;
+    polarAxis.radialaxis.tickfont.size = rAxis.FontSize;
+    polarAxis.radialaxis.tickfont.color = getStringColor(255*rAxis.Color);
+    polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
+        rAxis.FontName);
+
+    %-axis label-%
+    rLabel = rAxis.Label;
+
+    polarAxis.radialaxis.title.text = rLabel.String;
+    polarAxis.radialaxis.title.font.size = rLabel.FontSize;
+    polarAxis.radialaxis.title.font.color = getStringColor(255*rLabel.Color);
+    polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
+        rLabel.FontName);
+
+    %-------------------------------------------------------------------------%
+
+    %-set Polar Axes to layout-%
+    obj.layout = setfield(obj.layout, sprintf('polar%d', xSource+1), ...
+        polarAxis);
 
     %-------------------------------------------------------------------------%
 end
