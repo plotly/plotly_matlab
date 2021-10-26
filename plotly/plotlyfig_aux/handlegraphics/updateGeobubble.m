@@ -1,21 +1,20 @@
 function updateGeobubble(obj,geoIndex)
 
-    %-AXIS INDEX-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
-
-    %-GET STRUCTURES-%
-    geoData = get(obj.State.Plot(geoIndex).Handle);
-
-    %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
-
     %-----------------------------------------------------------------------------%
 
-    %-PASE DATA-%
+    %-INTIALIZATIONS-%
+
+    axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
+    geoData = get(obj.State.Plot(geoIndex).Handle);
+    [xSource, ~] = findSourceAxis(obj,axIndex);
+
+    %-get trace data-%
     bubbleRange = geoData.BubbleWidthRange;
     allLats = geoData.LatitudeData;
     allLons = geoData.LongitudeData;
     allSizes = rescale(geoData.SizeData, bubbleRange(1), bubbleRange(2));
+    colorMap = geoData.BubbleColorList;
+    nColors = size(colorMap, 1);
 
     if ~isempty(geoData.ColorData)
         allNames = geoData.ColorData;
@@ -53,7 +52,7 @@ function updateGeobubble(obj,geoIndex)
 
     %=============================================================================%
     %
-    %-SETTING GEOBBUBLE PLOT-%
+    %-SET TRACES-%
     %
     %=============================================================================%
 
@@ -71,47 +70,33 @@ function updateGeobubble(obj,geoIndex)
 
         %-------------------------------------------------------------------------%
 
-        %-set scattergeo type-%
+        %-set current trace-%
         if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
             obj.data{p}.type = 'scattergeo';
+            obj.data{p}.geo = sprintf('geo%d', xSource+1);
 
-        %-set scattermapbox type-%
         elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
             obj.data{p}.type = 'scattermapbox';
+            obj.data{p}.subplot = sprintf('mapbox%d', xSource+1);
         end
 
-        %-------------------------------------------------------------------------%
-
-        %-set scattergeo mode-%
         obj.data{p}.mode = 'markers';
 
         %-------------------------------------------------------------------------%
 
-        %-set plot data-%
+        %-set current trace data-%
         obj.data{p}.lat = lat{g};
         obj.data{p}.lon = lon{g};
 
         %-------------------------------------------------------------------------%
 
-        %-get marker setting-%
+        %-set trace marker-%
         marker = struct();
         marker.size = sData{g}*1.25;
-        marker.color = sprintf('rgb(%f,%f,%f)', 255*geoData.BubbleColorList(g ,:));
+        marker.color = getStringColor(255*colorMap(mod(g-1, nColors)+1, :));
         marker.line.color = 'rgb(255, 255, 255)';
 
-        %-------------------------------------------------------------------------%
-
-        %-set marker field-%
         obj.data{p}.marker = marker;   
-
-        %-------------------------------------------------------------------------%
-
-        %-ASSOCIATE GEO-AXES LAYOUT-%
-        if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-            obj.data{p}.geo = sprintf('geo%d', xsource+1);
-        elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
-            obj.data{p}.subplot = sprintf('mapbox%d', xsource+1);
-        end
 
         %-------------------------------------------------------------------------%
 
@@ -128,7 +113,7 @@ function updateGeobubble(obj,geoIndex)
 
     %=============================================================================%
     %
-    %-SETTING LAYOUT-%
+    %-UPDATE GEO AXES-%
     %
     %=============================================================================%
 
@@ -225,9 +210,9 @@ function updateGeobubble(obj,geoIndex)
 
     %-set geo geoaxes to layout-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        obj.layout = setfield(obj.layout, sprintf('geo%d', xsource+1), geoaxes);
+        obj.layout = setfield(obj.layout, sprintf('geo%d', xSource+1), geoaxes);
     elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
-        obj.layout = setfield(obj.layout, sprintf('mapbox%d', xsource+1), geoaxes);
+        obj.layout = setfield(obj.layout, sprintf('mapbox%d', xSource+1), geoaxes);
     end
 
     %-----------------------------------------------------------------------------%
