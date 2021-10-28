@@ -776,7 +776,7 @@ classdef plotlyfig < handle
             % reset dataget(obj.State.Figure.Handle,'Children')
             obj.data = {};
             obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
-            obj.PlotlyDefaults.anIndex = obj.State.Figure.NumTexts + 1;
+            obj.PlotlyDefaults.anIndex = obj.State.Figure.NumTexts;
             
             % reset layout
             obj.layout = struct();
