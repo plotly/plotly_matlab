@@ -157,6 +157,8 @@ try
                 updateStair(obj, dataIndex); 
             case 'stairseries'
                 updateStairseries(obj, dataIndex);
+            case 'stackedplot'
+                updateStackedplot(obj, dataIndex);
             case 'stem'
                 updateStem(obj, dataIndex); 
             case 'stemseries'

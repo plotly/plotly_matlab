@@ -6,12 +6,6 @@ function marker = extractLineMarker(line_data)
 
 %-------------------------------------------------------------------------%
 
-%-AXIS STRUCTURE-%
-axis_data = get(ancestor(line_data.Parent,'axes'));
-
-%-FIGURE STRUCTURE-%
-figure_data = get(ancestor(line_data.Parent,'figure'));
-
 %-INITIALIZE OUTPUT-%
 marker = struct(); 
 
