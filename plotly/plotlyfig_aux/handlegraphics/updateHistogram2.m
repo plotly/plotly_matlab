@@ -1,145 +1,196 @@
-function obj = updateHistogram2(obj,histIndex)
+function obj = updateHistogram2(obj,dataIndex)
 
-%---------------------------------------------------------------------%
+    %--------------------------------------------------------------------------%
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
+    %-INITIALIZATIONS-%
 
-%---------------------------------------------------------------------%
+    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+    [xSource, ~] = findSourceAxis(obj, axIndex);
+    plotData = get(obj.State.Plot(dataIndex).Handle);
+    axisData = get(plotData.Parent);
 
-%-HIST DATA STRUCTURE- %
-hist_data = get(obj.State.Plot(histIndex).Handle);
+    colorMap = axisData.Colormap;
+    barGap = 0.05;
 
-%---------------------------------------------------------------------%
+    %-get trace data-%
+    values = plotData.Values;
+    xEdges = plotData.XBinEdges; 
+    yEdges = plotData.YBinEdges;
 
-%-hist type-%
-obj.data{histIndex}.type = 'mesh3d';
+    dx = diff(xEdges(2:end-1));
+    dy = diff(yEdges(2:end-1));
 
-%---------------------------------------------------------------------%
+    if isinf(xEdges(1)) xEdges(1) = xEdges(2) - dx(1); end
+    if isinf(yEdges(1)) yEdges(1) = yEdges(2) - dy(1); end
 
-%-required parameters-%
-values = hist_data.Values;
-xedges = hist_data.XBinEdges; 
-yedges = hist_data.YBinEdges;
+    if isinf(xEdges(end)) xEdges(end) = xEdges(end-1) + dx(1); end
+    if isinf(yEdges(end)) yEdges(end) = yEdges(end-1) + dy(1); end
 
-sx = diff(xedges(2:end-1));
-sy = diff(yedges(2:end-1));
+    [xData, yData, zData, iData, jData, kData] = ...
+        getPlotlyMesh3d( xEdges, yEdges, values, barGap );
 
-if isinf(xedges(1)) xedges(1) = xedges(2) - sx(1); end
-if isinf(yedges(1)) yedges(1) = yedges(2) - sy(1); end
+    cData = zeros(size(zData));
+    for n = 1:2:length(zData), cData(n:n+1) = max(zData(n:n+1)); end
 
-if isinf(xedges(end)) xedges(end) = xedges(end-1) + sx(1); end
-if isinf(yedges(end)) yedges(end) = yedges(end-1) + sy(1); end
+    %--------------------------------------------------------------------------%
 
-%---------------------------------------------------------------------%
+    %-set trace-%
+    updateScene(obj, dataIndex);
 
-%-get the values to use plotly's mesh3D-%
-bargap = 0.05;
-[X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap);
+    obj.data{dataIndex}.type = 'mesh3d';
+    obj.data{dataIndex}.scene = sprintf('scene%d', xSource);
+    obj.data{dataIndex}.name = plotData.DisplayName;
+    obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.layout.bargap = barGap;
 
-%---------------------------------------------------------------------%
+    %--------------------------------------------------------------------------%
 
-%-passing parameters to mesh3D-%
-obj.data{histIndex}.x = X;
-obj.data{histIndex}.y = Y;
-obj.data{histIndex}.z = Z;
-obj.data{histIndex}.i = int16(I-1);
-obj.data{histIndex}.j = int16(J-1);
-obj.data{histIndex}.k = int16(K-1);
+    %-set trace data-%
+    obj.data{dataIndex}.x = xData;
+    obj.data{dataIndex}.y = yData;
+    obj.data{dataIndex}.z = zData;
+    obj.data{dataIndex}.i = int16(iData - 1);
+    obj.data{dataIndex}.j = int16(jData - 1);
+    obj.data{dataIndex}.k = int16(kData - 1);
 
-%---------------------------------------------------------------------%
+    %--------------------------------------------------------------------------%
 
-%-some settings-%
-% obj.data{histIndex}.color='rgb(0,255,0)';
-obj.data{histIndex}.contour.show = true;
-obj.data{histIndex}.contour.width = 6;
-obj.data{histIndex}.contour.color='rgb(0,0,0)';
-obj.data{histIndex}.flatshading = true;
+    %-set trace coloring-%
+    faceColor = plotData.FaceColor;
 
-%---------------------------------------------------------------------%
-
-%-lighting settings-%
-obj.data{histIndex}.lighting.diffuse = 0.92;
-obj.data{histIndex}.lighting.ambient = 0.54;
-obj.data{histIndex}.lighting.specular = 1.42;
-obj.data{histIndex}.lighting.roughness = 0.52;
-obj.data{histIndex}.lighting.fresnel = 0.2;
-obj.data{histIndex}.lighting.vertexnormalsepsilon = 1e-12;
-obj.data{histIndex}.lighting.facenormalsepsilon = 1e-6;
-
-%---------------------------------------------------------------------%
-
-%-aspect ratio-%
-ar = obj.PlotOptions.AspectRatio;
-
-if ~isempty(ar)
-    if ischar(ar)
-        obj.layout.scene.aspectmode = ar;
-    elseif isvector(ar) && length(ar) == 3
-        xar = ar(1);
-        yar = ar(2);
-        zar = ar(3);
+    if isnumeric(faceColor)
+        obj.data{dataIndex}.color = getStringColor(255*faceColor);
+    elseif strcmp(faceColor, 'none')
+        obj.data{dataIndex}.color = getStringColor(255*zeros(1,3), 0.1);
+    elseif strcmp(faceColor, 'flat')
+        obj.data{dataIndex}.intensity = cData;
+        obj.data{dataIndex}.colorscale = getColorScale(colorMap);
+        obj.data{dataIndex}.showscale = false;
     end
-else
 
-    %-define as default-%
-    xar = max(xedges(:));
-    yar = max(yedges(:));
-    zar = 0.7*max([xar, yar]);
+    obj.data{dataIndex}.flatshading = true;
+    obj.data{dataIndex}.lighting.diffuse = 0.92;
+    obj.data{dataIndex}.lighting.ambient = 0.54;
+    obj.data{dataIndex}.lighting.specular = 1.42;
+    obj.data{dataIndex}.lighting.roughness = 0.52;
+    obj.data{dataIndex}.lighting.fresnel = 0.2;
+    obj.data{dataIndex}.lighting.vertexnormalsepsilon = 1e-12;
+    obj.data{dataIndex}.lighting.facenormalsepsilon = 1e-6;
+
+    %--------------------------------------------------------------------------%
 end
 
-obj.layout.scene.aspectratio.x = xar;
-obj.layout.scene.aspectratio.y = yar;
-obj.layout.scene.aspectratio.z = zar;
+function updateScene(obj, dataIndex)
 
-%---------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-camera eye-%
-ey = obj.PlotOptions.CameraEye;
+    %-INITIALIZATIONS-%
 
-if ~isempty(ey)
-    if isvector(ey) && length(ey) == 3
-        obj.layout.scene.camera.eye.x = ey(1);
-        obj.layout.scene.camera.eye.y = ey(2);
-        obj.layout.scene.camera.eye.z = ey(3);
+    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+    plotData = get(obj.State.Plot(dataIndex).Handle);
+    axisData = get(plotData.Parent);
+    [xSource, ~] = findSourceAxis(obj, axIndex);
+    scene = eval( sprintf('obj.layout.scene%d', xSource) );
+
+    aspectRatio = axisData.PlotBoxAspectRatio;
+    cameraPosition = axisData.CameraPosition;
+    dataAspectRatio = axisData.DataAspectRatio;
+    cameraUpVector = axisData.CameraUpVector;
+    cameraEye = cameraPosition;
+
+    rangeXLim = range(axisData.XLim);
+    rangeYLim = range(axisData.YLim);
+    rangeZLim = range(axisData.ZLim);
+    cameraEye = cameraEye./[rangeXLim, rangeYLim rangeZLim];
+    eyeNorm = max(abs(cameraEye)) - 1.4;
+
+    if strcmp(plotData.DisplayStyle, 'tile')
+        aspectRatio(3) = 1e-6;
+    else
+        eyeNorm2 = min([norm(aspectRatio([1,3])), norm(aspectRatio([2,3]))]);
+        eyeNorm = eyeNorm - eyeNorm2 + 0.6;
     end
-else
 
-    %-define as default-%
-    xey = - xar; if xey>0 xfac = -0.2; else xfac = 0.2; end
-    yey = - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end
-    if zar>0 zfac = 0.2; else zfac = -0.2; end
-    
-    obj.layout.scene.camera.eye.x = xey + xfac*xey; 
-    obj.layout.scene.camera.eye.y = yey + yfac*yey;
-    obj.layout.scene.camera.eye.z = zar + zfac*zar;
+    cameraEye = cameraEye / eyeNorm;
+
+    %-------------------------------------------------------------------------%
+
+    %-aspect ratio-%
+    scene.aspectratio.x = aspectRatio(1);
+    scene.aspectratio.y = aspectRatio(2);
+    scene.aspectratio.z = aspectRatio(3);
+
+    %-camera eye-%
+    scene.camera.eye.x = cameraEye(1);
+    scene.camera.eye.y = cameraEye(2);
+    scene.camera.eye.z = cameraEye(3);
+
+    %-camera up-%
+    scene.camera.up.x = cameraUpVector(1); 
+    scene.camera.up.y = cameraUpVector(2);
+    scene.camera.up.z = cameraUpVector(3);
+
+    %-------------------------------------------------------------------------%
+
+    %-get each scene axis-%
+    scene.xaxis = getSceneAxis(axisData, 'X');
+    scene.yaxis = getSceneAxis(axisData, 'Y');
+    scene.zaxis = getSceneAxis(axisData, 'Z');
+
+    if strcmp(plotData.DisplayStyle, 'tile')
+        scene.zaxis.visible = false;
+    end
+
+    %-------------------------------------------------------------------------%
+
+    %-SET SCENE TO LAYOUT-%
+    obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
+
+    %-------------------------------------------------------------------------%
 end
 
-%---------------------------------------------------------------------%
+function ax = getSceneAxis(axisData, axName)
 
+    %-initializations-%
+    axx = eval(sprintf('axisData.%sAxis', axName));
+    ax.zeroline = false;
+    ax.showline = true;
+    ax.showspikes = true;
+    ax.linecolor = getStringColor(255*axx.Color);
+    ax.range = eval(sprintf('date2NumData(axisData.%sLim)', axName));
 
-%-zerolines hidded-%
-obj.layout.scene.xaxis.zeroline = false;
-obj.layout.scene.yaxis.zeroline = false;
-obj.layout.scene.zaxis.zeroline = false;
+    %-label-%
+    label = eval(sprintf('axisData.%sLabel', axName));
+    ax.title = label.String;
+    if ~isempty(ax.title), ax.title = parseString(ax.title); end
+    ax.titlefont.size = label.FontSize;
+    ax.titlefont.color = getStringColor(255*label.Color);
+    ax.titlefont.family = matlab2plotlyfont(label.FontName);
 
-%---------------------------------------------------------------------%
+    %-ticks-%
+    ax.tickvals = axx.TickValues;
+    ax.ticktext = axx.TickLabels;
 
-%-layout bargap-%
-obj.layout.bargap = bargap;
+    ax.tickcolor = getStringColor(255*axx.Color);
+    ax.tickfont.size = axx.FontSize;
+    ax.tickfont.family = matlab2plotlyfont(axx.FontName);
 
-%-hist name-%
-obj.data{histIndex}.name = hist_data.DisplayName;
+    switch axx.TickDirection
+        case 'in'
+            ax.ticks = 'inside';
+        case 'out'
+            ax.ticks = 'outside';
+    end
 
-%-hist visible-%
-obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
+    %-grid-%
+    axGrid = eval(sprintf('axisData.%sGrid', axName));
+    if strcmp(axGrid, 'off'), ax.showgrid = false; end
 
-%---------------------------------------------------------------------%
-
+    %-box-%
+    if strcmp(axisData.Box, 'on'), ax.mirror = true; end
 end
 
-
-function bar_ = bar_data(position3d, size_)
+function bar_ = barData(position3d, size_)
     % position3d - 3-list or array of shape (3,) that represents the point of coords (x, y, 0), where a bar is placed
     % size = a 3-tuple whose elements are used to scale a unit cube to get a paralelipipedic bar
     % returns - an array of shape(8,3) representing the 8 vertices of  a bar at position3d
@@ -167,7 +218,7 @@ function bar_ = bar_data(position3d, size_)
     bar_ = bar_ + position3d; %translate each  bar_ on the directio OP, with P=position3d
 end
 
-function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
+function [vertices, I, J, K] = triangulateBarFaces(positions, sizes)
     % positions - array of shape (N, 3) that contains all positions in the plane z=0, where a histogram bar is placed 
     % sizes -  array of shape (N,3); each row represents the sizes to scale a unit cube to get a bar
     % returns the array of unique vertices, and the lists i, j, k to be used in instantiating the go.Mesh3d class
@@ -183,12 +234,12 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
     c = 1;
     for n = 1:size(positions, 1)
         if sizes(n, 3) ~= 0
-            all_bars(:,:,c) = bar_data(positions(n,:), sizes(n,:))';
+            all_bars(:,:,c) = barData(positions(n,:), sizes(n,:))';
             c = c+1;
         end
     end
 
-    % all_bars = [bar_data(pos, size)  for pos, size in zip(positions, sizes) if size[2]!=0]
+    % all_bars = [barData(pos, size)  for pos, size in zip(positions, sizes) if size[2]!=0]
     [r, q, p] = size(all_bars);
 
     % extract unique vertices from the list of all bar vertices
@@ -208,10 +259,9 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
         aux = ixr([1+8*k+2, 1+8*k, 1+8*k+5, 1+8*k, 1+8*k+7, 1+8*k, 1+8*k+2, 1+8*k+5, 1+8*k+6, 1+8*k+3, 1+8*k+5, 1+8*k+7]);
         K = [ K;  aux(:)];
     end
-
 end
 
-function [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap)
+function [X, Y, Z, I, J, K] = getPlotlyMesh3d(xedges, yedges, values, bargap)
     % x, y- array-like of shape (n,), defining the x, and y-ccordinates of data set for which we plot a 3d hist
 
     xsize = xedges(2)-xedges(1)-bargap;
@@ -233,9 +283,18 @@ function [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap)
         sizes = [sizes; xsize, ysize, h(n)];
     end
 
-    [vertices, I, J, K]  = triangulate_bar_faces(positions, sizes);
+    [vertices, I, J, K]  = triangulateBarFaces(positions, sizes);
     X = vertices(:,1);
     Y = vertices(:,2);
     Z = vertices(:,3);
+end
 
+function colorScale = getColorScale(colorMap)
+    nColors = size(colorMap, 1);
+    normInd = rescale([1:nColors], 0, 1);
+    colorScale = cell(nColors, 1);
+
+    for n = 1:nColors
+        colorScale{n} = {normInd(n), getStringColor(255*colorMap(n, :))};
+    end
 end
