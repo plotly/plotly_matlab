@@ -1,267 +1,161 @@
-function obj = updateContourgroup(obj,contourIndex)
+function obj = updateContourgroup(obj,plotIndex)
 
-% z: ...[DONE]
-% x: ...[DONE]
-% y: ...[DONE]
-% name: ...[DONE]
-% zauto: ...[DONE]
-% zmin: ...[DONE]
-% zmax: ...[DONE]
-% autocontour: ...[DONE]
-% ncontours: ...[N/A]
-% contours: ...[DONE]
-% colorscale: ...[DONE]
-% reversescale: ...[DONE]
-% showscale: ...[DONE]
-% colorbar: ...[DONE]
-% opacity: ---[TODO]
-% xaxis: ...[DONE]
-% yaxis: ...[DONE]
-% showlegend: ...[DONE]
-% stream: ...[HANDLED BY PLOTLYSTREAM]
-% visible: ...[DONE]
-% x0: ...[DONE]
-% dx: ...[DONE]
-% y0: ...[DONE]
-% dy: ...[DONE]
-% xtype: ...[DONE]
-% ytype: ...[DONE]
-% type: ...[DONE]
+    %-------------------------------------------------------------------------%
 
-% LINE
+    %-INITIALIZATIONS-%
 
-% color: ...[DONE]
-% width: ...[DONE]
-% dash: ...[DONE]
-% opacity: ---[TODO]
-% shape: ...[NOT SUPPORTED IN MATLAB]
-% smoothing: ...[DONE]
-% outliercolor: ...[N/A]
-% outlierwidth: ...[N/A]
+    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
+    axisData = get(obj.State.Plot(plotIndex).AssociatedAxis);
+    plotData = get(obj.State.Plot(plotIndex).Handle);
+    [xSource, ySource] = findSourceAxis(obj,axIndex);
 
-%-FIGURE DATA STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
+    %-get trace data-%
+    xData = plotData.XData; if ~isvector(xData), xData = xData(1,:); end
+    yData = plotData.YData; if ~isvector(yData), yData = yData(:,1); end
+    zData = plotData.ZData;
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(contourIndex).AssociatedAxis);
+    contourStart = plotData.TextList(1);
+    contourEnd = plotData.TextList(end);
+    contourSize = mean(diff(plotData.TextList));
 
-%-AXIS DATA STRUCTURE-%
-axis_data = get(obj.State.Plot(contourIndex).AssociatedAxis);
+    if length(plotData.TextList) == 1
+        contourStart = plotData.TextList(1) - 1e-3;
+        contourEnd = plotData.TextList(end) + 1e-3;
+        contourSize = 2e-3;
+    end
 
-%-PLOT DATA STRUCTURE- %
-contour_data = get(obj.State.Plot(contourIndex).Handle);
+    %-------------------------------------------------------------------------%
 
-%-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
+    %-set trace-%
+    obj.data{plotIndex}.type = 'contour';
+    obj.data{plotIndex}.xaxis = sprintf('x%s', xSource);
+    obj.data{plotIndex}.yaxis = sprintf('y%s', xSource);
+    obj.data{plotIndex}.name = plotData.DisplayName;
+    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.xtype = 'array';
+    obj.data{plotIndex}.ytype = 'array';
 
-%-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+    %-------------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    %-set trace data-%
+    obj.data{plotIndex}.x = xData;
+    obj.data{plotIndex}.y = yData;
+    obj.data{plotIndex}.z = zData;
 
-%-contour xaxis-%
-obj.data{contourIndex}.xaxis = ['x' num2str(xsource)];
+    %-set contour levels-%
+    obj.data{plotIndex}.autocontour = false;
+    obj.data{plotIndex}.contours.start = contourStart;
+    obj.data{plotIndex}.contours.end = contourEnd;
+    obj.data{plotIndex}.contours.size = contourSize;
 
-%-------------------------------------------------------------------------%
+    %-------------------------------------------------------------------------%
 
-%-contour yaxis-%
-obj.data{contourIndex}.yaxis = ['y' num2str(ysource)];
+    %-set trace coloring-%
+    obj.data{plotIndex}.zauto = false;
+    obj.data{plotIndex}.zmin = axisData.CLim(1);
+    obj.data{plotIndex}.zmax = axisData.CLim(2);
+    obj.data{plotIndex}.showscale = false;
+    obj.data{plotIndex}.reversescale = false;
+    obj.data{plotIndex}.colorscale = getColorScale(plotData, axisData);
 
-%-------------------------------------------------------------------------%
-
-%-contour name-%
-obj.data{contourIndex}.name = contour_data.DisplayName;
-
-%-------------------------------------------------------------------------%
-
-%-setting the plot-%
-xdata = contour_data.XData;
-ydata = contour_data.YData;
-zdata = contour_data.ZData;
-    
-%-------------------------------------------------------------------------%
-
-%-contour type-%
-obj.data{contourIndex}.type = 'contour';
-
-%-------------------------------------------------------------------------%
-
-%-contour x data-%
-if ~isvector(xdata)
-    obj.data{contourIndex}.x = xdata(1,:);
-else
-    obj.data{contourIndex}.x = xdata;
-end
-
-%-------------------------------------------------------------------------%
-
-%-contour y data-%
-if ~isvector(ydata)
-    obj.data{contourIndex}.y = ydata(:, 1);
-else
-    obj.data{contourIndex}.y = ydata';
-end
-
-%-------------------------------------------------------------------------%
-
-%-contour z data-%
-obj.data{contourIndex}.z = zdata;
-
-%-------------------------------------------------------------------------%
-
-%-contour x type-%
-
-obj.data{contourIndex}.xtype = 'array';
-
-%-------------------------------------------------------------------------%
-
-%-contour y type-%
-
-obj.data{contourIndex}.ytype = 'array';
-
-%-------------------------------------------------------------------------%
-
-%-zauto-%
-obj.data{contourIndex}.zauto = false;
-
-%-------------------------------------------------------------------------%
-
-%-zmin-%
-obj.data{contourIndex}.zmin = axis_data.CLim(1);
-
-%-------------------------------------------------------------------------%
-
-%-zmax-%
-obj.data{contourIndex}.zmax = axis_data.CLim(2);
-
-%-------------------------------------------------------------------------%
-
-%-autocontour-%
-obj.data{contourIndex}.autocontour = false;
-
-%---------------------------------------------------------------------%
-
-%-colorscale-%
-colormap = axis_data.Colormap;
-
-for c = 1:size((colormap),1)
-    col =  255*(colormap(c,:));
-    obj.data{contourIndex}.colorscale{c} = {(c-1)/(size(colormap,1)-1), ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
-end
-
-%-------------------------------------------------------------------------%
-
-%-contour contours-%
-
-%-coloring-%
-switch contour_data.Fill
-    case 'off'
-        obj.data{contourIndex}.contours.coloring = 'lines';
-    case 'on'
-        obj.data{contourIndex}.contours.coloring = 'fill';
-end
-
-%-------------------------------------------------------------------------%
-
-%-contour levels-%
-if length(contour_data.LevelList) > 1
-    cstart = contour_data.TextList(1);
-    cend = contour_data.TextList(end);
-    csize = mean(diff(contour_data.TextList));
-else
-    cstart = contour_data.TextList(1) - 1e-3;
-    cend = contour_data.TextList(end) + 1e-3;
-    csize = 2e-3;
-end
-
-%-start-%
-obj.data{contourIndex}.contours.start = cstart;
-
-%-end-%
-obj.data{contourIndex}.contours.end = cend;
-
-%-step-%
-obj.data{contourIndex}.contours.size = csize;
-
-%-------------------------------------------------------------------------%
-
-%-contour line setting-%
-if(~strcmp(contour_data.LineStyle,'none'))
-
-    %-contour line colour-%
-    if isnumeric(contour_data.LineColor)
-        col = 255*contour_data.LineColor;
-        obj.data{contourIndex}.line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    if strcmp(plotData.Fill, 'off')
+        obj.data{plotIndex}.contours.coloring = 'lines';
     else
-        obj.data{contourIndex}.line.color = 'rgba(0,0,0,0)';
+        obj.data{plotIndex}.contours.coloring = 'fill';
     end
 
-    %-contour line width-%
-    obj.data{contourIndex}.line.width = 1.5 * contour_data.LineWidth;
+    %-set contour line-%
+    if ~strcmp(plotData.LineStyle, 'none')
+        obj.data{plotIndex}.contours.showlines = true;
+        obj.data{plotIndex}.line = getContourLine(plotData);
+    else
+        obj.data{plotIndex}.contours.showlines = false;
+    end
 
-    %-contour line dash-%
-    switch contour_data.LineStyle
+    %-set contour label-%
+    if strcmpi(plotData.ShowText, 'on')
+        obj.data{plotIndex}.contours.showlabels = true;
+        obj.data{plotIndex}.contours.labelfont = getLabelFont(axisData);
+    end
+
+    %-set trace legend-%
+    obj.data{plotIndex}.showlegend = getShowLegend(plotData);
+
+    %-------------------------------------------------------------------------%
+end
+
+function contourLine = getContourLine(plotData)
+
+    %-initializations-%
+    lineStyle = plotData.LineStyle;
+    lineWidth = 1.5*plotData.LineWidth;
+    lineColor = plotData.LineColor;
+
+    %-line color-%
+    if isnumeric(lineColor)
+        lineColor = getStringColor( 255*lineColor );
+    else
+        lineColor = 'rgba(0,0,0,0)';
+    end
+
+    %-line dash-%
+    switch lineStyle
         case '-'
-            LineStyle = 'solid';
+            lineStyle = 'solid';
         case '--'
-            LineStyle = 'dash';
+            lineStyle = 'dash';
         case ':'
-            LineStyle = 'dot';
+            lineStyle = 'dot';
         case '-.'
-            LineStyle = 'dashdot';
+            lineStyle = 'dashdot';
     end
 
-    obj.data{contourIndex}.line.dash = LineStyle;
-
-    %-contour smoothing-%
-    obj.data{contourIndex}.line.smoothing = 0;
-
-else
-
-    %-contours showlines-%
-    obj.data{contourIndex}.contours.showlines = false;
-
+    %-return-%
+    contourLine.width = lineWidth;
+    contourLine.dash = lineStyle;
+    contourLine.color = lineColor;
+    contourLine.smoothing = 0;
 end
 
-%-------------------------------------------------------------------------%
+function colorScale = getColorScale(plotData, axisData)
 
-%-contour visible-%
-obj.data{contourIndex}.visible = strcmp(contour_data.Visible,'on');
+    %-initializations-%
+    cMap = axisData.Colormap;
+    nColors = size(cMap, 1);
+    isBackground = any(plotData.ZData(:) < plotData.TextList(1));
+    nContours = length(plotData.TextList);
+    cScaleInd = linspace(0,1, nContours); 
+    if nContours==1, cScaleInd = 0.5; end
+    cMapInd = floor( (nColors-1)*cScaleInd ) + 1;
 
-%-------------------------------------------------------------------------%
+    %-colorscale-%
+    if strcmp(plotData.Fill, 'on')
+        if isBackground
+            colorScale{1} = {0, getStringColor( 255*ones(1,3) )};
+            cScaleInd = linspace(1/nContours, 1, nContours);
+        end
 
-%-show contour labels-%
-if strcmpi(contour_data.ShowText, 'on')
-    obj.data{contourIndex}.contours.showlabels = true;
+        for n = 1:nContours
+            m = n; if isBackground, m = n+1; end
+            stringColor = getStringColor( 255*cMap(cMapInd(n), :) );
+            colorScale{m} = {cScaleInd(n), stringColor};
+        end
+    else
+        cScaleInd = rescale(1:nColors, 0, 1);
+
+        for n = 1:nColors
+            stringColor = getStringColor( 255*cMap(n,:) );
+            colorScale{n} = {cScaleInd(n), stringColor};
+        end
+    end
 end
 
-%-------------------------------------------------------------------------%
+function labelFont = getLabelFont(axisData)
+    labelColor = getStringColor(255*axisData.XAxis.Color);
+    labelSize = axisData.XAxis.FontSize;
+    labelFamily = matlab2plotlyfont(axisData.XAxis.FontName);
 
-%-contour showscale-%
-obj.data{contourIndex}.showscale = false;
-
-%-------------------------------------------------------------------------%
-
-%-contour reverse scale-%
-obj.data{contourIndex}.reversescale = false;
-
-%-------------------------------------------------------------------------%
-
-%-contour showlegend-%
-
-leg = get(contour_data.Annotation);
-legInfo = get(leg.LegendInformation);
-
-switch legInfo.IconDisplayStyle
-    case 'on'
-        showleg = true;
-    case 'off'
-        showleg = false;
-end
-
-obj.data{contourIndex}.showlegend = showleg;
-
-%-------------------------------------------------------------------------%
-
+    labelFont.color = labelColor;
+    labelFont.size = labelSize;
+    labelFont.family = labelFamily;
 end
