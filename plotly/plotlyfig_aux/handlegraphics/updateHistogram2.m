@@ -13,7 +13,9 @@ function obj = updateHistogram2(obj,dataIndex)
     barGap = 0.05;
 
     %-get trace data-%
+    
     values = plotData.Values;
+    if strcmp(plotData.ShowEmptyBins, 'on'), values = values+1; end
     xEdges = plotData.XBinEdges; 
     yEdges = plotData.YBinEdges;
 
@@ -29,6 +31,8 @@ function obj = updateHistogram2(obj,dataIndex)
     [xData, yData, zData, iData, jData, kData] = ...
         getPlotlyMesh3d( xEdges, yEdges, values, barGap );
 
+    if strcmp(plotData.ShowEmptyBins, 'on'), zData = zData-1; end
+        
     cData = zeros(size(zData));
     for n = 1:2:length(zData), cData(n:n+1) = max(zData(n:n+1)); end
 
@@ -65,17 +69,24 @@ function obj = updateHistogram2(obj,dataIndex)
     elseif strcmp(faceColor, 'flat')
         obj.data{dataIndex}.intensity = cData;
         obj.data{dataIndex}.colorscale = getColorScale(colorMap);
+        obj.data{dataIndex}.cmin = axisData.CLim(1);
+        obj.data{dataIndex}.cmax = axisData.CLim(2);
         obj.data{dataIndex}.showscale = false;
     end
 
-    obj.data{dataIndex}.flatshading = true;
-    obj.data{dataIndex}.lighting.diffuse = 0.92;
-    obj.data{dataIndex}.lighting.ambient = 0.54;
-    obj.data{dataIndex}.lighting.specular = 1.42;
-    obj.data{dataIndex}.lighting.roughness = 0.52;
-    obj.data{dataIndex}.lighting.fresnel = 0.2;
-    obj.data{dataIndex}.lighting.vertexnormalsepsilon = 1e-12;
-    obj.data{dataIndex}.lighting.facenormalsepsilon = 1e-6;
+    if ~strcmp(plotData.DisplayStyle, 'tile')
+        obj.data{dataIndex}.flatshading = true;
+        obj.data{dataIndex}.lighting.diffuse = 0.92;
+        obj.data{dataIndex}.lighting.ambient = 0.54;
+        obj.data{dataIndex}.lighting.specular = 1.42;
+        obj.data{dataIndex}.lighting.roughness = 0.52;
+        obj.data{dataIndex}.lighting.fresnel = 0.2;
+        obj.data{dataIndex}.lighting.vertexnormalsepsilon = 1e-12;
+        obj.data{dataIndex}.lighting.facenormalsepsilon = 1e-6;
+    else
+        obj.data{dataIndex}.lighting.diffuse = 0.92;
+        obj.data{dataIndex}.lighting.ambient = 0.92;
+    end
 
     %--------------------------------------------------------------------------%
 end
