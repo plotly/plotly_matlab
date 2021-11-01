@@ -60,11 +60,10 @@ classdef plotlyfig < handle
             obj.PlotOptions.AspectRatio = [];
             obj.PlotOptions.CameraEye = [];
             obj.PlotOptions.is_headmap_axis = false;
-            obj.PlotOptions.Quality = -1;
-            obj.PlotOptions.Zmin = [];
             obj.PlotOptions.FrameDuration = 1;      % in ms.
             obj.PlotOptions.FrameTransitionDuration = 0;      % in ms.
             obj.PlotOptions.geoRenderType = 'geo';
+            obj.PlotOptions.DomainFactor = [1 1 1 1];
             
             % offline options
             obj.PlotOptions.Offline = true;
@@ -273,6 +272,10 @@ classdef plotlyfig < handle
                         end
                         if(strcmpi(varargin{a},'geoRenderType'))
                             obj.PlotOptions.geoRenderType = varargin{a+1};
+                        end
+                        if(strcmpi(varargin{a},'DomainFactor'))
+                            len = length(varargin{a+1});
+                            obj.PlotOptions.DomainFactor(1:len) = varargin{a+1};
                         end
                     end
             end

@@ -89,29 +89,21 @@ end
 
 %-------------------------------------------------------------------------%
 
-%-getting and setting postion data-%
-xo = axisData.Position(1);
-yo = axisData.Position(2);
-w = axisData.Position(3);
-h = axisData.Position(4);
-
-if obj.PlotOptions.AxisEqual
-    wh = min(axisData.Position(3:4));
-    w = wh;
-    h = wh;
-end
+%-get position data-%
+axisPos = axisData.Position .* obj.PlotOptions.DomainFactor;
+if obj.PlotOptions.AxisEqual, axisPos(3:4) = min(axisPos(3:4)); end
 
 %-------------------------------------------------------------------------%
 
 %-xaxis domain-%
-xaxis.domain = min([xo xo + w],1);
-scene.domain.x = min([xo xo + w],1);
+xaxis.domain = min([axisPos(1) sum(axisPos([1,3]))], 1);
+scene.domain.x = xaxis.domain;
 
 %-------------------------------------------------------------------------%
 
 %-yaxis domain-%
-yaxis.domain = min([yo yo + h],1);
-scene.domain.y = min([yo yo + h],1);
+yaxis.domain = min([axisPos(2) sum(axisPos([2,4]))], 1);
+scene.domain.y = yaxis.domain;
 
 %-------------------------------------------------------------------------%
 
