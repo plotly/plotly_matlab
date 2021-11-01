@@ -22,6 +22,7 @@ function updateScatter(obj,plotIndex)
         obj.data{plotIndex}.type = 'scatter';    
         obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
         obj.data{plotIndex}.yaxis = sprintf('y%d', ySource);
+        updateCategoricalAxis(obj, plotIndex);
     else
         obj.data{plotIndex}.type = 'scatter3d';
         obj.data{plotIndex}.scene = sprintf('scene%d', xSource);
@@ -36,8 +37,9 @@ function updateScatter(obj,plotIndex)
     %-------------------------------------------------------------------------%
         
     %-set trace data-%
-    obj.data{plotIndex}.x = plotData.XData;
-    obj.data{plotIndex}.y = plotData.YData;
+    [xData, yData] = getTraceData2D(plotData);
+    obj.data{plotIndex}.x = xData;
+    obj.data{plotIndex}.y = yData;
 
     if isScatter3D
         obj.data{plotIndex}.z = plotData.ZData;
@@ -214,3 +216,119 @@ function updateScene(obj, dataIndex)
     %-------------------------------------------------------------------------%
 end
 
+function updateCategoricalAxis(obj, plotIndex)
+
+    %-INITIALIZATIONS-%
+    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
+    [xSource, ySource] = findSourceAxis(obj,axIndex);
+    plotData = get(obj.State.Plot(plotIndex).Handle);
+
+    xData = plotData.XData;
+    yData = plotData.YData;
+
+    if iscategorical(xData)
+        ax = eval(sprintf('obj.layout.xaxis%d', xSource));
+        nTicks = length(ax.ticktext);
+
+        ax.autorange = false;
+        ax.range = 0.5 + [0 nTicks];
+        ax.type = 'linear';
+        ax.tickvals = 1:nTicks;
+        
+        eval(sprintf('obj.layout.xaxis%d = ax;', xSource));
+    end
+
+    if iscategorical(yData)
+        ax = eval(sprintf('obj.layout.yaxis%d', ySource));
+        nTicks = length(ax.ticktext);
+
+        ax.autorange = false;
+        ax.range = 0.5 + [0 nTicks];
+        ax.type = 'linear';
+        ax.tickvals = 1:nTicks;
+        
+        eval(sprintf('obj.layout.yaxis%d = ax;', ySource));
+    end
+end
+
+function [xData, yData] = getTraceData2D(plotData)
+
+    %-initializations-%
+    isSwarmchart = isfield(plotData, 'XJitter');
+    xData = categ2NumData(plotData.XData);
+    yData = categ2NumData(plotData.YData);
+
+    %-get 2D trace data-%
+    if isSwarmchart
+        if ~strcmp(plotData.XJitter, 'none')
+            xData = setJitData(xData, yData, plotData, 'X');
+
+        elseif ~strcmp(plotData.XJitter, 'none')
+            yData = setJitData(yData, xData, plotData, 'Y');
+        end
+    end
+end
+
+function jitData = setJitData(jitData, refData, plotData, axName)
+    jitType = eval(sprintf('plotData.%sJitter', axName));
+    jitWidth = eval(sprintf('plotData.%sJitterWidth', axName));
+    jitUnique = sort(unique(jitData), 'ascend');
+    jitWeight = getJitWeight(jitData, refData);
+    isJitDensity = strcmp(jitType, 'density');
+
+    for n = 1:length(jitUnique)
+        jitInd = find(jitData == jitUnique(n));
+
+        if length(jitInd) > 1
+            jitDataN = getJitData(refData(jitInd), jitWidth, jitType);
+            if isJitDensity, jitDataN = jitWeight(n)*jitDataN; end
+            jitData(jitInd) = jitData(jitInd) + jitDataN;
+        end
+    end
+end
+
+function jitWeight = getJitWeight(jitData, refData)
+    jitUnique = sort(unique(jitData), 'ascend');
+
+    for n = 1:length(jitUnique)
+        jitInd = find(jitData == jitUnique(n));
+
+        if length(jitInd) > 1
+            refDataN = refData(jitInd);
+            stdData(n) = std( refDataN(~isnan(refDataN)) ); 
+        end
+    end
+
+    jitWeight = ( stdData/min(stdData) ).^(-1);
+end
+
+function jitData = getJitData(refData, jitWeight, jitType)
+    jitData = rand(size(refData)) - 0.5;
+
+    if strcmp(jitType, 'density')
+        refPoints = linspace(min(refData), max(refData), 2*length(refData));
+        [densityData, refPoints] = ksdensity(refData, refPoints);
+        densityData = jitWeight * rescale(densityData, 0, 1);
+
+        for n = 1:length(refData)
+            [~, refInd] = min(abs(refPoints - refData(n)));
+            jitData(n) = jitData(n) * densityData(refInd);
+        end
+
+    elseif strcmp(jitType, 'rand')
+        jitData = jitWeight * jitData;
+
+    elseif strcmp(jitType, 'rand')
+        jitData = jitWeight * rescale(randn(size(refData)), -0.5, 0.5);
+
+    end
+end
+
+function numData = categ2NumData(categData)
+    numData = categData;
+
+    if iscategorical(categData)
+        [~, ~, numData] = unique(numData); 
+        numData = numData';
+    end
+end
