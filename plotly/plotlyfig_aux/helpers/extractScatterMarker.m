@@ -17,7 +17,7 @@ function marker = extractScatterMarker(plotData)
     marker = struct();
     marker.sizeref = 1;
     marker.sizemode = 'area';
-    marker.size = getmarkerSize(plotData);
+    marker.size = getMarkerSize(plotData);
     marker.line.width = 1.5*plotData.LineWidth;
 
     filledMarkerSet = {'o', 'square', 's', 'diamond', 'd', 'v', '^', ...
@@ -32,6 +32,7 @@ function marker = extractScatterMarker(plotData)
         switch plotData.Marker
             case '.'
                 markerSymbol = 'circle';
+                marker.size = 0.1*marker.size;
             case 'o'
                 markerSymbol = 'circle';
             case 'x'
@@ -152,6 +153,7 @@ function marker = extractScatterMarker(plotData)
         marker.line.color = lineColor;
     else
         marker.color = lineColor;
+        if strcmp(plotData.Marker, '.'), marker.line.color = lineColor; end
     end
 
     %-------------------------------------------------------------------------%
@@ -204,7 +206,7 @@ function outData = rescaleData(inData, dataLim)
     outData = (outData - dataLim(1)) / diff(dataLim);
 end
 
-function markerSize = getmarkerSize(plotData)
+function markerSize = getMarkerSize(plotData)
     markerSize = plotData.SizeData;
 
     if length(markerSize) == 1
