@@ -73,7 +73,7 @@ This lives here: [https://plot.ly/matlab](https://plot.ly/matlab)
 
 ## Questions & troubleshooting
 
-- https://community.plotly.com/c/api/matlab/
+- https://community.plotly.com/c/graphing-libraries/matlab/
 
 ## Contribute
 
