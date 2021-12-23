@@ -28,8 +28,11 @@ if isnumeric(patch_data.FaceColor)
     
     %-paper_bgcolor-%
     col = 255*patch_data.FaceColor;
-    marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-    
+    if ~isempty(patch_data.FaceAlpha) && isnumeric(patch_data.FaceAlpha)
+        marker.color = ['rgba(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ',', num2str(patch_data.FaceAlpha), ')'];
+    else
+        marker.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+    end
 else
     switch patch_data.FaceColor
         
