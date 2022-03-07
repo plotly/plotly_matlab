@@ -80,7 +80,7 @@ function response = plotlyoffline(plotlyfig)
     % save the html file in the working directory
     plotlyOfflineFile = fullfile(plotlyfig.PlotOptions.SaveFolder, htmlFilename); 
     fileID = fopen(plotlyOfflineFile, 'w');
-    fprintf(fileID, offlineScript); 
+    fprintf(fileID, '%s', offlineScript); 
     fclose(fileID); 
     
     % remove any whitespace from the plotlyOfflineFile path
