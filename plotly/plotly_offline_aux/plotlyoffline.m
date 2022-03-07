@@ -82,8 +82,8 @@ function response = plotlyoffline(plotlyfig)
     plotlyOfflineFile = fullfile(plotlyfig.PlotOptions.SaveFolder, ...
             htmlFilename);
     fileID = fopen(plotlyOfflineFile, 'w');
-    fprintf(fileID, offlineScript);
-    fclose(fileID);
+    fprintf(fileID, '%s', offlineScript);
+    fclose(fileID); 
 
     % remove any whitespace from the plotlyOfflineFile path
     plotlyOfflineFile = strrep(plotlyOfflineFile, ' ', '%20');
