@@ -103,9 +103,15 @@ end
 if output.code ~= 0
     fprintf('\nError: %s\n',output.message);
 else
-    out=unicode2native(output.result,'UTF-8');
-    out=base64decode(out);
-    f=fopen(char(filename),'wb');
-    fwrite(f,out);
-    fclose(f);
+    if output.format == "svg"
+        f=fopen(char(filename),'w');
+        fwrite(f,output.result);
+        fclose(f);
+    else
+        out=unicode2native(output.result,'UTF-8');
+        out=base64decode(out);
+        f=fopen(char(filename),'wb');
+        fwrite(f,out);
+        fclose(f);
+    end
 end
