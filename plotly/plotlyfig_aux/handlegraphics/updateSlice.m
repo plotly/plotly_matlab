@@ -5,9 +5,9 @@ function obj = updateSlice(obj, dataIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
-    figureData = get(obj.State.Figure.Handle);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
+    figureData = obj.State.Figure.Handle;
     [xSource, ~] = findSourceAxis(obj,axIndex);
 
     %-update scene-%
@@ -79,8 +79,8 @@ function updateScene(obj, dataIndex)
 
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
     [xSource, ~] = findSourceAxis(obj, axIndex);
     scene = eval( sprintf('obj.layout.scene%d', xSource) );
 
@@ -172,8 +172,8 @@ function updateSurfaceEdgeColor(obj, dataIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
 
     xData = plotData.XData;
     yData = plotData.YData;
@@ -242,8 +242,8 @@ function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
 
     faceColor = plotData.FaceColor;
     cLim = axisData.CLim;

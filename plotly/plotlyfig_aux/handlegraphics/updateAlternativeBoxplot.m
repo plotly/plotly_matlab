@@ -5,7 +5,7 @@ function obj = updateAlternativeBoxplot(obj, dataIndex)
 	%-INITIALIZATIONS-%
 
 	axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-	plotStructure = get(obj.State.Plot(dataIndex).Handle);
+	plotStructure = obj.State.Plot(dataIndex).Handle;
 	plotData = plotStructure.Children;
 
 	nTraces = length(plotData);
@@ -74,8 +74,8 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
     %-------------------------------------------------------------------------%
 
     %-legend-%
-    leg = get(plotData.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = plotData.Annotation;
+    legInfo = leg.LegendInformation;
 
     switch legInfo.IconDisplayStyle
         case 'on'

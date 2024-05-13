@@ -5,7 +5,7 @@ function updateLineseries(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
 
     %-check for multiple axes-%
     try
@@ -110,8 +110,8 @@ function updateScene(obj, dataIndex)
 
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
     [xSource, ~] = findSourceAxis(obj, axIndex);
     scene = eval( sprintf('obj.layout.scene%d', xSource) );
 
@@ -264,8 +264,8 @@ function updateDefaultPolaraxes(obj, plotIndex)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     [xSource, ysource] = findSourceAxis(obj, axIndex);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(plotIndex).Handle;
+    axisData = plotData.Parent;
 
     thetaAxis = axisData.XAxis;
     rAxis = axisData.YAxis;

@@ -5,8 +5,8 @@ function obj = updateContourgroup(obj,plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    axisData = get(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    axisData = obj.State.Plot(plotIndex).AssociatedAxis;
+    plotData = obj.State.Plot(plotIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     %-get trace data-%

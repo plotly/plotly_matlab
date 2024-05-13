@@ -7,11 +7,11 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-SURFACE DATA STRUCTURE- %
-bar_data = get(obj.State.Plot(surfaceIndex).Handle);
-figure_data = get(obj.State.Figure.Handle);
+bar_data = obj.State.Plot(surfaceIndex).Handle;
+figure_data = obj.State.Figure.Handle;
 
 %-AXIS STRUCTURE-%
-axis_data = get(ancestor(bar_data.Parent,'axes'));
+axis_data = ancestor(bar_data.Parent,'axes');
 
 %-GET SCENE-%
 eval(['scene = obj.layout.scene' num2str(xsource) ';']);
@@ -152,8 +152,8 @@ obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-leg = get(bar_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = bar_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

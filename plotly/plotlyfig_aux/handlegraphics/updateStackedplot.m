@@ -5,7 +5,7 @@ function updateStackedplot(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     lineData = plotData.LineProperties(end:-1:1);
     
     %-get trace data-%
@@ -88,7 +88,7 @@ function updateStackedplotAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
 
     %-------------------------------------------------------------------------%
 
@@ -130,7 +130,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
 
     lineFactor = obj.PlotlyDefaults.AxisLineIncreaseFactor;
     axisPos = plotData.Position;

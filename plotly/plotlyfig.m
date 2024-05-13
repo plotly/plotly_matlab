@@ -589,7 +589,7 @@ classdef plotlyfig < handle
 
             % check if there is tiledlayout
             try
-                tiledLayoutStruct = get(obj.State.Figure.Handle.Children);
+                tiledLayoutStruct = obj.State.Figure.Handle.Children;
                 isTiledLayout = strcmp(tiledLayoutStruct.Type, 'tiledlayout');
             catch
                 isTiledLayout = false;
@@ -600,7 +600,7 @@ classdef plotlyfig < handle
 
             if isempty(ax)
                 try
-                    ax = get(obj.State.Figure.Handle,'Children');
+                    ax = obj.State.Figure.Handle.Children;
                 catch
                     ax = gca;
                 end
@@ -648,7 +648,7 @@ classdef plotlyfig < handle
                 
                 % add title
                 try
-                    obj.State.Text(a).Handle = get(ax(axrev),'Title');
+                    obj.State.Text(a).Handle = ax(axrev).Title;
                     obj.State.Text(a).AssociatedAxis = handle(ax(axrev));
                     obj.State.Text(a).Title = true;
                 catch
@@ -884,12 +884,12 @@ classdef plotlyfig < handle
         %----UPDATE FIGURE OPTIONS----%
         function obj = updateFigureVisible(obj,src,event)
             % update PlotOptions.Visible
-            obj.PlotOptions.Visible = get(obj.State.Figure.Handle,'Visible');
+            obj.PlotOptions.Visible = obj.State.Figure.Handle.Visible;
         end
         
         function obj = updateFigureName(obj,src,event)
             % update PlotOptions.Name
-            obj.PlotOptions.FileName = get(obj.State.Figure.Handle,'Name');
+            obj.PlotOptions.FileName = obj.State.Figure.Handle.Name;
         end
         
         %----UPDATE PLOT OPTIONS----%

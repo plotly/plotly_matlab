@@ -4,9 +4,9 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
     %-GET DATA STRUCTURES-%
-    ternaryData = get(obj.State.Plot(ternaryIndex).Handle);
-    axisData = get(obj.State.Plot(ternaryIndex).AssociatedAxis);
-    figureData = get(obj.State.Figure.Handle);
+    ternaryData = obj.State.Plot(ternaryIndex).Handle;
+    axisData = obj.State.Plot(ternaryIndex).AssociatedAxis;
+    figureData = obj.State.Figure.Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
@@ -61,8 +61,8 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     %-------------------------------------------------------------------------%
 
     %-legend-%
-    leg = get(ternaryData.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = ternaryData.Annotation;
+    legInfo = leg.LegendInformation;
 
     switch legInfo.IconDisplayStyle
         case 'on'

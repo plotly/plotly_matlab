@@ -5,7 +5,7 @@ function updateGeoPlot(obj,geoIndex)
     %-INTIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
-    geoData = get(obj.State.Plot(geoIndex).Handle);
+    geoData = obj.State.Plot(geoIndex).Handle;
     axisData = geoData.Parent;
     [xSource, ~] = findSourceAxis(obj,axIndex);
 

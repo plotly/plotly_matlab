@@ -13,8 +13,8 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-SURFACE DATA STRUCTURE- %
-image_data = get(obj.State.Plot(surfaceIndex).Handle);
-figure_data = get(obj.State.Figure.Handle);
+image_data = obj.State.Plot(surfaceIndex).Handle;
+figure_data = obj.State.Figure.Handle;
 
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
@@ -209,8 +209,8 @@ obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-leg = get(image_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = image_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

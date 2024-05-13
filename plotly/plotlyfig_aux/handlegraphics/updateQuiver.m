@@ -6,7 +6,7 @@ function obj = updateQuiver(obj, dataIndex)
 
     %-get structures-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
+    plotData = obj.State.Plot(dataIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
@@ -119,8 +119,8 @@ function obj = updateQuiver(obj, dataIndex)
     %-------------------------------------------------------------------------%
 
     %-set trace legend-%
-    leg = get(plotData.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = plotData.Annotation;
+    legInfo = leg.LegendInformation;
 
     switch legInfo.IconDisplayStyle
         case 'on'
@@ -140,8 +140,8 @@ function updateScene(obj, dataIndex)
 
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
     [xSource, ~] = findSourceAxis(obj, axIndex);
     scene = eval( sprintf('obj.layout.scene%d', xSource) );
 

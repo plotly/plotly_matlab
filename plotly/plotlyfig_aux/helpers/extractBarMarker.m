@@ -5,10 +5,10 @@ function marker = extractBarMarker(bar_data)
 %-------------------------------------------------------------------------%
 
 %-AXIS STRUCTURE-%
-axis_data = get(ancestor(bar_data.Parent,'axes'));
+axis_data = ancestor(bar_data.Parent,'axes');
 
 %-FIGURE STRUCTURE-%
-figure_data = get(ancestor(bar_data.Parent,'figure'));
+figure_data = ancestor(bar_data.Parent,'figure');
 
 %-INITIALIZE OUTPUT-%
 marker = struct(); 

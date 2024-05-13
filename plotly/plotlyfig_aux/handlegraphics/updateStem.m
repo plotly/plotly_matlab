@@ -6,7 +6,7 @@ function obj = updateStem3(obj,dataIndex)
   axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
 
   %-PLOT DATA STRUCTURE- %
-  data = get(obj.State.Plot(dataIndex).Handle);
+  data = obj.State.Plot(dataIndex).Handle;
 
   %-CHECK FOR MULTIPLE AXES-%
   [xsource, ysource] = findSourceAxis(obj,axIndex);
