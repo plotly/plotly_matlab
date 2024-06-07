@@ -2,6 +2,12 @@
 
 > Plotly Graphing Library for MATLAB® - Create interactive charts in your web browser with MATLAB® and Plotly
 
+<div align="center">
+  <a href="https://dash.plotly.com/project-maintenance">
+    <img src="https://dash.plotly.com/assets/images/maintained-by-community.png" width="400px" alt="Maintained by the Plotly Community">
+  </a>
+</div>
+
 Version: 2.2.10
 
 *MATLAB is a registered trademarks of The MathWorks, Inc.*
