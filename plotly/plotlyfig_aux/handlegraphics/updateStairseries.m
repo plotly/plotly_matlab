@@ -6,7 +6,7 @@ stair_group = obj.State.Plot(dataIndex).Handle;
 %------------------------------------------------------------------------%
 
 %-get children-%
-stair_child = stair_group .Children;
+stair_child = stair_group.Children;
 
 %------------------------------------------------------------------------%
 

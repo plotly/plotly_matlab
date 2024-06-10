@@ -4,7 +4,7 @@ function obj = updateStemseries(obj,dataIndex)
 stem_group = obj.State.Plot(dataIndex).Handle;
 
 %-get children-%
-stem_child = stem_group .Children;
+stem_child = stem_group.Children;
 
 %------------------------------------------------------------------------%
 

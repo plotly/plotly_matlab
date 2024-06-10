@@ -28,8 +28,8 @@ function obj = updateContourgroup(obj,plotIndex)
 
     %-set trace-%
     obj.data{plotIndex}.type = 'contour';
-    obj.data{plotIndex}.xaxis = sprintf('x%s', xSource);
-    obj.data{plotIndex}.yaxis = sprintf('y%s', xSource);
+    obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
+    obj.data{plotIndex}.yaxis = sprintf('y%d', ySource);
     obj.data{plotIndex}.name = plotData.DisplayName;
     obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
     obj.data{plotIndex}.xtype = 'array';

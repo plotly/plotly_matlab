@@ -2,8 +2,6 @@
 
 function obj = updateData(obj, dataIndex)
 
-try
-    
     %-update plot based on TreatAs PlotOpts-%
    
     if ismember('pie3', lower(obj.PlotOptions.TreatAs))
@@ -174,19 +172,15 @@ try
                 if isBoxplot(obj, dataIndex)
                     updateBoxplot(obj, dataIndex);
                 end
+            otherwise
+                error('Non-supported plot: %s',lower(obj.State.Plot(dataIndex).Class));
         end
     end
-    
-catch exception
-    if obj.UserData.Verbose
-        fprintf([exception.message '\nWe had trouble parsing the ' obj.State.Plot(dataIndex).Class ' object.\n',...
-                 'This trace might not render properly.\n\n']);
-    end
-end
 
 %------------------------AXIS/DATA CLEAN UP-------------------------------%
 
-try
+ax = obj.State.Plot(dataIndex).AssociatedAxis;
+if ~ismember(ax.Type,specialAxisPlots())
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
 
@@ -206,7 +200,7 @@ try
 
     % check for xaxis categories
     if strcmpi(xaxis.type, 'category') && ...
-            ~strcmp(obj.data{dataIndex}.type,'box')
+            ~any(strcmp(obj.data{dataIndex}.type,{'heatmap' 'box'}))
         obj.data{dataIndex}.x =  obj.State.Plot(dataIndex).AssociatedAxis.XTickLabel;
         eval(['obj.layout.xaxis' num2str(xsource) '.autotick=true;']);
     end
@@ -218,13 +212,10 @@ try
 
     % check for yaxis categories
     if strcmpi(yaxis.type, 'category') && ...
-            ~strcmp(obj.data{dataIndex}.type,'box')
+            ~any(strcmp(obj.data{dataIndex}.type,{'heatmap' 'box'}))
         obj.data{dataIndex}.y =  obj.State.Plot(dataIndex).AssociatedAxis.YTickLabel;
         eval(['obj.layout.yaxis' num2str(xsource) '.autotick=true;']);
     end
-catch
-    % TODO to the future
-    % disp('catch at line 157 in updateData.m file')
 end
 
 %-------------------------------------------------------------------------%
