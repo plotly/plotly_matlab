@@ -15,6 +15,7 @@ elseif nargin < 3
     width=pfObj.layout.width;
     scale=1;
 elseif nargin < 4
+    filename=[filename,'.',char(imageFormat)];
     height=pfObj.layout.height;
     width=pfObj.layout.width;
     scale=1;
