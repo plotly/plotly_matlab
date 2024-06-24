@@ -6,8 +6,8 @@ function obj = updateHistogram2(obj,dataIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     [xSource, ~] = findSourceAxis(obj, axIndex);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
 
     colorMap = axisData.Colormap;
     barGap = 0.05;
@@ -98,8 +98,8 @@ function updateScene(obj, dataIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
     [xSource, ~] = findSourceAxis(obj, axIndex);
     scene = eval( sprintf('obj.layout.scene%d', xSource) );
 

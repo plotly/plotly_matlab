@@ -4,7 +4,7 @@ function updateWordcloud(obj,scatterIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(scatterIndex).AssociatedAxis);
 
 %-SCATTER DATA STRUCTURE- %
-scatter_data = get(obj.State.Plot(scatterIndex).Handle);
+scatter_data = obj.State.Plot(scatterIndex).Handle;
 
 
 %-CHECK FOR MULTIPLE AXES-%

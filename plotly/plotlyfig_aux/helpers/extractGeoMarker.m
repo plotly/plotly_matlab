@@ -3,7 +3,7 @@ function marker = extractGeoMarker(geoData, axisData)
     %-------------------------------------------------------------------------%
 
     %-FIGURE STRUCTURE-%
-    figureData = get(ancestor(geoData.Parent,'figure'));
+    figureData = ancestor(geoData.Parent,'figure');
 
     %-INITIALIZE OUTPUT-%
     marker = struct();

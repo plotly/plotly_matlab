@@ -4,9 +4,9 @@ function obj = updateTernaryContour(obj, ternaryIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
     %-GET DATA STRUCTURES-%
-    ternaryData = get(obj.State.Plot(ternaryIndex).Handle);
-    axisData = get(obj.State.Plot(ternaryIndex).AssociatedAxis);
-    figureData = get(obj.State.Figure.Handle);
+    ternaryData = obj.State.Plot(ternaryIndex).Handle;
+    axisData = obj.State.Plot(ternaryIndex).AssociatedAxis;
+    figureData = obj.State.Figure.Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
@@ -168,9 +168,9 @@ function fillContours(obj, ternaryIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
     %-GET DATA STRUCTURES-%
-    ternaryData = get(obj.State.Plot(ternaryIndex).Handle);
-    axisData = get(obj.State.Plot(ternaryIndex).AssociatedAxis);
-    figureData = get(obj.State.Figure.Handle);
+    ternaryData = obj.State.Plot(ternaryIndex).Handle;
+    axisData = obj.State.Plot(ternaryIndex).AssociatedAxis;
+    figureData = obj.State.Figure.Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
@@ -344,7 +344,7 @@ function ternaryAxes(obj, ternaryIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
     %-GET DATA STRUCTURES-%
-    axisData = get(obj.State.Plot(ternaryIndex).AssociatedAxis);
+    axisData = obj.State.Plot(ternaryIndex).AssociatedAxis;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);

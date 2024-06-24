@@ -4,7 +4,7 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
 
     %-INITIALIZATIONS-%
     anIndex = obj.State.Figure.NumTexts + 1;
-    titleStruct = get(tiledLayoutData.Title);
+    titleStruct = tiledLayoutData.Title;
 
     obj.layout.annotations{anIndex}.showarrow = false;
     obj.layout.annotations{anIndex}.xref = 'paper';

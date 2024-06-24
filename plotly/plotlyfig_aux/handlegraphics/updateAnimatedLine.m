@@ -6,12 +6,12 @@ axisData = obj.State.Plot(plotIndex).AssociatedAxis;
 axIndex = obj.getAxisIndex(axisData);
 
 %-PLOT DATA STRUCTURE- %
-plotData = get(obj.State.Plot(plotIndex).Handle);
+plotData = obj.State.Plot(plotIndex).Handle;
 
 animObjs = obj.State.Plot(plotIndex).AssociatedAxis.Children;
 
 for i=1:numel(animObjs)
-    if isequaln(get(animObjs(i)),plotData)
+    if isequaln(animObjs(i),plotData)
         animObj = animObjs(i);
     end
 end
@@ -138,8 +138,8 @@ obj.data{plotIndex}.marker = extractLineMarker(plotData);
 %-------------------------------------------------------------------------%
 
 %-scatter showlegend-%
-leg = get(plotData.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = plotData.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

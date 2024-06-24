@@ -32,7 +32,7 @@ function obj = updateRectangle(obj, rectIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(rectIndex).AssociatedAxis);
 
 %-RECTANGLE DATA STRUCTURE- %
-rect_data = get(obj.State.Plot(rectIndex).Handle);
+rect_data = obj.State.Plot(rectIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -107,8 +107,8 @@ obj.data{rectIndex}.fillcolor = fill.color;
 %-------------------------------------------------------------------------%
 
 %-rectangle showlegend-%
-leg = get(rect_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = rect_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

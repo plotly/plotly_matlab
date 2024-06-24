@@ -7,11 +7,11 @@ axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-SURFACE DATA STRUCTURE- %
-meshData = get(obj.State.Plot(surfaceIndex).Handle);
-figureData = get(obj.State.Figure.Handle);
+meshData = obj.State.Plot(surfaceIndex).Handle;
+figureData = obj.State.Figure.Handle;
 
 %-AXIS STRUCTURE-%
-axisData = get(ancestor(meshData.Parent,'axes'));
+axisData = ancestor(meshData.Parent,'axes');
 
 %-SCENE DATA-%
 eval( sprintf('scene = obj.layout.scene%d;', xsource) );
@@ -339,8 +339,8 @@ obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 
 %-------------------------------------------------------------------------%
 
-leg = get(meshData.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = meshData.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

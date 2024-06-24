@@ -4,7 +4,7 @@ function obj = updateConeplot(obj, coneIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(coneIndex).AssociatedAxis);
 
 %-CONE DATA STRUCTURE- %
-cone_data = get(obj.State.Plot(coneIndex).Handle);
+cone_data = obj.State.Plot(coneIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
