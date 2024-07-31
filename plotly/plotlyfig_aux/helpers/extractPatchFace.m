@@ -5,10 +5,10 @@ function marker = extractPatchFace(patch_data)
 %-------------------------------------------------------------------------%
 
 %-AXIS STRUCTURE-%
-axis_data = get(ancestor(patch_data.Parent,'axes'));
+axis_data = ancestor(patch_data.Parent,'axes');
 
 %-FIGURE STRUCTURE-%
-figure_data = get(ancestor(patch_data.Parent,'figure'));
+figure_data = ancestor(patch_data.Parent,'figure');
 
 %-INITIALIZE OUTPUT-%
 marker = struct(); 

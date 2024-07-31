@@ -15,13 +15,13 @@ function obj = updateErrorbarseries(obj, errorbarIndex)
 %-------------------------------------------------------------------------%
 
 %-ERRORBAR STRUCTURE-%
-errorbar_data = get(obj.State.Plot(errorbarIndex).Handle);
+errorbar_data = obj.State.Plot(errorbarIndex).Handle;
 
 %-ERRORBAR CHILDREN-%
-errorbar_child = get(obj.State.Plot(errorbarIndex).Handle,'Children');
+errorbar_child = obj.State.Plot(errorbarIndex).Handle.Children;
 
 %-ERROR BAR LINE CHILD-%
-errorbar_line_child_data = get(errorbar_child(2));
+errorbar_line_child_data = errorbar_child(2);
 
 %-------------------------------------------------------------------------%
 

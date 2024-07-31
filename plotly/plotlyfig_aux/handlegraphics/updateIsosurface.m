@@ -5,8 +5,8 @@ function obj = updateIsosurface(obj, isoIndex)
 	%-INITIALIZATIONS-%
 
 	axIndex = obj.getAxisIndex(obj.State.Plot(isoIndex).AssociatedAxis);
-	plotData = get(obj.State.Plot(isoIndex).Handle);
-	axisData = get(plotData.Parent);
+	plotData = obj.State.Plot(isoIndex).Handle;
+	axisData = plotData.Parent;
 	[xSource, ySource] = findSourceAxis(obj, axIndex);
 
 	%-update scene-%
@@ -75,8 +75,8 @@ function updateScene(obj, isoIndex)
 
 	%-INITIALIZATIONS-%
 	axIndex = obj.getAxisIndex(obj.State.Plot(isoIndex).AssociatedAxis);
-	plotData = get(obj.State.Plot(isoIndex).Handle);
-	axisData = get(plotData.Parent);
+	plotData = obj.State.Plot(isoIndex).Handle;
+	axisData = plotData.Parent;
 	[xSource, ySource] = findSourceAxis(obj, axIndex);
 	scene = eval( sprintf('obj.layout.scene%d', xSource) );
 

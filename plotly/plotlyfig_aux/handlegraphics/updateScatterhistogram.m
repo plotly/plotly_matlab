@@ -5,7 +5,7 @@ function updateScatterhistogram(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj,axIndex);
 
     [~, ~, groupName] = getTraceData(plotData);
@@ -54,7 +54,7 @@ function updateMainScatter(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
@@ -121,7 +121,7 @@ function updateMainScatterAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     %-------------------------------------------------------------------------%
@@ -193,7 +193,7 @@ function updateMarginalHistogram(obj, plotIndex, axName)
 
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     if strcmp(axName, 'X'), xySource = 1; else, xySource = 2; end
     xySource = obj.State.Figure.NumAxes + xySource;
 
@@ -269,7 +269,7 @@ function updateMarginalSmooth(obj, plotIndex, axName)
 
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     if strcmp(axName, 'X'), xySource = 1; else, xySource = 2; end
     xySource = obj.State.Figure.NumAxes + xySource;
 
@@ -349,7 +349,7 @@ function updateXMarginalAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     % [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     xySource = obj.State.Figure.NumAxes + 1;
@@ -414,7 +414,7 @@ function updateYMarginalAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     % [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     xySource = obj.State.Figure.NumAxes + 2;
@@ -531,7 +531,7 @@ end
 
 function updateTitle(obj, plotIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     [xSource, ~] = findSourceAxis(obj,axIndex);
     isTitle = ~isempty(plotData.Title);
 
@@ -559,7 +559,7 @@ end
 
 function updateLegend(obj, plotIndex, groupName)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
     isTitle = isempty(plotData.Title);
 
     if ~isempty(groupName)

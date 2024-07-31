@@ -7,10 +7,10 @@ function face = extractAreaFace(area_data)
 %-------------------------------------------------------------------------%
 
 %-AXIS STRUCTURE-%
-axis_data = get(ancestor(area_data,'axes'));
+axis_data = ancestor(area_data,'axes');
 
 %-FIGURE STRUCTURE-%
-figure_data = get(ancestor(area_data,'figure'));
+figure_data = ancestor(area_data,'figure');
 
 %-------------------------------------------------------------------------%
 

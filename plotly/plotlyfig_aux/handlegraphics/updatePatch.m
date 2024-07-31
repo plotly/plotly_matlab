@@ -47,7 +47,7 @@ function obj = updatePatch(obj, patchIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(patchIndex).AssociatedAxis);
 
 %-PATCH DATA STRUCTURE- %
-patch_data = get(obj.State.Plot(patchIndex).Handle);
+patch_data = obj.State.Plot(patchIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -220,8 +220,8 @@ end
 %-------------------------------------------------------------------------%
 
 %-patch showlegend-%
-leg = get(patch_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = patch_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

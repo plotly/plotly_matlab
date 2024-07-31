@@ -1,7 +1,7 @@
 function showLegend = getShowLegend(plotData)
 	try
-		leg = get(plotData.Annotation);
-	    legInfo = get(leg.LegendInformation);
+		leg = plotData.Annotation;
+	    legInfo = leg.LegendInformation;
 
 	    switch legInfo.IconDisplayStyle
 	        case 'on'

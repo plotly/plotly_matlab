@@ -5,7 +5,7 @@ function updateGeobubble(obj,geoIndex)
     %-INTIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
-    geoData = get(obj.State.Plot(geoIndex).Handle);
+    geoData = obj.State.Plot(geoIndex).Handle;
     [xSource, ~] = findSourceAxis(obj,axIndex);
 
     %-get trace data-%

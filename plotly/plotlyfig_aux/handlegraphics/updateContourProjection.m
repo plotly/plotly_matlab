@@ -1,16 +1,16 @@
 function obj = updateContourProjection(obj,contourIndex)
 
 %-FIGURE DATA STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
+figure_data = obj.State.Figure.Handle;
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(contourIndex).AssociatedAxis);
 
 %-AXIS DATA STRUCTURE-%
-axis_data = get(obj.State.Plot(contourIndex).AssociatedAxis);
+axis_data = obj.State.Plot(contourIndex).AssociatedAxis;
 
 %-PLOT DATA STRUCTURE- %
-contour_data = get(obj.State.Plot(contourIndex).Handle);
+contour_data = obj.State.Plot(contourIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -143,8 +143,8 @@ end
 
 %-contour showlegend-%
 
-leg = get(contour_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = contour_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

@@ -252,12 +252,12 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
     %-get label data-%
     label = eval(sprintf('axisData.%sLabel', axisName));
-    labelData = get(label);
+    labelData = label;
 
     %-------------------------------------------------------------------------%
 
     %-STANDARDIZE UNITS-%
-    fontunits = get(label,'FontUnits');
+    fontunits = label.FontUnits;
     set(label,'FontUnits','points');
 
     %-------------------------------------------------------------------------%

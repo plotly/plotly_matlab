@@ -5,7 +5,7 @@ function updateScatter(obj,plotIndex)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj,axIndex);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
 
     %-check is 3D scatter-%
     try
@@ -69,8 +69,8 @@ function updateScene(obj, dataIndex)
 
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
     [xSource, ~] = findSourceAxis(obj, axIndex);
     scene = eval( sprintf('obj.layout.scene%d', xSource) );
 
@@ -221,7 +221,7 @@ function updateCategoricalAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj,axIndex);
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
 
     xData = plotData.XData;
     yData = plotData.YData;

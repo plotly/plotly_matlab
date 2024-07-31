@@ -4,7 +4,7 @@ function UpdateGeoAxes(obj, geoIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
 
     %-GET DATA STRUCTURE- %
-    geoData = get(obj.State.Plot(geoIndex).Handle);
+    geoData = obj.State.Plot(geoIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);

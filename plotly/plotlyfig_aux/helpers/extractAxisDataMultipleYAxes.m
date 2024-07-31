@@ -1,6 +1,6 @@
 function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIndex)
 
-    childAxisData = get(parentAxisData.YAxis(yaxIndex));
+    childAxisData = parentAxisData.YAxis(yaxIndex);
 
     %-------------------------------------------------------------------------%
 
@@ -300,10 +300,10 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
 
     %-y-axis label-%
     label = childAxisData.Label;
-    labelData = get(label);
+    labelData = label;
 
     %STANDARDIZE UNITS
-    fontunits = get(label,'FontUnits');
+    fontunits = label.FontUnits;
     set(label,'FontUnits','points');
 
     %-------------------------------------------------------------------------%

@@ -62,12 +62,12 @@ function updateArea(obj,areaIndex)
 %-------------------------------------------------------------------------%
 
 %-store original area handle-%
-area_data = obj.State.Plot(areaIndex).Handle; 
+area_data = obj.State.Plot(areaIndex).Handle;
 
 %------------------------------------------------------------------------%
 
 %-get "children" using new HG2 approach-%
-area_child = get(area_data.java.firstDown); 
+area_child = area_data.java.firstDown; 
 
 %------------------------------------------------------------------------%
 
@@ -148,8 +148,8 @@ obj.data{areaIndex}.fillcolor = fill.color;
 %-------------------------------------------------------------------------%
 
 %-area showlegend-%
-leg = get(area_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = area_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

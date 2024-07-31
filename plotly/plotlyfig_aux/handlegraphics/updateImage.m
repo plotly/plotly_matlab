@@ -28,10 +28,10 @@ function obj = updateImage(obj, imageIndex)
 % type: ...[DONE]
 
 %-FIGURE STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
+figure_data = obj.State.Figure.Handle;
 
 %-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(imageIndex).AssociatedAxis);
+axis_data = obj.State.Plot(imageIndex).AssociatedAxis;
 
 %-AXIS INDEX-%
 axIndex = obj.getAxisIndex(obj.State.Plot(imageIndex).AssociatedAxis);
@@ -40,7 +40,7 @@ axIndex = obj.getAxisIndex(obj.State.Plot(imageIndex).AssociatedAxis);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-IMAGE DATA STRUCTURE- %
-image_data = get(obj.State.Plot(imageIndex).Handle);
+image_data = obj.State.Plot(imageIndex).Handle;
 
 %-AXIS DATA-%
 eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
@@ -160,8 +160,8 @@ end
 
 %-image showlegend-%
 try
-    leg = get(image_data.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = image_data.Annotation;
+    legInfo = leg.LegendInformation;
 
     switch legInfo.IconDisplayStyle
         case 'on'

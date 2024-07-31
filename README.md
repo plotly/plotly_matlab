@@ -16,7 +16,7 @@ Version: 2.2.10
 
 The latest version of the wrapper can be downloaded [here](https://github.com/plotly/MATLAB-Online/archive/master.zip).
 
-Once downloaded, run `plotlysetup_offline()` to get started
+Once downloaded, run `plotlysetup_offline()` to get started.
 If you have a plotly bundle url of the form 'http://cdn.plot.ly/plotly-latest.min.js', then run instead
 `plotlysetup_offline('plotly_bundle_url')
 
@@ -48,8 +48,8 @@ Convert your MATLAB® figures into online [Plotly](https://plot.ly) graphs with 
  title('Frequency Response');
 
  % Use the axis handles to set the labels of the y axes
- set(get(ax(1), 'Ylabel'), 'String', 'Low Frequency');
- set(get(ax(2), 'Ylabel'), 'String', 'High Frequency');
+ ax(1).YLabel.String = "Low Frequency";
+ ax(2).YLabel.String = "High Frequency";
 
  %--PLOTLY--%
  p = fig2plotly; % <-- converts the yy-plot to an interactive, online version.

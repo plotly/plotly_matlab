@@ -207,7 +207,7 @@ try
     % check for xaxis categories
     if strcmpi(xaxis.type, 'category') && ...
             ~strcmp(obj.data{dataIndex}.type,'box')
-        obj.data{dataIndex}.x =  get(obj.State.Plot(dataIndex).AssociatedAxis,'XTickLabel');
+        obj.data{dataIndex}.x =  obj.State.Plot(dataIndex).AssociatedAxis.XTickLabel;
         eval(['obj.layout.xaxis' num2str(xsource) '.autotick=true;']);
     end
 
@@ -219,7 +219,7 @@ try
     % check for yaxis categories
     if strcmpi(yaxis.type, 'category') && ...
             ~strcmp(obj.data{dataIndex}.type,'box')
-        obj.data{dataIndex}.y =  get(obj.State.Plot(dataIndex).AssociatedAxis,'YTickLabel');
+        obj.data{dataIndex}.y =  obj.State.Plot(dataIndex).AssociatedAxis.YTickLabel;
         eval(['obj.layout.yaxis' num2str(xsource) '.autotick=true;']);
     end
 catch

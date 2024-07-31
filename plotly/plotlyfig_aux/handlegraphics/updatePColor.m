@@ -4,8 +4,8 @@ function obj = updatePColor(obj, patchIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(patchIndex).AssociatedAxis);
 
 %-PCOLOR DATA STRUCTURE- %
-pcolor_data = get(obj.State.Plot(patchIndex).Handle);
-figure_data = get(obj.State.Figure.Handle);
+pcolor_data = obj.State.Plot(patchIndex).Handle;
+figure_data = obj.State.Figure.Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -161,8 +161,8 @@ obj.layout.scene.zaxis.showgrid = false;
 %-------------------------------------------------------------------------%
 
 %-patch showlegend-%
-leg = get(pcolor_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = pcolor_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'
