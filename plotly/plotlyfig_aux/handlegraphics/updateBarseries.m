@@ -59,10 +59,10 @@ function obj = updateBarseries(obj,barIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
 
 %-BAR DATA STRUCTURE- %
-bar_data = get(obj.State.Plot(barIndex).Handle);
+bar_data = obj.State.Plot(barIndex).Handle;
 
 %-BAR CHILD (PATCH) DATA STRUCTURE- %
-bar_child_data = get(bar_data.Children(1));
+bar_child_data = bar_data.Children(1);
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -146,8 +146,8 @@ end
 %---------------------------------------------------------------------%
 
 %-bar showlegend-%
-leg = get(bar_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = bar_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

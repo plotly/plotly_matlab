@@ -13,13 +13,13 @@ function obj = updateLegend(obj, legIndex)
 % yanchor: ...[DONE]
 
 %-STANDARDIZE UNITS-%
-legendunits = get(obj.State.Legend(legIndex).Handle,'Units');
-fontunits = get(obj.State.Legend(legIndex).Handle,'FontUnits');
+legendunits = obj.State.Legend(legIndex).Handle.Units;
+fontunits = obj.State.Legend(legIndex).Handle.FontUnits;
 set(obj.State.Legend(legIndex).Handle,'Units','normalized');
 set(obj.State.Legend(legIndex).Handle,'FontUnits','points');
 
 %-LEGEND DATA STRUCTURE-%
-legend_data = get(obj.State.Legend(legIndex).Handle);
+legend_data = obj.State.Legend(legIndex).Handle;
 
 % only displays last legend as global Plotly legend
 obj.layout.legend = struct();

@@ -42,7 +42,7 @@ function obj = updateBoxplot(obj, boxIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(boxIndex).AssociatedAxis);
 
 %-BOX DATA STRUCTURE-%
-box_data = get(obj.State.Plot(boxIndex).Handle);
+box_data = obj.State.Plot(boxIndex).Handle;
 
 %-BOX CHILDREN-%
 box_child = box_data.Children;
@@ -126,8 +126,8 @@ for bp = bpnum:-1:1
     %---------------------------------------------------------------------%
     
     %-box showlegend-%
-    leg = get(box_data.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = box_data.Annotation;
+    legInfo = leg.LegendInformation;
     
     switch legInfo.IconDisplayStyle
         case 'on'
@@ -150,7 +150,7 @@ for bp = bpnum:-1:1
     for bpc = 1:bpcompnum
         
         %get box child data
-        box_child_data = get(box_child(bp+bpnum*(bpc-1)));
+        box_child_data = box_child(bp+bpnum*(bpc-1));
         
         %box name
         if strcmp(box_child_data.Type,'text')
@@ -257,11 +257,11 @@ end
 text_child = findobj(obj.State.Plot(boxIndex).Handle,'Type','text');
 
 %-STANDARDIZE UNITS-%
-fontunits = get(text_child(1),'FontUnits');
+fontunits = text_child(1).FontUnits;
 set(text_child(1),'FontUnits','points');
 
 %-text data -%
-text_data = get(text_child(1));
+text_data = text_child(1);
 
 %-------------------------------------------------------------------------%
 

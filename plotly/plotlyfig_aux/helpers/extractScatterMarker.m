@@ -11,8 +11,8 @@ function marker = extractScatterMarker(plotData)
     %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
 
     %-INITIALIZATIONS-%
-    axisData = get(ancestor(plotData.Parent,'axes'));
-    figureData = get(ancestor(plotData.Parent,'figure'));
+    axisData = ancestor(plotData.Parent,'axes');
+    figureData = ancestor(plotData.Parent,'figure');
 
     marker = struct();
     marker.sizeref = 1;

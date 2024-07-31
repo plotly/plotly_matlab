@@ -33,11 +33,11 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
 % ypad: ...[DONE]
 
 %-FIGURE STRUCTURE-%
-figureData = get(obj.State.Figure.Handle);
+figureData = obj.State.Figure.Handle;
 
 %-PLOT DATA STRUCTURE- %
 try
-    colorbarData = get(obj.State.Colorbar(colorbarIndex).Handle);
+    colorbarData = obj.State.Colorbar(colorbarIndex).Handle;
 catch
     disp('could not extract ColorBar data');
 end
@@ -65,16 +65,16 @@ colorbar.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 colorbarTitle = colorbarData.Label;
 
 if isHG2
-    colorbarTitleData = get(colorbarTitle);
+    colorbarTitleData = colorbarTitle;
     colorbarYLabel = colorbarTitle;
-    colorbarYLabelData = get(colorbarTitle);
+    colorbarYLabelData = colorbarTitle;
     colorbarXLabelData.String = [];
 else
-    colorbarTitleData = get(colorbarTitle);
+    colorbarTitleData = colorbarTitle;
     colorbarXLabel = colorbarData.XLabel;
-    colorbarXLabelData = get(colorbarXLabel);
+    colorbarXLabelData = colorbarXLabel;
     colorbarYLabel = colorbarData.YLabel;
-    colorbarYLabelData = get(colorbarYLabel);
+    colorbarYLabelData = colorbarYLabel;
 end
 
 %-colorbar title-%

@@ -19,12 +19,12 @@ function updateContourOnly(obj, contourIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-AXIS DATA STRUCTURE-%
-    axisData = get(obj.State.Plot(contourIndex).AssociatedAxis);
+    axisData = obj.State.Plot(contourIndex).AssociatedAxis;
 
     %-CONTOUR DATA STRUCTURE- %
-    contourData = get(obj.State.Plot(contourIndex).Handle);
-    surfData = get(obj.State.Plot(contourIndex-1).Handle);
-    figureData = get(obj.State.Figure.Handle);
+    contourData = obj.State.Plot(contourIndex).Handle;
+    surfData = obj.State.Plot(contourIndex-1).Handle;
+    figureData = obj.State.Figure.Handle;
 
     %-------------------------------------------------------------------------%
 
@@ -158,11 +158,11 @@ function updateSurfOnly(obj, surfaceIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-SURFACE DATA STRUCTURE- %
-    meshData = get(obj.State.Plot(surfaceIndex).Handle);
-    figureData = get(obj.State.Figure.Handle);
+    meshData = obj.State.Plot(surfaceIndex).Handle;
+    figureData = obj.State.Figure.Handle;
 
     %-AXIS STRUCTURE-%
-    axisData = get(ancestor(meshData.Parent,'axes'));
+    axisData = ancestor(meshData.Parent,'axes');
 
     %-SCENE DATA-%
     eval( sprintf('scene = obj.layout.scene%d;', xsource) );
@@ -549,8 +549,8 @@ function updateSurfOnly(obj, surfaceIndex)
 
     %-------------------------------------------------------------------------%
 
-    leg = get(meshData.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = meshData.Annotation;
+    legInfo = leg.LegendInformation;
 
     switch legInfo.IconDisplayStyle
         case 'on'

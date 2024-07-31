@@ -55,13 +55,13 @@ function updateScattergroup(obj,scatterIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(scatterIndex).AssociatedAxis);
 
 %-SCATTER DATA STRUCTURE- %
-scatter_data = get(obj.State.Plot(scatterIndex).Handle);
+scatter_data = obj.State.Plot(scatterIndex).Handle;
 
 %-SCATTER CHILDREN-%
-scatter_child = get(obj.State.Plot(scatterIndex).Handle,'Children');
+scatter_child = obj.State.Plot(scatterIndex).Handle.Children;
 
 %-SCATTER CHILDREN DATA-%
-scatter_child_data = get(scatter_child);
+scatter_child_data = scatter_child;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -144,8 +144,8 @@ for m = 1:length(scatter_child_data)
     %---------------------------------------------------------------------%
     
     %-scatter showlegend-%
-    leg = get(scatter_data.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = scatter_data.Annotation;
+    legInfo = leg.LegendInformation;
     
     switch legInfo.IconDisplayStyle
         case 'on'

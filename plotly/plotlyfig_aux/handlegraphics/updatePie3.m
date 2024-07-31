@@ -59,7 +59,7 @@ function obj = updatePatchPie3(obj, patchIndex)
   axIndex = obj.getAxisIndex(obj.State.Plot(patchIndex).AssociatedAxis);
 
   %-PATCH DATA STRUCTURE- %
-  patch_data = get(obj.State.Plot(patchIndex).Handle);
+  patch_data = obj.State.Plot(patchIndex).Handle;
 
   %-get the percentage-%
   if ~any(nonzeros(patch_data.ZData))
@@ -200,8 +200,8 @@ function obj = updatePatchPie3(obj, patchIndex)
   %-------------------------------------------------------------------------%
 
   %-patch showlegend-%
-  leg = get(patch_data.Annotation);
-  legInfo = get(leg.LegendInformation);
+  leg = patch_data.Annotation;
+  legInfo = leg.LegendInformation;
 
   switch legInfo.IconDisplayStyle
     case 'on'
@@ -226,8 +226,8 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
   [xsource, ysource] = findSourceAxis(obj,axIndex);
 
   %-SURFACE DATA STRUCTURE- %
-  image_data = get(obj.State.Plot(surfaceIndex).Handle);
-  figure_data = get(obj.State.Figure.Handle);
+  image_data = obj.State.Plot(surfaceIndex).Handle;
+  figure_data = obj.State.Figure.Handle;
 
   %-AXIS DATA-%
   eval(['scene = obj.layout.scene' num2str(xsource) ';']);
@@ -353,8 +353,8 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
 
   %-------------------------------------------------------------------------%
 
-  leg = get(image_data.Annotation);
-  legInfo = get(leg.LegendInformation);
+  leg = image_data.Annotation;
+  legInfo = leg.LegendInformation;
 
   switch legInfo.IconDisplayStyle
     case 'on'

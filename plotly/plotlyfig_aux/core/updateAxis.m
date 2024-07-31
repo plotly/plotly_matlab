@@ -42,18 +42,18 @@ function obj = updateAxis(obj,axIndex)
 % position:...[NOT SUPPORTED IN MATLAB]
 
 %-STANDARDIZE UNITS-%
-axisUnits = get(obj.State.Axis(axIndex).Handle,'Units');
+axisUnits = obj.State.Axis(axIndex).Handle.Units;
 set(obj.State.Axis(axIndex).Handle,'Units','normalized')
 
 try
-    fontUnits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
+    fontUnits = obj.State.Axis(axIndex).Handle.FontUnits;
     set(obj.State.Axis(axIndex).Handle,'FontUnits','points')
 catch
     % TODO
 end
 
 %-AXIS DATA STRUCTURE-%
-axisData = get(obj.State.Axis(axIndex).Handle);
+axisData = obj.State.Axis(axIndex).Handle;
 
 %-------------------------------------------------------------------------%
 

@@ -33,11 +33,11 @@ function obj = updateFigure(obj)
 
 
 %-STANDARDIZE UNITS-%
-figunits = get(obj.State.Figure.Handle,'Units');
+figunits = obj.State.Figure.Handle.Units;
 set(obj.State.Figure.Handle,'Units','pixels');
 
 %-FIGURE DATA-%
-figure_data = get(obj.State.Figure.Handle);
+figure_data = obj.State.Figure.Handle;
 
 %-------------------------------------------------------------------------%
 

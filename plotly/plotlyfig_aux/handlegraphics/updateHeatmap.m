@@ -3,7 +3,7 @@ function obj = updateHeatmap(obj,heatIndex)
 %-------------------------------------------------------------------------%
 
 %-HEATMAP DATA STRUCTURE- %
-heat_data = get(obj.State.Plot(heatIndex).Handle);
+heat_data = obj.State.Plot(heatIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,heatIndex);

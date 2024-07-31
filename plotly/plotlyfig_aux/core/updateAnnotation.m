@@ -38,13 +38,13 @@ axIndex = obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis);
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-STANDARDIZE UNITS-%
-textunits = get(obj.State.Text(anIndex).Handle,'Units');
-fontunits = get(obj.State.Text(anIndex).Handle,'FontUnits');
+textunits = obj.State.Text(anIndex).Handle.Units;
+fontunits = obj.State.Text(anIndex).Handle.FontUnits;
 set(obj.State.Text(anIndex).Handle,'Units','data');
 set(obj.State.Text(anIndex).Handle,'FontUnits','points');
 
 %-TEXT DATA STRUCTURE-%
-text_data = get(obj.State.Text(anIndex).Handle);
+text_data = obj.State.Text(anIndex).Handle;
 
 %-------------------------------------------------------------------------%
 

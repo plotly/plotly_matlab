@@ -52,7 +52,7 @@ function obj = updateHistogram(obj,histIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
 
 %-HIST DATA STRUCTURE- %
-hist_data = get(obj.State.Plot(histIndex).Handle);
+hist_data = obj.State.Plot(histIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -78,7 +78,7 @@ obj.data{histIndex}.type = 'bar';
 
 %-------------------------------------------------------------------------%
 
-if isfield(hist_data, 'Orientation')
+if isprop(hist_data, 'Orientation')
   %-Matlab 2014+ histogram() function-%
   orientation = hist_data.Orientation;
 else
@@ -209,8 +209,8 @@ obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-hist showlegend-%
-leg = get(hist_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = hist_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

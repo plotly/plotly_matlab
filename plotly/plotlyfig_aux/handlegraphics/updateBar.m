@@ -116,8 +116,8 @@ function obj = updateBar(obj,barIndex)
     %-------------------------------------------------------------------------%
 
     %-bar showlegend-%
-    leg = get(barData.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = barData.Annotation;
+    legInfo = leg.LegendInformation;
 
     switch legInfo.IconDisplayStyle
         case 'on'

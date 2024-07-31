@@ -52,7 +52,7 @@ function obj = updateCategoricalHistogram(obj,histIndex)
 axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
 
 %-HIST DATA STRUCTURE- %
-hist_data = get(obj.State.Plot(histIndex).Handle);
+hist_data = obj.State.Plot(histIndex).Handle;
 
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -128,8 +128,8 @@ obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
 %-------------------------------------------------------------------------%
 
 %-hist showlegend-%
-leg = get(hist_data.Annotation);
-legInfo = get(leg.LegendInformation);
+leg = hist_data.Annotation;
+legInfo = leg.LegendInformation;
 
 switch legInfo.IconDisplayStyle
     case 'on'

@@ -4,7 +4,7 @@ function updatePolarplot(obj, plotIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
     %-PLOT DATA STRUCTURE- %
-    plotData = get(obj.State.Plot(plotIndex).Handle);
+    plotData = obj.State.Plot(plotIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
@@ -54,8 +54,8 @@ function updatePolarplot(obj, plotIndex)
     %-------------------------------------------------------------------------%
 
     %-legend setting-%
-    leg = get(plotData.Annotation);
-    legInfo = get(leg.LegendInformation);
+    leg = plotData.Annotation;
+    legInfo = leg.LegendInformation;
 
     switch legInfo.IconDisplayStyle
         case 'on'
@@ -90,10 +90,10 @@ function updatePolaraxes(obj, plotIndex)
     [xsource, ysource] = findSourceAxis(obj, axIndex);
         
     %-GET DATA STRUCTURES-%
-    plotData = get(obj.State.Plot(plotIndex).Handle);
-    axisData = get(plotData.Parent);
-    thetaAxis = get(axisData.ThetaAxis);
-    rAxis = get(axisData.RAxis);
+    plotData = obj.State.Plot(plotIndex).Handle;
+    axisData = plotData.Parent;
+    thetaAxis = axisData.ThetaAxis;
+    rAxis = axisData.RAxis;
 
     %-------------------------------------------------------------------------%
 

@@ -42,15 +42,15 @@ end
 %-------------------------------------------------------------------------%
 
 %-STANDARDIZE UNITS-%
-legendUnits = get(obj.State.Legend(legIndex).Handle,'Units');
-fontUnits = get(obj.State.Legend(legIndex).Handle,'FontUnits');
+legendUnits = obj.State.Legend(legIndex).Handle.Units;
+fontUnits = obj.State.Legend(legIndex).Handle.FontUnits;
 set(obj.State.Legend(legIndex).Handle,'Units','normalized');
 set(obj.State.Legend(legIndex).Handle,'FontUnits','points');
 
 %-------------------------------------------------------------------------%
 
 %-LEGEND DATA STRUCTURE-%
-legendData = get(obj.State.Legend(legIndex).Handle);
+legendData = obj.State.Legend(legIndex).Handle;
 
 % only displays last legend as global Plotly legend
 obj.layout.legend = struct();
