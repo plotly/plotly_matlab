@@ -22,6 +22,7 @@ function valstr = m2json(val)
         elseif length(val) == 0
             valstr = '[]';
         end
+        valstr = strrep(valstr,'-Inf', 'null');
         valstr = strrep(valstr, 'Inf', 'null');
         valstr = strrep(valstr, 'NaN', 'null');
     elseif ischar(val)
@@ -39,6 +40,12 @@ function valstr = m2json(val)
         else
             valstr = 'false';
         end
+    elseif isdatetime(val)
+        valstr = m2json(convertDate(val));
+    elseif isstring(val)
+        fh = ifel(isscalar(val),@char,@cellstr);
+        valstr = m2json(fh(val));
     else
         valstr = ''; % wtf is it?
+        warning("Failed to m2json encode class of type: %s",class(val));
     end
