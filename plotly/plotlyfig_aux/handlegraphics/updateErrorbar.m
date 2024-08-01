@@ -8,11 +8,11 @@ function obj = updateErrorbar(obj, plotIndex)
 	plotData = obj.State.Plot(plotIndex).Handle;
 
 	%-get error data-%
-	yPositiveDelta = date2NumData(plotData.YPositiveDelta);
-	yNegativeDelta = date2NumData(plotData.YNegativeDelta);
+	yPositiveDelta = plotData.YPositiveDelta;
+	yNegativeDelta = plotData.YNegativeDelta;
 
-	xPositiveDelta = date2NumData(plotData.XPositiveDelta);
-	xNegativeDelta = date2NumData(plotData.XNegativeDelta);
+	xPositiveDelta = plotData.XPositiveDelta;
+	xNegativeDelta = plotData.XNegativeDelta;
 
 	%-------------------------------------------------------------------------%
 
@@ -60,3 +60,4 @@ function obj = updateErrorbar(obj, plotIndex)
 	%-------------------------------------------------------------------------%
 
 end
+		

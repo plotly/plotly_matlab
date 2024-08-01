@@ -23,14 +23,14 @@ function updateStackedplot(obj, plotIndex)
 
     else
         if istimetable(sourceTable)
-            xData = date2NumData(sourceTable.Properties.RowTimes);
+            xData = sourceTable.Properties.RowTimes;
         else
             xData = 1:size(sourceTable, 1);
         end
 
         for t = 1:nTraces
             n = nTraces - t + 1;
-            yData{t} = date2NumData(sourceTable.(displayVariables{n}));
+            yData{t} = sourceTable.(displayVariables{n});
         end
     end
 
@@ -153,7 +153,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
             axisDomain{nAxis} = min([axisPos(1) sum(axisPos([1,3]))], 1);
             axisAnchor{nAxis} = 'y1';
             
-        case {'x', 'Y'}
+        case {'y', 'Y'}
             nAxis = length(plotData.AxesProperties);
             yPos = linspace(axisPos(2), sum(axisPos([2,4])), nAxis+1);
             yOffset = diff(yPos)*0.1; yOffset(1) = 0;
@@ -182,7 +182,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         %-general-%
         ax{a}.domain = axisDomain{a};
         ax{a}.anchor = axisAnchor{a};
-        ax{a}.range = date2NumData(axisLim{a});
+        ax{a}.range = axisLim{a};
 
         ax{a}.side = 'left';
         ax{a}.mirror = false;
@@ -205,14 +205,11 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         if isnumeric(axisLim{a})
             [tickVals, tickText, expoFormat(a)] = getNumTicks(axisLim{a}, nTicks);
 
-            [tickVals, tickText] = rmTicks(ax{a}.range, tickVals, tickText, 's');
-            [tickVals, tickText] = rmTicks(ax{a}.range, tickVals, tickText, 'e');
 
         elseif isduration(axisLim{a}) || isdatetime(axisLim{a})
             [tickVals, tickText] = getDateTicks(axisLim{a}, nTicks);
             expoFormat(a) = 0;
 
-            [tickVals, tickText] = rmTicks(ax{a}.range, tickVals, tickText, 's');
         end
 
         ax{a}.showticklabels = true;
@@ -242,7 +239,7 @@ end
 function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
 
     %-by year-%
-    yearLim = year(date2NumData(axisLim));
+    yearLim = year(axisLim);
     isYear = length(unique(yearLim)) > 1;
     refYear = [1, 2, 5];
 
@@ -250,7 +247,7 @@ function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
         yearTick = getTickVals(yearLim, refYear, 1, nTicks);
 
         for n = 1:length(yearTick)
-            tickVals(n) = datenum(datetime(yearTick(n),1,1,'Format','yy'));
+            tickVals(n) = datetime(yearTick(n),1,1,'Format','yy');
             tickText{n} = num2str(yearTick(n));
         end
 
@@ -258,7 +255,7 @@ function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
     end
 
     %-by month-%
-    monthLim = month(date2NumData(axisLim));
+    monthLim = month(axisLim);
     isMonth = length(unique(monthLim)) > 1;
 
     if isMonth
@@ -267,7 +264,7 @@ function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
     end
 
     %-by day-%
-    dayLim = day(date2NumData(axisLim));
+    dayLim = day(axisLim);
     isDay = length(unique(dayLim)) > 1;
     refDay = [0.5, 1];
 
@@ -282,7 +279,6 @@ function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
             tickText{n} = datestr(tickVals(n), 'mmm dd, HH:MM');
         end
 
-        tickVals = datenum(tickVals);
         return;
     end
 end
@@ -392,23 +388,3 @@ function updateExponentFormat(obj, expoFormat, xySource, axName)
         obj.PlotlyDefaults.anIndex = anIndex;
     end
 end
-
-function [tickVals, tickText] = rmTicks(axisLim, tickVals, tickText, rmCase)
-    rangeLim = range(axisLim);
-
-    switch rmCase
-        case 's'
-            if abs(axisLim(1)-tickVals(1)) < rangeLim * 0.01
-                tickVals = tickVals(2:end);
-                tickText = tickText(2:end);
-            end
-            
-        case 'e'
-            if abs(axisLim(end)-tickVals(end)) < rangeLim * 0.01
-                tickVals = tickVals(1:end-1);
-                tickText = tickText(1:end-1);
-            end
-
-    end
-end
-

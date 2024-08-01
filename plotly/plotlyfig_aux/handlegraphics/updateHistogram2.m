@@ -168,7 +168,7 @@ function ax = getSceneAxis(axisData, axName)
     ax.showline = true;
     ax.showspikes = true;
     ax.linecolor = getStringColor(255*axx.Color);
-    ax.range = eval(sprintf('date2NumData(axisData.%sLim)', axName));
+    ax.range = eval(sprintf('axisData.%sLim', axName));
 
     %-label-%
     label = eval(sprintf('axisData.%sLabel', axName));
