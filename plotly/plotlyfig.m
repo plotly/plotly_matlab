@@ -596,13 +596,17 @@ classdef plotlyfig < handle
             end
             
             % find axes of figure
-            ax = findobj(obj.State.Figure.Handle,'Type','axes','-and',{'Tag','','-or','Tag','PlotMatrixBigAx','-or','Tag','PlotMatrixScatterAx', '-or','Tag','PlotMatrixHistAx'});
+            ax = findobj(obj.State.Figure.Handle, ...
+                {'Type','axes','-or','Type','PolarAxes'}, ...
+                '-and',{'Tag','','-or','Tag','PlotMatrixBigAx', ...
+                        '-or','Tag','PlotMatrixScatterAx', ...
+                        '-or','Tag','PlotMatrixHistAx'});
 
             if isempty(ax)
                 try
                     ax = obj.State.Figure.Handle.Children;
                 catch
-                    ax = gca;
+                    error("No axes found"); %#ok<CPROP>
                 end
             end
             
