@@ -106,9 +106,9 @@ function updateScene(obj, dataIndex)
     %-------------------------------------------------------------------------%
 
     %-scene axis configuration-%
-    scene.xaxis.range = date2NumData(axisData.XLim);
-    scene.yaxis.range = date2NumData(axisData.YLim);
-    scene.zaxis.range = date2NumData(axisData.ZLim);
+    scene.xaxis.range = axisData.XLim;
+    scene.yaxis.range = axisData.YLim;
+    scene.zaxis.range = axisData.ZLim;
 
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;

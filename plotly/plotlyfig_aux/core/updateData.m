@@ -196,6 +196,8 @@ if ~ismember(ax.Type,specialAxisPlots())
     % check for xaxis dates
     if strcmpi(xaxis.type, 'date')
         obj.data{dataIndex}.x =  convertDate(obj.data{dataIndex}.x);
+    elseif xaxis.type == "duration"
+        obj.data{dataIndex}.x =  convertDuration(obj.data{dataIndex}.x);
     end
 
     % check for xaxis categories
@@ -208,6 +210,8 @@ if ~ismember(ax.Type,specialAxisPlots())
     % check for yaxis dates
     if strcmpi(yaxis.type, 'date')
         obj.data{dataIndex}.y =  convertDate(obj.data{dataIndex}.y);
+    elseif yaxis.type == "duration"
+        obj.data{dataIndex}.y =  convertDuration(obj.data{dataIndex}.y);
     end
 
     % check for yaxis categories

@@ -90,10 +90,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     tickLabels = eval(sprintf('axisData.%sTickLabel', axisName));
     tickValues = eval(sprintf('axisData.%sTick', axisName));
 
-    if isduration(tickValues) || isdatetime(tickValues)
-        tickValues = datenum(tickValues); 
-    end
-
     %-------------------------------------------------------------------------%
 
     %-there is not tick label case-%
@@ -133,8 +129,23 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 axis.range = log10(axisLim);
             end
 
-        elseif isduration(axisLim) || isdatetime(axisLim)
-            axis.range = datenum(axisLim);
+        elseif isduration(axisLim)
+            [temp,type] = convertDuration(axisLim);
+            if (~isduration(temp)) % duration class has specified .Format
+                axis.range = temp;
+                axis.type = 'duration';
+                axis.title = type;
+                axis.tickvals = convertDuration(axis.tickvals);
+            else
+                nticks = eval(['length(axisData.' axisName 'Tick)-1;']);
+                delta = 0.1;
+                axis.range = [-delta nticks+delta];
+                axis.type = 'duration - specified format';
+            end
+
+        elseif isdatetime(axisLim)
+            axis.range = axisLim;
+            axis.type = 'date';
 
         elseif iscategorical(axisLim)
             axis.autorange = true;
@@ -289,5 +300,3 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
     %-------------------------------------------------------------------------%
 end
-
-
