@@ -6,7 +6,7 @@ quiver_group = obj.State.Plot(quiverIndex).Handle;
 %------------------------------------------------------------------------%
 
 %-get children-%
-quiver_child = quiver_group .Children;
+quiver_child = quiver_group.Children;
 
 %------------------------------------------------------------------------%
 

@@ -57,10 +57,6 @@ hist_data = obj.State.Plot(histIndex).Handle;
 %-CHECK FOR MULTIPLE AXES-%
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-%-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
-
 %-------------------------------------------------------------------------%
 
 %-hist xaxis-%

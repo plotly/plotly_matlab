@@ -789,17 +789,16 @@ classdef plotlyfig < handle
             
             % update axes
             for n = 1:obj.State.Figure.NumAxes
-                try
-                    if ~obj.PlotlyDefaults.isMultipleYAxes(n)
-                        updateAxis(obj,n);
+                if ismember(ax(n).Type,specialAxisPlots())
+                    continue
+                end
+                if ~obj.PlotlyDefaults.isMultipleYAxes(n)
+                    updateAxis(obj,n);
 
-                    else
-                        for yax = 1:2
-                            updateAxisMultipleYAxes(obj,n,yax);
-                        end
+                else
+                    for yax = 1:2
+                        updateAxisMultipleYAxes(obj,n,yax);
                     end
-                catch
-                    % TODO 
                 end
             end
             

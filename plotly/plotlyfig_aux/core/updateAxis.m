@@ -58,8 +58,8 @@ axisData = obj.State.Axis(axIndex).Handle;
 %-------------------------------------------------------------------------%
 
 %-check if headmap axis-%
-is_headmap_axis = isfield(axisData, 'XDisplayData');
-obj.PlotOptions.is_headmap_axis = is_headmap_axis;
+isHeatmapAxis = axisData.Type == "heatmap";
+obj.PlotOptions.is_headmap_axis = isHeatmapAxis;
 
 %-------------------------------------------------------------------------%
 
@@ -70,7 +70,7 @@ obj.PlotlyDefaults.isGeoaxis = isGeoaxis;
 %-------------------------------------------------------------------------%
 
 %-xaxis-%
-if is_headmap_axis
+if isHeatmapAxis
     xaxis = extractHeatmapAxisData(obj,axisData, 'X');
     xExponentFormat = 0;
 else
@@ -80,7 +80,7 @@ end
 %-------------------------------------------------------------------------%
 
 %-yaxis-%
-if is_headmap_axis
+if isHeatmapAxis
     yaxis = extractHeatmapAxisData(obj,axisData, 'Y');
     yExponentFormat = 0;
 else
