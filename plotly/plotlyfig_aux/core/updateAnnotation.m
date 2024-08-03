@@ -95,6 +95,9 @@ if obj.State.Text(anIndex).Title
     obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
     if isempty(text_data.String) 
         obj.layout.annotations{anIndex}.text = '<b></b>'; %empty string annotation
+    else
+        obj.layout.annotations{anIndex}.text = char("<b>"+join(string( ...
+                obj.layout.annotations{anIndex}.text),"<br>")+"</b>");
     end
 else
     if ~strcmpi(obj.PlotOptions.TreatAs, 'pie3')
