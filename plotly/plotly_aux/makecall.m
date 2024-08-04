@@ -27,7 +27,7 @@ function st = makecall(args, origin, structargs)
         resp = urlread(url, 'Post', payload);
     end
 
-    st = loadjson(resp);
+    st = jsondecode(resp);
 
     response_handler(resp);
 

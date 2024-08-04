@@ -16,7 +16,7 @@ catch
 end
 
 % load the json into a struct
-pr = loadjson(prContent); 
+pr = jsondecode(prContent);
 
 %------------------------MATLAB SPECIFIC TWEAKS---------------------------%
 

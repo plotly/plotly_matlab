@@ -25,6 +25,6 @@ end
 
 config_string_array = fread(fileIDConfig, '*char');
 config_string = sprintf('%s',config_string_array);
-config = loadjson(config_string);
+config = jsondecode(config_string);
 
 end

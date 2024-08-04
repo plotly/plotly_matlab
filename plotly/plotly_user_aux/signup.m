@@ -9,7 +9,7 @@ function response = signup(username, email)
     payload = {'version', '0.2', 'un', username, 'email', email,'platform',platform};
     url = 'https://plot.ly/apimkacct';
     resp = urlread(url, 'Post', payload);
-    response = loadjson(resp);
+    response = jsondecode(resp);
 
     f = fieldnames(response);
     if any(strcmp(f,'error'))

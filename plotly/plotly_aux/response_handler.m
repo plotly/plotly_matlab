@@ -11,7 +11,7 @@ function response_handler(response_body, varargin)
         end
     end
 
-    response_struct = loadjson(response_body);
+    response_struct = jsondecode(response_body);
 
     if(isempty(fieldnames(response_struct)))
         error(['Unexpected Response: ', response_body])

@@ -24,6 +24,6 @@ function figure = plotlygetfile(file_owner, file_id)
 
     [response_string, extras] = urlread2(url, 'Get', '', headers);
     response_handler(response_string, extras);
-    response_object = loadjson(response_string);
+    response_object = jsondecode(response_string);
     figure = response_object.payload.figure;
 end
