@@ -88,8 +88,21 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %=====================================================================%
 
     %-get tick label data-%
-    tickLabels = axisData.(axisName + "TickLabel");
+    tickLabels = toC(axisData.(axisName + "TickLabel"));
     tickValues = axisData.(axisName + "Tick");
+
+    if ischar(tickLabels)
+        tickLabels = cellstr(tickLabels);
+    end
+    if numel(tickLabels) < numel(tickValues)
+        tickLabels = [
+            tickLabels; repelem({''},numel(tickValues)-numel(tickLabels),1)
+        ];
+    end
+    if numel(tickLabels) > numel(tickValues)
+        tickLabels = tickLabels(1:numel(tickValues));
+    end
+    assert(isequal(numel(tickLabels),numel(tickValues)));
 
     %---------------------------------------------------------------------%
 
@@ -141,6 +154,18 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         elseif isdatetime(axisLim)
             axis.range = axisLim;
             axis.type = "date";
+            if isprop(axisData, "XTickLabelMode") ...
+                    && isequal(axisData.XTickLabelMode, "auto")
+                % default matlab xticks are unreliable for datetime. eg.
+                % fig = figure(visible="off");
+                % dt  = datetime(2013,3,2):datetime(2020,1,1);
+                % plot(dt,randi([-10 10],numel(dt),1)');
+                % isequal(numel(fig.Children.XTick),numel(fig.Children.XTickLabel)) % returns false
+                axis.autotick = true;
+                tickLabels = {};
+                tickValues = []; %#ok<NASGU>
+            end
+
         elseif iscategorical(axisLim)
             axis.autorange = true;
             axis.type = "category";
