@@ -25,6 +25,6 @@ end
 
 creds_string_array = fread(fileIDCred, '*char');
 creds_string = sprintf('%s',creds_string_array);
-creds = loadjson(creds_string);
+creds = jsondecode(creds_string);
 
 end
