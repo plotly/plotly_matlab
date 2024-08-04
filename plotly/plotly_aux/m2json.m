@@ -5,29 +5,23 @@ function valstr = m2json(val)
         valstr = cell2json(val);
     elseif isa(val, "numeric")
         sz = size(val);
-        if isa(val,"single")
-            precision = "7";
-        else
-            precision = "15";
-        end
-        fmt = "%." + precision + "g,";
-        if length(find(sz>1))>1 % 2D or higher array
-            valstr = "";
+        numDigits = 3 + ceil(clip(log10(double(max(abs(val),[],"all"))) ...
+                - log10(double(range(val,"all"))),0,12));
+        numDigits(~isfinite(numDigits)) = 7;
+        fmt = sprintf("%%.%ig", numDigits);
+        if sum(sz>1)>1 % 2D or higher array
+            valsubstr = strings(1, sz(1));
             for i = 1:sz(1)
-                valsubstr = sprintf(fmt, val(i,:));
-                valsubstr = valsubstr(1:(end-1));
-                valstr = valstr + ", [" + valsubstr + "]";
+                formattedRowVal = arrayfun(@(x) sprintf(fmt, x), val(i,:));
+                valsubstr(i) = strjoin(formattedRowVal, ",");
+                valsubstr(i) = "[" + valsubstr(i) + "]";
             end
-            valstr = valstr(3:end); % trail leading commas
+            valstr = strjoin(valsubstr, ",");
         else
-            valstr = [sprintf(fmt, val)];
-            valstr = valstr(1:(end-1));
+            valstr = arrayfun(@(x) sprintf(fmt, x), val);
+            valstr = strjoin(valstr, ",");
         end
-        if length(val)>1
-            valstr = "[" + valstr + "]";
-        elseif isempty(val)
-            valstr = "[]";
-        end
+        valstr = "[" + valstr + "]";
         valstr = strrep(valstr,"-Inf", "null");
         valstr = strrep(valstr, "Inf", "null");
         valstr = strrep(valstr, "NaN", "null");
@@ -59,4 +53,9 @@ function valstr = m2json(val)
         valstr = "";
         warning("Failed to m2json encode class of type: %s", class(val));
     end
+end
+
+function x = clip(x,lb,ub)
+    x(x<lb) = lb;
+    x(x>ub) = ub;
 end
