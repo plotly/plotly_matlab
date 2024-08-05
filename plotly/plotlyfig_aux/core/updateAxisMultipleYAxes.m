@@ -1,6 +1,5 @@
-%----UPDATE AXIS DATA/LAYOUT----%
-
 function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
+    %----UPDATE AXIS DATA/LAYOUT----%
 
     %-STANDARDIZE UNITS-%
     axisUnits = obj.State.Axis(axIndex).Handle.Units;
@@ -16,17 +15,17 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     %-AXIS DATA STRUCTURE-%
     axisData = obj.State.Axis(axIndex).Handle;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-xaxis-%
     xaxis = extractAxisData(obj,axisData, 'X');
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-yaxis-%
     [yaxis, yAxisLim] = extractAxisDataMultipleYAxes(obj, axisData, yaxIndex);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-getting and setting postion data-%
 
@@ -41,59 +40,59 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
         h = wh;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-xaxis domain-%
     xaxis.domain = min([xo xo + w],1);
     scene.domain.x = min([xo xo + w],1);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-yaxis domain-%
     yaxis.domain = min([yo yo + h],1);
     scene.domain.y = min([yo yo + h],1);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj, axIndex, yaxIndex);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-xaxis anchor-%
     xaxis.anchor = ['y' num2str(ysource)];
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-yaxis anchor-%
     yaxis.anchor = ['x' num2str(xsource)];
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-xaxis overlaying-%
     if xoverlay
         xaxis.overlaying = ['x' num2str(xoverlay)];
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-yaxis overlaying-%
     if yoverlay
         yaxis.overlaying = ['y' num2str(yoverlay)];
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
         obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
     obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
     set(obj.State.Axis(axIndex).Handle,'Units',axisUnits);
@@ -104,7 +103,7 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
         % TODO
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-do y-axes visibles-%
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
@@ -114,5 +113,5 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
     obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
 
-    %-------------------------------------------------------------------------%    
+    %---------------------------------------------------------------------%    
 end

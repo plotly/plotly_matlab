@@ -1,5 +1,4 @@
 function obj = updateTernaryPlotPro(obj, ternaryIndex)
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
@@ -11,36 +10,33 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    %=========================================================================%
+    %=====================================================================%
     %
     %-UPDATE TRACE PLOT-%
     %
-    %=========================================================================%
+    %=====================================================================%
 
     %-get plot data-%
     xData = ternaryData.XData;
     yData = ternaryData.YData;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace-%
     for t = 1:size(xData,2)
-
-        %-------------------------------------------------------------------------%
-
         %-get new ternaryIndex-%
         if t > 1
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
             ternaryIndex = obj.PlotOptions.nPlots;
         end
 
-        %-------------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-trace type-%
         obj.data{ternaryIndex}.type = 'scatterternary';
         obj.data{ternaryIndex}.subplot = sprintf('ternary%d', xsource+1);
 
-        %-------------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-set mode and properties for trace-%
         if ~strcmpi('none', ternaryData.Marker) && ~strcmpi('none', ternaryData.LineStyle)
@@ -59,7 +55,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
             obj.data{ternaryIndex}.mode = 'none';
         end
 
-        %-------------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-convert from cartesian coordinates to trenary points-%
         yTernData = yData(:,t); yTernData(end+1) = yData(1,t);
@@ -68,13 +64,13 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         aData = yTernData/sin(deg2rad(60));
         bData = 1 - xTernData - yTernData*cot(deg2rad(60));
 
-        %-------------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-set plot data-%
         obj.data{ternaryIndex}.a = aData;
         obj.data{ternaryIndex}.b = bData;
 
-        %-------------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-some trace properties-%
         obj.data{ternaryIndex}.name = ternaryData.DisplayName;
@@ -90,32 +86,23 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         else
             cMap = figureData.Colormap;
             nColors = size(cMap,1);
-
             switch faceColor
-        
                 case 'none'
                     fillColor = 'rgba(0,0,0,0)';
-                    
                 case {'flat', 'interp'}
-
                     switch ternaryData.CDataMapping
-
                         case 'scaled'
                             cMin = axisData.CLim(1);
                             cMax = axisData.CLim(2);
-
                             if strcmpi(faceColor, 'flat')
                                 cData = ternaryData.ZData(1,t);
                             elseif strcmpi(faceColor, 'interp')
                                 cData = max(ternaryData.ZData(:,t));
                             end
-
                             cData = max(min(cData, cMax), cMin);
                             cData = (cData - cMin)/diff(axisData.CLim);
                             cData = 1 + floor( cData*(nColors-1) );
-
                             fillColor = sprintf('rgb(%f,%f,%f)', 255*cMap(cData,:));
-
                         case 'direct'
                             fillColor = sprintf('rgb(%f,%f,%f)', 255*cMap(ternary(1,t),:));
                     end
@@ -125,19 +112,17 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         obj.data{ternaryIndex}.fillcolor = fillColor;
         obj.data{ternaryIndex}.fill = 'toself';
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-trace legend-%
         obj.data{ternaryIndex}.showlegend = false;
-
-        %-------------------------------------------------------------------------%
     end
 
-    %=========================================================================%
+    %=====================================================================%
     %
     %-UPDATE TERNARY AXES-%
     %
-    %=========================================================================%
+    %=====================================================================%
 
     %-set domain plot-%
     xo = axisData.Position(1);
@@ -148,7 +133,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-label settings-%
     l = 1; t = 1;
@@ -182,7 +167,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").title.font.family = labelFontFamily;
     end
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);
@@ -202,16 +187,14 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
     end
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set ternary axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('ternary%d', xsource+1), ternary);
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     obj.PlotlyDefaults.isTernary = true;
-
-    %-----------------------------------------------------------------------------%
 end
 
 function rad = deg2rad(deg)

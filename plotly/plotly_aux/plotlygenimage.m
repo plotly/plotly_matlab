@@ -1,5 +1,4 @@
 function plotlygenimage(figure_or_data, filename, varargin)
-
     [pathstr, name, ext] = fileparts(filename);
     if nargin < 3
         format = ext(2:length(ext));
@@ -10,9 +9,9 @@ function plotlygenimage(figure_or_data, filename, varargin)
     if (strcmp(ext,'') && nargin < 3)
         filename = [filename, '.png'];
         format = 'png';
-    elseif( ~strcmp(ext, '') && nargin < 3)
+    elseif ( ~strcmp(ext, '') && nargin < 3)
         format = ext(2:length(ext));
-    elseif(strcmp(ext,'') && nargin==3)
+    elseif (strcmp(ext,'') && nargin==3)
         filename = [filename, '.', varargin{1}];
     else
         filename = [filename, '.', varargin{1}];
@@ -50,10 +49,11 @@ function plotlygenimage(figure_or_data, filename, varargin)
                             'MATLAB'
                         });
     % return the response as bytes -
-    % convert the bytes to unicode chars if the response fails or isn't (pdf, png, or jpeg)
-    % ... gnarly!
-    [response_string, extras] = urlread2(url, 'Post', payload, headers, 'CAST_OUTPUT', false);
-    if( extras.status.value ~= 200 || ...
+    % convert the bytes to unicode chars if the response fails or isn't 
+    % (pdf, png, or jpeg) ... gnarly!
+    [response_string, extras] = urlread2(url, 'Post', payload, headers, ...
+            'CAST_OUTPUT', false);
+    if ( extras.status.value ~= 200 || ...
       ~(strcmp(extras.allHeaders.Content_Type, 'image/jpeg') || ...
         strcmp(extras.allHeaders.Content_Type, 'image/png') || ...
         strcmp(extras.allHeaders.Content_Type, 'application/pdf')))

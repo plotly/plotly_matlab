@@ -1,141 +1,85 @@
 function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
-%extract information related to each axis
-%   axis_data is the data extrated from the figure, axisName take the
-%   values 'x' 'y' or 'z'
+    %extract information related to each axis
+    %   axis_data is the data extrated from the figure, axisName take the
+    %   values 'x' 'y' or 'z'
 
+    %---------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    axis.zeroline = false;
+    axis.autorange = false;
+    axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
+    axis.tickfont.size = axis_data.FontSize;
+    axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
 
-%-axis-side-%
-% axis.side = eval(['axis_data.' axisName 'AxisLocation;']);
+    %---------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    tl = axis_data.(axisName + "Data");
+    tl = length(tl);
 
-%-axis zeroline-%
-axis.zeroline = false;
+    w = axis_data.Position(4);
+    h = axis_data.Position(3);
 
-%-------------------------------------------------------------------------%
+    ticklength = min(obj.PlotlyDefaults.MaxTickLength,...
+        max(tl*w*obj.layout.width,tl*h*obj.layout.height));
 
-%-axis autorange-%
-axis.autorange = false;
+    axis.ticklen = 0.1; %ticklength; 
 
-%-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
-%-axis exponent format-%
-axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
+    axiscol = 'rgb(150, 150, 150)';
 
-%-------------------------------------------------------------------------%
+    axis.linecolor = axiscol;
+    axis.tickcolor = axiscol;
+    axis.tickfont.color = 'black';
+    axis.gridcolor = 'rgb(0, 0, 0)';
 
-%-axis tick font size-%
-axis.tickfont.size = axis_data.FontSize;
+    %---------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    axis.showgrid = true;
 
-%-axis tick font family-%
-axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
+    %---------------------------------------------------------------------%
 
-%-------------------------------------------------------------------------%
+    lw = 0.5;
+    linewidth = max(1,lw*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
-tl = axis_data.(axisName + "Data");
-tl = length(tl);
+    axis.linewidth = linewidth;
+    axis.tickwidth = linewidth;
+    axis.gridwidth = linewidth*1.2;
 
-w = axis_data.Position(4);
-h = axis_data.Position(3);
+    %---------------------------------------------------------------------%
 
-ticklength = min(obj.PlotlyDefaults.MaxTickLength,...
-    max(tl*w*obj.layout.width,tl*h*obj.layout.height));
+    %-setting ticks-%
+    axis.ticks = 'inside';
+    axis.mirror = true;
 
-%-axis ticklen-%
-axis.ticklen = 0.1; %ticklength; 
+    labels = axis_data.(axisName + "DisplayLabels");
+    vals = axis_data.(axisName + "DisplayData");
 
-%-------------------------------------------------------------------------%
+    axis.showticklabels = true;
+    axis.type = 'category';
+    axis.autorange = true;
+    axis.ticktext = labels;
+    axis.tickvals = vals;
+    axis.autotick = false;
+    axis.tickson = 'boundaries';
 
-% col = eval(['255*axis_data.' axisName 'Color;']);
-axiscol = 'rgb(150, 150, 150)';
+    %-------------------------------LABELS--------------------------------%
 
-%-axis linecolor-%
-axis.linecolor = axiscol;
-%-axis tickcolor-%
-axis.tickcolor = axiscol;
-%-axis tickfont-%
-axis.tickfont.color = 'black';
-%-axis grid color-%
-axis.gridcolor = 'rgb(0, 0, 0)';
+    label = axis_data.(axisName + "Label");
+    axis.title = label;
+    axis.titlefont.color = 'black';
+    axis.titlefont.size = axis_data.FontSize*1.3;
+    axis.tickfont.size = axis_data.FontSize*1.15;
+    axis.titlefont.family = matlab2plotlyfont(axis_data.FontName);
+    axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
 
-%-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
-axis.showgrid = true;
-
-%-------------------------------------------------------------------------%
-
-lw = 0.5;
-linewidth = max(1,lw*obj.PlotlyDefaults.AxisLineIncreaseFactor);
-
-%-axis line width-%
-axis.linewidth = linewidth;
-%-axis tick width-%
-axis.tickwidth = linewidth;
-%-axis grid width-%
-axis.gridwidth = linewidth*1.2;
-
-%-------------------------------------------------------------------------%
-
-%-setting ticks-%
-axis.ticks = 'inside';
-axis.mirror = true;
-
-labels = axis_data.(axisName + "DisplayLabels");
-vals = axis_data.(axisName + "DisplayData");
-
-axis.showticklabels = true;
-axis.type = 'category';
-axis.autorange = true;
-axis.ticktext = labels;
-axis.tickvals = vals;
-axis.autotick = false;
-axis.tickson = 'boundaries';
-
-%-------------------------------LABELS------------------------------------%
-
-label = axis_data.(axisName + "Label");
-
-%-------------------------------------------------------------------------%
-
-%-title-%
-axis.title = label;
-
-%-------------------------------------------------------------------------%
-
-%-axis title font color-%
-axis.titlefont.color = 'black';
-
-%-------------------------------------------------------------------------%
-
-%-axis title font size-%
-axis.titlefont.size = axis_data.FontSize*1.3;
-axis.tickfont.size = axis_data.FontSize*1.15;
-
-%-------------------------------------------------------------------------%
-
-%-axis title font family-%
-axis.titlefont.family = matlab2plotlyfont(axis_data.FontName);
-axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
-
-%-------------------------------------------------------------------------%
-
-if strcmp(axis_data.Visible,'on')
-    %-axis showline-%
-    axis.showline = true;
-else
-    %-axis showline-%
-    axis.showline = false;
-    %-axis showticklabels-%
-    axis.showticklabels = false;
-    %-axis ticks-%
-    axis.ticks = '';
+    if strcmp(axis_data.Visible,'on')
+        axis.showline = true;
+    else
+        axis.showline = false;
+        axis.showticklabels = false;
+        axis.ticks = '';
+    end
 end
-
-%-------------------------------------------------------------------------%
-end
-
-

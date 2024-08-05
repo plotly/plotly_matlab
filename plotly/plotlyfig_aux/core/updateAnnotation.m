@@ -222,7 +222,4 @@ function obj = updateAnnotation(obj,anIndex)
     %-REVERT UNITS-%
     obj.State.Text(anIndex).Handle.Units = textunits;
     obj.State.Text(anIndex).Handle.FontUnits = fontunits;
-
-    %---------------------------------------------------------------------%
-
 end

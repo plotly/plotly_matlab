@@ -1,5 +1,4 @@
 function st = makecall(args, origin, structargs)
-
     % check if signed in and grab username, key, domain
     [un, key, domain] = signin;
     if isempty(un) || isempty(key)
@@ -17,7 +16,9 @@ function st = makecall(args, origin, structargs)
     args = m2json(args);
     kwargs = m2json(structargs);
     url = [domain '/clientresp'];
-    payload = {'platform', platform, 'version', plotly_version, 'args', args, 'un', un, 'key', key, 'origin', origin, 'kwargs', kwargs};
+    payload = {'platform', platform, 'version', plotly_version, ...
+            'args', args, 'un', un, 'key', key, 'origin', origin, ...
+            'kwargs', kwargs};
 
     if (is_octave)
         % use octave super_powers
@@ -28,7 +29,5 @@ function st = makecall(args, origin, structargs)
     end
 
     st = jsondecode(resp);
-
     response_handler(resp);
-
 end

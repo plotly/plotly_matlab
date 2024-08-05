@@ -1,5 +1,4 @@
 function obj = updateSurfc(obj, dataIndex)
-
     if strcmpi(obj.State.Plot(dataIndex).Class, 'surface')
         surfaceIndex = dataIndex;
         updateSurfOnly(obj, surfaceIndex)
@@ -7,11 +6,9 @@ function obj = updateSurfc(obj, dataIndex)
         contourIndex = dataIndex;
         updateContourOnly(obj, contourIndex)
     end
-
 end
 
 function updateContourOnly(obj, contourIndex)
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(contourIndex).AssociatedAxis);
 
@@ -26,18 +23,18 @@ function updateContourOnly(obj, contourIndex)
     surfData = obj.State.Plot(contourIndex-1).Handle;
     figureData = obj.State.Figure.Handle;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-associate scene-%
     obj.data{contourIndex}.scene = sprintf('scene%d', xsource);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
         
     %-scatter3d type for contour projection-%
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get colormap-%
     cMap = figureData.Colormap;
@@ -48,7 +45,7 @@ function updateContourOnly(obj, contourIndex)
         colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get plot data-%
     contourMatrix = contourData.ContourMatrix;
@@ -63,9 +60,6 @@ function updateContourOnly(obj, contourIndex)
     n = 1;
 
     while (n < len)
-
-        %---------------------------------------------------------------------%
-
         %-get plot data-%
         m = contourMatrix(2, n);
         zlevel = contourMatrix(1, n);
@@ -74,16 +68,14 @@ function updateContourOnly(obj, contourIndex)
         yData = [yData, contourMatrix(2, n+1:n+m), NaN];
         zData = [zData, zmin * ones(1, m), NaN];
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-get edge color-%
         if isnumeric(contourData.LineColor)
             cData = sprintf('rgb(%f,%f,%f)', 255*contourData.LineColor);
-
         elseif strcmpi(contourData.LineColor, 'interp')
             cData = zData;
             obj.data{contourIndex}.line.colorscale = colorScale;
-
         elseif strcmpi(contourData.LineColor, 'flat')
             [err, r] = min(abs(surfData.ZData - zlevel));
             [~, c] = min(err);
@@ -91,29 +83,26 @@ function updateContourOnly(obj, contourIndex)
 
             cData = [cData, surfData.ZData(r, c) * ones(1, m), NaN];
             obj.data{contourIndex}.line.colorscale = colorScale;
-
         elseif strcmpi(contourData.LineColor, 'none')
             cData = 'rgba(0,0,0,0)';
 
         end
-
         n = n + m + 1;
-
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set data on scatter3d-%
     obj.data{contourIndex}.x = xData;
     obj.data{contourIndex}.y = yData;
     obj.data{contourIndex}.z = zData;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set edge color-%
     obj.data{contourIndex}.line.color = cData;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-line style-%
 
@@ -130,27 +119,15 @@ function updateContourOnly(obj, contourIndex)
             obj.data{contourIndex}.line.dash = 'dot';
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
-    %-surface name-%
     obj.data{contourIndex}.name = contourData.DisplayName;
-
-    %-------------------------------------------------------------------------%
-
-    %-surface showscale-%
     obj.data{contourIndex}.showscale = false;
-
-    %-------------------------------------------------------------------------%
-
-    %-surface visible-%
     obj.data{contourIndex}.visible = strcmp(contourData.Visible,'on');
-
-    %-------------------------------------------------------------------------%
 end
 
 
 function updateSurfOnly(obj, surfaceIndex)
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
@@ -172,13 +149,13 @@ function updateSurfOnly(obj, surfaceIndex)
     contourIndex = obj.PlotOptions.nPlots;
     obj.PlotOptions.contourIndex(surfaceIndex) = contourIndex;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-associate scene-%
     obj.data{surfaceIndex}.scene = sprintf('scene%d', xsource);
     obj.data{contourIndex}.scene = sprintf('scene%d', xsource);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-surface type for face color-%
     obj.data{surfaceIndex}.type = 'surface';
@@ -187,7 +164,7 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get plot data-%
     xData = meshData.XData;
@@ -219,7 +196,7 @@ function updateSurfOnly(obj, surfaceIndex)
     yDataContour = [yDataContourDir1(:); yDataContourDir2(:)];
     zDataContour = [zDataContourDir1(:); zDataContourDir2(:)];
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set data on surface-%
     obj.data{surfaceIndex}.x = xDataSurface;
@@ -241,18 +218,18 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
     obj.data{surfaceIndex}.contours.y.show = true;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set data on scatter3d-%
     obj.data{contourIndex}.x = xDataContour(:);
     obj.data{contourIndex}.y = yDataContour(:);
     obj.data{contourIndex}.z = zDataContour(:);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-COLORING-%
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get colormap-%
     cMap = figureData.Colormap;
@@ -263,7 +240,7 @@ function updateSurfOnly(obj, surfaceIndex)
         colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
@@ -320,7 +297,7 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.x.color = cDataContour;
     obj.data{surfaceIndex}.contours.y.color = cDataContour;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get face color-%
     faceColor = meshData.FaceColor;
@@ -413,7 +390,7 @@ function updateSurfOnly(obj, surfaceIndex)
     %-opacity-%
     obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-line style-%
     obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
@@ -426,11 +403,11 @@ function updateSurfOnly(obj, surfaceIndex)
         obj.data{surfaceIndex}.contours.y.show = false;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SCENE CONFIGUTATION-%
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     asr = obj.PlotOptions.AspectRatio;
@@ -479,7 +456,7 @@ function updateSurfOnly(obj, surfaceIndex)
         scene.camera.eye.z = zar + zfac*zar;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
 
@@ -524,30 +501,30 @@ function updateSurfOnly(obj, surfaceIndex)
     scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-surface name-%
     obj.data{surfaceIndex}.name = meshData.DisplayName;
     obj.data{contourIndex}.name = meshData.DisplayName;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-surface showscale-%
     obj.data{surfaceIndex}.showscale = false;
     obj.data{contourIndex}.showscale = false;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-surface visible-%
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     leg = meshData.Annotation;
     legInfo = leg.LegendInformation;
@@ -560,6 +537,4 @@ function updateSurfOnly(obj, surfaceIndex)
     end
 
     obj.data{surfaceIndex}.showlegend = showleg;
-
-    %-------------------------------------------------------------------------%
 end

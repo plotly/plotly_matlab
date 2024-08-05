@@ -1,7 +1,4 @@
 function updateLineseries(obj, plotIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
@@ -47,7 +44,7 @@ function updateLineseries(obj, plotIndex)
         zData = plotData.ZData;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace-%
     if isPolar
@@ -70,7 +67,7 @@ function updateLineseries(obj, plotIndex)
     obj.data{plotIndex}.name = plotData.DisplayName;
     obj.data{plotIndex}.mode = getScatterMode(plotData);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace data-%
     if isPolar
@@ -87,7 +84,7 @@ function updateLineseries(obj, plotIndex)
         end
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace line-%
     obj.data{plotIndex}.line = extractLineLine(plotData);
@@ -100,14 +97,9 @@ function updateLineseries(obj, plotIndex)
 
     %-set trace legend-%
     obj.data{plotIndex}.showlegend = getShowLegend(plotData);
-
-    %-------------------------------------------------------------------------%
 end
 
 function updateScene(obj, dataIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
@@ -127,7 +119,7 @@ function updateScene(obj, dataIndex)
     normFac = abs(min(cameraEye));
     normFac = normFac / (max(aspectRatio)/min(aspectRatio) + cameraOffset);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     scene.aspectratio.x = 1.0*aspectRatio(1);
@@ -144,7 +136,7 @@ function updateScene(obj, dataIndex)
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
     scene.xaxis.range = axisData.XLim;
@@ -182,7 +174,6 @@ function updateScene(obj, dataIndex)
     if isduration(xTick) || isdatetime(xTick)
         xTickChar = char(xTick);
         xTickLabel = axisData.XTickLabel;
-
         for n = 1:length(xTickLabel)
             for m = 1:size(xTickChar, 1)
                 if ~isempty(strfind(string(xTickChar(m, :)), xTickLabel{n}))
@@ -190,7 +181,6 @@ function updateScene(obj, dataIndex)
                 end
             end
         end
-
         xTick = datenum(xTick(idx));
     end
 
@@ -198,7 +188,6 @@ function updateScene(obj, dataIndex)
     if isduration(yTick) || isdatetime(yTick)
         yTickChar = char(yTick);
         yTickLabel = axisData.YTickLabel;
-
         for n = 1:length(yTickLabel)
             for m = 1:size(yTickChar, 1)
                 if ~isempty(strfind(string(yTickChar(m, :)), yTickLabel{n}))
@@ -206,7 +195,6 @@ function updateScene(obj, dataIndex)
                 end
             end
         end
-
         yTick = datenum(yTick(idx));
     end
 
@@ -215,7 +203,6 @@ function updateScene(obj, dataIndex)
     if isduration(zTick) || isdatetime(zTick)
         zTickChar = char(zTick);
         zTickLabel = axisData.ZTickLabel;
-
         for n = 1:length(zTickLabel)
             for m = 1:size(zTickChar, 1)
                 if ~isempty(strfind(string(zTickChar(m, :)), zTickLabel{n}))
@@ -223,7 +210,6 @@ function updateScene(obj, dataIndex)
                 end
             end
         end
-
         zTick = datenum(zTick(idx));
     end
 
@@ -249,18 +235,13 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.YGrid, 'off'), scene.yaxis.showgrid = false; end
     if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
-
-    %-------------------------------------------------------------------------%
 end
 
 function updateDefaultPolaraxes(obj, plotIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     [xSource, ysource] = findSourceAxis(obj, axIndex);
@@ -270,7 +251,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
     thetaAxis = axisData.XAxis;
     rAxis = axisData.YAxis;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set domain plot-%
     xo = axisData.Position(1);
@@ -284,7 +265,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
     tickValues = rAxis.TickValues;
     tickValues = tickValues(find(tickValues==0) + 1 : end);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
         
     %-SET ANGULAR AXIS-%
 
@@ -303,9 +284,9 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.angularaxis.nticks = 16;
     polarAxis.angularaxis.tickfont.size = thetaAxis.FontSize;
     polarAxis.angularaxis.tickfont.color = getStringColor(...
-        255*thetaAxis.Color);
+            255*thetaAxis.Color);
     polarAxis.angularaxis.tickfont.family = matlab2plotlyfont(...
-        thetaAxis.FontName);
+            thetaAxis.FontName);
 
     %-axis label-%
     thetaLabel = thetaAxis.Label;
@@ -313,11 +294,11 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.angularaxis.title.text = thetaLabel.String;
     polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
     polarAxis.radialaxis.title.font.color = getStringColor(...
-        255*thetaLabel.Color);
+            255*thetaLabel.Color);
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
-        thetaLabel.FontName);
+            thetaLabel.FontName);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
         
     %-SET RADIAL AXIS-%
 
@@ -337,7 +318,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.radialaxis.tickfont.size = rAxis.FontSize;
     polarAxis.radialaxis.tickfont.color = getStringColor(255*rAxis.Color);
     polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
-        rAxis.FontName);
+            rAxis.FontName);
 
     %-axis label-%
     rLabel = rAxis.Label;
@@ -346,13 +327,11 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.radialaxis.title.font.size = rLabel.FontSize;
     polarAxis.radialaxis.title.font.color = getStringColor(255*rLabel.Color);
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
-        rLabel.FontName);
+            rLabel.FontName);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set Polar Axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('polar%d', xSource+1), ...
-        polarAxis);
-
-    %-------------------------------------------------------------------------%
+            polarAxis);
 end

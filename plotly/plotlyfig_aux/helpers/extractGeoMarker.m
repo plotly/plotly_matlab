@@ -1,33 +1,20 @@
 function marker = extractGeoMarker(geoData, axisData)
-
-    %-------------------------------------------------------------------------%
-
     %-FIGURE STRUCTURE-%
     figureData = ancestor(geoData.Parent,'figure');
 
     %-INITIALIZE OUTPUT-%
     marker = struct();
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
-    %-MARKER SIZEREF-%
     marker.sizeref = 1;
-
-    %-------------------------------------------------------------------------%
-
-    %-MARKER SIZEMODE-%
     marker.sizemode = 'area';
-
-    %-------------------------------------------------------------------------%
-
-    %-MARKER SIZE (STYLE)-%
     marker.size = geoData.SizeData;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-MARKER SYMBOL (STYLE)-%
-    if ~strcmp(geoData.Marker,'none')
-
+    if ~strcmp(geoData.Marker, 'none')
         switch geoData.Marker
             case '.'
                 marksymbol = 'circle';
@@ -60,65 +47,55 @@ function marker = extractGeoMarker(geoData, axisData)
         marker.symbol = marksymbol;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-MARKER LINE WIDTH (STYLE)-%
     marker.line.width = 2*geoData.LineWidth;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %--MARKER FILL COLOR--%
 
     % marker face color
     faceColor = geoData.MarkerFaceColor;
 
-    filledMarkerSet = {'o','square','s','diamond','d','v','^', '<','>','hexagram','pentagram'};
+    filledMarkerSet = {'o','square','s','diamond','d','v','^', '<', ...
+            '>','hexagram','pentagram'};
     filledMarker = ismember(geoData.Marker, filledMarkerSet);
 
     if filledMarker
-        
         if isnumeric(faceColor)
             markerColor = sprintf('rgb(%f,%f,%f)', 255 * faceColor);
-
         else
-
             switch faceColor
-                
                 case 'none'
-                    
                     markerColor = 'rgba(0,0,0,0)';
-                    
                 case 'auto'
-                    
-                    if ~strcmp(axisData.Color,'none')
+                    if ~strcmp(axisData.Color, 'none')
                         col = 255*axisData.Color;
                     else
                         col = 255*figureData.Color;
                     end
-
                     markerColor = sprintf('rgb(%f,%f,%f)', col);
-                    
                 case 'flat'
-
                     cData = geoData.CData;
                     cMap = figureData.Colormap;
                     ncolors = size(cMap, 1);
-
                     for m = 1:length(cData)
-                        colorValue = max( min( cData(m), axisData.CLim(2) ), axisData.CLim(1) );
-                        scaleFactor = (colorValue - axisData.CLim(1)) / diff(axisData.CLim);
-                        rgbColor =  255 * cMap( 1+floor(scaleFactor*(ncolors-1)), : );
+                        colorValue = max(min(cData(m), ...
+                                axisData.CLim(2)), axisData.CLim(1));
+                        scaleFactor = (colorValue - axisData.CLim(1)) ...
+                                / diff(axisData.CLim);
+                        rgbColor = 255 * cMap(1+floor(scaleFactor ...
+                                * (ncolors-1)),:);
                         markerColor{m} = sprintf('rgb(%f,%f,%f)', rgbColor);
                     end
             end
         end
-        
-        %-set marker color-%
         marker.color = markerColor;
-        
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-MARKER LINE COLOR-%
 
@@ -127,31 +104,25 @@ function marker = extractGeoMarker(geoData, axisData)
 
     if isnumeric(edgeColor)
         lineColor = sprintf('rgb(%f,%f,%f)', 255 * edgeColor);
-
     else
         switch edgeColor
-            
             case 'none'
-              
                 lineColor = 'rgba(0,0,0,0)';
-                
             case 'auto'
-                
                 % TODO
-                
             case 'flat'
-                
                 cData = geoData.CData;
                 cMap = figureData.Colormap;
                 ncolors = size(cMap, 1);
-
                 for m = 1:length(cData)
-                    colorValue = max( min( cData(m), axisData.CLim(2) ), axisData.CLim(1) );
-                    scaleFactor = (colorValue - axisData.CLim(1)) / diff(axisData.CLim);
-                    rgbColor =  255 * cMap( 1+floor(scaleFactor*(ncolors-1)), : );
+                    colorValue = max(min(cData(m), axisData.CLim(2)), ...
+                            axisData.CLim(1));
+                    scaleFactor = (colorValue - axisData.CLim(1)) ...
+                            / diff(axisData.CLim);
+                    rgbColor = 255 * cMap(1+floor(scaleFactor ...
+                            * (ncolors-1)),:);
                     lineColor{m} = sprintf('rgb(%f,%f,%f)', rgbColor);
                 end
-
         end
     end
 
@@ -160,7 +131,4 @@ function marker = extractGeoMarker(geoData, axisData)
     else
         marker.color = lineColor;
     end
-
-    %-------------------------------------------------------------------------%
-
 end

@@ -1,18 +1,17 @@
 function marker = extractScatterMarker(plotData)
-
-    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-    %                                                                         %
-    % %-DESCRIPTION-%                                                         %
-    %                                                                         %
-    % EXTRACTS THE MARKER STYLE USED FOR MATLAB OBJECTS OF TYPE "PATCH".      %
-    % THESE OBJECTS ARE USED IN AREASERIES BARSERIES, CONTOURGROUP,           %
-    % SCATTERGROUP.                                                           %
-    %                                                                         %
-    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
+    %                                                                     %
+    % %-DESCRIPTION-%                                                     %
+    %                                                                     %
+    % EXTRACTS THE MARKER STYLE USED FOR MATLAB OBJECTS OF TYPE "PATCH".  %
+    % THESE OBJECTS ARE USED IN AREASERIES BARSERIES, CONTOURGROUP,       %
+    % SCATTERGROUP.                                                       %
+    %                                                                     %
+    %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
 
     %-INITIALIZATIONS-%
-    axisData = ancestor(plotData.Parent,'axes');
-    figureData = ancestor(plotData.Parent,'figure');
+    axisData = ancestor(plotData.Parent, 'axes');
+    figureData = ancestor(plotData.Parent, 'figure');
 
     marker = struct();
     marker.sizeref = 1;
@@ -21,14 +20,13 @@ function marker = extractScatterMarker(plotData)
     marker.line.width = 1.5*plotData.LineWidth;
 
     filledMarkerSet = {'o', 'square', 's', 'diamond', 'd', 'v', '^', ...
-        '<', '>', 'hexagram', 'pentagram'};
+            '<', '>', 'hexagram', 'pentagram'};
     filledMarker = ismember(plotData.Marker, filledMarkerSet);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get marker symbol-%
     if ~strcmp(plotData.Marker,'none')
-
         switch plotData.Marker
             case '.'
                 markerSymbol = 'circle';
@@ -58,40 +56,32 @@ function marker = extractScatterMarker(plotData)
             case {'h','hexagram'}
                 markerSymbol = 'hexagram';
         end
-        
         marker.symbol = markerSymbol;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-marker fill-%
     markerFaceColor = plotData.MarkerFaceColor;
     markerFaceAlpha = plotData.MarkerFaceAlpha;
 
     if filledMarker
-        
         %-get face color-%
         if isnumeric(markerFaceColor)
             faceColor = sprintf('rgb(%f,%f,%f)', 255*markerFaceColor);
-
         else
             switch markerFaceColor
-                
                 case 'none'        
                     faceColor = 'rgba(0,0,0,0)';
-                    
                 case 'auto'
                     if ~strcmp(axisData.Color,'none')
                         faceColor = 255*axisData.Color;
                     else
                         faceColor = 255*figureData.Color;
                     end
-
                     faceColor = getStringColor(faceColor);
-                    
                 case 'flat'
                     faceColor = getScatterFlatColor(plotData, axisData);
-
             end
         end
 
@@ -100,24 +90,20 @@ function marker = extractScatterMarker(plotData)
             faceAlpha = markerFaceAlpha;
         else
             switch markerFaceColor
-                
                 case 'none'        
                     faceAlpha = 1;
-                    
                 case 'flat'
                     aLim = axisData.ALim;
                     faceAlpha = plotData.AlphaData;
                     faceAlpha = rescaleData(faceAlpha, aLim);
             end
         end
-        
         %-set marker fill-%
         marker.color = faceColor;
         marker.opacity = faceAlpha;
-        
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-marker line-%
     markerEdgeColor = plotData.MarkerEdgeColor;
@@ -125,27 +111,19 @@ function marker = extractScatterMarker(plotData)
 
     if isnumeric(markerEdgeColor)
         lineColor = sprintf('rgb(%f,%f,%f)', 255*markerEdgeColor);
-
     else
         switch markerEdgeColor
-
             case 'none'
                 lineColor = 'rgba(0,0,0,0)';
-                
             case 'auto'
-
                 if ~strcmp(axisData.Color,'none')
                     lineColor = 255*axisData.Color;
                 else
                     lineColor = 255*figureData.Color;
                 end
-
                 lineColor = getStringColor(lineColor, markerEdgeAlpha);
-                
             case 'flat'
-
                 lineColor = getScatterFlatColor(plotData, axisData);
-
         end
     end
 
@@ -153,16 +131,13 @@ function marker = extractScatterMarker(plotData)
         marker.line.color = lineColor;
     else
         marker.color = lineColor;
-        if strcmp(plotData.Marker, '.'), marker.line.color = lineColor; end
+        if strcmp(plotData.Marker, '.')
+            marker.line.color = lineColor;
+        end
     end
-
-    %-------------------------------------------------------------------------%
 end
 
 function flatColor = getScatterFlatColor(plotData, axisData, opacity)
-
-    %-------------------------------------------------------------------------%
-
     cData = plotData.CData;
     colorMap = axisData.Colormap;
     cLim = axisData.CLim;
@@ -175,7 +150,7 @@ function flatColor = getScatterFlatColor(plotData, axisData, opacity)
         cDataByIndex = lenCData == nMarkers || lenCData == 1;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     if cDataByIndex
         cMapInd = getcMapInd(cData, cLim, nColors);
@@ -192,8 +167,6 @@ function flatColor = getScatterFlatColor(plotData, axisData, opacity)
             flatColor{n} = getStringColor(numColor(n, :));
         end
     end
-
-    %-------------------------------------------------------------------------%
 end
 
 function cMapInd = getcMapInd(cData, cLim, nColors)

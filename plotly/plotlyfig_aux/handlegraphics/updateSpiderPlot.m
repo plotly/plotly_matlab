@@ -1,7 +1,4 @@
 function obj = updateSpiderPlot(obj,spiderIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(spiderIndex).AssociatedAxis);
     plotData = obj.State.Plot(spiderIndex).Handle;
@@ -19,7 +16,7 @@ function obj = updateSpiderPlot(obj,spiderIndex)
         setLegeng(obj, spiderIndex);
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set traces-%
     for t = 1:nTraces
@@ -69,12 +66,9 @@ function obj = updateSpiderPlot(obj,spiderIndex)
         end
 
     end    
-
-    %-------------------------------------------------------------------------%
 end
 
 function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
-
     %-initializations-%
     rData = plotData.P(traceIndex, :);
     axesAngle = axesStruct.axesAngle;
@@ -82,7 +76,6 @@ function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
     nTicks = axesStruct.nTicks;
 
     for a = 1:nAxes
-
         %-get axis limits-%
         try
             axesLim = plotData.AxesLimits(:, a)';
@@ -138,7 +131,6 @@ function lineStruct = getLine(plotData, traceIndex)
 end
 
 function markerStruct = getMarker(plotData, traceIndex)
-
     %-INITIALIZATIONS-%
     markerStruct = struct();
 
@@ -188,9 +180,6 @@ function markerStruct = getMarker(plotData, traceIndex)
 end
 
 function setAnnotation(obj, axesStruct, spiderIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(spiderIndex).AssociatedAxis);
     anIndex = obj.PlotlyDefaults.anIndex;
@@ -220,7 +209,7 @@ function setAnnotation(obj, axesStruct, spiderIndex)
     axesSize = plotData.AxesFontSize;
     axesFamily = matlab2plotlyfont(plotData.AxesFont);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set axes labels-%
     for l = 1:nAxes
@@ -275,7 +264,7 @@ function setAnnotation(obj, axesStruct, spiderIndex)
         anIndex = anIndex + 1;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set axes tick labels-%
     for t = 1:nTicks
@@ -373,28 +362,23 @@ function setAnnotation(obj, axesStruct, spiderIndex)
 
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set annotations to layout-%
     obj.layout = setfield(obj.layout, 'annotations', annotations);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     obj.PlotlyDefaults.anIndex = anIndex;
-
-    %-------------------------------------------------------------------------%
 end
 
 function axesStruct = setAxes(obj, spiderIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(spiderIndex).AssociatedAxis);
     plotData = obj.State.Plot(spiderIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set axes-%
     nAxes = size(plotData.P,2);
@@ -404,7 +388,6 @@ function axesStruct = setAxes(obj, spiderIndex)
     axesColor = sprintf('rgb(%f,%f,%f)', 255*plotData.AxesColor);
 
     for a = 1:nAxes
-
         %-get plotIndex-%
         if a > 1
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
@@ -434,10 +417,9 @@ function axesStruct = setAxes(obj, spiderIndex)
 
         %-hide associated trace-%
         obj.data{plotIndex}.showlegend = false;
-
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set grid-%
     nTicks = plotData.AxesInterval + 1;
@@ -468,21 +450,16 @@ function axesStruct = setAxes(obj, spiderIndex)
 
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-return-%
     axesStruct.axesAngle = axesAngle;
     axesStruct.nAxes = nAxes;
     axesStruct.nTicks = nTicks;
     axesStruct.tickValues = tickValues;
-
-    %-------------------------------------------------------------------------%
 end
 
 function updateSpiderLayout(obj, spiderIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(spiderIndex).AssociatedAxis);
     plotData = obj.State.Plot(spiderIndex).Handle;
@@ -493,7 +470,7 @@ function updateSpiderLayout(obj, spiderIndex)
     w = plotData.Position(3);
     h = plotData.Position(4);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get x axis-%
     xaxis.domain = min([xo xo + w],1);
@@ -503,7 +480,7 @@ function updateSpiderLayout(obj, spiderIndex)
     xaxis.showgrid = false;
     xaxis.showticklabels = false;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get y axis-%
     yaxis.domain = min([yo yo + h],1);
@@ -513,19 +490,14 @@ function updateSpiderLayout(obj, spiderIndex)
     yaxis.showgrid = false;
     yaxis.showticklabels = false;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set axis-%
     obj.layout = setfield(obj.layout, sprintf('xaxis%d', xSource), xaxis);
     obj.layout = setfield(obj.layout, sprintf('yaxis%d', ySource), yaxis);
-
-    %-------------------------------------------------------------------------%
 end
 
 function setLegeng(obj, spiderIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(spiderIndex).AssociatedAxis);
     plotData = obj.State.Plot(spiderIndex).Handle;
@@ -534,7 +506,7 @@ function setLegeng(obj, spiderIndex)
     legData = plotData.LegendHandle;
     obj.layout.showlegend = strcmpi(plotData.Visible,'on');
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-legend location-%
     obj.layout.legend.x = legData.Position(1);
@@ -544,7 +516,7 @@ function setLegeng(obj, spiderIndex)
     obj.layout.legend.xanchor = 'left';
     obj.layout.legend.yanchor = 'top';
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-legend settings-%
     if (strcmp(legData.Box,'on') && strcmp(legData.Visible, 'on'))

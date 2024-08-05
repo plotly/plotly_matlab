@@ -43,9 +43,6 @@ function line = extractAreaLine(area_data)
             case "-."
                 LineStyle = "dashdot";
         end
-
         line.dash = LineStyle;
-
-        %-----------------------------------------------------------------%
     end
 end

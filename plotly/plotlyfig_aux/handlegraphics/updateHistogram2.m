@@ -1,7 +1,4 @@
 function obj = updateHistogram2(obj,dataIndex)
-
-    %--------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
@@ -29,14 +26,18 @@ function obj = updateHistogram2(obj,dataIndex)
     if isinf(yEdges(end)) yEdges(end) = yEdges(end-1) + dy(1); end
 
     [xData, yData, zData, iData, jData, kData] = ...
-        getPlotlyMesh3d( xEdges, yEdges, values, barGap );
+            getPlotlyMesh3d( xEdges, yEdges, values, barGap );
 
-    if strcmp(plotData.ShowEmptyBins, 'on'), zData = zData-1; end
+    if strcmp(plotData.ShowEmptyBins, 'on')
+        zData = zData-1;
+    end
         
     cData = zeros(size(zData));
-    for n = 1:2:length(zData), cData(n:n+1) = max(zData(n:n+1)); end
+    for n = 1:2:length(zData)
+        cData(n:n+1) = max(zData(n:n+1));
+    end
 
-    %--------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace-%
     updateScene(obj, dataIndex);
@@ -47,7 +48,7 @@ function obj = updateHistogram2(obj,dataIndex)
     obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
     obj.layout.bargap = barGap;
 
-    %--------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace data-%
     obj.data{dataIndex}.x = xData;
@@ -57,7 +58,7 @@ function obj = updateHistogram2(obj,dataIndex)
     obj.data{dataIndex}.j = int16(jData - 1);
     obj.data{dataIndex}.k = int16(kData - 1);
 
-    %--------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace coloring-%
     faceColor = plotData.FaceColor;
@@ -87,13 +88,11 @@ function obj = updateHistogram2(obj,dataIndex)
         obj.data{dataIndex}.lighting.diffuse = 0.92;
         obj.data{dataIndex}.lighting.ambient = 0.92;
     end
-
-    %--------------------------------------------------------------------------%
 end
 
 function updateScene(obj, dataIndex)
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-INITIALIZATIONS-%
 
@@ -124,7 +123,7 @@ function updateScene(obj, dataIndex)
 
     cameraEye = cameraEye / eyeNorm;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     scene.aspectratio.x = aspectRatio(1);
@@ -141,7 +140,7 @@ function updateScene(obj, dataIndex)
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get each scene axis-%
     scene.xaxis = getSceneAxis(axisData, 'X');
@@ -152,16 +151,13 @@ function updateScene(obj, dataIndex)
         scene.zaxis.visible = false;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
-
-    %-------------------------------------------------------------------------%
 end
 
 function ax = getSceneAxis(axisData, axName)
-
     %-initializations-%
     axx = axisData.(axName + "Axis");
     ax.zeroline = false;

@@ -1,5 +1,4 @@
 function obj = updateTernaryPlot(obj, ternaryIndex)
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
@@ -14,11 +13,11 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     %-ASSOCIATE TERNARY-AXES WITH LAYOUT-%
     obj.data{ternaryIndex}.subplot = sprintf('ternary%d', xsource+1);
 
-    %=========================================================================%
+    %=====================================================================%
     %
     %-UPDATE TRACE PLOT-%
     %
-    %=========================================================================%
+    %=====================================================================%
 
     %-set trace-%
     obj.data{ternaryIndex}.type = 'scatterternary';
@@ -33,7 +32,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
         obj.data{ternaryIndex}.mode = 'none';
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get plot data-%
     xData = ternaryData.XData;
@@ -47,7 +46,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     obj.data{ternaryIndex}.a = aData;
     obj.data{ternaryIndex}.b = bData;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-trace line settings-%
     obj.data{ternaryIndex}.line = extractLineLine(ternaryData);
@@ -58,7 +57,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     obj.data{ternaryIndex}.showscale = false;
     obj.data{ternaryIndex}.visible = strcmp(ternaryData.Visible,'on');
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-legend-%
     leg = ternaryData.Annotation;
@@ -73,11 +72,11 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
 
     obj.data{ternaryIndex}.showlegend = showleg;
 
-    %=========================================================================%
+    %=====================================================================%
     %
     %-UPDATE TERNARY AXES-%
     %
-    %=========================================================================%
+    %=====================================================================%
 
     %-set domain plot-%
     xo = axisData.Position(1);
@@ -88,7 +87,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-label settings-%
     l = 1; t = 1;
@@ -97,7 +96,6 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     for n = 1:length(axisData.Children)
         if strcmpi(axisData.Children(n).Type, 'text')
             stringText = axisData.Children(n).String;
-
             if any(isletter(stringText))
                 labelIndex(l) = n;
                 l = l + 1;
@@ -122,7 +120,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").title.font.family = labelFontFamily;
     end
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);
@@ -142,17 +140,14 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
     end
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set ternary axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('ternary%d', xsource+1), ternary);
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     obj.PlotlyDefaults.isTernary = true;
-
-    %-----------------------------------------------------------------------------%
-
 end
 
 function rad = deg2rad(deg)

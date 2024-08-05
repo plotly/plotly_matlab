@@ -1,7 +1,4 @@
 function obj = updateErrorbar(obj, plotIndex)
-
-	%-------------------------------------------------------------------------%
-
 	%-INITIALIZATION-%
 
 	%-get data structures-%
@@ -14,7 +11,7 @@ function obj = updateErrorbar(obj, plotIndex)
 	xPositiveDelta = plotData.XPositiveDelta;
 	xNegativeDelta = plotData.XNegativeDelta;
 
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-set trace-%
 
@@ -31,8 +28,7 @@ function obj = updateErrorbar(obj, plotIndex)
 	%-errorbar symmetry-%
 	obj.data{plotIndex}.error_y.symmetric = false;
 
-
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-set errorbar data-%
 
@@ -42,7 +38,7 @@ function obj = updateErrorbar(obj, plotIndex)
 	obj.data{plotIndex}.error_x.arrayminus = xNegativeDelta;
 	obj.data{plotIndex}.error_y.arrayminus = yNegativeDelta;
 
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-errorbar thickness-%
 	obj.data{plotIndex}.error_y.thickness = plotData.LineWidth;
@@ -56,8 +52,5 @@ function obj = updateErrorbar(obj, plotIndex)
 	errorColor = getStringColor(255*plotData.Color);
 	obj.data{plotIndex}.error_y.color = errorColor;
 	obj.data{plotIndex}.error_x.color = errorColor;
-
-	%-------------------------------------------------------------------------%
-
 end
 		
