@@ -11,8 +11,8 @@ figure_data = obj.State.Figure.Handle;
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+xaxis = obj.layout.("xaxis" + xsource);
+yaxis = obj.layout.("yaxis" + ysource);
 
 %-------------------------------------------------------------------------%
 

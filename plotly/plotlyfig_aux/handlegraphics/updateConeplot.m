@@ -10,7 +10,7 @@ cone_data = obj.State.Plot(coneIndex).Handle;
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-SCENE DATA-%
-eval(['scene = obj.layout.scene' num2str(xsource) ';']);
+scene = obj.layout.("scene" + xsource);
 
 %-------------------------------------------------------------------------%
 

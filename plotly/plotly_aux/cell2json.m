@@ -1,10 +1,4 @@
 function str = cell2json(s)
-	str = '';
-	for i =1:length(s)
-		val = s{i};
-		valstr = m2json(val);
-		str = [str ', ' valstr];
-	end
-	str = str(3:end); % snip leading comma
-	str = ['[' str ']'];
+	strList = string(cellfun(@m2json, s, un=0));
+	str = sprintf("[%s]", strjoin(strList, ", "));
 end

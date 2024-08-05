@@ -26,8 +26,8 @@ for traceIndex = 1:obj.State.Figure.NumPlots
 
     axIndex = obj.getAxisIndex(obj.State.Plot(traceIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj, axIndex);
-    xAxis = eval(sprintf('obj.layout.xaxis%d', xSource));
-    yAxis = eval(sprintf('obj.layout.yaxis%d', xSource));
+    xAxis = obj.layout.("xaxis" + xSource);
+    yAxis = obj.layout.("yaxis" + xSource);
 
     allDomain(traceIndex, 1) = max(xAxis.domain);
     allDomain(traceIndex, 2) = max(yAxis.domain);

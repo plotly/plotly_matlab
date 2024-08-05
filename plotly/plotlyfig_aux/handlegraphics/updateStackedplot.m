@@ -331,8 +331,8 @@ function tickVals = getTickVals(axisLim, refVals, refPot, nTicks)
 end
 
 function updateTitle(obj, titleText, xySource)
-    xaxis = eval(sprintf('obj.layout.xaxis%d', xySource(1)));
-    yaxis = eval(sprintf('obj.layout.yaxis%d', xySource(2)));
+    xaxis = obj.layout.("xaxis" + xySource(1));
+    yaxis = obj.layout.("yaxis" + xySource(2));
     anIndex = 1;
     if ~isempty(titleText), titleText = parseString(titleText); end
 
@@ -354,8 +354,8 @@ end
 function updateExponentFormat(obj, expoFormat, xySource, axName)
 
     axName = lower(axName);
-    xaxis = eval(sprintf('obj.layout.xaxis%d', xySource(1)));
-    yaxis = eval(sprintf('obj.layout.yaxis%d', xySource(2)));
+    xaxis = obj.layout.("xaxis" + xySource(1));
+    yaxis = obj.layout.("yaxis" + xySource(2));
     anIndex = obj.PlotlyDefaults.anIndex + 1;
 
     if expoFormat ~= 0

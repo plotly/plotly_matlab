@@ -64,8 +64,8 @@ function marker = extractLineMarker(line_data)
 
     %---------------------------------------------------------------------%
 
-    filledMarkerSet = {"o","square","s","diamond","d",...
-            "v","^", "<",">","hexagram","pentagram"};
+    filledMarkerSet = ["o","square","s","diamond","d",...
+            "v","^", "<",">","hexagram","pentagram"];
 
     filledMarker = ismember(line_data.Marker,filledMarkerSet);
 
