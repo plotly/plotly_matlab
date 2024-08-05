@@ -110,17 +110,16 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
 
     for l = 1:length(labelIndex)
         n = labelIndex(l);
-        patterText = sprintf('ternary.%saxis.title', labelLetter{l});
 
         labelText = axisData.Children(n).String;
         labelFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(n).Color);
         labelFontSize = 1.5 * axisData.Children(n).FontSize;
         labelFontFamily = matlab2plotlyfont(axisData.Children(n).FontName);
 
-        eval(sprintf('%s.text = labelText;', patterText));
-        eval(sprintf('%s.font.color = labelFontColor;', patterText));
-        eval(sprintf('%s.font.size = labelFontColor;', patterText));
-        eval(sprintf('%s.font.family = labelFontFamily;', patterText));
+        ternary.(labelLetter{l} + "axis").title.text = labelText;
+        ternary.(labelLetter{l} + "axis").title.font.color = labelFontColor;
+        ternary.(labelLetter{l} + "axis").title.font.size = labelFontSize;
+        ternary.(labelLetter{l} + "axis").title.font.family = labelFontFamily;
     end
 
     %-----------------------------------------------------------------------------%
@@ -136,13 +135,11 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);
 
     for l = 1:3
-        patterText = sprintf('ternary.%saxis', labelLetter{l});
-
-        eval(sprintf('%s.tick0 = tick0;', patterText));
-        eval(sprintf('%s.dtick = dtick;', patterText));
-        eval(sprintf('%s.tickfont.color = tickFontColor;', patterText));
-        eval(sprintf('%s.tickfont.size = tickFontSize;', patterText));
-        eval(sprintf('%s.tickfont.family = tickFontFamily;', patterText));
+        ternary.(labelLetter{l} + "axis").tick0 = tick0;
+        ternary.(labelLetter{l} + "axis").dtick = dtick;
+        ternary.(labelLetter{l} + "axis").tickfont.color = tickFontColor;
+        ternary.(labelLetter{l} + "axis").tickfont.size = tickFontSize;
+        ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
     end
 
     %-----------------------------------------------------------------------------%

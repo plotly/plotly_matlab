@@ -14,7 +14,7 @@ figure_data = obj.State.Figure.Handle;
 axis_data = ancestor(bar_data.Parent,'axes');
 
 %-GET SCENE-%
-eval(['scene = obj.layout.scene' num2str(xsource) ';']);
+scene = obj.layout.("scene" + xsource);
 
 %-------------------------------------------------------------------------%
 

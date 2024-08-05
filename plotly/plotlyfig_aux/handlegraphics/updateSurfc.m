@@ -165,7 +165,7 @@ function updateSurfOnly(obj, surfaceIndex)
     axisData = ancestor(meshData.Parent,'axes');
 
     %-SCENE DATA-%
-    eval( sprintf('scene = obj.layout.scene%d;', xsource) );
+    scene = obj.layout.("scene" + xsource);
 
     %-GET CONTOUR INDEX-%
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;

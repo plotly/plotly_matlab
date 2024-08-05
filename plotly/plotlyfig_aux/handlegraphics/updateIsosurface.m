@@ -78,7 +78,7 @@ function updateScene(obj, isoIndex)
 	plotData = obj.State.Plot(isoIndex).Handle;
 	axisData = plotData.Parent;
 	[xSource, ySource] = findSourceAxis(obj, axIndex);
-	scene = eval( sprintf('obj.layout.scene%d', xSource) );
+	scene = obj.layout.("scene" + xSource);
 
 	aspectRatio = axisData.PlotBoxAspectRatio;
 	cameraPosition = axisData.CameraPosition;

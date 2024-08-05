@@ -43,8 +43,8 @@ axIndex = obj.getAxisIndex(obj.State.Plot(imageIndex).AssociatedAxis);
 image_data = obj.State.Plot(imageIndex).Handle;
 
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+xaxis = obj.layout.("xaxis" + xsource);
+yaxis = obj.layout.("yaxis" + ysource);
 
 %-------------------------------------------------------------------------%
 

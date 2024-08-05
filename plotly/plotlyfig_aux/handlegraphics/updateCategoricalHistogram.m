@@ -58,8 +58,8 @@ hist_data = obj.State.Plot(histIndex).Handle;
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+xaxis = obj.layout.("xaxis" + xsource);
+yaxis = obj.layout.("yaxis" + ysource);
 
 %-------------------------------------------------------------------------%
 
@@ -90,9 +90,9 @@ xmin = -gap;
 xmax = (hist_data.NumDisplayBins - 1) + gap;
 
 t = 'category';
-eval(['obj.layout.xaxis' num2str(xsource) '.type = t;']);
-eval(['obj.layout.xaxis' num2str(xsource) '.autotick = false;']);
-eval(['obj.layout.xaxis' num2str(xsource) '.range = {xmin, xmax};']);
+obj.layout.("xaxis" + xsource).type = t;
+obj.layout.("xaxis" + xsource).autotick = false;
+obj.layout.("xaxis" + xsource).range = {xmin, xmax};
 
 %-------------------------------------------------------------------------%
 

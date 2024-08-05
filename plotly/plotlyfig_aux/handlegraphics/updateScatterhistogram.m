@@ -143,9 +143,9 @@ function ax = getMainScatterAxis(plotData, axName)
 
     axisPos = plotData.Position;
     axisColor = 'rgba(0,0,0, 0.9)';
-    axisLim = eval(sprintf('plotData.%sLimits', axName));
-    axisPlot = eval(sprintf('plotData.%sData', axName));
-    axisLabel = eval(sprintf('plotData.%sLabel', axName));
+    axisLim = plotData.(axName + "Limits");
+    axisPlot = plotData.(axName + "Data");
+    axisLabel = plotData.(axName + "Label");
 
     switch axName
         case 'X'
@@ -489,11 +489,11 @@ function lineDash = getLineDash(lineStyle)
 end
 
 function axisLim = getAxisLim(plotData, axName)
-    axisLim = eval(sprintf('plotData.%sLimits', axName));
-    axisPlot = eval(sprintf('plotData.%sData', axName));
+    axisLim = plotData.(axName + "Limits");
+    axisPlot = plotData.(axName + "Data");
 
     if iscategorical(axisPlot)
-        axisPlot = eval(sprintf('plotData.%sData', axName));
+        axisPlot = plotData.(axName + "Data");
         [~, ~, axisPlot] = unique(axisPlot);
         axisLim = [min(axisPlot)-0.5, max(axisPlot)+0.5];
     end
@@ -541,7 +541,7 @@ function updateTitle(obj, plotIndex)
     if isTitle
         titleText = sprintf('<b>%s</b>', parseString(plotData.Title));
         titleFamily = matlab2plotlyfont(plotData.FontName);
-        xaxis = eval(sprintf('obj.layout.xaxis%d', xSource));
+        xaxis = obj.layout.("xaxis" + xSource);
 
         obj.layout.annotations{1}.text = titleText;
         obj.layout.annotations{1}.x = mean(xaxis.domain);

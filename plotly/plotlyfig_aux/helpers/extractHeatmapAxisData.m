@@ -36,7 +36,7 @@ axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
 
 %-------------------------------------------------------------------------%
 
-tl = eval(['axis_data.' axisName 'Data;']);
+tl = axis_data.(axisName + "Data");
 tl = length(tl);
 
 w = axis_data.Position(4);
@@ -84,8 +84,8 @@ axis.gridwidth = linewidth*1.2;
 axis.ticks = 'inside';
 axis.mirror = true;
 
-labels = eval(['axis_data.' axisName 'DisplayLabels;']);
-vals = eval(['axis_data.' axisName 'DisplayData;']);
+labels = axis_data.(axisName + "DisplayLabels");
+vals = axis_data.(axisName + "DisplayData");
 
 axis.showticklabels = true;
 axis.type = 'category';
@@ -97,7 +97,7 @@ axis.tickson = 'boundaries';
 
 %-------------------------------LABELS------------------------------------%
 
-label = eval(['axis_data.' axisName 'Label;']);
+label = axis_data.(axisName + "Label");
 
 %-------------------------------------------------------------------------%
 

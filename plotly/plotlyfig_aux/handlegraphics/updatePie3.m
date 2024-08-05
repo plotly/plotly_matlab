@@ -78,7 +78,7 @@ function obj = updatePatchPie3(obj, patchIndex)
   [xsource, ysource] = findSourceAxis(obj,axIndex);
 
   %-AXIS DATA-%
-  eval(['scene = obj.layout.scene' num2str(xsource) ';']);
+  scene = obj.layout.("scene" + xsource);
   obj.PlotOptions.scene_anchor = ['scene' num2str(xsource)];
 
   %-------------------------------------------------------------------------%
@@ -230,7 +230,7 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
   figure_data = obj.State.Figure.Handle;
 
   %-AXIS DATA-%
-  eval(['scene = obj.layout.scene' num2str(xsource) ';']);
+  scene = obj.layout.("scene" + xsource);
   obj.PlotOptions.scene_anchor = ['scene' num2str(xsource)];
 
   %-------------------------------------------------------------------------%

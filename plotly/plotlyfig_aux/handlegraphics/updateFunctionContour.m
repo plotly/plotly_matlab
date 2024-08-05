@@ -16,8 +16,8 @@ contour_data = obj.State.Plot(contourIndex).Handle;
 [xsource, ysource] = findSourceAxis(obj,axIndex);
 
 %-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+xaxis = obj.layout.("xaxis" + xsource);
+yaxis = obj.layout.("yaxis" + ysource);
 
 %-------------------------------------------------------------------------%
 
@@ -214,15 +214,15 @@ obj.data{contourIndex}.showlegend = showleg;
 
 %-axis layout-%
 t = 'linear';
-eval(['obj.layout.xaxis' num2str(xsource) '.type=t;']);
-eval(['obj.layout.xaxis' num2str(xsource) '.autorange=true;']);
-eval(['obj.layout.xaxis' num2str(xsource) '.ticktext=axis_data.XTickLabel;']);
-eval(['obj.layout.xaxis' num2str(xsource) '.tickvals=axis_data.XTick;']);
+obj.layout.("xaxis" + xsource).type=t;
+obj.layout.("xaxis" + xsource).autorange=true;
+obj.layout.("xaxis" + xsource).ticktext=axis_data.XTickLabel;
+obj.layout.("xaxis" + xsource).tickvals=axis_data.XTick;
 
-eval(['obj.layout.yaxis' num2str(xsource) '.type=t;']);
-eval(['obj.layout.yaxis' num2str(xsource) '.autorange=true;']);
-eval(['obj.layout.yaxis' num2str(xsource) '.ticktext=axis_data.YTickLabel;']);
-eval(['obj.layout.yaxis' num2str(xsource) '.tickvals=axis_data.YTick;']);
+obj.layout.("yaxis" + xsource).type=t;
+obj.layout.("yaxis" + xsource).autorange=true;
+obj.layout.("yaxis" + xsource).ticktext=axis_data.YTickLabel;
+obj.layout.("yaxis" + xsource).tickvals=axis_data.YTick;
 
 %-------------------------------------------------------------------------%
 
