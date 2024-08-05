@@ -5,9 +5,12 @@ function valstr = m2json(val)
         valstr = cell2json(val);
     elseif isa(val, "numeric")
         sz = size(val);
-        numDigits = 3 + ceil(clip(log10(double(max(abs(val),[],"all"))) ...
-                - log10(double(range(val,"all"))),0,12));
-        numDigits(~isfinite(numDigits)) = 7;
+        numDigits = max(arrayfun(@getPrecision, val));
+        if isa(val,"single")
+            numDigits = min(7, numDigits);
+        else
+            numDigits = min(15, numDigits);
+        end
         fmt = sprintf("%%.%ig", numDigits);
         if sum(sz>1)>1 % 2D or higher array
             valsubstr = strings(1, sz(1));
@@ -21,7 +24,11 @@ function valstr = m2json(val)
             valstr = arrayfun(@(x) sprintf(fmt, x), val);
             valstr = strjoin(valstr, ",");
         end
-        valstr = "[" + valstr + "]";
+        if length(val)>1
+            valstr = "[" + valstr + "]";
+        elseif isempty(val)
+            valstr = "[]";
+        end
         valstr = strrep(valstr,"-Inf", "null");
         valstr = strrep(valstr, "Inf", "null");
         valstr = strrep(valstr, "NaN", "null");
@@ -55,7 +62,6 @@ function valstr = m2json(val)
     end
 end
 
-function x = clip(x,lb,ub)
-    x(x<lb) = lb;
-    x(x>ub) = ub;
+function numDigits = getPrecision(val)
+    numDigits = strlength(sprintf("%.15g", val));
 end

@@ -1,15 +1,16 @@
 function output = convertDate(date)
     date = convertToDateTime(date);
     if isDate(date)
-        format = "yyyy-mm-dd";
+        format = "yyyy-MM-dd";
     else
-        format = "yyyy-mm-dd HH:MM:ss";
+        format = "yyyy-MM-dd HH:mm:ss";
     end
     output = string(date, format);
 end
 
 function dt = convertToDateTime(input)
     if isdatetime(input)
+        dt = input;
         return
     elseif isnumeric(input)
         % Assume input is a datenum
