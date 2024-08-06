@@ -5,11 +5,10 @@ function valstr = m2json(val)
         valstr = cell2json(val);
     elseif isa(val, "numeric")
         sz = size(val);
-        numDigits = max(arrayfun(@getPrecision, val));
         if isa(val,"single")
-            numDigits = min(7, numDigits);
+            numDigits = 7;
         else
-            numDigits = min(15, numDigits);
+            numDigits = 15;
         end
         fmt = sprintf("%%.%ig", numDigits);
         if sum(sz>1)>1 % 2D or higher array
@@ -60,8 +59,4 @@ function valstr = m2json(val)
         valstr = "";
         warning("Failed to m2json encode class of type: %s", class(val));
     end
-end
-
-function numDigits = getPrecision(val)
-    numDigits = strlength(sprintf("%.15g", val));
 end
