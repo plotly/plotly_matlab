@@ -1,6 +1,4 @@
 function updateConstantLine(obj,plotIndex)
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
@@ -8,7 +6,7 @@ function updateConstantLine(obj,plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    [xsource, ysource] = findSourceAxis(obj, axIndex);
 
     %---------------------------------------------------------------------%
 
@@ -28,7 +26,7 @@ function updateConstantLine(obj,plotIndex)
     %---------------------------------------------------------------------%
 
     %-scatter visible-%
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible,"on");
+    obj.data{plotIndex}.visible = strcmp(plotData.Visible, "on");
 
     %---------------------------------------------------------------------%
 
@@ -51,9 +49,7 @@ function updateConstantLine(obj,plotIndex)
     obj.PlotOptions.is3d = false; % by default
 
     if isfield(plotData,"ZData")
-
         numbset = unique(plotData.ZData);
-
         if any(plotData.ZData) && length(numbset)>1
             %-scatter z-%
             obj.data{plotIndex}.z = plotData.ZData;

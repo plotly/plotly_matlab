@@ -1,7 +1,4 @@
 function updateStackedplot(obj, plotIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
@@ -34,12 +31,12 @@ function updateStackedplot(obj, plotIndex)
         end
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-UPDATE STACKEDPLOT AXIS-%
     updateStackedplotAxis(obj, plotIndex)
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET TRACES-%
     traceIndex = plotIndex;
@@ -77,27 +74,22 @@ function updateStackedplot(obj, plotIndex)
         end
 
     end
-
-    %-------------------------------------------------------------------------%
 end
 
 function updateStackedplotAxis(obj, plotIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET X-AXIS-%
 
     [xaxis, xExpoFormat] = getAxis(obj, plotIndex, 'X');
     obj.layout = setfield(obj.layout, 'xaxis1', xaxis{1});
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET Y-AXIS-%
 
@@ -107,7 +99,7 @@ function updateStackedplotAxis(obj, plotIndex)
         obj.layout = setfield(obj.layout, sprintf('yaxis%d', a), yaxis{a});
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET AXES ANOTATIONS-%
 
@@ -124,9 +116,6 @@ function updateStackedplotAxis(obj, plotIndex)
 end
 
 function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
@@ -140,7 +129,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     fontFamily = matlab2plotlyfont(plotData.FontName);;
     tickLen = 5;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-Parse parameters accorging to axisName (X or Y)
 
@@ -173,7 +162,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
             end
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-GET EACH AXIS-%
 
@@ -232,12 +221,9 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
             ax{a}.titlefont.family = fontFamily;
         end
     end
-
-    %-------------------------------------------------------------------------%
 end
 
 function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
-
     %-by year-%
     yearLim = year(axisLim);
     isYear = length(unique(yearLim)) > 1;
@@ -352,7 +338,6 @@ function updateTitle(obj, titleText, xySource)
 end
 
 function updateExponentFormat(obj, expoFormat, xySource, axName)
-
     axName = lower(axName);
     xaxis = obj.layout.("xaxis" + xySource(1));
     yaxis = obj.layout.("yaxis" + xySource(2));

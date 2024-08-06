@@ -45,5 +45,4 @@ function face = extractAreaFace(area_data)
         end
     end
     face.color = facecolor;
-    %---------------------------------------------------------------------%
 end

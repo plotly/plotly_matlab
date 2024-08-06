@@ -1,7 +1,4 @@
 function obj = updateQuiver(obj, dataIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     %-get structures-%
@@ -32,7 +29,7 @@ function obj = updateQuiver(obj, dataIndex)
     %-update axis-%
     if isQuiver3D, updateScene(obj, dataIndex); end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace-%
     if isQuiver3D
@@ -48,7 +45,7 @@ function obj = updateQuiver(obj, dataIndex)
     obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
     obj.data{dataIndex}.name = plotData.DisplayName;
 
-    %------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-quiver line color-%
     lineColor = 255 * plotData.Color; 
@@ -57,13 +54,12 @@ function obj = updateQuiver(obj, dataIndex)
     %-quiver line width-%
     obj.data{dataIndex}.line.width = 2.5 * plotData.LineWidth;
 
-    %------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
     
     %-set trace data for quiver line only-%
     m = 1; 
 
     for n = 1:numel(xData)
-
         obj.data{dataIndex}.x(m) = xData(n); 
         obj.data{dataIndex}.x(m+1) = xData(n) + uData(n);
         obj.data{dataIndex}.x(m+2) = nan; 
@@ -77,20 +73,16 @@ function obj = updateQuiver(obj, dataIndex)
             obj.data{dataIndex}.z(m+1) = zData(n) + wData(n);
             obj.data{dataIndex}.z(m+2) = nan; 
         end
-
         m = m + 3;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace data for quiver barb-%
     if isHG2() && strcmp(plotData.ShowArrowHead, 'on')
-        
         maxHeadSize = plotData.MaxHeadSize * 1.5;
         headWidth = 20;
-
         for n = 1:numel(xData)
-
             if isQuiver3D
                 quiverBarb = getQuiverBarb3D(...
                     xData(n), yData(n), zData(n), ...
@@ -104,11 +96,9 @@ function obj = updateQuiver(obj, dataIndex)
                     maxHeadSize, headWidth ...
                 );
             end
-            
             for m = 1:size(quiverBarb, 2)
                 obj.data{dataIndex}.x(end+1) = quiverBarb(1, m);
                 obj.data{dataIndex}.y(end+1) = quiverBarb(2, m);
-                
                 if isQuiver3D
                     obj.data{dataIndex}.z(end+1) = quiverBarb(3, m);
                 end
@@ -116,7 +106,7 @@ function obj = updateQuiver(obj, dataIndex)
         end
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace legend-%
     leg = plotData.Annotation;
@@ -130,14 +120,9 @@ function obj = updateQuiver(obj, dataIndex)
     end
 
     obj.data{dataIndex}.showlegend = showLeg;
-
-    %-------------------------------------------------------------------------%
 end
 
 function updateScene(obj, dataIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
@@ -164,7 +149,7 @@ function updateScene(obj, dataIndex)
     r3 = range([ 1, prod(aspectRatio([2,3])) ]);
     r = max([r1, r2, r3]);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     scene.aspectratio.x = 1.0*aspectRatio(1);
@@ -184,7 +169,7 @@ function updateScene(obj, dataIndex)
     %-camera projection-%
     % scene.camera.projection.type = axisData.Projection;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
     rangeFac = 0.0;
@@ -240,24 +225,17 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.YGrid, 'off'), scene.yaxis.showgrid = false; end
     if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
-
-    %-------------------------------------------------------------------------%
 end
-
-
 
 function quiverBarb = getQuiverBarb2D(...
         xData, yData, ...
         uData, vData, ...
         maxHeadSize, headWidth ...
     )
-    
-    %-------------------------------------------------------------------------%
-
     %-initializations-%
 
     refVector = [uData; vData];
@@ -272,15 +250,12 @@ function quiverBarb = getQuiverBarb2D(...
     yHead = yData + vData;
     head = [xHead; yHead];
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     quiverBarb = getBarb2D(head, refAngle, refLen, maxHeadSize, headWidth);
-
-    %-------------------------------------------------------------------------%
 end
 
 function barb = getBarb2D(head, refAngle, refLen, maxHeadSize, headWidth)
-
     refPoint = -maxHeadSize * refLen * cos(refAngle');
     rotPoint1 = rotation2D(refPoint, deg2rad(headWidth));
     rotPoint2 = rotation2D(refPoint, deg2rad(-headWidth));
@@ -293,7 +268,6 @@ end
 
 function outPoint = translation2D(inPoint, offsetPoint)
     xt = offsetPoint(1); yt = offsetPoint(2);
-
     T = affine2d(...
         [...
             1 , 0 , 0; ...
@@ -301,7 +275,6 @@ function outPoint = translation2D(inPoint, offsetPoint)
             xt, yt, 1  ...
         ]...
     );
-
     outPoint = transformPointsForward(T, inPoint);
 end
 
@@ -313,20 +286,14 @@ function outPoint = rotation2D(inPoint, phi)
             0        , 0       , 1; ...
         ]...
     );
-
     outPoint = transformPointsForward(T, inPoint);
 end
-
-
 
 function quiverBarb = getQuiverBarb3D(...
         xData, yData, zData, ...
         uData, vData, wData, ...
         maxHeadSize, headWidth, barbMode ...
     )
-    
-    %-------------------------------------------------------------------------%
-
     %-initializations-%
 
     refVector = [uData; vData; wData];
@@ -343,7 +310,7 @@ function quiverBarb = getQuiverBarb3D(...
     zHead = zData + wData;
     head = [xHead; yHead; zHead];
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     xBarb = getBarb3D(head, refAngle, refLen, maxHeadSize, headWidth, 'x');
     yBarb = getBarb3D(head, refAngle, refLen, maxHeadSize, headWidth, 'y');
@@ -356,13 +323,10 @@ function quiverBarb = getQuiverBarb3D(...
         quiverBarb2 = mean([xBarb(:,3), yBarb(:,3), zBarb(:,3)], 2);
         quiverBarb = [quiverBarb1, xBarb(:,2), quiverBarb2, xBarb(:,4)];
     end
-
-    %-------------------------------------------------------------------------%
 end
 
 function barb = getBarb3D(head, refAngle, refLen, maxHeadSize, headWidth, ...
-    refAxis)
-
+        refAxis)
     refPoint = -maxHeadSize * refLen * cos(refAngle');
     rotPoint1 = rotation3D(refPoint, deg2rad(headWidth), refAxis);
     rotPoint2 = rotation3D(refPoint, deg2rad(-headWidth), refAxis);
@@ -375,7 +339,6 @@ end
 
 function outPoint = translation3D(inPoint, offsetPoint)
     xt = offsetPoint(1); yt = offsetPoint(2); zt = offsetPoint(3);
-
     T = affine3d(...
         [...
             1 , 0 , 0 , 0; ...
@@ -384,7 +347,6 @@ function outPoint = translation3D(inPoint, offsetPoint)
             xt, yt, zt, 1  ...
         ]...
     );
-
     outPoint = transformPointsForward(T, inPoint);
 end
 
@@ -421,14 +383,10 @@ function outPoint = rotation3D(inPoint, phi, refAxis)
                 ]...
             );
     end
-
     outPoint = transformPointsForward(T, inPoint);
 end
 
-
-
 function scaleFactor = getScaleFactor(xData, uData, nSteps)
-
     xStep = max( abs(diff( mean(xData(:,:,1), 1) )) );
     uStep = max(abs(uData(:)));
 
@@ -436,6 +394,5 @@ function scaleFactor = getScaleFactor(xData, uData, nSteps)
 end
 
 function stringColor = getStringColor(numColor)
-    
     stringColor = sprintf('rgb(%f,%f,%f)', numColor);
 end

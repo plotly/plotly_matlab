@@ -1,7 +1,4 @@
 function obj = updateContourgroup(obj,plotIndex)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
@@ -24,18 +21,18 @@ function obj = updateContourgroup(obj,plotIndex)
         contourSize = 2e-3;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace-%
     obj.data{plotIndex}.type = 'contour';
     obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
     obj.data{plotIndex}.yaxis = sprintf('y%d', ySource);
     obj.data{plotIndex}.name = plotData.DisplayName;
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.visible = strcmp(plotData.Visible, 'on');
     obj.data{plotIndex}.xtype = 'array';
     obj.data{plotIndex}.ytype = 'array';
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace data-%
     obj.data{plotIndex}.x = xData;
@@ -48,7 +45,7 @@ function obj = updateContourgroup(obj,plotIndex)
     obj.data{plotIndex}.contours.end = contourEnd;
     obj.data{plotIndex}.contours.size = contourSize;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace coloring-%
     obj.data{plotIndex}.zauto = false;
@@ -80,12 +77,9 @@ function obj = updateContourgroup(obj,plotIndex)
 
     %-set trace legend-%
     obj.data{plotIndex}.showlegend = getShowLegend(plotData);
-
-    %-------------------------------------------------------------------------%
 end
 
 function contourLine = getContourLine(plotData)
-
     %-initializations-%
     lineStyle = plotData.LineStyle;
     lineWidth = 1.5*plotData.LineWidth;
@@ -118,7 +112,6 @@ function contourLine = getContourLine(plotData)
 end
 
 function colorScale = getColorScale(plotData, axisData)
-
     %-initializations-%
     cMap = axisData.Colormap;
     nColors = size(cMap, 1);
@@ -134,7 +127,6 @@ function colorScale = getColorScale(plotData, axisData)
             colorScale{1} = {0, getStringColor( 255*ones(1,3) )};
             cScaleInd = linspace(1/nContours, 1, nContours);
         end
-
         for n = 1:nContours
             m = n; if isBackground, m = n+1; end
             stringColor = getStringColor( 255*cMap(cMapInd(n), :) );
@@ -142,7 +134,6 @@ function colorScale = getColorScale(plotData, axisData)
         end
     else
         cScaleInd = rescale(1:nColors, 0, 1);
-
         for n = 1:nColors
             stringColor = getStringColor( 255*cMap(n,:) );
             colorScale{n} = {cScaleInd(n), stringColor};

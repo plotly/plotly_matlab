@@ -52,7 +52,7 @@ obj.layout.margin.pad = obj.PlotlyDefaults.MarginPad;
 %-------------------------------------------------------------------------%
 
 %-figure show legend-%
-if(obj.State.Figure.NumLegends > 1)
+if (obj.State.Figure.NumLegends > 1)
     obj.layout.showlegend = true;
 else
     obj.layout.showlegend = false;

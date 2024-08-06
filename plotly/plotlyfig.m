@@ -178,95 +178,95 @@ classdef plotlyfig < handle
 
                     % parse property/values
                     for a = parseinit:2:length(varargin)
-                        if(strcmpi(varargin{a},'filename'))
+                        if (strcmpi(varargin{a},'filename'))
                             obj.PlotOptions.FileName = varargin{a+1};
                             % overwrite if filename provided
                             obj.PlotOptions.FileOpt = 'overwrite';
                         end
-                        if(strcmpi(varargin{a},'savefolder'))
+                        if (strcmpi(varargin{a},'savefolder'))
                             obj.PlotOptions.SaveFolder = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'fileopt'))
+                        if (strcmpi(varargin{a},'fileopt'))
                             obj.PlotOptions.FileOpt = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'world_readable'))
+                        if (strcmpi(varargin{a},'world_readable'))
                             obj.PlotOptions.WorldReadable = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'link'))
+                        if (strcmpi(varargin{a},'link'))
                             obj.PlotOptions.ShowURL = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'open'))
+                        if (strcmpi(varargin{a},'open'))
                             obj.PlotOptions.OpenURL = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'strip'))
+                        if (strcmpi(varargin{a},'strip'))
                             obj.PlotOptions.Strip = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'writeFile'))
+                        if (strcmpi(varargin{a},'writeFile'))
                             obj.PlotOptions.WriteFile = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'visible'))
+                        if (strcmpi(varargin{a},'visible'))
                             obj.PlotOptions.Visible = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'offline'))
+                        if (strcmpi(varargin{a},'offline'))
                             obj.PlotOptions.Offline = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'showlink'))
+                        if (strcmpi(varargin{a},'showlink'))
                             obj.PlotOptions.ShowLinkText = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'linktext'))
+                        if (strcmpi(varargin{a},'linktext'))
                             obj.PlotOptions.LinkText = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'include_plotlyjs'))
+                        if (strcmpi(varargin{a},'include_plotlyjs'))
                             obj.PlotOptions.IncludePlotlyjs = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'layout'))
+                        if (strcmpi(varargin{a},'layout'))
                             obj.layout= varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'data'))
+                        if (strcmpi(varargin{a},'data'))
                             obj.data = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'StripMargins'))
+                        if (strcmpi(varargin{a},'StripMargins'))
                             obj.PlotOptions.StripMargins = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'TriangulatePatch'))
+                        if (strcmpi(varargin{a},'TriangulatePatch'))
                             obj.PlotOptions.TriangulatePatch = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'TreatAs'))
+                        if (strcmpi(varargin{a},'TreatAs'))
                             if ~iscell(varargin{a+1})
                                 obj.PlotOptions.TreatAs = {varargin{a+1}};
                             else
                                 obj.PlotOptions.TreatAs = varargin{a+1};
                             end
                         end
-                        if(strcmpi(varargin{a},'AxisEqual'))
+                        if (strcmpi(varargin{a},'AxisEqual'))
                             obj.PlotOptions.AxisEqual = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'AspectRatio'))
+                        if (strcmpi(varargin{a},'AspectRatio'))
                             obj.PlotOptions.AspectRatio = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'CameraEye'))
+                        if (strcmpi(varargin{a},'CameraEye'))
                             obj.PlotOptions.CameraEye = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'Quality'))
+                        if (strcmpi(varargin{a},'Quality'))
                             obj.PlotOptions.Quality = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'Zmin'))
+                        if (strcmpi(varargin{a},'Zmin'))
                             obj.PlotOptions.Zmin = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'FrameDuration'))
+                        if (strcmpi(varargin{a},'FrameDuration'))
                             if varargin{a+1} > 0
                                 obj.PlotOptions.FrameDuration = varargin{a+1};
                             end
                         end
-                        if(strcmpi(varargin{a},'FrameTransitionDuration'))
+                        if (strcmpi(varargin{a},'FrameTransitionDuration'))
                             if varargin{a+1} >= 0
                                 obj.PlotOptions.FrameTransitionDuration = varargin{a+1};
                             end
                         end
-                        if(strcmpi(varargin{a},'geoRenderType'))
+                        if (strcmpi(varargin{a},'geoRenderType'))
                             obj.PlotOptions.geoRenderType = varargin{a+1};
                         end
-                        if(strcmpi(varargin{a},'DomainFactor'))
+                        if (strcmpi(varargin{a},'DomainFactor'))
                             len = length(varargin{a+1});
                             obj.PlotOptions.DomainFactor(1:len) = varargin{a+1};
                         end

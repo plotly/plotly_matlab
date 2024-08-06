@@ -36,10 +36,10 @@ function marker = extractPatchFace(patch_data)
                 switch patch_data.CDataMapping
                     case "scaled"
                         capCD = max(min(patch_data.FaceVertexCData(1,1), ...
-                                axis_data.CLim(2)),axis_data.CLim(1));
-                        scalefactor = (capCD -axis_data.CLim(1)) ...
+                                axis_data.CLim(2)), axis_data.CLim(1));
+                        scalefactor = (capCD - axis_data.CLim(1)) ...
                                 / diff(axis_data.CLim);
-                        col = 255*(colormap(1+ floor(scalefactor ...
+                        col = 255*(colormap(1 + floor(scalefactor ...
                                 * (length(colormap)-1)),:));
                     case "direct"
                         col = 255*(colormap(patch_data.FaceVertexCData(1,1),:));
@@ -73,7 +73,8 @@ function marker = extractPatchFace(patch_data)
                         col = 255*(colormap(1+floor(scalefactor ...
                                 * (length(colormap)-1)),:));
                     case "direct"
-                        col = 255*(colormap(patch_data.FaceVertexCData(1,1),:));
+                        col = 255*(colormap( ...
+                                patch_data.FaceVertexCData(1,1),:));
                 end
                 col = [col patch_data.EdgeAlpha];
         end

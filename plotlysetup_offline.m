@@ -1,5 +1,4 @@
 function plotlysetup_offline(plotly_bundle_url, varargin)
-
     % CALL: plotlysetup_offline(plotly_bundle_url);
     % WHERE: plotly_bundle_url is the plotly bundle url, e.g. http://cdn.plot.ly/plotly-latest.min.js
     % If no argument is provided, the default http://cdn.plot.ly/plotly-latest.min.js is used.
@@ -11,9 +10,9 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
     exception.identifier = '';
     
     try %check number of inputs
-        if(nargin == 0)
+        if nargin == 0
             plotly_bundle_url = 'http://cdn.plot.ly/plotly-latest.min.js';
-        elseif (nargin>1)
+        elseif nargin>1
             error('plotly:wrongInput',....
                 ['\n\nWhoops! Wrong number of inputs. Please run >> help plotlysetup_offline \n',...
                 'for more information regarding the setup your Plotly API MATLAB \n',...
@@ -42,8 +41,7 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
         return
     end
     
-    if(~is_octave)
-        
+    if ~is_octave
         try
             %embed the api to the matlabroot/toolbox dir.
             fprintf('\nAdding Plotly to MATLAB toolbox directory ...  ');
@@ -51,20 +49,19 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
             %plotly folder in the matlab/toolbox dir.
             plotlyToolboxPath = fullfile(matlabroot,'toolbox','plotly');
             
-            if(exist(plotlyToolboxPath,'dir')) %check for overwrite...
+            if exist(plotlyToolboxPath,'dir') %check for overwrite...
                 fprintf(['\n\n[UPDATE]: \n\nHey! We see that a copy of Plotly has previously been added to\n' ...
                     'your Matlab toolboxes. Would you like us to overwrite it with:\n' plotlyFolderPath ' ? \n'...
                     'Careful! You may lose data saved to this Plotly directory.\n\n']);
                 
                 overwrite = input('Overwrite (y/n) ? : ','s');
                 
-                if(strcmpi(overwrite,'y'));
+                if (strcmpi(overwrite,'y'));
                     fprintf('\n[OVERWRITE]:\n\nOverwriting Plotly! ... Done \n');
                 else
                     fprintf('\n[NO OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n');
                 end
             else %toolbox Plotly not yet created
-                
                 %worked (without interuption)...just a formatting thing!
                 fprintf('Done\n');
                 
@@ -80,13 +77,12 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
                 end
             end
             
-            if(strcmpi(overwrite,'y'))
-                
+            if strcmpi(overwrite,'y')
                 %move a copy of the Plotly api to matlab root directory
                 [status, msg, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath);
                 %check that the plotly api was copied to the matlab root toolbox directory
                 if (status == 0)
-                    if(~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
+                    if (~strcmp(messid, 'MATLAB:COPYFILE:SourceAndDestinationSame'))
                         error('plotly:copyPlotly',permissionMessage('copy the Plotly folder'));
                     end
                 end
@@ -102,10 +98,10 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
             %check for a startup.m file in matlab rootpath (we want to add one here)
             startupFile = [];
             startupFileRootPath = fullfile(matlabroot,'toolbox','local','startup.m');
-            if(~exist(startupFileRootPath,'file'))
+            if ~exist(startupFileRootPath,'file')
                 startFileID = fopen(startupFileRootPath, 'w');
                 %startup.m does not exist and startupFilePath is non-writable
-                if(startFileID == -1)
+                if (startFileID == -1)
                     error('plotly:rootStartupCreation',permissionMessage('write the startup.m script'));
                 end
                 startupFile = {startupFileRootPath}; %needed because MATLAB only looks for startup.m when first opened.
@@ -121,7 +117,7 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
             
             %print any addplotlydstatup warnings;
             w = cellfun(@isempty,warnings);
-            if(find(~w))
+            if find(~w)
                 %output warnings
                 exception.warnings = warnings;
                 fprintf(warnings{find(~w)});
@@ -141,17 +137,14 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
     
     %greet the people!
     fprintf('\nWelcome to Plotly! If you are new to Plotly please enter: >> plotlyhelp to get started!\n\n')
-    
-    end
-    
-    %helper message function 
-    function message = permissionMessage(spec)
+end
+
+% helper message function 
+function message = permissionMessage(spec)
     message = ['\n\nShoot! We tried to ' spec ' to the MATLAB toolbox \n',...
-        'directory, but were denied write permission. You''ll have to add\n',...
-        'the Plotly folder to your MATLAB path manually by running: \n\n',...
-        '>> plotly_path = fullfile(pwd, ''plotly'')\n',...
-        '>> addpath(genpath(plotly_path))\n\n',...
-        'Questions? Ask https://community.plotly.com/c/api/matlab/\n\n'];
-    end
-    
-    
+            'directory, but were denied write permission. You''ll have to add\n',...
+            'the Plotly folder to your MATLAB path manually by running: \n\n',...
+            '>> plotly_path = fullfile(pwd, ''plotly'')\n',...
+            '>> addpath(genpath(plotly_path))\n\n',...
+            'Questions? Ask https://community.plotly.com/c/api/matlab/\n\n'];
+end

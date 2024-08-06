@@ -1,7 +1,4 @@
 function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
-
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
     anIndex = obj.State.Figure.NumTexts + 1;
     titleStruct = tiledLayoutData.Title;
@@ -11,7 +8,7 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
     obj.layout.annotations{anIndex}.yref = 'paper';
     obj.layout.annotations{anIndex}.align = titleStruct.HorizontalAlignment;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-anchors-%
     obj.layout.annotations{anIndex}.xanchor = titleStruct.HorizontalAlignment;
@@ -25,7 +22,7 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
             obj.layout.annotations{anIndex}.yanchor = 'bottom';
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-text-%
     titleString = titleStruct.String;
@@ -39,13 +36,13 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
 
     obj.layout.annotations{anIndex}.text = titleTex;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-text location-%
     obj.layout.annotations{anIndex}.x = 0.5;
     obj.layout.annotations{anIndex}.y = 0.95;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-font properties-%
     titleColor = sprintf('rgb(%f,%f,%f)', 255*titleStruct.Color);
@@ -63,7 +60,7 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
         otherwise
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-title angle-%
     textAngle = titleStruct.Rotation;
@@ -74,11 +71,10 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
 
     obj.layout.annotations{anIndex}.textangle = textAngle;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-hide text (a workaround)-%
     if strcmp(titleStruct.Visible,'off')
         obj.layout.annotations{anIndex}.text = ' ';
     end
-
 end

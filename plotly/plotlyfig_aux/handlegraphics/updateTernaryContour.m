@@ -1,5 +1,4 @@
 function obj = updateTernaryContour(obj, ternaryIndex)
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
@@ -11,21 +10,21 @@ function obj = updateTernaryContour(obj, ternaryIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    %=========================================================================%
+    %=====================================================================%
     %
     %-UPDATE CONTOURS FILL-%
     %
-    %=========================================================================%
+    %=====================================================================%
 
     if strcmpi(ternaryData.Fill, 'on')
         fillContours(obj, ternaryIndex)        
     end
 
-    %=========================================================================%
+    %=====================================================================%
     %
     %-UPDATE CONTOUR LINES-%
     %
-    %=========================================================================%
+    %=====================================================================%
 
     %-parse plot data-%
     contourMatrix = ternaryData.ContourMatrix;
@@ -35,7 +34,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
 
     while (n < len)
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-get plot data-%
         m = contourMatrix(2, n);
@@ -44,7 +43,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         xData{c} = contourMatrix(1, n+1:n+m);
         yData{c} = contourMatrix(2, n+1:n+m);
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-get edge color-%
         if isnumeric(ternaryData.LineColor)
@@ -71,17 +70,14 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         n = n + m + 1;
         c = c + 1;
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set contour lines-%
     for c = 1:length(xData)
-
-        %---------------------------------------------------------------------%
-
         %-get trace index-%
         traceIndex = ternaryIndex;
 
@@ -90,14 +86,14 @@ function obj = updateTernaryContour(obj, ternaryIndex)
             traceIndex = obj.PlotOptions.nPlots;
         end
         
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-set trace-%
         obj.data{traceIndex}.type = 'scatterternary';
         obj.data{traceIndex}.mode = 'lines';
         obj.data{traceIndex}.subplot = sprintf('ternary%d', xsource+1);
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-convert from cartesian coordinates to trenary points-%
         aData = yData{c}/sin(deg2rad(60));
@@ -107,7 +103,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         obj.data{traceIndex}.a = aData;
         obj.data{traceIndex}.b = bData;
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-line settings-%
         obj.data{traceIndex}.line.width = 1.0*ternaryData.LineWidth;
@@ -124,14 +120,14 @@ function obj = updateTernaryContour(obj, ternaryIndex)
                 obj.data{traceIndex}.line.dash = 'dot';
         end
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-some trace settings-%
         obj.data{traceIndex}.name = ternaryData.DisplayName;
         obj.data{traceIndex}.showscale = false;
         obj.data{traceIndex}.visible = strcmp(ternaryData.Visible,'on');
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-trace legend-%
         % leg = get(ternaryData.Annotation);
@@ -147,18 +143,16 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         % obj.data{traceIndex}.showlegend = showleg;
         obj.data{traceIndex}.showlegend = false;
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
     end
 
-    %=========================================================================%
+    %=====================================================================%
     %
     %-UPDATE TERNARY AXES-%
     %
-    %=========================================================================%
+    %=====================================================================%
 
     ternaryAxes(obj, ternaryIndex)
-
-    %-------------------------------------------------------------------------%
 end
 
 
@@ -175,7 +169,7 @@ function fillContours(obj, ternaryIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get zLevels-%
     contourMatrix = ternaryData.ContourMatrix;
@@ -192,7 +186,7 @@ function fillContours(obj, ternaryIndex)
 
     zLevel = sort(zLevel);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-get close contours-%
     resizeScale = 1000/mean(size(ternaryData.XData));
@@ -250,7 +244,7 @@ function fillContours(obj, ternaryIndex)
         c = c + 1;
     end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-sort contours by area size-%
     [~, idx] = sort(contourArea, 'descend');
@@ -265,13 +259,10 @@ function fillContours(obj, ternaryIndex)
     yData = yDataSorted;
     lineColor = lineColorSorted;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set contour fill-%
     for c = 1:length(xData)
-
-        %---------------------------------------------------------------------%
-
         %-get trace index-%
         traceIndex = ternaryIndex;
 
@@ -280,14 +271,14 @@ function fillContours(obj, ternaryIndex)
             traceIndex = obj.PlotOptions.nPlots;
         end
         
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-set trace-%
         obj.data{traceIndex}.type = 'scatterternary';
         obj.data{traceIndex}.mode = 'lines';
         obj.data{traceIndex}.subplot = sprintf('ternary%d', xsource+1);
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-convert from cartesian coordinates to trenary points-%
         aData = yData{c}/sin(deg2rad(60));
@@ -297,7 +288,7 @@ function fillContours(obj, ternaryIndex)
         obj.data{traceIndex}.a = aData;
         obj.data{traceIndex}.b = bData;
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-line settings-%
         obj.data{traceIndex}.line.color = lineColor{c};
@@ -316,30 +307,27 @@ function fillContours(obj, ternaryIndex)
                 obj.data{traceIndex}.line.dash = 'dot';
         end
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-fill settings-%
         obj.data{traceIndex}.fill = 'toself';
         obj.data{traceIndex}.fillcolor = lineColor{c};
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-some trace settings-%
         obj.data{traceIndex}.name = ternaryData.DisplayName;
         obj.data{traceIndex}.showscale = false;
         obj.data{traceIndex}.visible = strcmp(ternaryData.Visible,'on');
 
-        %---------------------------------------------------------------------%
+        %-----------------------------------------------------------------%
 
         %-trace legend-%
         obj.data{traceIndex}.showlegend = false;
-        
-        %---------------------------------------------------------------------%
     end
 end
 
 function ternaryAxes(obj, ternaryIndex)
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
@@ -349,7 +337,7 @@ function ternaryAxes(obj, ternaryIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set domain plot-%
     xo = axisData.Position(1);
@@ -360,7 +348,7 @@ function ternaryAxes(obj, ternaryIndex)
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-label settings-%
     l = 1; t = 1;
@@ -394,7 +382,7 @@ function ternaryAxes(obj, ternaryIndex)
         ternary.(labelLetter(l) + "axis").title.font.family = labelFontFamily;
     end
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);
@@ -414,20 +402,17 @@ function ternaryAxes(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
     end
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set ternary axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('ternary%d', xsource+1), ternary);
 
-    %-----------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     obj.PlotlyDefaults.isTernary = true;
-
-    %-----------------------------------------------------------------------------%
 end
 
 function rad = deg2rad(deg)
-    
     rad = deg / 180 * pi;
 end
 

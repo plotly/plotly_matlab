@@ -1,7 +1,4 @@
 function obj = updateIsosurface(obj, isoIndex)
-
-    %-------------------------------------------------------------------------%
-
 	%-INITIALIZATIONS-%
 
 	axIndex = obj.getAxisIndex(obj.State.Plot(isoIndex).AssociatedAxis);
@@ -21,14 +18,14 @@ function obj = updateIsosurface(obj, isoIndex)
 	jData = plotData.Faces(:, 2) - 1;
 	kData = plotData.Faces(:, 3) - 1;
 
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-get trace-%
 	obj.data{isoIndex}.type = 'mesh3d';
 	obj.data{isoIndex}.name = plotData.DisplayName;
 	obj.data{isoIndex}.showscale = false;
 
-	%-------------------------------------------------------------------------%	
+	%---------------------------------------------------------------------%	
 
 	%-set mesh data-%
 	obj.data{isoIndex}.x = xData;
@@ -39,7 +36,7 @@ function obj = updateIsosurface(obj, isoIndex)
 	obj.data{isoIndex}.j = jData;
 	obj.data{isoIndex}.k = kData;
 
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-mesh coloring-%
 	faceColor = getFaceColor(plotData, axisData);
@@ -50,7 +47,7 @@ function obj = updateIsosurface(obj, isoIndex)
 		obj.data{isoIndex}.color = faceColor;
 	end
 
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-lighting settings-%
 	if ~strcmp(plotData.FaceLighting, 'flat')
@@ -63,16 +60,13 @@ function obj = updateIsosurface(obj, isoIndex)
 		obj.data{isoIndex}.lighting.facenormalsepsilon = 1e-6;
 	end
 
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-associate scene to trace-%
 	obj.data{isoIndex}.scene = sprintf('scene%d', xSource);
-
-	%-------------------------------------------------------------------------%
 end
 
 function updateScene(obj, isoIndex)
-
 	%-INITIALIZATIONS-%
 	axIndex = obj.getAxisIndex(obj.State.Plot(isoIndex).AssociatedAxis);
 	plotData = obj.State.Plot(isoIndex).Handle;
@@ -154,7 +148,6 @@ function updateScene(obj, isoIndex)
 end
 
 function fillColor = getFaceColor(plotData, axisData)
-
 	%-initializations-%
 	faceColor = plotData.FaceColor;
 	cData = plotData.CData;
@@ -165,10 +158,8 @@ function fillColor = getFaceColor(plotData, axisData)
 	if isnumeric(faceColor)
 		numColor = 255 * faceColor;
 		fillColor = sprintf('rgb(%f,%f,%f)', numColor);
-
 	elseif strcmpi(faceColor, 'flat')
 		fillColor = getStringColor(cData, colorMap, cLim);
-
     elseif strcmpi(faceColor, 'interp')
     	if size(cData, 1) ~= 1
     		for n = 1:size(cData, 2)

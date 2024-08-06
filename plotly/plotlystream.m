@@ -75,13 +75,9 @@ classdef plotlystream < handle
             
             %check for correct input structure
             if nargin > 0
-                
                 if ischar(request)
-                    
                     obj.Specs.Token = request;
-                    
                 elseif isstruct(request)
-                    
                     %check for tokens (required)
                     if (isfield(request,'token'))
                         obj.Specs.Token = request.token;
@@ -90,19 +86,15 @@ classdef plotlystream < handle
                             'online documentation found @ plot.ly/matlab for more information or contact ',...
                             'chuck@plot.ly']);
                     end
-                    
                     if isfield(request,'host')
                         obj.Specs.Host = request.host;
                     end
-                    
                     if isfield(request,'timeout')
                         obj.Specs.Timeout = request.timeout;
                     end
-                    
                     if isfield(request,'handler')
                         obj.Specs.Handler= request.handler;
                     end
-                    
                     if isfield(request,'chunklen')
                         obj.Specs.Chunklen= request.chunklen;
                     end
@@ -112,7 +104,6 @@ classdef plotlystream < handle
                         'Please check out the online documentation found @ plot.ly/matlab ',...
                         'for more information or contact chuck@plot.ly']);
                 end
-                
             else
                 error(['Oops! You did not properly specify a stream token! Please check out the ', ....
                     'online documentation found @ plot.ly/matlab for more information or contact ',...
@@ -122,9 +113,7 @@ classdef plotlystream < handle
          
         %-----------OPEN STREAM-----------%
         function obj = open(obj)
-            
             try obj.connect;
-                
                 %Connection successful!
                 fprintf('\n[Connection Successful]\n\n');
                 
@@ -133,7 +122,6 @@ classdef plotlystream < handle
                 obj.Specs.Closed = false;
                 
             catch ME
-                
                 error(['Oops! The following error occured when trying to write to the stream: ',...
                     ME.message '. Please check the online documentation ', ...
                     'found @ plot.ly/matlab for more information or contact chuck@plot.ly']);
@@ -167,7 +155,6 @@ classdef plotlystream < handle
         
         %-----------WRITE STREAM-----------%
         function obj = write(obj,request)
-            
             if nargin ~= 2
                 error(['Oops! It appears that not enough input arguments were ',...
                     'specified to the write method of your plotlystream object. ',...
@@ -184,19 +171,17 @@ classdef plotlystream < handle
                 body = request;
                 
                 %make sure we did not close the stream
-                if(~obj.Specs.Closed)
+                if (~obj.Specs.Closed)
                     try
                         %write to stream
                         obj.Stream.write(unicode2native(sprintf([m2json(body) '\n']),''));
                     catch ME
-                        
                         %error due to stream not being open (creation of Stream object)
-                        if(strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
+                        if strcmp(ME.message, 'Attempt to reference field of non-structure array.')
                             error(['Oops! A connection has not yet been established. Please open',...
                                 ' a connection by firsting calling the ''open'' method of your',...
                                 ' plotlystream object.']);
                         else
-                            
                             %---reconnect---%
                             obj.getresponse;
                             if any(strcmp(obj.Specs.ReconnectOn,obj.Response))
@@ -231,7 +216,7 @@ classdef plotlystream < handle
             try
                 obj.Stream.close;
             catch ME
-                if(strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
+                if (strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
                     error(['Oops! A connection has not yet been established. Please open',...
                         ' a connection by firsting calling the ''open'' method of your',...
                         ' plotlystream object.']);
@@ -257,7 +242,7 @@ classdef plotlystream < handle
                 obj.resetretries;
                 obj.Specs.Closed = false;
             catch
-                if(obj.Specs.ConnectAttempts <= obj.Specs.MaxConnectAttempts)
+                if (obj.Specs.ConnectAttempts <= obj.Specs.MaxConnectAttempts)
                     fprintf(['\n[Connection Failed] Attempt:' num2str(obj.Specs.ConnectAttempts) ' to reconnect...'])
                     pause(obj.Specs.ConnectDelay);
                     obj.Specs.ConnectDelay = 2*obj.Specs.ConnectDelay; %delay grows by factor of 2
@@ -276,7 +261,7 @@ classdef plotlystream < handle
             try
                 obj.Response = num2str(obj.Connection.getResponseCode);
             catch ME
-                if(strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
+                if (strcmp(ME.message, 'Attempt to reference field of non-structure array.'))
                     error(['Oops! A connection has not yet been established. Please open',...
                         ' a connection by firsting calling the ''open'' method of your',...
                         ' plotlystream object.']);
@@ -290,7 +275,6 @@ classdef plotlystream < handle
             obj.Specs.ConnectAttempts = 0;
             obj.Specs.ConnectDelay = 1;
         end
-        
     end
 end
 

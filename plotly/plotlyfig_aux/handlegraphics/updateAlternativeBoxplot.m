@@ -1,8 +1,5 @@
 function obj = updateAlternativeBoxplot(obj, dataIndex)
-
-	%-------------------------------------------------------------------------%
-
-	%-INITIALIZATIONS-%
+    %-INITIALIZATIONS-%
 
 	axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
 	plotStructure = obj.State.Plot(dataIndex).Handle;
@@ -11,28 +8,21 @@ function obj = updateAlternativeBoxplot(obj, dataIndex)
 	nTraces = length(plotData);
 	traceIndex = dataIndex;
 
-	%-------------------------------------------------------------------------%
+	%---------------------------------------------------------------------%
 
 	%-update traces-%
 
 	for t = 1:nTraces
-	
 		if t ~= 1
 			obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
 			traceIndex = obj.PlotOptions.nPlots;
 		end
-
 		updateBoxplotLine(obj, axIndex, plotData(t), traceIndex);
 	end
-
-	%-------------------------------------------------------------------------%
 end
 
 function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
-
-	%-------------------------------------------------------------------------%
-
-	%-INITIALIZATIONS-%
+    %-INITIALIZATIONS-%
 
 	%-get axis info-%
 	[xSource, ySource] = findSourceAxis(obj, axIndex);
@@ -41,13 +31,21 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
 	xData = plotData.XData;
 	yData = plotData.YData;
 
-	if isduration(xData) || isdatetime(xData), xData = datenum(xData); end
-    if isduration(yData) || isdatetime(yData), yData = datenum(yData); end
+    if isduration(xData) || isdatetime(xData)
+        xData = datenum(xData);
+    end
+    if isduration(yData) || isdatetime(yData)
+        yData = datenum(yData);
+    end
 
-    if length(xData) < 2, xData = ones(1,2)*xData; end
-    if length(yData) < 2, yData = ones(1,2)*yData; end
+    if length(xData) < 2
+        xData = ones(1,2)*xData;
+    end
+    if length(yData) < 2
+        yData = ones(1,2)*yData;
+    end
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace-%
     obj.data{traceIndex}.type = 'scatter';
@@ -57,13 +55,13 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
     obj.data{traceIndex}.xaxis = sprintf('x%d', xSource);
     obj.data{traceIndex}.yaxis = sprintf('y%d', ySource);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set trace data-%
     obj.data{traceIndex}.x = xData;
     obj.data{traceIndex}.y = yData;
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-set marker properties-%
     obj.data{traceIndex}.marker = extractLineMarker(plotData);
@@ -71,7 +69,7 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
     %-set line properties-%
     obj.data{traceIndex}.line = extractLineLine(plotData);
 
-    %-------------------------------------------------------------------------%
+    %---------------------------------------------------------------------%
 
     %-legend-%
     leg = plotData.Annotation;
@@ -89,6 +87,4 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
     if isempty(obj.data{traceIndex}.name)
         obj.data{traceIndex}.showlegend = false;
     end
-
-    %-------------------------------------------------------------------------%
 end

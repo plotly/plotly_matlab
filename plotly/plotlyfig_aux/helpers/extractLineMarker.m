@@ -22,7 +22,7 @@ function marker = extractLineMarker(line_data)
     %---------------------------------------------------------------------%
 
     %-MARKER SYMBOL-%
-    if ~strcmp(line_data.Marker,"none")
+    if ~strcmp(line_data.Marker, "none")
         switch line_data.Marker
             case "."
                 marksymbol = "circle";
