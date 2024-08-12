@@ -43,8 +43,8 @@ function obj = updateRectangle(obj, rectIndex)
     %---------------------------------------------------------------------%
 
     %-rectangle xaxis and yaxis-%
-    obj.data{rectIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{rectIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{rectIndex}.xaxis = "x" + xsource;
+    obj.data{rectIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 

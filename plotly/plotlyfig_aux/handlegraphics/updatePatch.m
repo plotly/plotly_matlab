@@ -59,8 +59,8 @@ function obj = updatePatch(obj, patchIndex)
     %---------------------------------------------------------------------%
 
     %-patch xaxis and yaxis-%
-    obj.data{patchIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{patchIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{patchIndex}.xaxis = "x" + xsource;
+    obj.data{patchIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 
@@ -127,12 +127,7 @@ function obj = updatePatch(obj, patchIndex)
 
         %-----------------------------------------------------------------%
 
-        %-patch name-%
         obj.data{patchIndex}.name = patch_data.DisplayName;
-
-        %-----------------------------------------------------------------%
-
-        %-patch visible-%
         obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
 
         %-----------------------------------------------------------------%
@@ -153,15 +148,7 @@ function obj = updatePatch(obj, patchIndex)
         end
 
         obj.data{patchIndex}.mode = mode;
-
-        %-----------------------------------------------------------------%
-
-        %-patch marker-%
         obj.data{patchIndex}.marker = extractPatchMarker(patch_data);
-
-        %-----------------------------------------------------------------%
-
-        %-patch line-%
         obj.data{patchIndex}.line = extractPatchLine(patch_data);
 
         %-----------------------------------------------------------------%

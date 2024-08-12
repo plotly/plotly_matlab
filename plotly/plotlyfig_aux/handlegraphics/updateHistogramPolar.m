@@ -68,36 +68,17 @@ function obj = updateHistogramPolar(obj,histIndex)
 
     %---------------------------------------------------------------------%
 
-    %-hist name-%
     obj.data{histIndex}.name = hist_data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-layout barmode-%
     obj.layout.barmode = 'group';
-
-    %---------------------------------------------------------------------%
-
-    %-hist line width-%
     obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %-hist opacity-%
     if ~ischar(hist_data.FaceAlpha)
         obj.data{histIndex}.opacity = hist_data.FaceAlpha;
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{histIndex}.marker = extractPatchFace(hist_data);
-
-    %---------------------------------------------------------------------%
-
-    %-hist visible-%
     obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
-
-    %---------------------------------------------------------------------%
 
     %-hist showlegend-%
     leg = hist_data.Annotation;

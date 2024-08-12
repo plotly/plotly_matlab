@@ -17,12 +17,7 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
 
     %---------------------------------------------------------------------%
 
-    %-xaxis-%
     xaxis = extractAxisData(obj,axisData, 'X');
-
-    %---------------------------------------------------------------------%
-
-    %-yaxis-%
     [yaxis, yAxisLim] = extractAxisDataMultipleYAxes(obj, axisData, yaxIndex);
 
     %---------------------------------------------------------------------%
@@ -42,13 +37,8 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
 
     %---------------------------------------------------------------------%
 
-    %-xaxis domain-%
     xaxis.domain = min([xo xo + w],1);
     scene.domain.x = min([xo xo + w],1);
-
-    %---------------------------------------------------------------------%
-
-    %-yaxis domain-%
     yaxis.domain = min([yo yo + h],1);
     scene.domain.y = min([yo yo + h],1);
 
@@ -58,39 +48,27 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
 
     %---------------------------------------------------------------------%
 
-    %-xaxis anchor-%
-    xaxis.anchor = ['y' num2str(ysource)];
+    xaxis.anchor = "y" + ysource;
+    yaxis.anchor = "x" + xsource;
 
-    %---------------------------------------------------------------------%
-
-    %-yaxis anchor-%
-    yaxis.anchor = ['x' num2str(xsource)];
-
-    %---------------------------------------------------------------------%
-
-    %-xaxis overlaying-%
     if xoverlay
-        xaxis.overlaying = ['x' num2str(xoverlay)];
+        xaxis.overlaying = "x" + xoverlay;
     end
-
-    %---------------------------------------------------------------------%
-
-    %-yaxis overlaying-%
     if yoverlay
-        yaxis.overlaying = ['y' num2str(yoverlay)];
+        yaxis.overlaying = "y" + yoverlay;
     end
 
     %---------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
-        obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
+        obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
     end
 
     %---------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
-    obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
+    obj.layout = setfield(obj.layout, "yaxis" + ysource, yaxis);
 
     %---------------------------------------------------------------------%
 
@@ -110,8 +88,6 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     plotIndex = obj.PlotOptions.nPlots;
 
     obj.data{plotIndex}.type = 'scatter';
-    obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
-
-    %---------------------------------------------------------------------%    
+    obj.data{plotIndex}.xaxis = "x" + xsource;
+    obj.data{plotIndex}.yaxis = "y" + ysource;
 end

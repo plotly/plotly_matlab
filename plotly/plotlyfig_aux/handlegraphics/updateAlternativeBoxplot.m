@@ -63,10 +63,7 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
 
     %---------------------------------------------------------------------%
 
-    %-set marker properties-%
     obj.data{traceIndex}.marker = extractLineMarker(plotData);
-
-    %-set line properties-%
     obj.data{traceIndex}.line = extractLineLine(plotData);
 
     %---------------------------------------------------------------------%

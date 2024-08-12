@@ -52,17 +52,8 @@ function obj = updateStem(obj, dataIndex)
 
     %---------------------------------------------------------------------%
 
-    %-scatter3d visible-%
     stem_data.visible = strcmp(data.Visible, "on");
-
-    %---------------------------------------------------------------------%
-
-    %-scatter3d name-%
     stem_data.name = data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-scatter mode-%
     stem_data.mode = "lines+markers";
 
     %---------------------------------------------------------------------%
@@ -109,12 +100,7 @@ function obj = updateStem(obj, dataIndex)
 
     %---------------------------------------------------------------------%
 
-    %-scatter3d line-%
     stem_data.line = extractLineLine(data);
-
-    %---------------------------------------------------------------------%
-
-    %-scatter3d marker-%
     stem_data.marker = extractLineMarker(data);
 
     %---------------------------------------------------------------------%

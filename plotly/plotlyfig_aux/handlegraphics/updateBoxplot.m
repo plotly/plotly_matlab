@@ -73,17 +73,8 @@ function obj = updateBoxplot(obj, boxIndex)
         end
     end
 
-    % initialize ydata
     ydata = [];
-
-    %---------------------------------------------------------------------%
-
-    %-box groupgap-%
     obj.layout.bargroupgap = 1/bpnum;
-
-    %---------------------------------------------------------------------%
-
-    %-box name-%
     obj.data{boxIndex}.name = box_data.DisplayName;
 
     %---------------------------------------------------------------------%
@@ -97,26 +88,10 @@ function obj = updateBoxplot(obj, boxIndex)
         %-AXIS DATA-%
         xaxis = obj.layout.("xaxis" + xsource);
         yaxis = obj.layout.("yaxis" + ysource);
-        
-        %-----------------------------------------------------------------%
-        
-        %-box xaxis and yaxis-%
-        obj.data{boxIndex}.xaxis = ['x' num2str(xsource)];
-        obj.data{boxIndex}.yaxis = ['y' num2str(ysource)];
-        
-        %-----------------------------------------------------------------%
-        
-        %-box type-%
+        obj.data{boxIndex}.xaxis = "x" + xsource;
+        obj.data{boxIndex}.yaxis = "y" + ysource;
         obj.data{boxIndex}.type = 'box';
-        
-        %-----------------------------------------------------------------%
-        
-        %-box visible-%
         obj.data{boxIndex}.visible = strcmp(box_data.Visible,'on');
-        
-        %-----------------------------------------------------------------%
-        
-        %-box fillcolor-%
         obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
         
         %-----------------------------------------------------------------%
@@ -233,46 +208,21 @@ function obj = updateBoxplot(obj, boxIndex)
     fontunits = text_child(1).FontUnits;
     set(text_child(1), 'FontUnits', 'points');
 
-    %-text data -%
     text_data = text_child(1);
-
-    %---------------------------------------------------------------------%
-
-    %-xaxis tick font size-%
     xaxis.tickfont.size = text_data.FontSize;
-
-    %---------------------------------------------------------------------%
-
-    %-xaxis tick font family-%
     xaxis.tickfont.family = matlab2plotlyfont(text_data.FontName);
-
-    %---------------------------------------------------------------------%
-
-    %-xaxis tick font color-%
     xaxis.tickfont.color = text_data.Color;
-
-    %---------------------------------------------------------------------%
-
-    %-axis type-%
     xaxis.type = 'category';
-
-    %---------------------------------------------------------------------%
-
-    %-show tick labels-%
     xaxis.showticklabels = true;
-
-    %---------------------------------------------------------------------%
-
-    %-autorange-%
     xaxis.autorange = true;
 
     %---------------------------------------------------------------------%
 
     %-set the layout axis field-%
-    obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
+    obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
 
     %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
-    set(text_child(1),'FontUnits',fontunits);
+    set(text_child(1), 'FontUnits', fontunits);
 end

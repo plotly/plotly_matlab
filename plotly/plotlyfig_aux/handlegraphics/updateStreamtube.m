@@ -22,8 +22,8 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     %---------------------------------------------------------------------%
 
     %-surface xaxis and yaxis-%
-    obj.data{surfaceIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{surfaceIndex}.xaxis = "x" + xsource;
+    obj.data{surfaceIndex}.yaxis = "y" + ysource;
         
     %---------------------------------------------------------------------%
 

@@ -54,9 +54,9 @@ function obj = updateHeatmapAnnotation(obj,anIndex)
         obj.layout.annotations{axIndex}.yref = 'paper';
     else
         %-xref-%
-        obj.layout.annotations{axIndex}.xref = ['x' num2str(xsource)];
+        obj.layout.annotations{axIndex}.xref = "x" + xsource;
         %-yref-%
-        obj.layout.annotations{axIndex}.yref = ['y' num2str(ysource)];
+        obj.layout.annotations{axIndex}.yref = "y" + ysource;
     end
 
     %---------------------------------------------------------------------%

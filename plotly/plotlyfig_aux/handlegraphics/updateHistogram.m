@@ -58,13 +58,8 @@ function obj = updateHistogram(obj,histIndex)
 
     %---------------------------------------------------------------------%
 
-    %-hist axis-%
     obj.data{histIndex}.xaxis = "x" + xsource;
     obj.data{histIndex}.yaxis = "y" + ysource;
-
-    %---------------------------------------------------------------------%
-
-    %-bar type-%
     obj.data{histIndex}.type = "bar";
 
     %---------------------------------------------------------------------%
@@ -153,37 +148,17 @@ function obj = updateHistogram(obj,histIndex)
 
     %---------------------------------------------------------------------%
 
-    %-hist name-%
     obj.data{histIndex}.name = hist_data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-layout barmode-%
     obj.layout.barmode = "overlay";
-
-    %---------------------------------------------------------------------%
-
-    %-hist line width-%
     obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %-hist opacity-%
     if ~ischar(hist_data.FaceAlpha)
         obj.data{histIndex}.opacity = hist_data.FaceAlpha * 1.25;
     end
 
-    %---------------------------------------------------------------------%
-
-    %-marker data-%
     obj.data{histIndex}.marker = extractPatchFace(hist_data);
-
-    %---------------------------------------------------------------------%
-
-    %-hist visible-%
     obj.data{histIndex}.visible = strcmp(hist_data.Visible,"on");
-
-    %---------------------------------------------------------------------%
 
     %-hist showlegend-%
     leg = hist_data.Annotation;

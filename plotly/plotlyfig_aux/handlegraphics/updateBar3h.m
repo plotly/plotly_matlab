@@ -19,8 +19,6 @@ function obj = updateBar3h(obj, surfaceIndex)
 
     %-associate scene-%
     obj.data{surfaceIndex}.scene = sprintf('scene%d', xsource);
-        
-    %---------------------------------------------------------------------%
 
     %-surface type-%
     obj.data{surfaceIndex}.type = 'mesh3d';

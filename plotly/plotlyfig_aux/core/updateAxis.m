@@ -69,17 +69,12 @@ function obj = updateAxis(obj,axIndex)
 
     %---------------------------------------------------------------------%
 
-    %-xaxis-%
     if isHeatmapAxis
         xaxis = extractHeatmapAxisData(obj,axisData, 'X');
         xExponentFormat = 0;
     else
         [xaxis, xExponentFormat] = extractAxisData(obj,axisData, 'X');
     end
-
-    %---------------------------------------------------------------------%
-
-    %-yaxis-%
     if isHeatmapAxis
         yaxis = extractHeatmapAxisData(obj,axisData, 'Y');
         yExponentFormat = 0;
@@ -87,23 +82,13 @@ function obj = updateAxis(obj,axIndex)
         [yaxis, yExponentFormat] = extractAxisData(obj,axisData, 'Y');
     end
 
-    %---------------------------------------------------------------------%
-
-    %-get position data-%
     axisPos = axisData.Position .* obj.PlotOptions.DomainFactor;
     if obj.PlotOptions.AxisEqual
         axisPos(3:4) = min(axisPos(3:4));
     end
 
-    %---------------------------------------------------------------------%
-
-    %-xaxis domain-%
     xaxis.domain = min([axisPos(1) sum(axisPos([1,3]))], 1);
     scene.domain.x = xaxis.domain;
-
-    %---------------------------------------------------------------------%
-
-    %-yaxis domain-%
     yaxis.domain = min([axisPos(2) sum(axisPos([2,4]))], 1);
     scene.domain.y = yaxis.domain;
 
@@ -122,8 +107,8 @@ function obj = updateAxis(obj,axIndex)
         exponentText = sprintf('x10^%d', yExponentFormat);
 
         obj.layout.annotations{anIndex}.text = exponentText;
-        obj.layout.annotations{anIndex}.xref = ['x' num2str(xsource)];
-        obj.layout.annotations{anIndex}.yref = ['y' num2str(ysource)];
+        obj.layout.annotations{anIndex}.xref = "x" + xsource;
+        obj.layout.annotations{anIndex}.yref = "y" + ysource;
         obj.layout.annotations{anIndex}.xanchor = 'left';
         obj.layout.annotations{anIndex}.yanchor = 'bottom';
         obj.layout.annotations{anIndex}.font.size = yaxis.tickfont.size;
@@ -142,8 +127,8 @@ function obj = updateAxis(obj,axIndex)
         exponentText = sprintf('x10^%d', xExponentFormat);
 
         obj.layout.annotations{anIndex}.text = exponentText;
-        obj.layout.annotations{anIndex}.xref = ['x' num2str(xsource)];
-        obj.layout.annotations{anIndex}.yref = ['y' num2str(ysource)];
+        obj.layout.annotations{anIndex}.xref = "x" + xsource;
+        obj.layout.annotations{anIndex}.yref = "y" + ysource;
         obj.layout.annotations{anIndex}.xanchor = 'left';
         obj.layout.annotations{anIndex}.yanchor = 'bottom';
         obj.layout.annotations{anIndex}.font.size = xaxis.tickfont.size;
@@ -159,50 +144,38 @@ function obj = updateAxis(obj,axIndex)
 
     %---------------------------------------------------------------------%
 
-    %-xaxis anchor-%
-    xaxis.anchor = ['y' num2str(ysource)];
+    xaxis.anchor = "y" + ysource;
+    yaxis.anchor = "x" + xsource;
 
-    %---------------------------------------------------------------------%
-
-    %-yaxis anchor-%
-    yaxis.anchor = ['x' num2str(xsource)];
-
-    %---------------------------------------------------------------------%
-
-    %-xaxis overlaying-%
     if xoverlay
-        xaxis.overlaying = ['x' num2str(xoverlay)];
+        xaxis.overlaying = "x" + xoverlay;
     end
-
-    %---------------------------------------------------------------------%
-
-    %-yaxis overlaying-%
     if yoverlay
-        yaxis.overlaying = ['y' num2str(yoverlay)];
+        yaxis.overlaying = "y" + yoverlay;
     end
 
     %---------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
-        obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
-        obj.layout = setfield(obj.layout,['scene' num2str(xsource)],scene); 
+        obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
+        obj.layout = setfield(obj.layout, "scene" + xsource, scene);
     end
 
     %---------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
     if ysource == axIndex
-        obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
+        obj.layout = setfield(obj.layout, "yaxis" + ysource, yaxis);
     end
 
     %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
-    set(obj.State.Axis(axIndex).Handle,'Units',axisUnits);
+    set(obj.State.Axis(axIndex).Handle, 'Units', axisUnits);
 
     try
-        set(obj.State.Axis(axIndex).Handle,'FontUnits',fontUnits);
+        set(obj.State.Axis(axIndex).Handle, 'FontUnits', fontUnits);
     catch
         % TODO
     end

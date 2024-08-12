@@ -74,16 +74,13 @@ function obj = updatePatchPie3(obj, patchIndex)
 
     %-AXIS DATA-%
     scene = obj.layout.("scene" + xsource);
-    obj.PlotOptions.scene_anchor = ['scene' num2str(xsource)];
+    obj.PlotOptions.scene_anchor = "scene" + xsource;
 
     %---------------------------------------------------------------------%
 
     %-scene to be set-%
     obj.PlotOptions.scene = scene;
 
-    %---------------------------------------------------------------------%
-
-    %-patch type-%
     obj.data{patchIndex}.type = 'scatter3d';
 
     %---------------------------------------------------------------------%
@@ -164,15 +161,7 @@ function obj = updatePatchPie3(obj, patchIndex)
     end
 
     obj.data{patchIndex}.mode = mode;
-
-    %---------------------------------------------------------------------%
-
-    %-patch marker-%
     obj.data{patchIndex}.marker = extractPatchMarker(patch_data);
-
-    %---------------------------------------------------------------------%
-
-    %-patch line-%
     obj.data{patchIndex}.line = extractPatchLine(patch_data);
 
     %---------------------------------------------------------------------%
@@ -222,7 +211,7 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
 
     %-AXIS DATA-%
     scene = obj.layout.("scene" + xsource);
-    obj.PlotOptions.scene_anchor = ['scene' num2str(xsource)];
+    obj.PlotOptions.scene_anchor = "scene" + xsource;
 
     %---------------------------------------------------------------------%
 
@@ -314,20 +303,9 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     %-scene to be set-%
     obj.PlotOptions.scene = scene;
 
-    %---------------------------------------------------------------------%
-
-    %-surface name-%
     obj.data{surfaceIndex}.name = image_data.DisplayName;
     obj.data{surfaceIndex-1}.name = image_data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-surface showscale-%
     obj.data{surfaceIndex}.showscale = false;
-
-    %---------------------------------------------------------------------%
-
-    %-surface visible-%
     obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
 
     %---------------------------------------------------------------------%

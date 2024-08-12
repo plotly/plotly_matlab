@@ -21,8 +21,8 @@ function obj = updateContour3(obj,contourIndex)
     %---------------------------------------------------------------------%
 
     %-contour xaxis and yaxis-%
-    obj.data{contourIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{contourIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{contourIndex}.xaxis = "x" + xsource;
+    obj.data{contourIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 
