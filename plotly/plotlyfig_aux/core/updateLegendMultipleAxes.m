@@ -64,7 +64,7 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
 
     %-legend (x,y) coordenates-%
     obj.layout.legend.x = 1.005 * max(allDomain(:,1));
-    obj.layout.legend.y = 1.001 * max(allDomain(:,2));;
+    obj.layout.legend.y = 1.001 * max(allDomain(:,2));
 
     %-legend (x,y) refs-%
     obj.layout.legend.xref = 'paper';
@@ -74,49 +74,24 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     obj.layout.legend.xanchor = 'left';
     obj.layout.legend.yanchor = 'top';
 
-    %---------------------------------------------------------------------%
-
-    if (strcmp(legendData.Box,'on') && strcmp(legendData.Visible, 'on'))
-        %-legend traceorder-%
+    if (strcmp(legendData.Box, 'on') && strcmp(legendData.Visible, 'on'))
         obj.layout.legend.traceorder = 'normal';
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend borderwidth-%
         obj.layout.legend.borderwidth = legendData.LineWidth;
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend bordercolor-%
-        col = 255*legendData.EdgeColor;
-        obj.layout.legend.bordercolor = sprintf('rgb(%f,%f,%f)', col);
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend bgcolor-%
-        col = 255*legendData.Color;
-        obj.layout.legend.bgcolor = sprintf('rgb(%f,%f,%f)', col);
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font size-%
+
+        col = round(255*legendData.EdgeColor);
+        obj.layout.legend.bordercolor = sprintf("rgb(%d,%d,%d)", col);
+
+        col = round(255*legendData.Color);
+        obj.layout.legend.bgcolor = sprintf("rgb(%d,%d,%d)", col);
+
         obj.layout.legend.font.size = legendData.FontSize;
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font family-%
         obj.layout.legend.font.family = ...
                 matlab2plotlyfont(legendData.FontName);
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font colour-%
-        col = 255*legendData.TextColor;
-        obj.layout.legend.font.color = sprintf('rgb(%f,%f,%f)', col);
+
+        col = round(255*legendData.TextColor);
+        obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", col);
         
     end
-
-    %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
     set(obj.State.Legend(legIndex).Handle,'Units', legendUnits);

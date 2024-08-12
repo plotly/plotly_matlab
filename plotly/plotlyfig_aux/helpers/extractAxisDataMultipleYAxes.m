@@ -30,14 +30,16 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
     %---------------------------------------------------------------------%
 
     %-y-axis coloring-%
-    axiscol = sprintf('rgb(%f,%f,%f)', 255*childAxisData.Color);
+    axiscol = sprintf("rgb(%d,%d,%d)", round(255*childAxisData.Color));
 
     axis.linecolor = axiscol;
     axis.tickcolor = axiscol;
     axis.tickfont.color = axiscol;
 
     try
-        axis.gridcolor = sprintf('rgba(%f,,%f,%f,%f)', 255*parentAxisData.GridColor, parentAxisData.GridAlpha);
+        axis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
+                round(255*parentAxisData.GridColor), ...
+                parentAxisData.GridAlpha);
     catch
         axis.gridcolor = axiscol;
     end
@@ -183,7 +185,8 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
         axis.title = parseString(labelData.String,labelData.Interpreter);
     end
 
-    axis.titlefont.color = sprintf('rgb(%f,%f,%f)', 255*labelData.Color);
+    axis.titlefont.color = sprintf("rgb(%d,%d,%d)", ...
+            round(255*labelData.Color));
     axis.titlefont.size = labelData.FontSize;
     axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
 

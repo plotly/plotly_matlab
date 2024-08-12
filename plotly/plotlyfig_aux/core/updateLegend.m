@@ -23,83 +23,32 @@ function obj = updateLegend(obj, legIndex)
     % only displays last legend as global Plotly legend
     obj.layout.legend = struct();
 
-    %---------------------------------------------------------------------%
-
-    %-layout showlegend-%
     obj.layout.showlegend = strcmpi(legend_data.Visible,'on');
-
-    %---------------------------------------------------------------------%
-
-    %-legend x-%
     obj.layout.legend.x = legend_data.Position(1);
-
-    %---------------------------------------------------------------------%
-
-    %-legend xref-%
     obj.layout.legend.xref = 'paper';
-
-    %---------------------------------------------------------------------%
-
-    %-legend xanchor-%
     obj.layout.legend.xanchor = 'left';
-
-    %---------------------------------------------------------------------%
-
-    %-legend y-%
     obj.layout.legend.y = legend_data.Position(2);
-
-    %---------------------------------------------------------------------%
-
-    %-legend yref-%
     obj.layout.legend.yref = 'paper';
-
-    %---------------------------------------------------------------------%
-
-    %-legend yanchor-%
     obj.layout.legend.yanchor = 'bottom';
 
-    %---------------------------------------------------------------------%
 
-    if (strcmp(legend_data.Box,'on') && strcmp(legend_data.Visible, 'on'))
-        %-legend traceorder-%
+    if (strcmp(legend_data.Box, 'on') && strcmp(legend_data.Visible, 'on'))
         obj.layout.legend.traceorder = 'normal';
-
-        %-----------------------------------------------------------------%
-
-        %-legend borderwidth-%
         obj.layout.legend.borderwidth = legend_data.LineWidth;
 
-        %-----------------------------------------------------------------%
+        col = round(255*legend_data.EdgeColor);
+        obj.layout.legend.bordercolor = sprintf("rgb(%d,%d,%d)", col);
 
-        %-legend bordercolor-%
-        col = 255*legend_data.EdgeColor;
-        obj.layout.legend.bordercolor = sprintf("rgb(%f,%f,%f)", col);
+        col = round(255*legend_data.Color);
+        obj.layout.legend.bgcolor = sprintf("rgb(%d,%d,%d)", col);
 
-        %-----------------------------------------------------------------%
-        
-        %-legend bgcolor-%
-        col = 255*legend_data.Color;
-        obj.layout.legend.bgcolor = sprintf("rgb(%f,%f,%f)", col);
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font size-%
         obj.layout.legend.font.size = legend_data.FontSize;
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font family-%
         obj.layout.legend.font.family = ...
                 matlab2plotlyfont(legend_data.FontName);
-        
-        %-----------------------------------------------------------------%
-        
-        %-legend font colour-%
-        col = 255*legend_data.TextColor;
-        obj.layout.legend.font.color = sprintf("rgb(%f,%f,%f)", col);
-    end
 
-    %---------------------------------------------------------------------%
+        col = round(255*legend_data.TextColor);
+        obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", col);
+    end
 
     %-REVERT UNITS-%
     set(obj.State.Legend(legIndex).Handle,'Units',legendunits);

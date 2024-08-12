@@ -141,9 +141,9 @@ function obj = updateAnnotation(obj,anIndex)
 
 
     %-font color-%
-    col = 255*text_data.Color;
+    col = round(255*text_data.Color);
     obj.layout.annotations{anIndex}.font.color = ...
-            sprintf("rgba(%d,%d,%d)", col);
+            sprintf("rgb(%d,%d,%d)", col);
 
     %---------------------------------------------------------------------%
 
@@ -181,7 +181,7 @@ function obj = updateAnnotation(obj,anIndex)
 
     %-border color-%
     if ~ischar(text_data.EdgeColor)
-        col = 255*text_data.EdgeColora;
+        col = round(255*text_data.EdgeColora);
         obj.layout.annotations{anIndex}.bordercolor = ...
                 sprintf("rgb(%d,%d,%d)", col);
     else

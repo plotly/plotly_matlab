@@ -80,19 +80,19 @@ function marker = extractPatchMarker(patch_data)
 
     if filledMarker
         if isnumeric(MarkerColor)
-            col = 255*MarkerColor;
-            markercolor = sprintf("rgb(%f,%f,%f)", col);
+            col = round(255*MarkerColor);
+            markercolor = sprintf("rgb(%d,%d,%d)", col);
         else
             switch MarkerColor
                 case 'none'
-                    markercolor = 'rgba(0,0,0,0)';
+                    markercolor = "rgba(0,0,0,0)";
                 case 'auto'
                     if ~strcmp(axis_data.Color,'none')
-                        col = 255*axis_data.Color;
+                        col = round(255*axis_data.Color);
                     else
-                        col = 255*figure_data.Color;
+                        col = round(255*figure_data.Color);
                     end
-                    markercolor  = sprintf("rgb(%f,%f,%f)", col);
+                    markercolor  = sprintf("rgb(%d,%d,%d)", col);
                 case 'flat'
                     for n = 1:length(patch_data.FaceVertexCData)
                         switch patch_data.CDataMapping
@@ -103,14 +103,14 @@ function marker = extractPatchMarker(patch_data)
                                         axis_data.CLim(1));
                                 scalefactor = (capCD - axis_data.CLim(1)) ...
                                         / diff(axis_data.CLim);
-                                col = 255*(colormap(1 + ...
+                                col = round(255*(colormap(1 + ...
                                         floor(scalefactor ...
-                                        * (length(colormap)-1)),:));
+                                        * (length(colormap)-1)),:)));
                             case 'direct'
-                                col = 255*(colormap( ...
-                                        patch_data.FaceVertexCData(n,1),:));
+                                col = round(255*(colormap( ...
+                                        patch_data.FaceVertexCData(n,1),:)));
                         end
-                        markercolor{n} = sprintf("rgb(%f,%f,%f)", col);
+                        markercolor{n} = sprintf("rgb(%d,%d,%d)", col);
                     end
             end
         end
@@ -130,21 +130,21 @@ function marker = extractPatchMarker(patch_data)
     markerlinecolor = cell(1,length(patch_data.FaceVertexCData));
 
     if isnumeric(MarkerLineColor)
-        col = 255*MarkerLineColor;
-        markerlinecolor = sprintf("rgb(%f,%f,%f)", col);
+        col = round(255*MarkerLineColor);
+        markerlinecolor = sprintf("rgb(%d,%d,%d)", col);
     else
         switch MarkerLineColor
             case 'none'
-                markerlinecolor = 'rgba(0,0,0,0)';
+                markerlinecolor = "rgba(0,0,0,0)";
             case 'auto'
                 EdgeColor = patch_data.EdgeColor;
                 if isnumeric(EdgeColor)
-                    col = 255*EdgeColor;
-                    markerlinecolor = sprintf("rgb(%f,%f,%f)", col);
+                    col = round(255*EdgeColor);
+                    markerlinecolor = sprintf("rgb(%d,%d,%d)", col);
                 else
                     switch EdgeColor
                         case 'none'
-                            markerlinecolor = 'rgba(0,0,0,0)';
+                            markerlinecolor = "rgba(0,0,0,0)";
                         case {'flat', 'interp'}
                             for n = 1:length(patch_data.FaceVertexCData)
                                 switch patch_data.CDataMapping
@@ -156,15 +156,15 @@ function marker = extractPatchMarker(patch_data)
                                         scalefactor = (capCD ...
                                                 - axis_data.CLim(1)) ...
                                                 / diff(axis_data.CLim);
-                                        col = 255*(colormap(1 + ...
+                                        col = round(255*(colormap(1 + ...
                                                 floor(scalefactor ...
-                                                * (length(colormap)-1)),:));
+                                                * (length(colormap)-1)),:)));
                                     case 'direct'
-                                        col = 255*(colormap( ...
-                                                patch_data.FaceVertexCData(n,1),:));
+                                        col = round(255*(colormap( ...
+                                                patch_data.FaceVertexCData(n,1),:)));
                                 end
                                 markerlinecolor{n} = ...
-                                        sprintf("rgb(%f,%f,%f)", col);
+                                        sprintf("rgb(%d,%d,%d)", col);
                             end
                     end
                 end
@@ -178,13 +178,13 @@ function marker = extractPatchMarker(patch_data)
                                     axis_data.CLim(1));
                             scalefactor = (capCD - axis_data.CLim(1)) ...
                                     / diff(axis_data.CLim);
-                            col = 255*(colormap(1+floor(scalefactor ...
-                                    * (length(colormap)-1)),:));
+                            col = round(255*(colormap(1+floor(scalefactor ...
+                                    * (length(colormap)-1)),:)));
                         case 'direct'
-                            col = 255*(colormap( ...
-                                    patch_data.FaceVertexCData(n,1),:));
+                            col = round(255*(colormap( ...
+                                    patch_data.FaceVertexCData(n,1),:)));
                     end
-                    markerlinecolor{n} = sprintf("rgb(%f,%f,%f)", col);
+                    markerlinecolor{n} = sprintf("rgb(%d,%d,%d)", col);
                 end
         end
     end

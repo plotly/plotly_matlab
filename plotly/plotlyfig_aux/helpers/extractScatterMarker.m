@@ -68,11 +68,12 @@ function marker = extractScatterMarker(plotData)
     if filledMarker
         %-get face color-%
         if isnumeric(markerFaceColor)
-            faceColor = sprintf('rgb(%f,%f,%f)', 255*markerFaceColor);
+            faceColor = sprintf("rgb(%d,%d,%d)", ...
+                    round(255*markerFaceColor));
         else
             switch markerFaceColor
                 case 'none'        
-                    faceColor = 'rgba(0,0,0,0)';
+                    faceColor = "rgba(0,0,0,0)";
                 case 'auto'
                     if ~strcmp(axisData.Color,'none')
                         faceColor = 255*axisData.Color;
@@ -110,11 +111,11 @@ function marker = extractScatterMarker(plotData)
     markerEdgeAlpha = plotData.MarkerEdgeAlpha;
 
     if isnumeric(markerEdgeColor)
-        lineColor = sprintf('rgb(%f,%f,%f)', 255*markerEdgeColor);
+        lineColor = sprintf("rgb(%d,%d,%d)", round(255*markerEdgeColor));
     else
         switch markerEdgeColor
             case 'none'
-                lineColor = 'rgba(0,0,0,0)';
+                lineColor = "rgba(0,0,0,0)";
             case 'auto'
                 if ~strcmp(axisData.Color,'none')
                     lineColor = 255*axisData.Color;
@@ -175,7 +176,7 @@ function cMapInd = getcMapInd(cData, cLim, nColors)
 end
 
 function outData = rescaleData(inData, dataLim)
-    outData = max( min( inData, dataLim(2) ), dataLim(1) );
+    outData = max(min(inData, dataLim(2)), dataLim(1));
     outData = (outData - dataLim(1)) / diff(dataLim);
 end
 

@@ -74,9 +74,9 @@ function obj = updateFunctionContour(obj,contourIndex)
     colormap = figure_data.Colormap;
 
     for c = 1:size((colormap),1)
-        col =  255*(colormap(c,:));
+        col = round(255*(colormap(c,:)));
         obj.data{contourIndex}.colorscale{c} = ...
-                {(c-1)/(size(colormap,1)-1), sprintf("rgb(%f,%f,%f)", col)};
+                {(c-1)/(size(colormap,1)-1), sprintf("rgb(%d,%d,%d)", col)};
     end
 
     %---------------------------------------------------------------------%
@@ -123,10 +123,11 @@ function obj = updateFunctionContour(obj,contourIndex)
     if (~strcmp(contour_data.LineStyle,'none'))
         %-contour line colour-%
         if isnumeric(contour_data.LineColor)
-            col = 255*contour_data.LineColor;
-            obj.data{contourIndex}.line.color = sprintf("rgb(%f,%f,%f)", col);
+            col = round(255*contour_data.LineColor);
+            obj.data{contourIndex}.line.color = ...
+                    sprintf("rgb(%d,%d,%d)", col);
         else
-            obj.data{contourIndex}.line.color = 'rgba(0,0,0,0)';
+            obj.data{contourIndex}.line.color = "rgba(0,0,0,0)";
         end
 
         %-contour line width-%

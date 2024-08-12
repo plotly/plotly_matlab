@@ -104,8 +104,8 @@ function updatePolaraxes(obj, plotIndex)
     %---------------------------------------------------------------------%
         
     %-setting angular axis-%
-    gridColor = sprintf('rgba(%f,%f,%f,%f)', 255*axisData.GridColor, ...
-        axisData.GridAlpha);
+    gridColor = sprintf("rgba(%d,%d,%d,%f)", ...
+            [round(255*axisData.GridColor) axisData.GridAlpha]);
     gridWidth = axisData.LineWidth;
     thetaLim = thetaAxis.Limits;
     
@@ -130,10 +130,10 @@ function updatePolaraxes(obj, plotIndex)
 
     polarAxis.angularaxis.title.text = thetaLabel.String;
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
-        thetaLabel.FontName);
+            thetaLabel.FontName);
     polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
-    polarAxis.radialaxis.title.font.color = sprintf('rgb(%f,%f,%f)', ...
-        255*thetaLabel.Color);
+    polarAxis.radialaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
+            round(255*thetaLabel.Color));
 
     %---------------------------------------------------------------------%
         
@@ -163,10 +163,10 @@ function updatePolaraxes(obj, plotIndex)
 
     polarAxis.angularaxis.title.text = 'label';%rLabel.String;
     polarAxis.angularaxis.title.font.family = matlab2plotlyfont(...
-        rLabel.FontName);
+            rLabel.FontName);
     polarAxis.angularaxis.title.font.size = rLabel.FontSize;
-    polarAxis.angularaxis.title.font.color = sprintf('rgb(%f,%f,%f)', ...
-        255*rLabel.Color);
+    polarAxis.angularaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
+            round(255*rLabel.Color));
 
     %---------------------------------------------------------------------%
 
@@ -207,10 +207,10 @@ function updatePolaraxes(obj, plotIndex)
 
         %-tick font-%
         polarAxis.angularaxis.tickfont.family = matlab2plotlyfont(...
-            thetaAxis.FontName);
+                thetaAxis.FontName);
         polarAxis.angularaxis.tickfont.size = thetaAxis.FontSize;
-        polarAxis.angularaxis.tickfont.color = sprintf('rgb(%f,%f,%f)', ...
-            255*thetaAxis.Color);
+        polarAxis.angularaxis.tickfont.color = sprintf("rgb(%d,%d,%d)", ...
+                round(255*thetaAxis.Color));
     end
 
 
@@ -244,10 +244,10 @@ function updatePolaraxes(obj, plotIndex)
 
         %-tick font-%
         polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
-            rAxis.FontName);
+                rAxis.FontName);
         polarAxis.radialaxis.tickfont.size = rAxis.FontSize;
-        polarAxis.radialaxis.tickfont.color = sprintf('rgb(%f,%f,%f)', ...
-            255*rAxis.Color);
+        polarAxis.radialaxis.tickfont.color = sprintf("rgb(%d,%d,%d)", ...
+                round(255*rAxis.Color));
     end
 
     %---------------------------------------------------------------------%

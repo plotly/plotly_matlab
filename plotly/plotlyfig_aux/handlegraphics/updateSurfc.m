@@ -42,7 +42,8 @@ function updateContourOnly(obj, contourIndex)
     colorScale = {};
 
     for c = 1: length(cMap)
-        colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        colorScale{c} = {(c-1)*fac, ...
+                sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
     end
 
     %---------------------------------------------------------------------%
@@ -72,7 +73,8 @@ function updateContourOnly(obj, contourIndex)
 
         %-get edge color-%
         if isnumeric(contourData.LineColor)
-            cData = sprintf('rgb(%f,%f,%f)', 255*contourData.LineColor);
+            cData = sprintf("rgb(%d,%d,%d)", ...
+                    round(255*contourData.LineColor));
         elseif strcmpi(contourData.LineColor, 'interp')
             cData = zData;
             obj.data{contourIndex}.line.colorscale = colorScale;
@@ -215,7 +217,7 @@ function updateSurfOnly(obj, surfaceIndex)
     yData = yData(:, 1);
     obj.data{surfaceIndex}.contours.y.start = yData(1);
     obj.data{surfaceIndex}.contours.y.end = yData(end);
-    obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
+    obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));
     obj.data{surfaceIndex}.contours.y.show = true;
 
     %---------------------------------------------------------------------%
@@ -237,14 +239,16 @@ function updateSurfOnly(obj, surfaceIndex)
     colorScale = {};
 
     for c = 1: length(cMap)
-        colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        colorScale{c} = {(c-1)*fac, ...
+                sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
     end
 
     %---------------------------------------------------------------------%
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
-        cDataContour = sprintf('rgb(%f,%f,%f)', 255*meshData.EdgeColor);
+        cDataContour = sprintf("rgb(%d,%d,%d)", ...
+                round(255*meshData.EdgeColor));
 
     elseif strcmpi(meshData.EdgeColor, 'interp')
         cDataContour = zDataContour(:);
@@ -267,7 +271,8 @@ function updateSurfOnly(obj, surfaceIndex)
             fac = 1/(length(cMap)-1);
 
             for c = 1: length(cMap)
-                edgeColorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                edgeColorScale{c} = {(c-1)*fac, ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
 
             obj.data{surfaceIndex}.line.cmin = 0;
@@ -318,7 +323,8 @@ function updateSurfOnly(obj, surfaceIndex)
         cDataSurface = double(cDataSurface) + axisData.CLim(1);
 
         for c = 1: size(cMapSurface, 1)
-            colorScale{c} = { (c-1)*fac , sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
+            colorScale{c} = {(c-1)*fac, ...
+                    sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
         end
 
         obj.data{surfaceIndex}.cmin = axisData.CLim(1);
@@ -347,15 +353,16 @@ function updateSurfOnly(obj, surfaceIndex)
         cData = meshData.CData;
 
         if size(cData, 3) ~= 1
-            cMap = unique( reshape(cData, ...
-                [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
+            cMap = unique(reshape(cData, [size(cData,1)*size(cData,2), ...
+                    size(cData,3)]), 'rows');
             cDataSurface = rgb2ind(cData, cMap);
 
             colorScale = {};
             fac = 1/(length(cMap)-1);
 
             for c = 1: length(cMap)
-                colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                colorScale{c} = {(c-1)*fac, ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
         else
             cDataSurface = cData;
@@ -506,21 +513,10 @@ function updateSurfOnly(obj, surfaceIndex)
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
 
-    %---------------------------------------------------------------------%
-
-    %-surface name-%
     obj.data{surfaceIndex}.name = meshData.DisplayName;
     obj.data{contourIndex}.name = meshData.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-surface showscale-%
     obj.data{surfaceIndex}.showscale = false;
     obj.data{contourIndex}.showscale = false;
-
-    %---------------------------------------------------------------------%
-
-    %-surface visible-%
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 

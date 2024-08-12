@@ -40,6 +40,6 @@ function obj = updateErrorbarseries(obj, errorbarIndex)
     %---------------------------------------------------------------------%
 
     %-errorbar color-%
-    col = 255*errorbar_line_child_data.Color;
-    obj.data{errorbarIndex}.error_y.color = sprintf("rgb(%f,%f,%f)", col);
+    col = round(255*errorbar_line_child_data.Color);
+    obj.data{errorbarIndex}.error_y.color = sprintf("rgb(%d,%d,%d)", col);
 end

@@ -71,10 +71,10 @@ function obj = updatePColor(obj, patchIndex)
     cmap = figure_data.Colormap;
     len = length(cmap)-1;
 
-    for c = 1: length(cmap)
-        col = 255 * cmap(c, :);
+    for c = 1:length(cmap)
+        col = round(255 * cmap(c, :));
         obj.data{patchIndex}.colorscale{c} = ...
-                {(c-1)/len, sprintf("rgb(%f,%f,%f)", col)};
+                {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
 
     obj.data{patchIndex}.surfacecolor = cdata;

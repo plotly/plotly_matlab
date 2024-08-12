@@ -26,12 +26,12 @@ function marker = extractBarMarker(bar_data)
 
     if isnumeric(bar_data.FaceColor)
         %-paper_bgcolor-%
-        col = 255*bar_data.FaceColor;
-        marker.color = sprintf("rgb(%f,%f,%f)", col);
+        col = round(255*bar_data.FaceColor);
+        marker.color = sprintf("rgb(%d,%d,%d)", col);
     else
         switch bar_data.FaceColor
             case 'none'
-                marker.color = 'rgba(0,0,0,0,)';
+                marker.color = 'rgba(0,0,0,0)';
             case 'flat'
                 switch bar_data.CDataMapping
                     case 'scaled'
@@ -39,13 +39,13 @@ function marker = extractBarMarker(bar_data)
                                 axis_data.CLim(2)), axis_data.CLim(1));
                         scalefactor = (capCD - axis_data.CLim(1)) ...
                                 / diff(axis_data.CLim);
-                        col = 255*(colormap(1+ floor(scalefactor ...
-                                * (length(colormap)-1)),:));
+                        col = round(255*(colormap(1+ floor(scalefactor ...
+                                * (length(colormap)-1)),:)));
                     case 'direct'
-                        col = 255*(colormap( ...
-                                bar_data.FaceVertexCData(1,1),:));
+                        col = round(255*(colormap( ...
+                                bar_data.FaceVertexCData(1,1),:)));
                 end
-                marker.color = sprintf("rgb(%f,%f,%f)", col);
+                marker.color = sprintf("rgb(%d,%d,%d)", col);
         end
     end
 
@@ -54,12 +54,12 @@ function marker = extractBarMarker(bar_data)
     %-bar EDGE COLOR-%
 
     if isnumeric(bar_data.EdgeColor)
-        col = 255*bar_data.EdgeColor;
-        marker.line.color = sprintf("rgb(%f,%f,%f)", col);
+        col = round(255*bar_data.EdgeColor);
+        marker.line.color = sprintf("rgb(%d,%d,%d)", col);
     else
         switch bar_data.EdgeColor
             case 'none'
-                marker.line.color = 'rgba(0,0,0,0,)';
+                marker.line.color = 'rgba(0,0,0,0)';
             case 'flat'
                 switch bar_data.CDataMapping
                     case 'scaled'
@@ -67,13 +67,13 @@ function marker = extractBarMarker(bar_data)
                                 axis_data.CLim(2)), axis_data.CLim(1));
                         scalefactor = (capCD - axis_data.CLim(1)) ...
                                 / diff(axis_data.CLim);
-                        col = 255*(colormap(1+floor(scalefactor ...
-                                * (length(colormap)-1)),:));
+                        col = round(255*(colormap(1+floor(scalefactor ...
+                                * (length(colormap)-1)),:)));
                     case 'direct'
-                        col = 255*(colormap( ...
-                                bar_data.FaceVertexCData(1,1),:));
+                        col = round(255*(colormap( ...
+                                bar_data.FaceVertexCData(1,1),:)));
                 end
-                marker.line.color = sprintf("rgb(%f,%f,%f)", col);
+                marker.line.color = sprintf("rgb(%d,%d,%d)", col);
         end
     end
 end

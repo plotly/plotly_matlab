@@ -107,14 +107,16 @@ function obj = updateSurf(obj, surfaceIndex)
     colorScale = {};
 
     for c = 1: length(cMap)
-        colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        colorScale{c} = {(c-1)*fac, ...
+                sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
     end
 
     %---------------------------------------------------------------------%
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
-        cDataContour = sprintf('rgb(%f,%f,%f)', 255*meshData.EdgeColor);
+        cDataContour = sprintf("rgb(%d,%d,%d)", ...
+                round(255*meshData.EdgeColor));
 
     elseif strcmpi(meshData.EdgeColor, 'interp')
         cDataContour = zDataContour(:);
@@ -135,7 +137,8 @@ function obj = updateSurf(obj, surfaceIndex)
             fac = 1/(length(cMap)-1);
 
             for c = 1: length(cMap)
-                edgeColorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                edgeColorScale{c} = {(c-1)*fac , ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
 
             obj.data{surfaceIndex}.line.cmin = 0;
@@ -188,7 +191,8 @@ function obj = updateSurf(obj, surfaceIndex)
         cDataSurface = double(cDataSurface) + axisData.CLim(1);
 
         for c = 1: size(cMapSurface, 1)
-            colorScale{c} = { (c-1)*fac , sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
+            colorScale{c} = {(c-1)*fac, ...
+                    sprintf("rgba(%f,%f,%f, 1)", cMapSurface(c, :))};
         end
 
         obj.data{surfaceIndex}.cmin = axisData.CLim(1);
@@ -225,7 +229,8 @@ function obj = updateSurf(obj, surfaceIndex)
             fac = 1/(length(cMap)-1);
 
             for c = 1: length(cMap)
-                colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                colorScale{c} = {(c-1)*fac, ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
         else
             cDataSurface = cData;
@@ -244,9 +249,6 @@ function obj = updateSurf(obj, surfaceIndex)
     if isnumeric(meshData.FaceColor) && all(meshData.FaceColor == [1, 1, 1])
         obj.data{surfaceIndex}.lighting.diffuse = 0.5;
         obj.data{surfaceIndex}.lighting.ambient = 0.725;
-    else
-        % obj.data{surfaceIndex}.lighting.diffuse = 1.0;
-        % obj.data{surfaceIndex}.lighting.ambient = 0.9;
     end
 
     if meshData.FaceAlpha ~= 1

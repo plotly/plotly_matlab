@@ -30,9 +30,9 @@ function obj = updateHeatmap(obj,heatIndex)
     len = length(cmap)-1;
 
     for c = 1: length(cmap)
-        col = 255 * cmap(c, :);
+        col = round(255 * cmap(c, :));
         obj.data{heatIndex}.colorscale{c} = ...
-                { (c-1)/len, sprintf("rgb(%f,%f,%f)", col)};
+                {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
 
     %---------------------------------------------------------------------%
@@ -83,7 +83,7 @@ function obj = updateHeatmap(obj,heatIndex)
             else
                 col = [255,255,255];
             end
-            ann{c}.font.color = sprintf('rgb(%f,%f,%f)', col);
+            ann{c}.font.color = sprintf("rgb(%d,%d,%d)", col);
             c = c+1;
         end
     end

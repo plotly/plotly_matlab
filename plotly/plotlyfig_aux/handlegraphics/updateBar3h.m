@@ -85,8 +85,8 @@ function obj = updateBar3h(obj, surfaceIndex)
     if isnumeric(bar_data.FaceColor)
         
         %-paper_bgcolor-%
-        col = 255*bar_data.FaceColor;
-        col = sprintf('rgb(%f,%f,%f)', col);
+        col = round(255*bar_data.FaceColor);
+        col = sprintf("rgb(%d,%d,%d)", col);
         
     else
         switch bar_data.FaceColor
@@ -99,12 +99,12 @@ function obj = updateBar3h(obj, surfaceIndex)
                                 axis_data.CLim(1));
                         scalefactor = (capCD - axis_data.CLim(1)) ...
                                 / diff(axis_data.CLim);
-                        col =  255*(cmap(1+ floor(scalefactor ...
-                                *(length(cmap)-1)),:));
+                        col = round(255*(cmap(1+ floor(scalefactor ...
+                                *(length(cmap)-1)),:)));
                     case 'direct'
-                        col =  255*(cmap(cdata(1,1),:));
+                        col = round(255*(cmap(cdata(1,1),:)));
                 end
-                col = sprintf('rgb(%f,%f,%f)', col);
+                col = sprintf("rgb(%d,%d,%d)", col);
             case 'auto'
                 col = 'rgb(0,113.985,188.955)';
         end

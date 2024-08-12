@@ -117,24 +117,24 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
 
         colorbar.titlefont.family = ...
                 matlab2plotlyfont(colorbarTitleData.FontName);
-        col = 255*colorbarTitleData.Color;
-        colorbar.titlefont.color = sprintf('rgb(%f,%f,%f)', col);
+        col = round(255*colorbarTitleData.Color);
+        colorbar.titlefont.color = sprintf("rgb(%d,%d,%d)", col);
         colorbar.titlefont.size = 1.20 * colorbarTitleData.FontSize;
 
     elseif ~isempty(colorbarXLabelData.String)
         colorbar.titleside = 'right';
         colorbar.titlefont.family = ...
                 matlab2plotlyfont(colorbarXLabelData.FontName);
-        col = 255*colorbarXLabelData.Color;
-        colorbar.titlefont.color = sprintf('rgb(%f,%f,%f)', col);
+        col = round(255*colorbarXLabelData.Color);
+        colorbar.titlefont.color = sprintf("rgb(%d,%d,%d)", col);
         colorbar.titlefont.size = 1.20 * colorbarXLabelData.FontSize;
 
     elseif ~isempty(colorbarYLabelData.String)
         colorbar.titleside = 'bottom';
         colorbar.titlefont.family = ...
                 matlab2plotlyfont(colorbarYLabelData.FontName);
-        col = 255*colorbarYLabelData.Color;
-        colorbar.titlefont.color = sprintf('rgb(%f,%f,%f)', col);
+        col = round(255*colorbarYLabelData.Color);
+        colorbar.titlefont.color = sprintf("rgb(%d,%d,%d)", col);
         colorbar.titlefont.size = 1.20 * colorbarYLabelData.FontSize;
     end
 
@@ -178,16 +178,16 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
 
     %-coloration-%
     if isHG2
-        col = 255*colorbarData.Color;
+        col = round(255*colorbarData.Color);
     else
         if orientVert
-            col = 255*colorbarData.YColor;
+            col = round(255*colorbarData.YColor);
         else
-            col = 255*colorbarData.XColor;
+            col = round(255*colorbarData.XColor);
         end
     end
 
-    colorbarColor = sprintf('rgb(%f,%f,%f)', col);
+    colorbarColor = sprintf("rgb(%d,%d,%d)", col);
 
     colorbar.outlinecolor = colorbarColor;
     colorbar.tickcolor = colorbarColor;
@@ -319,12 +319,12 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     %-colorbar bg-color-%
     if ~isHG2
         if ~ischar(colorbarData.Color)
-            col = 255*colorbarData.Color;
+            col = round(255*colorbarData.Color);
         else
-            col = 255*figureData.Color;
+            col = round(255*figureData.Color);
         end
         
-        obj.layout.plot_bgcolor = sprintf('rgb(%f,%f,%f)', col);
+        obj.layout.plot_bgcolor = sprintf("rgb(%d,%d,%d)", col);
     end
 
     %---------------------------------------------------------------------%
@@ -344,11 +344,11 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
         for n = 1:nticks-1
             col = 1-colorData(n);
             colorscale{m} = {colorIndex(n), ...
-                    sprintf('rgb(%f,%f,%f)', ...
-                    255*[col, col, col])};
+                    sprintf("rgb(%d,%d,%d)", ...
+                    round(255*[col, col, col]))};
             colorscale{m+1} = {colorIndex(n+1), ...
-                    sprintf('rgb(%f,%f,%f)', ...
-                    255*[col, col, col])};
+                    sprintf("rgb(%d,%d,%d)", ...
+                    round(255*[col, col, col]))};
             m = 2*n+1;
         end
         obj.data{colorbarDataIndex}.marker.color = colorbarData.Ticks;
