@@ -51,7 +51,6 @@ function updateLineseries(obj, plotIndex)
         obj.data{plotIndex}.type = 'scatterpolar';
         updateDefaultPolaraxes(obj, plotIndex)
         obj.data{plotIndex}.subplot = sprintf('polar%d', xSource+1);
-
     elseif ~isPlot3D
         obj.data{plotIndex}.type = 'scatter';
         obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
@@ -73,10 +72,14 @@ function updateLineseries(obj, plotIndex)
     if isPolar
         obj.data{plotIndex}.r = rData;
         obj.data{plotIndex}.theta = thetaData;
-
     else
         obj.data{plotIndex}.x = xData;
         obj.data{plotIndex}.y = yData;
+
+        if isscalar(xData) % plotly has trouble plotting a single point
+            obj.data{plotIndex}.x = repmat(obj.data{plotIndex}.x,[1,2]);
+            obj.data{plotIndex}.y = repmat(obj.data{plotIndex}.y,[1,2]);
+        end
 
         if isPlot3D
             obj.data{plotIndex}.z = zData;
