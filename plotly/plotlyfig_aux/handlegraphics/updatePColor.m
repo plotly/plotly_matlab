@@ -16,8 +16,8 @@ function obj = updatePColor(obj, patchIndex)
     %---------------------------------------------------------------------%
 
     %-pcolor xaxis and yaxis-%
-    obj.data{patchIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{patchIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{patchIndex}.xaxis = "x" + xsource;
+    obj.data{patchIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 

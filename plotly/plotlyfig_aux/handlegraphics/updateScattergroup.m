@@ -72,8 +72,8 @@ function updateScattergroup(obj,scatterIndex)
     %---------------------------------------------------------------------%
 
     %-scatter xaxis and yaxis-%
-    obj.data{scatterIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{scatterIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{scatterIndex}.xaxis = "x" + xsource;
+    obj.data{scatterIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 

@@ -20,18 +20,9 @@ function obj = updateFunctionContour(obj,contourIndex)
 
     %---------------------------------------------------------------------%
 
-    %-contour xaxis and yaxis-%
-    obj.data{contourIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{contourIndex}.yaxis = ['y' num2str(ysource)];
-
-    %---------------------------------------------------------------------%
-
-    %-contour name-%
+    obj.data{contourIndex}.xaxis = "x" + xsource;
+    obj.data{contourIndex}.yaxis = "y" + ysource;
     obj.data{contourIndex}.name = contour_data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-contour type-%
     obj.data{contourIndex}.type = 'contour';
 
     %---------------------------------------------------------------------%

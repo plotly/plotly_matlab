@@ -71,28 +71,12 @@ function obj = updateBarseries(obj,barIndex)
 
     %---------------------------------------------------------------------%
 
-    %-bar xaxis and yaxis -%
-    obj.data{barIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{barIndex}.yaxis = ['y' num2str(ysource)];
-
-    %---------------------------------------------------------------------%
-
-    %-bar visible-%
+    obj.data{barIndex}.xaxis = "x" + xsource;
+    obj.data{barIndex}.yaxis = "y" + ysource;
     obj.data{barIndex}.visible = strcmp(bar_data.Visible,'on');
-
-    %---------------------------------------------------------------------%
-
-    %-bar type-%
     obj.data{barIndex}.type = 'bar';
-
-    %---------------------------------------------------------------------%
-
-    %-bar name-%
     obj.data{barIndex}.name = bar_data.DisplayName;
 
-    %---------------------------------------------------------------------%
-
-    %-layout barmode-%
     switch bar_data.BarLayout
         case 'grouped'
             obj.layout.barmode = 'group';
@@ -100,14 +84,7 @@ function obj = updateBarseries(obj,barIndex)
             obj.layout.barmode = 'stack';
     end
 
-    %---------------------------------------------------------------------%
-
-    %-layout bargroupgap-%
     obj.layout.bargroupgap = 1-bar_data.BarWidth;
-
-    %---------------------------------------------------------------------%
-
-    %-layout bargap-%
     obj.layout.bargap = obj.PlotlyDefaults.Bargap;
 
     %---------------------------------------------------------------------%

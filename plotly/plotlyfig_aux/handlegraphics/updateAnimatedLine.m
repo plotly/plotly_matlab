@@ -41,13 +41,8 @@ function updateAnimatedLine(obj,plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-scatter xaxis-%
-    obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
-
-    %---------------------------------------------------------------------%
-
-    %-scatter yaxis-%
-    obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{plotIndex}.xaxis = "x" + xsource;
+    obj.data{plotIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 
@@ -126,12 +121,7 @@ function updateAnimatedLine(obj,plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-scatter line-%
     obj.data{plotIndex}.line = extractLineLine(plotData);
-
-    %---------------------------------------------------------------------%
-
-    %-scatter marker-%
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
     %---------------------------------------------------------------------%

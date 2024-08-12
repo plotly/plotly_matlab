@@ -10,28 +10,14 @@ function updateConstantLine(obj,plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-scatter xaxis-%
-    obj.data{plotIndex}.xaxis = ["x" num2str(xsource)];
-
-    %---------------------------------------------------------------------%
-
-    %-scatter yaxis-%
-    obj.data{plotIndex}.yaxis = ["y" num2str(ysource)];
-
-    %---------------------------------------------------------------------%
-
-    %-scatter type-%
+    obj.data{plotIndex}.xaxis = "x" + xsource;
+    obj.data{plotIndex}.yaxis = "y" + ysource;
     obj.data{plotIndex}.type = "scatter";
-
-    %---------------------------------------------------------------------%
-
-    %-scatter visible-%
     obj.data{plotIndex}.visible = strcmp(plotData.Visible, "on");
 
     %---------------------------------------------------------------------%
 
     %-scatter-%
-
     xaxis = obj.layout.("xaxis"+xsource);
     yaxis = obj.layout.("yaxis"+ysource);
     value = [plotData.Value plotData.Value];

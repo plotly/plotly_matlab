@@ -71,18 +71,9 @@ function updateArea(obj,areaIndex)
 
     %---------------------------------------------------------------------%
 
-    %-area axis-%
     obj.data{areaIndex}.xaxis = "x" + xsource;
     obj.data{areaIndex}.yaxis = "y" + ysource;
-
-    %---------------------------------------------------------------------%
-
-    %-area type-%
     obj.data{areaIndex}.type = "scatter";
-
-    %---------------------------------------------------------------------%
-
-    %-area x-%
     obj.data{areaIndex}.x = area_data.XData;
 
     %---------------------------------------------------------------------%
@@ -99,12 +90,7 @@ function updateArea(obj,areaIndex)
 
     %---------------------------------------------------------------------%
 
-    %-area name-%
     obj.data{areaIndex}.name = area_data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-area visible-%
     obj.data{areaIndex}.visible = strcmp(area_data.Visible, "on");
 
     %---------------------------------------------------------------------%

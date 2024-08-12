@@ -31,10 +31,8 @@ function obj = updateErrorbar(obj, plotIndex)
 	%---------------------------------------------------------------------%
 
 	%-set errorbar data-%
-
 	obj.data{plotIndex}.error_y.array = yPositiveDelta;
 	obj.data{plotIndex}.error_x.array = xPositiveDelta;
-
 	obj.data{plotIndex}.error_x.arrayminus = xNegativeDelta;
 	obj.data{plotIndex}.error_y.arrayminus = yNegativeDelta;
 

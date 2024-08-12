@@ -15,13 +15,8 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
 
     %---------------------------------------------------------------------%
 
-    %-surface xaxis and yaxis-%
-    obj.data{surfaceIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{surfaceIndex}.yaxis = ['y' num2str(ysource)];
-
-    %---------------------------------------------------------------------%
-        
-    %-surface type-%
+    obj.data{surfaceIndex}.xaxis = "x" + xsource;
+    obj.data{surfaceIndex}.yaxis = "y" + ysource;
     obj.data{surfaceIndex}.type = 'surface';
 
     %---------------------------------------------------------------------%

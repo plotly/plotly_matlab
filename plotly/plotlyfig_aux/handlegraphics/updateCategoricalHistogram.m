@@ -63,8 +63,8 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     %---------------------------------------------------------------------%
 
     %-hist xaxis and yaxis-%
-    obj.data{histIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{histIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{histIndex}.xaxis = "x" + xsource;
+    obj.data{histIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 

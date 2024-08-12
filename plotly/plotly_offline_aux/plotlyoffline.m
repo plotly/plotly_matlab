@@ -7,7 +7,7 @@ function response = plotlyoffline(plotlyfig)
     if plotlyfig.PlotOptions.IncludePlotlyjs
         % grab the bundled dependencies
         userHome = getuserdir();
-        plotlyConfigFolder   = fullfile(userHome,'.plotly');
+        plotlyConfigFolder = fullfile(userHome,'.plotly');
         plotlyJSFolder = fullfile(plotlyConfigFolder, 'plotlyjs');
         bundleName = 'plotly-matlab-offline-bundle.js';
         bundleFile = fullfile(plotlyJSFolder, bundleName);
@@ -30,8 +30,8 @@ function response = plotlyoffline(plotlyfig)
     
     % handle plot div specs
     id = char(java.util.UUID.randomUUID); 
-    width = [num2str(plotlyfig.layout.width) 'px']; 
-    height = [num2str(plotlyfig.layout.height) 'px']; 
+    width = plotlyfig.layout.width + "px";
+    height = plotlyfig.layout.height + "px";
     
     if plotlyfig.PlotOptions.ShowLinkText
         linkText = plotlyfig.PlotOptions.LinkText;   

@@ -124,12 +124,7 @@ function updateWordcloud(obj,scatterIndex)
 
     %---------------------------------------------------------------------%
 
-    %-det font family-%
     obj.data{scatterIndex}.textfont.family = matlab2plotlyfont(scatter_data.FontName);
-
-    %---------------------------------------------------------------------%
-
-    %-scatter visible-%
     obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
 
     %---------------------------------------------------------------------%

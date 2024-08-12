@@ -85,8 +85,8 @@ function updateComet(obj,plotIndex)
     %---------------------------------------------------------------------%
 
     %-scatter xaxis and yaxis-%
-    obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
+    obj.data{plotIndex}.xaxis = "x" + xsource;
+    obj.data{plotIndex}.yaxis = "y" + ysource;
 
     %---------------------------------------------------------------------%
 

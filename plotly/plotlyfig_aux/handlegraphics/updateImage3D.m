@@ -48,13 +48,8 @@ function obj = updateImage3D(obj, imageIndex)
 
     %---------------------------------------------------------------------%
 
-    %-image xaxis and yaxis-%
-    obj.data{imageIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{imageIndex}.yaxis = ['y' num2str(ysource)];
-
-    %---------------------------------------------------------------------%
-
-    %-image type-%
+    obj.data{imageIndex}.xaxis = "x" + xsource;
+    obj.data{imageIndex}.yaxis = "y" + ysource;
     obj.data{imageIndex}.type = 'surface';
 
     %---------------------------------------------------------------------%

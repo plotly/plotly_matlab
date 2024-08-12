@@ -20,13 +20,8 @@ function obj = updateContourProjection(obj,contourIndex)
 
     %---------------------------------------------------------------------%
 
-    %-contour xaxis and yaxis-%
-    obj.data{contourIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{contourIndex}.yaxis = ['y' num2str(ysource)];
-
-    %---------------------------------------------------------------------%
-
-    %-contour name-%
+    obj.data{contourIndex}.xaxis = "x" + xsource;
+    obj.data{contourIndex}.yaxis = "y" + ysource;
     obj.data{contourIndex}.name = contour_data.DisplayName;
 
     %---------------------------------------------------------------------%
@@ -61,13 +56,7 @@ function obj = updateContourProjection(obj,contourIndex)
 
     %---------------------------------------------------------------------%
 
-    %-contour visible-%
-
     obj.data{contourIndex}.visible = strcmp(contour_data.Visible,'on');
-
-    %---------------------------------------------------------------------%
-
-    %-contour showscale-%
     obj.data{contourIndex}.showscale = false;
 
     %---------------------------------------------------------------------%
@@ -136,7 +125,6 @@ function obj = updateContourProjection(obj,contourIndex)
     %---------------------------------------------------------------------%
 
     %-contour showlegend-%
-
     leg = contour_data.Annotation;
     legInfo = leg.LegendInformation;
 
