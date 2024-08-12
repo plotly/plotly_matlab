@@ -58,7 +58,8 @@ function UpdateGeoAxes(obj, geoIndex)
         if strcmpi(geoData.Grid, 'on')
             geoaxes.lataxis.showgrid = true;
             geoaxes.lataxis.gridwidth = geoData.LineWidth;
-            geoaxes.lataxis.gridcolor = sprintf('rgba(%f,%f,%f,%f)', 255*geoData.GridColor, geoData.GridAlpha);
+            geoaxes.lataxis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
+                    [round(255*geoData.GridColor) geoData.GridAlpha]);
         end
     end
 
@@ -75,7 +76,8 @@ function UpdateGeoAxes(obj, geoIndex)
         if strcmpi(geoData.Grid, 'on')
             geoaxes.lonaxis.showgrid = true;
             geoaxes.lonaxis.gridwidth = geoData.LineWidth;
-            geoaxes.lonaxis.gridcolor = sprintf('rgba(%f,%f,%f,%f)', 255*geoData.GridColor, geoData.GridAlpha);
+            geoaxes.lonaxis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
+                    [round(255*geoData.GridColor) geoData.GridAlpha]);
         end
     end
 

@@ -45,7 +45,7 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
     %---------------------------------------------------------------------%
 
     %-font properties-%
-    titleColor = sprintf('rgb(%f,%f,%f)', 255*titleStruct.Color);
+    titleColor = sprintf("rgb(%d,%d,%d)", round(255*titleStruct.Color));
     titleSize = titleStruct.FontSize;
     titleFamily = matlab2plotlyfont(titleStruct.FontName);
 

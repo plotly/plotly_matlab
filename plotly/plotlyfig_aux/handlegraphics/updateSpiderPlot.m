@@ -270,8 +270,8 @@ function setAnnotation(obj, axesStruct, spiderIndex)
     for t = 1:nTicks
 
         indexColor = mod(t-1, nAxesFontColor) + 1;
-        axesColor = 255*axesFontColor(indexColor, :);
-        axesColor = sprintf('rgb(%f,%f,%f)', axesColor);
+        axesColor = round(255*axesFontColor(indexColor, :));
+        axesColor = sprintf("rgb(%d,%d,%d)", axesColor);
 
         for a = 1:nAxes
 
@@ -385,7 +385,7 @@ function axesStruct = setAxes(obj, spiderIndex)
     angleStep = 2*pi/nAxes;
     axesAngle = [pi/2];
     plotIndex = spiderIndex;
-    axesColor = sprintf('rgb(%f,%f,%f)', 255*plotData.AxesColor);
+    axesColor = sprintf("rgb(%d,%d,%d)", round(255*plotData.AxesColor));
 
     for a = 1:nAxes
         %-get plotIndex-%
@@ -519,18 +519,18 @@ function setLegeng(obj, spiderIndex)
     %---------------------------------------------------------------------%
 
     %-legend settings-%
-    if (strcmp(legData.Box,'on') && strcmp(legData.Visible, 'on'))
-        edgeColor = 255*legData.EdgeColor;
-        bgColor = 255*legData.Color;
-        textColor = 255*legData.TextColor;
+    if (strcmp(legData.Box, 'on') && strcmp(legData.Visible, 'on'))
+        edgeColor = round(255*legData.EdgeColor);
+        bgColor = round(255*legData.Color);
+        textColor = round(255*legData.TextColor);
 
         obj.layout.legend.traceorder = 'normal';
         obj.layout.legend.borderwidth = legData.LineWidth;
-        obj.layout.legend.bordercolor = sprintf('rgb(%f,%f,%f)', edgeColor);
-        obj.layout.legend.bgcolor = sprintf('rgb(%f,%f,%f)', bgColor);
+        obj.layout.legend.bordercolor = sprintf("rgb(%d,%d,%d)", edgeColor);
+        obj.layout.legend.bgcolor = sprintf("rgb(%d,%d,%d)", bgColor);
         obj.layout.legend.font.size = legData.FontSize;
         obj.layout.legend.font.family = matlab2plotlyfont(legData.FontName);
-        obj.layout.legend.font.color = sprintf('rgb(%f,%f,%f)', textColor);
+        obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", textColor);
     end
 end
 
@@ -545,17 +545,15 @@ function [strColor, numColor] = getColor(colorMatrix, traceIndex, ...
 
     nColors = size(colorMatrix, 1);
     colorIndex = mod(traceIndex-1, nColors) + 1;
-    numColor = 255*colorMatrix(colorIndex, :);
-    strColor = sprintf('rgba(%f,%f,%f,%f)', numColor, colorOpacity);
+    numColor = round(255*colorMatrix(colorIndex, :));
+    strColor = sprintf("rgba(%d,%d,%d,%f)", numColor, colorOpacity);
 end
 
 function edgeColor = getLabelEdgeColor(axesLabelsEdge)
     if isnumeric(axesLabelsEdge)
-        edgeColor = sprintf('rgb', 255*axesLabelsEdge);
-
-    elseif strcmp(axesLabelsEdge, 'none')
-        edgeColor = 'rgba(0,0,0,0)';
-
+        edgeColor = sprintf("rgb(%d,%d,%d)", round(255*axesLabelsEdge));
+    elseif strcmp(axesLabelsEdge, "none")
+        edgeColor = "rgba(0,0,0,0)";
     else
         switch axesLabelsEdge
             case {'b', 'blue'}

@@ -156,11 +156,11 @@ function fillColor = getFaceColor(plotData, axisData)
 	
 	%-get face color depending of faceColor attribute
 	if isnumeric(faceColor)
-		numColor = 255 * faceColor;
-		fillColor = sprintf('rgb(%f,%f,%f)', numColor);
-	elseif strcmpi(faceColor, 'flat')
+		numColor = round(255 * faceColor);
+		fillColor = sprintf("rgb(%d,%d,%d)", numColor);
+	elseif strcmpi(faceColor, "flat")
 		fillColor = getStringColor(cData, colorMap, cLim);
-    elseif strcmpi(faceColor, 'interp')
+    elseif strcmpi(faceColor, "interp")
     	if size(cData, 1) ~= 1
     		for n = 1:size(cData, 2)
 				fillColor{n} = getStringColor(mean(cData(:, n)), colorMap, cLim);
@@ -176,6 +176,6 @@ function stringColor = getStringColor(cData, colorMap, cLim)
 	cIndex = max( min( cData, cLim(2) ), cLim(1) );
     scaleColor = (cIndex - cLim(1)) / diff(cLim);
     cIndex = 1 + floor(scaleColor*(nColors-1));
-    numColor =  255 * colorMap(cIndex, :);
-    stringColor = sprintf('rgb(%f,%f,%f)', numColor);
+    numColor =  round(255 * colorMap(cIndex, :));
+    stringColor = sprintf("rgb(%d,%d,%d)", numColor);
 end

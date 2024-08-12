@@ -107,35 +107,38 @@ function obj = updateMesh(obj, surfaceIndex)
     colorScale = {};
 
     for c = 1: length(cMap)
-        colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        colorScale{c} = {(c-1)*fac, ...
+                sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
     end
 
     %---------------------------------------------------------------------%
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
-        cDataContour = sprintf('rgb(%f,%f,%f)', 255*meshData.EdgeColor);
+        cDataContour = sprintf("rgb(%d,%d,%d)", ...
+                round(255*meshData.EdgeColor));
 
-    elseif strcmpi(meshData.EdgeColor, 'interp')
+    elseif strcmpi(meshData.EdgeColor, "interp")
         cDataContour = zDataContour(:);
         obj.data{contourIndex}.line.colorscale = colorScale;
 
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
 
-    elseif strcmpi(meshData.EdgeColor, 'flat')
+    elseif strcmpi(meshData.EdgeColor, "flat")
         cData = meshData.CData;
 
         if size(cData, 3) ~= 1
             cMap = unique( reshape(cData, ...
-                [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
+                [size(cData,1)*size(cData,2), size(cData,3)]), "rows" );
             cData = rgb2ind(cData, cMap);
 
             edgeColorScale = {};
             fac = 1/(length(cMap)-1);
 
             for c = 1: length(cMap)
-                edgeColorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                edgeColorScale{c} = {(c-1)*fac, ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
 
             obj.data{surfaceIndex}.line.cmin = 0;
@@ -188,7 +191,8 @@ function obj = updateMesh(obj, surfaceIndex)
         cDataSurface = double(cDataSurface) + axisData.CLim(1);
 
         for c = 1: size(cMapSurface, 1)
-            colorScale{c} = { (c-1)*fac , sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
+            colorScale{c} = {(c-1)*fac, ...
+                    sprintf("rgba(%f,%f,%f, 1)", cMapSurface(c, :))};
         end
 
         obj.data{surfaceIndex}.cmin = axisData.CLim(1);
@@ -225,7 +229,8 @@ function obj = updateMesh(obj, surfaceIndex)
             fac = 1/(length(cMap)-1);
 
             for c = 1: length(cMap)
-                colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                colorScale{c} = {(c-1)*fac, ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
         else
             cDataSurface = cData;

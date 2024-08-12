@@ -85,18 +85,20 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     colorScale = {};
 
     for c = 1: length(cMap)
-        colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        colorScale{c} = {(c-1)*fac, ...
+                sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
     end
 
     %---------------------------------------------------------------------%
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
-        cDataContour = sprintf('rgb(%f,%f,%f)', 255*meshData.EdgeColor);
-    elseif strcmpi(meshData.EdgeColor, 'interp')
+        cDataContour = sprintf("rgb(%d,%d,%d)", ...
+                round(255*meshData.EdgeColor));
+    elseif strcmpi(meshData.EdgeColor, "interp")
         cDataContour = zDataContour(:);
         obj.data{contourIndex}.line.colorscale = colorScale;
-    elseif strcmpi(meshData.EdgeColor, 'none')
-        cDataContour = 'rgba(0,0,0,0)';
+    elseif strcmpi(meshData.EdgeColor, "none")
+        cDataContour = "rgba(0,0,0,0)";
     end
 
     %-set edge color-%

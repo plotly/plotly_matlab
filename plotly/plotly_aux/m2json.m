@@ -4,6 +4,10 @@ function valstr = m2json(val)
     elseif iscell(val)
         valstr = cell2json(val);
     elseif isa(val, "numeric")
+        if isempty(val)
+            valstr = "[]";
+            return;
+        end
         sz = size(val);
         if isa(val,"single")
             numDigits = 7;
@@ -25,8 +29,6 @@ function valstr = m2json(val)
         end
         if length(val)>1
             valstr = "[" + valstr + "]";
-        elseif isempty(val)
-            valstr = "[]";
         end
         valstr = strrep(valstr,"-Inf", "null");
         valstr = strrep(valstr, "Inf", "null");
@@ -38,7 +40,7 @@ function valstr = m2json(val)
              valstr = cell2json(cellstr(val));
          else
              val = checkescape(val); % add escape characters
-             valstr = sprintf('"%s"', val);
+             valstr = sprintf("""%s""", val);
          end
     elseif islogical(val)
         if val

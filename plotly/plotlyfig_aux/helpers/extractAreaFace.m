@@ -26,7 +26,7 @@ function face = extractAreaFace(area_data)
     % face face color
     MarkerColor = area_data.FaceColor;
     if isnumeric(MarkerColor)
-        col = [255*MarkerColor area_data.FaceAlpha];
+        col = [round(255*MarkerColor) area_data.FaceAlpha];
         facecolor = sprintf("rgba(%d,%d,%d,%f)", col);
     else
         switch MarkerColor
@@ -40,7 +40,7 @@ function face = extractAreaFace(area_data)
                         / diff(axis_data.CLim);
                 col = 255*(colormap(1 + floor(scalefactor ...
                         * (length(colormap)-1)),:));
-                col = [col area_data.FaceAlpha];
+                col = [round(col) area_data.FaceAlpha];
                 facecolor = sprintf("rgba(%d,%d,%d,%f)", col);
         end
     end

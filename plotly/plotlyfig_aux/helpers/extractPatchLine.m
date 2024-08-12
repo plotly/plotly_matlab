@@ -22,12 +22,12 @@ function line = extractPatchLine(patch_data)
 
     if (~strcmp(patch_data.LineStyle,'none'))
         if isnumeric(patch_data.EdgeColor)
-            col = 255*patch_data.EdgeColor;
-            line.color = sprintf("rgb(%f,%f,%f)", col);
+            col = round(255*patch_data.EdgeColor);
+            line.color = sprintf("rgb(%d,%d,%d)", col);
         else
             switch patch_data.EdgeColor
                 case 'none'
-                    line.color = 'rgba(0,0,0,0,)';
+                    line.color = 'rgba(0,0,0,0)';
                 case 'flat'
                     switch patch_data.CDataMapping
                         case 'scaled'
@@ -36,13 +36,13 @@ function line = extractPatchLine(patch_data)
                                     axis_data.CLim(2)), axis_data.CLim(1));
                             scalefactor = (capCD - axis_data.CLim(1)) ...
                                     / diff(axis_data.CLim);
-                            col = 255*(colormap(1+floor(scalefactor ...
-                                    * (length(colormap)-1)),:));
+                            col = round(255*(colormap(1+floor(scalefactor ...
+                                    * (length(colormap)-1)),:)));
                         case 'direct'
-                            col = 255*(colormap( ...
-                                    patch_data.FaceVertexCData(1,1),:));
+                            col = round(255*(colormap( ...
+                                    patch_data.FaceVertexCData(1,1),:)));
                     end
-                    line.color = sprintf("rgb(%f,%f,%f)", col);
+                    line.color = sprintf("rgb(%d,%d,%d)", col);
             end
         end
 

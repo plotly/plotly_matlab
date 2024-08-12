@@ -76,7 +76,7 @@ function marker = extractLineMarker(line_data)
 
     if filledMarker
         if isnumeric(MarkerColor)
-            col = 255*MarkerColor;
+            col = round(255*MarkerColor);
             markercolor = sprintf("rgb(%d,%d,%d)", col);
         else
             switch MarkerColor
@@ -95,14 +95,14 @@ function marker = extractLineMarker(line_data)
     MarkerLineColor = line_data.MarkerEdgeColor;
 
     if isnumeric(MarkerLineColor)
-        col = 255*MarkerLineColor;
+        col = round(255*MarkerLineColor);
         markerlinecolor = sprintf("rgb(%d,%d,%d)", col);
     else
         switch MarkerLineColor
             case "none"
                 markerlinecolor = "rgba(0,0,0,0)";
             case "auto"
-                col = 255*line_data.Color;
+                col = round(255*line_data.Color);
                 markerlinecolor = sprintf("rgb(%d,%d,%d)", col);
         end
     end

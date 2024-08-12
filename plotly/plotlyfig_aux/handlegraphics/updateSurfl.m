@@ -82,7 +82,7 @@ function obj = updateSurfl(obj, surfaceIndex)
     yData = yData(:, 1);
     obj.data{surfaceIndex}.contours.y.start = yData(1);
     obj.data{surfaceIndex}.contours.y.end = yData(end);
-    obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
+    obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));
     obj.data{surfaceIndex}.contours.y.show = true;
 
     %---------------------------------------------------------------------%
@@ -104,14 +104,16 @@ function obj = updateSurfl(obj, surfaceIndex)
     colorScale = {};
 
     for c = 1: length(cMap)
-        colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+        colorScale{c} = {(c-1)*fac, ...
+                sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
     end
 
     %---------------------------------------------------------------------%
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
-        cDataContour = sprintf('rgb(%f,%f,%f)', 255*meshData.EdgeColor);
+        cDataContour = sprintf("rgb(%d,%d,%d)", ...
+                round(255*meshData.EdgeColor));
 
     elseif strcmpi(meshData.EdgeColor, 'interp')
         cDataContour = zDataContour(:);
@@ -132,7 +134,8 @@ function obj = updateSurfl(obj, surfaceIndex)
             fac = 1/(length(cMap)-1);
 
             for c = 1: length(cMap)
-                edgeColorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                edgeColorScale{c} = {(c-1)*fac, ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
 
             obj.data{surfaceIndex}.line.cmin = 0;
@@ -181,7 +184,8 @@ function obj = updateSurfl(obj, surfaceIndex)
         [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
         cDataSurface = double(cDataSurface) + axisData.CLim(1);
         for c = 1: size(cMapSurface, 1)
-            colorScale{c} = { (c-1)*fac , sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
+            colorScale{c} = {(c-1)*fac, ...
+                    sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
         end
         obj.data{surfaceIndex}.cmin = axisData.CLim(1);
         obj.data{surfaceIndex}.cmax = axisData.CLim(2);
@@ -208,7 +212,8 @@ function obj = updateSurfl(obj, surfaceIndex)
             colorScale = {};
             fac = 1/(length(cMap)-1);
             for c = 1: length(cMap)
-                colorScale{c} = { (c-1)*fac , sprintf('rgb(%f,%f,%f)', 255*cMap(c, :))};
+                colorScale{c} = {(c-1)*fac, ...
+                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
             end
         else
             cDataSurface = cData;
@@ -356,21 +361,10 @@ function obj = updateSurfl(obj, surfaceIndex)
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
 
-    %---------------------------------------------------------------------%
-
-    %-surface name-%
     obj.data{surfaceIndex}.name = meshData.DisplayName;
     obj.data{contourIndex}.name = meshData.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-surface showscale-%
     obj.data{surfaceIndex}.showscale = false;
     obj.data{contourIndex}.showscale = false;
-
-    %---------------------------------------------------------------------%
-
-    %-surface visible-%
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 

@@ -10,8 +10,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %=====================================================================%
 
     %-general axis settings-%
-    axisColor = 255 * axisData.(axisName + "Color");
-    axisColor = sprintf("rgb(%f,%f,%f)", axisColor);
+    axisColor = round(255 * axisData.(axisName + "Color"));
+    axisColor = sprintf("rgb(%d,%d,%d)", axisColor);
     lineWidth = max(1, ...
             axisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
@@ -69,9 +69,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
     %-axis grid color-%
     try
-        gridColor = 255*axisData.GridColor;
-        gridAlpha = axisData.GridAlpha;
-        axis.gridcolor = sprintf("rgba(%f,%f,%f,%f)", gridColor, gridAlpha);
+        axis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
+                [round(255*axisData.GridColor) axisData.GridAlpha]);
     catch
         axis.gridcolor = axisColor;
     end
@@ -219,7 +218,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.title = parseString(labelData.String,labelData.Interpreter);
     end
 
-    axis.titlefont.color = sprintf("rgb(%f,%f,%f)", 255*labelData.Color);
+    axis.titlefont.color = sprintf("rgb(%d,%d,%d)", ...
+            round(255*labelData.Color));
     axis.titlefont.size = labelData.FontSize;
     axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
 

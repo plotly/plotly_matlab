@@ -76,9 +76,9 @@ function obj = updateContourProjection(obj,contourIndex)
     colormap = figure_data.Colormap;
 
     for c = 1:size((colormap),1)
-        col =  255*(colormap(c,:));
+        col = round(255*(colormap(c,:)));
         obj.data{contourIndex}.colorscale{c} = ...
-                {(c-1)/(size(colormap,1)-1), sprintf("rgb(%f,%f,%f)", col)};
+                {(c-1)/(size(colormap,1)-1), sprintf("rgb(%d,%d,%d)", col)};
     end
 
     %---------------------------------------------------------------------%

@@ -17,7 +17,7 @@ function line = extractAreaLine(area_data)
         LineColor = area_data.EdgeColor;
 
         if isnumeric(LineColor)
-            col = [255*LineColor area_data.EdgeAlpha];
+            col = [round(255*LineColor) area_data.EdgeAlpha];
             linecolor = sprintf("rgba(%d,%d,%d,%f)", col);
         else
             linecolor = "rgba(0,0,0,0)";

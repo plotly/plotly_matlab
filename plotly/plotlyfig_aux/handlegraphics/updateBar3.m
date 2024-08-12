@@ -84,8 +84,8 @@ function obj = updateBar3(obj, surfaceIndex)
 
     if isnumeric(bar_data.FaceColor)
         %-paper_bgcolor-%
-        col = 255*bar_data.FaceColor;
-        col = sprintf('rgb(%f,%f,%f)', col);
+        col = round(255*bar_data.FaceColor);
+        col = sprintf("rgb(%d,%d,%d)", col);
     else
         switch bar_data.FaceColor
             case 'none'
@@ -97,14 +97,14 @@ function obj = updateBar3(obj, surfaceIndex)
                                 axis_data.CLim(1));
                         scalefactor = (capCD - axis_data.CLim(1)) ...
                                 / diff(axis_data.CLim);
-                        col =  255*(cmap(1+ floor(scalefactor ...
-                                * (length(cmap)-1)),:));
+                        col = round(255*(cmap(1+ floor(scalefactor ...
+                                * (length(cmap)-1)),:)));
                     case 'direct'
-                        col =  255*(cmap(cdata(1,1),:));
+                        col = round(255*(cmap(cdata(1,1),:)));
                 end
-                col = sprintf('rgb(%f,%f,%f)', col);
+                col = sprintf("rgb(%d,%d,%d)", col);
             case 'auto'
-                col = 'rgb(0,113.985,188.955)';
+                col = 'rgb(0,114,189)';
         end
     end
 
@@ -115,7 +115,7 @@ function obj = updateBar3(obj, surfaceIndex)
     %-some settings-%
     obj.data{surfaceIndex}.contour.show = true;
     obj.data{surfaceIndex}.contour.width = 6;
-    obj.data{surfaceIndex}.contour.color='rgb(0,0,0)';
+    obj.data{surfaceIndex}.contour.color= "rgb(0,0,0)";
     obj.data{surfaceIndex}.flatshading = false;
 
     %---------------------------------------------------------------------%
@@ -141,7 +141,7 @@ function obj = updateBar3(obj, surfaceIndex)
     %---------------------------------------------------------------------%
 
     %-surface visible-%
-    obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible,'on');
+    obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible, 'on');
 
     %---------------------------------------------------------------------%
 

@@ -33,9 +33,6 @@ function obj = updateTernaryContour(obj, ternaryIndex)
     n = 1; c = 1;
 
     while (n < len)
-
-        %-----------------------------------------------------------------%
-
         %-get plot data-%
         m = contourMatrix(2, n);
         zLevel = contourMatrix(1, n);
@@ -43,14 +40,11 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         xData{c} = contourMatrix(1, n+1:n+m);
         yData{c} = contourMatrix(2, n+1:n+m);
 
-        %-----------------------------------------------------------------%
-
         %-get edge color-%
         if isnumeric(ternaryData.LineColor)
-            lineColor{c} = sprintf('rgb(%f,%f,%f)', 255*ternaryData.LineColor);
-
-        elseif strcmpi(ternaryData.LineColor, 'flat')
-
+            lineColor{c} = sprintf("rgb(%d,%d,%d)", ...
+                    round(255*ternaryData.LineColor));
+        elseif strcmpi(ternaryData.LineColor, "flat")
             cMap = figureData.Colormap;
             cMin = axisData.CLim(1);
             cMax = axisData.CLim(2);
@@ -60,18 +54,14 @@ function obj = updateTernaryContour(obj, ternaryIndex)
             cData = (cData - cMin)/(cMax - cMin);
             cData = 1 + floor( cData*(nColors-1) );
 
-            lineColor{c} = sprintf('rgb(%f,%f,%f)', 255*cMap(cData,:));
-
-        elseif strcmpi(ternaryData.LineColor, 'none')
-            lineColor{c} = 'rgba(0,0,0,0)';
-
+            lineColor{c} = sprintf("rgb(%d,%d,%d)", ...
+                    round(255*cMap(cData,:)));
+        elseif strcmpi(ternaryData.LineColor, "none")
+            lineColor{c} = "rgba(0,0,0,0)";
         end
 
         n = n + m + 1;
         c = c + 1;
-
-        %-----------------------------------------------------------------%
-
     end
 
     %---------------------------------------------------------------------%
@@ -433,5 +423,6 @@ function outStruct = getContourData(B, zLevel, xData, yData, zData, cLim, cMap)
     colorIndex = (colorIndex - cLim(1))/(cLim(2) - cLim(1));
     colorIndex = 1 + floor( colorIndex*(nColors-1) );
 
-    outStruct.lineColor = sprintf('rgb(%f,%f,%f)', 255*cMap(colorIndex,:));
+    outStruct.lineColor = sprintf("rgb(%d,%d,%d)", ...
+            round(255*cMap(colorIndex,:)));
 end

@@ -173,9 +173,9 @@ function obj = updateBoxplot(obj, boxIndex)
                     
                     %-boxplot line style-%
                     if isCompact
-                        col = 255*box_child_data.Color;
+                        col = round(255*box_child_data.Color);
                         obj.data{boxIndex}.fillcolor = ...
-                                sprintf("rgb(%f,%f,%f)", col);
+                                sprintf("rgb(%d,%d,%d)", col);
                     else
                         obj.data{boxIndex}.line = ...
                                 extractLineLine(box_child_data);

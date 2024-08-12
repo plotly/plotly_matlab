@@ -52,13 +52,13 @@ function obj = updateColorbar(obj,colorbarIndex)
         outlineColor = [0 0 0];
     else
         if colorbarData.Position(4) > colorbarData.Position(3)
-            outlineColor = 255*colorbarData.YColor;
+            outlineColor = round(255*colorbarData.YColor);
         else
-            outlineColor = 255*colorbarData.XColor;
+            outlineColor = round(255*colorbarData.XColor);
         end
     end
 
-    outlineColor = sprintf('rgb(%f,%f,%f)', outlineColor);
+    outlineColor = sprintf("rgb(%d,%d,%d)", outlineColor);
     lineWidth = colorbarData.LineWidth ...
             * obj.PlotlyDefaults.AxisLineIncreaseFactor;
     tickLength = min(obj.PlotlyDefaults.MaxTickLength, ...
@@ -147,8 +147,8 @@ function obj = updateColorbar(obj,colorbarIndex)
         end
 
         titleFontSize = 1.20 * colorbarTitleData.FontSize;
-        titleFontColor = ...
-                sprintf('rgb(%f,%f,%f)', 255*colorbarTitleData.Color);
+        titleFontColor = sprintf("rgb(%d,%d,%d)", ...
+                round(255*colorbarTitleData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarTitleData.FontName);
 
     elseif ~isempty(colorbarXLabelData.String)
@@ -157,8 +157,8 @@ function obj = updateColorbar(obj,colorbarIndex)
 
         titleSide = 'right';
         titleFontSize = 1.20 * colorbarXLabelData.FontSize;
-        titleFontColor = ...
-                sprintf('rgb(%f,%f,%f)', 255*colorbarXLabelData.Color);
+        titleFontColor = sprintf("rgb(%d,%d,%d)", ...
+                round(255*colorbarXLabelData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarXLabelData.FontName);
 
     elseif ~isempty(colorbarYLabelData.String)
@@ -167,8 +167,8 @@ function obj = updateColorbar(obj,colorbarIndex)
 
         titleSide = 'bottom';
         titleFontSize = 1.20 * colorbarYLabelData.FontSize;
-        titleFontColor = ...
-                sprintf('rgb(%f,%f,%f)', 255*colorbarYLabelData.Color);
+        titleFontColor = sprintf("rgb(%d,%d,%d)", ...
+                round(255*colorbarYLabelData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarYLabelData.FontName);
 
     else
@@ -244,12 +244,12 @@ function obj = updateColorbar(obj,colorbarIndex)
     %-colorbar bg-color-%
     if ~isHG2
         if ~ischar(colorbarData.Color)
-            bgColor = 255*colorbarData.Color;
+            bgColor = round(255*colorbarData.Color);
         else
-            bgColor = 255*figureData.Color;
+            bgColor = round(255*figureData.Color);
         end
         
-        obj.layout.plot_bgcolor = sprintf('rgb(%f,%f,%f', bgColor);
+        obj.layout.plot_bgcolor = sprintf("rgb(%d,%d,%d)", bgColor);
     end
 
     %---------------------------------------------------------------------%

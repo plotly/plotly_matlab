@@ -26,8 +26,7 @@ function marker = extractPatchFace(patch_data)
 
     if isnumeric(patch_data.FaceColor)
         %-paper_bgcolor-%
-        col = [255*patch_data.FaceColor patch_data.FaceAlpha];
-        marker.color = sprintf("rgba(%d,%d,%d,%f)", col);
+        col = [round(255*patch_data.FaceColor) patch_data.FaceAlpha];
     else
         switch patch_data.FaceColor
             case "none"
@@ -39,20 +38,21 @@ function marker = extractPatchFace(patch_data)
                                 axis_data.CLim(2)), axis_data.CLim(1));
                         scalefactor = (capCD - axis_data.CLim(1)) ...
                                 / diff(axis_data.CLim);
-                        col = 255*(colormap(1 + floor(scalefactor ...
-                                * (length(colormap)-1)),:));
+                        col = round(255*(colormap(1 + floor(scalefactor ...
+                                * (length(colormap)-1)),:)));
                     case "direct"
-                        col = 255*(colormap(patch_data.FaceVertexCData(1,1),:));
+                        col = round(255*(colormap( ...
+                                patch_data.FaceVertexCData(1,1),:)));
                 end
                 col = [col patch_data.FaceAlpha];
             case 'auto'
                 cIndex = find(flipud(arrayfun(@(x) isequaln(x,patch_data), ...
                         patch_data.Parent.Children))); % far from pretty
-                col = 255*patch_data.Parent.ColorOrder(cIndex,:);
+                col = round(255*patch_data.Parent.ColorOrder(cIndex,:));
                 col = [col patch_data.FaceAlpha];
         end
-        marker.color = sprintf("rgba(%d,%d,%d,%f)", col);
     end
+    marker.color = sprintf("rgba(%d,%d,%d,%f)", col);
 
     %---------------------------------------------------------------------%
 
@@ -70,11 +70,11 @@ function marker = extractPatchFace(patch_data)
                                 axis_data.CLim(2)),axis_data.CLim(1));
                         scalefactor = (capCD - axis_data.CLim(1)) ...
                                 / diff(axis_data.CLim);
-                        col = 255*(colormap(1+floor(scalefactor ...
-                                * (length(colormap)-1)),:));
+                        col = round(255*(colormap(1+floor(scalefactor ...
+                                * (length(colormap)-1)),:)));
                     case "direct"
-                        col = 255*(colormap( ...
-                                patch_data.FaceVertexCData(1,1),:));
+                        col = round(255*(colormap( ...
+                                patch_data.FaceVertexCData(1,1),:)));
                 end
                 col = [col patch_data.EdgeAlpha];
         end

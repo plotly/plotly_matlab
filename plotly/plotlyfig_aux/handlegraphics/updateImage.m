@@ -103,7 +103,7 @@ function obj = updateImage(obj, imageIndex)
     %---------------------------------------------------------------------%
 
     obj.data{imageIndex}.opacity = image_data.AlphaData;
-    obj.data{imageIndex}.visible = strcmp(image_data.Visible,'on');
+    obj.data{imageIndex}.visible = strcmp(image_data.Visible, 'on');
     obj.data{imageIndex}.showscale = false;
     obj.data{imageIndex}.zauto = false;
     obj.data{imageIndex}.zmin = axis_data.CLim(1);
@@ -130,9 +130,9 @@ function obj = updateImage(obj, imageIndex)
     len = length(colormap) - 1;
 
     for c = 1:size(colormap, 1)
-        col =  255*(colormap(c,:));
+        col = round(255*(colormap(c,:)));
         obj.data{imageIndex}.colorscale{c} = ...
-                {(c-1)/len, sprintf("rgb(%f,%f,%f)", col)};
+                {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
 
     %---------------------------------------------------------------------%

@@ -81,8 +81,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         faceColor = ternaryData.FaceColor;
 
         if isnumeric(faceColor)
-            fillColor = sprintf('rgb(%f,%f,%f)', 255*faceColor);
-
+            fillColor = sprintf("rgb(%d,%d,%d)", round(255*faceColor));
         else
             cMap = figureData.Colormap;
             nColors = size(cMap,1);
@@ -102,19 +101,17 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
                             cData = max(min(cData, cMax), cMin);
                             cData = (cData - cMin)/diff(axisData.CLim);
                             cData = 1 + floor( cData*(nColors-1) );
-                            fillColor = sprintf('rgb(%f,%f,%f)', 255*cMap(cData,:));
+                            fillColor = sprintf("rgb(%d,%d,%d)", ...
+                                    round(255*cMap(cData,:)));
                         case 'direct'
-                            fillColor = sprintf('rgb(%f,%f,%f)', 255*cMap(ternary(1,t),:));
+                            fillColor = sprintf("rgb(%d,%d,%d)", ...
+                                    round(255*cMap(ternary(1,t),:)));
                     end
             end
         end
         
         obj.data{ternaryIndex}.fillcolor = fillColor;
         obj.data{ternaryIndex}.fill = 'toself';
-
-        %-----------------------------------------------------------------%
-
-        %-trace legend-%
         obj.data{ternaryIndex}.showlegend = false;
     end
 
