@@ -1,13 +1,11 @@
 function getplotlyoffline(plotly_bundle_url)
-    % download bundle 
-    [plotly_bundle, extras] = urlread2(plotly_bundle_url, 'get');
-   
-    % handle response
-    if ~extras.isGood
-        error(['Whoops! There was an error attempting to ', ...
-               'download the MATLAB offline Plotly ', ...
-               'bundle. Status: %s %s.'], ...
-               num2str(extras.status.value), extras.status.msg); 
+    try
+        % download bundle
+        plotly_bundle = webread(plotly_bundle_url);
+    catch exception
+        disp("Whoops! There was an error attempting to download the " ...
+                + "MATLAB offline Plotly bundle");
+        rethrow(exception);
     end
 
     % create Plotly config folder 
