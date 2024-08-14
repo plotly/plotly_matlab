@@ -44,8 +44,8 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     %-STANDARDIZE UNITS-%
     legendUnits = obj.State.Legend(legIndex).Handle.Units;
     fontUnits = obj.State.Legend(legIndex).Handle.FontUnits;
-    set(obj.State.Legend(legIndex).Handle,'Units','normalized');
-    set(obj.State.Legend(legIndex).Handle,'FontUnits','points');
+    obj.State.Legend(legIndex).Handle.Units = 'normalized';
+    obj.State.Legend(legIndex).Handle.FontUnits = 'points';
 
     %---------------------------------------------------------------------%
 
@@ -83,6 +83,6 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     end
 
     %-REVERT UNITS-%
-    set(obj.State.Legend(legIndex).Handle,'Units', legendUnits);
-    set(obj.State.Legend(legIndex).Handle,'FontUnits', fontUnits);
+    obj.State.Legend(legIndex).Handle.Units = legendUnits;
+    obj.State.Legend(legIndex).Handle.FontUnits = fontUnits;
 end

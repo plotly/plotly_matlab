@@ -206,7 +206,7 @@ function obj = updateBoxplot(obj, boxIndex)
 
     %-STANDARDIZE UNITS-%
     fontunits = text_child(1).FontUnits;
-    set(text_child(1), 'FontUnits', 'points');
+    text_child(1).FontUnits = 'points';
 
     text_data = text_child(1);
     xaxis.tickfont.size = text_data.FontSize;
@@ -224,5 +224,5 @@ function obj = updateBoxplot(obj, boxIndex)
     %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
-    set(text_child(1), 'FontUnits', fontunits);
+    text_child(1).FontUnits = fontunits;
 end

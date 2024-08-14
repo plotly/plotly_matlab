@@ -32,7 +32,7 @@ function obj = updateFigure(obj)
 
     %-STANDARDIZE UNITS-%
     figunits = obj.State.Figure.Handle.Units;
-    set(obj.State.Figure.Handle,'Units','pixels');
+    obj.State.Figure.Handle.Units = 'pixels';
 
     %-FIGURE DATA-%
     figure_data = obj.State.Figure.Handle;
@@ -73,5 +73,5 @@ function obj = updateFigure(obj)
     obj.layout.hovermode = 'closest';
 
     %-REVERT UNITS-%
-    set(obj.State.Figure.Handle,'Units',figunits);
+    obj.State.Figure.Handle.Units = figunits;
 end

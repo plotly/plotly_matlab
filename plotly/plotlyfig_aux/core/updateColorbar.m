@@ -43,7 +43,7 @@ function obj = updateColorbar(obj,colorbarIndex)
 
     %-STANDARDIZE UNITS-%
     colorbarUnits = colorbarData.Units;
-    set(obj.State.Colorbar(colorbarIndex).Handle, 'Units', 'normalized');
+    obj.State.Colorbar(colorbarIndex).Handle.Units = 'normalized';
 
     %---------------------------------------------------------------------%
 
@@ -120,15 +120,15 @@ function obj = updateColorbar(obj,colorbarIndex)
     titlefontunits = colorbarTitleData.FontUnits;
     ylabelunits = colorbarYLabelData.Units;
     ylabelfontunits = colorbarYLabelData.FontUnits;
-    set(colorbarTitle,'Units', 'data');
-    set(colorbarYLabel,'Units', 'data');
-    set(colorbarYLabel,'FontUnits', 'points');
+    colorbarTitle.Units = 'data';
+    colorbarYLabel.Units = 'data';
+    colorbarYLabel.FontUnits = 'points';
     if ~isHG2
         xlabelunits = colorbarXLabelData.Units;
         xlabelfontunits = colorbarXLabelData.FontUnits;
-        set(colorbarTitle,'FontUnits', 'points');
-        set(colorbarXLabel,'Units', 'data');
-        set(colorbarXLabel,'FontUnits', 'points');
+        colorbarTitle.FontUnits = 'points';
+        colorbarXLabel.Units = 'data';
+        colorbarXLabel.FontUnits = 'points';
     end
 
     %---------------------------------------------------------------------%
@@ -150,7 +150,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         titleFontColor = sprintf("rgb(%d,%d,%d)", ...
                 round(255*colorbarTitleData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarTitleData.FontName);
-
     elseif ~isempty(colorbarXLabelData.String)
         titleString = colorbarXLabelData.String;
         titleInterpreter = colorbarXLabelData.Interpreter;
@@ -160,7 +159,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         titleFontColor = sprintf("rgb(%d,%d,%d)", ...
                 round(255*colorbarXLabelData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarXLabelData.FontName);
-
     elseif ~isempty(colorbarYLabelData.String)
         titleString = colorbarYLabelData.String;
         titleInterpreter = colorbarYLabelData.Interpreter;
@@ -170,7 +168,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         titleFontColor = sprintf("rgb(%d,%d,%d)", ...
                 round(255*colorbarYLabelData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarYLabelData.FontName);
-
     else
         isTitle = false;
     end
@@ -186,14 +183,14 @@ function obj = updateColorbar(obj,colorbarIndex)
     %---------------------------------------------------------------------%
 
     %-REVERT UNITS FOR TITLE-%
-    set(colorbarTitle,'Units', titleunits);
-    set(colorbarTitle,'FontUnits', titlefontunits);
-    set(colorbarYLabel,'Units', ylabelunits);
-    set(colorbarYLabel,'FontUnits', ylabelfontunits);
+    colorbarTitle.Units = titleunits;
+    colorbarTitle.FontUnits = titlefontunits;
+    colorbarYLabel.Units = ylabelunits;
+    colorbarYLabel.FontUnits = ylabelfontunits;
 
     if ~isHG2
-        set(colorbarXLabel,'Units', xlabelunits);
-        set(colorbarXLabel,'FontUnits', xlabelfontunits);
+        colorbarXLabel.Units = xlabelunits;
+        colorbarXLabel.FontUnits = xlabelfontunits;
     end
 
     %---------------------------------------------------------------------%
@@ -207,10 +204,8 @@ function obj = updateColorbar(obj,colorbarIndex)
         if isempty(tickValues)
             showTickLabels = false;
             colorbar.ticks = '';
-
         elseif isempty(tickLabels)
             colorbar.tickvals = tickValues;
-
         else
             colorbar.tickvals = tickValues;
             colorbar.ticktext = tickLabels;
@@ -232,9 +227,7 @@ function obj = updateColorbar(obj,colorbarIndex)
                 case 'out'
                     colorbar.ticks = 'outside';
             end
-
         end
-
     else
         colorbar = setTicksNotHG2(colorbar, colorbarData);
     end
@@ -268,7 +261,7 @@ function obj = updateColorbar(obj,colorbarIndex)
     %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
-    set(obj.State.Colorbar(colorbarIndex).Handle, 'Units', colorbarUnits);
+    obj.State.Colorbar(colorbarIndex).Handle.Units = colorbarUnits;
 end
 
 function colorbar = setTicksNotHG2(colorbar, colorbarData)
@@ -288,7 +281,7 @@ function colorbar = setTicksNotHG2(colorbar, colorbarData)
                     colorbar.ticks = 'outside';
             end
 
-            if strcmp(colorbarData.YTickLabelMode,'auto')
+            if strcmp(colorbarData.YTickLabelMode, 'auto')
                 %-autotick-%
                 colorbar.autotick = true;
                 %-numticks-%
@@ -325,7 +318,7 @@ function colorbar = setTicksNotHG2(colorbar, colorbarData)
                     colorbar.ticks = 'outside';
             end
 
-            if strcmp(colorbarData.XTickLabelMode,'auto')
+            if strcmp(colorbarData.XTickLabelMode, 'auto')
                 %-autotick-%
                 colorbar.autotick = true;
                 %-numticks-%

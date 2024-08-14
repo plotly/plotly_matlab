@@ -42,11 +42,11 @@ function obj = updateAxis(obj,axIndex)
 
     %-STANDARDIZE UNITS-%
     axisUnits = obj.State.Axis(axIndex).Handle.Units;
-    set(obj.State.Axis(axIndex).Handle,'Units','normalized')
+    obj.State.Axis(axIndex).Handle.Units = 'normalized';
 
     try
         fontUnits = obj.State.Axis(axIndex).Handle.FontUnits;
-        set(obj.State.Axis(axIndex).Handle,'FontUnits','points')
+        obj.State.Axis(axIndex).Handle.FontUnits = 'points';
     catch
         % TODO
     end
@@ -172,10 +172,10 @@ function obj = updateAxis(obj,axIndex)
     %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
-    set(obj.State.Axis(axIndex).Handle, 'Units', axisUnits);
+    obj.State.Axis(axIndex).Handle.Units = axisUnits;
 
     try
-        set(obj.State.Axis(axIndex).Handle, 'FontUnits', fontUnits);
+        obj.State.Axis(axIndex).Handle.FontUnits = fontUnits;
     catch
         % TODO
     end

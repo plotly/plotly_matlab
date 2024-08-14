@@ -14,8 +14,8 @@ function obj = updateLegend(obj, legIndex)
     %-STANDARDIZE UNITS-%
     legendunits = obj.State.Legend(legIndex).Handle.Units;
     fontunits = obj.State.Legend(legIndex).Handle.FontUnits;
-    set(obj.State.Legend(legIndex).Handle, 'Units', 'normalized');
-    set(obj.State.Legend(legIndex).Handle, 'FontUnits', 'points');
+    obj.State.Legend(legIndex).Handle.Units = 'normalized';
+    obj.State.Legend(legIndex).Handle.FontUnits = 'points';
 
     %-LEGEND DATA STRUCTURE-%
     legend_data = obj.State.Legend(legIndex).Handle;
@@ -51,6 +51,6 @@ function obj = updateLegend(obj, legIndex)
     end
 
     %-REVERT UNITS-%
-    set(obj.State.Legend(legIndex).Handle,'Units',legendunits);
-    set(obj.State.Legend(legIndex).Handle,'FontUnits',fontunits);
+    obj.State.Legend(legIndex).Handle.Units = legendunits;
+    obj.State.Legend(legIndex).Handle.FontUnits = fontunits;
 end
