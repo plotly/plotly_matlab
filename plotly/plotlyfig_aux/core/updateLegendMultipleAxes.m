@@ -33,7 +33,7 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
         allDomain(traceIndex, 2) = max(yAxis.domain);
     end
 
-    [~, groupIndex] = unique(allNames);
+    [~, groupIndex] = unique(string(allNames));
 
     for traceIndex = groupIndex'
     obj.data{traceIndex}.showlegend = allShowLegens(traceIndex); 
