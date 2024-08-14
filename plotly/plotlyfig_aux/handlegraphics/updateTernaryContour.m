@@ -64,8 +64,6 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         c = c + 1;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set contour lines-%
     for c = 1:length(xData)
         %-get trace index-%
@@ -110,30 +108,13 @@ function obj = updateTernaryContour(obj, ternaryIndex)
                 obj.data{traceIndex}.line.dash = 'dot';
         end
 
-        %-----------------------------------------------------------------%
-
         %-some trace settings-%
         obj.data{traceIndex}.name = ternaryData.DisplayName;
         obj.data{traceIndex}.showscale = false;
         obj.data{traceIndex}.visible = strcmp(ternaryData.Visible,'on');
 
-        %-----------------------------------------------------------------%
 
-        %-trace legend-%
-        % leg = get(ternaryData.Annotation);
-        % legInfo = get(leg.LegendInformation);
-
-        % switch legInfo.IconDisplayStyle
-        %     case 'on'
-        %         showleg = true;
-        %     case 'off'
-        %         showleg = false;
-        % end
-
-        % obj.data{traceIndex}.showlegend = showleg;
         obj.data{traceIndex}.showlegend = false;
-
-        %-----------------------------------------------------------------%
     end
 
     %=====================================================================%
@@ -147,7 +128,6 @@ end
 
 
 function fillContours(obj, ternaryIndex)
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(ternaryIndex).AssociatedAxis);
 
@@ -176,8 +156,6 @@ function fillContours(obj, ternaryIndex)
 
     zLevel = sort(zLevel);
 
-    %---------------------------------------------------------------------%
-
     %-get close contours-%
     resizeScale = 1000/mean(size(ternaryData.XData));
     xDataResize = imresize(ternaryData.XData, resizeScale, 'triangle');
@@ -190,11 +168,9 @@ function fillContours(obj, ternaryIndex)
 
     for l = 1:length(zLevel)-1
         B = getBoundaries(zDataResize, zLevel(l), zLevel(l+1));
-
         for k = 1:length(B)
             outStruct = getContourData(B{k}, zLevel(l), ...
                 xDataResize, yDataResize, zDataResize, cLim, cMap);
-
             xData{c} = outStruct.xData;
             yData{c} = outStruct.yData;
             contourArea(c) = outStruct.contourArea;
@@ -210,7 +186,6 @@ function fillContours(obj, ternaryIndex)
     for k = 1:length(B)
         outStruct = getContourData(B{k}, zLevel(end), ...
             xDataResize, yDataResize, zDataResize, cLim, cMap);
-
         xData{c} = outStruct.xData;
         yData{c} = outStruct.yData;
         contourArea(c) = outStruct.contourArea;
@@ -225,7 +200,6 @@ function fillContours(obj, ternaryIndex)
     for k = 1:length(B)
         outStruct = getContourData(B{k}, zLevel(1), ...
             xDataResize, yDataResize, zDataResize, cLim, cMap);
-
         xData{c} = outStruct.xData;
         yData{c} = outStruct.yData;
         contourArea(c) = outStruct.contourArea;
@@ -233,8 +207,6 @@ function fillContours(obj, ternaryIndex)
 
         c = c + 1;
     end
-
-    %---------------------------------------------------------------------%
 
     %-sort contours by area size-%
     [~, idx] = sort(contourArea, 'descend');
@@ -249,8 +221,6 @@ function fillContours(obj, ternaryIndex)
     yData = yDataSorted;
     lineColor = lineColorSorted;
 
-    %---------------------------------------------------------------------%
-
     %-set contour fill-%
     for c = 1:length(xData)
         %-get trace index-%
@@ -261,14 +231,10 @@ function fillContours(obj, ternaryIndex)
             traceIndex = obj.PlotOptions.nPlots;
         end
         
-        %-----------------------------------------------------------------%
-
         %-set trace-%
         obj.data{traceIndex}.type = 'scatterternary';
         obj.data{traceIndex}.mode = 'lines';
         obj.data{traceIndex}.subplot = sprintf('ternary%d', xsource+1);
-
-        %-----------------------------------------------------------------%
 
         %-convert from cartesian coordinates to trenary points-%
         aData = yData{c}/sin(deg2rad(60));
@@ -277,8 +243,6 @@ function fillContours(obj, ternaryIndex)
         %-set plot data-%
         obj.data{traceIndex}.a = aData;
         obj.data{traceIndex}.b = bData;
-
-        %-----------------------------------------------------------------%
 
         %-line settings-%
         obj.data{traceIndex}.line.color = lineColor{c};
@@ -297,20 +261,14 @@ function fillContours(obj, ternaryIndex)
                 obj.data{traceIndex}.line.dash = 'dot';
         end
 
-        %-----------------------------------------------------------------%
-
         %-fill settings-%
         obj.data{traceIndex}.fill = 'toself';
         obj.data{traceIndex}.fillcolor = lineColor{c};
-
-        %-----------------------------------------------------------------%
 
         %-some trace settings-%
         obj.data{traceIndex}.name = ternaryData.DisplayName;
         obj.data{traceIndex}.showscale = false;
         obj.data{traceIndex}.visible = strcmp(ternaryData.Visible,'on');
-
-        %-----------------------------------------------------------------%
 
         %-trace legend-%
         obj.data{traceIndex}.showlegend = false;
@@ -327,8 +285,6 @@ function ternaryAxes(obj, ternaryIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    %---------------------------------------------------------------------%
-
     %-set domain plot-%
     xo = axisData.Position(1);
     yo = axisData.Position(2);
@@ -338,8 +294,6 @@ function ternaryAxes(obj, ternaryIndex)
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
 
-    %---------------------------------------------------------------------%
-
     %-label settings-%
     l = 1; t = 1;
     labelLetter = {'b', 'a', 'c'};
@@ -347,7 +301,6 @@ function ternaryAxes(obj, ternaryIndex)
     for n = 1:length(axisData.Children)
         if strcmpi(axisData.Children(n).Type, 'text')
             stringText = axisData.Children(n).String;
-
             if any(isletter(stringText))
                 labelIndex(l) = n;
                 l = l + 1;
@@ -372,8 +325,6 @@ function ternaryAxes(obj, ternaryIndex)
         ternary.(labelLetter(l) + "axis").title.font.family = labelFontFamily;
     end
 
-    %---------------------------------------------------------------------%
-
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);
     tick0 = str2num(axisData.Children(t0).String);
@@ -392,12 +343,8 @@ function ternaryAxes(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set ternary axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('ternary%d', xsource+1), ternary);
-
-    %---------------------------------------------------------------------%
 
     obj.PlotlyDefaults.isTernary = true;
 end

@@ -10,10 +10,8 @@ function updateLineseries(obj, plotIndex)
             yAxisColor = plotData.Parent.YAxis(yax).Color;
             yaxIndex(yax) = sum(yAxisColor == plotData.Color);
         end
-
         [~, yaxIndex] = max(yaxIndex);
         [xSource, ySource] = findSourceAxis(obj, axIndex, yaxIndex);
-
     catch
         [xSource, ySource] = findSourceAxis(obj,axIndex);
     end
@@ -58,7 +56,6 @@ function updateLineseries(obj, plotIndex)
     else
         obj.data{plotIndex}.type = 'scatter3d';
         obj.data{plotIndex}.scene = sprintf('scene%d', xSource);
-
         updateScene(obj, plotIndex);
     end
 
@@ -323,9 +320,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
             rAxis.FontName);
 
-    %-axis label-%
     rLabel = rAxis.Label;
-
     polarAxis.radialaxis.title.text = rLabel.String;
     polarAxis.radialaxis.title.font.size = rLabel.FontSize;
     polarAxis.radialaxis.title.font.color = getStringColor(255*rLabel.Color);

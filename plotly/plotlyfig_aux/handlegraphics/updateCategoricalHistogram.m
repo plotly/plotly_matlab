@@ -62,18 +62,9 @@ function obj = updateCategoricalHistogram(obj,histIndex)
 
     %---------------------------------------------------------------------%
 
-    %-hist xaxis and yaxis-%
     obj.data{histIndex}.xaxis = "x" + xsource;
     obj.data{histIndex}.yaxis = "y" + ysource;
-
-    %---------------------------------------------------------------------%
-
-    %-bar type-%
     obj.data{histIndex}.type = 'bar';
-
-    %---------------------------------------------------------------------%
-
-    %-hist data-%
     obj.data{histIndex}.width = hist_data.BarWidth;
     obj.data{histIndex}.y = hist_data.Values;
 
@@ -84,54 +75,30 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     xmin = -gap;
     xmax = (hist_data.NumDisplayBins - 1) + gap;
 
-    t = 'category';
-    obj.layout.("xaxis" + xsource).type = t;
+    obj.layout.("xaxis" + xsource).type = 'category';
     obj.layout.("xaxis" + xsource).autotick = false;
     obj.layout.("xaxis" + xsource).range = {xmin, xmax};
 
     %---------------------------------------------------------------------%
 
-    %-hist name-%
     obj.data{histIndex}.name = hist_data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-layout barmode-%
     obj.layout.barmode = 'group';
-
-    %---------------------------------------------------------------------%
-
-    %-hist line width-%
     obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
 
-    %---------------------------------------------------------------------%
-
-    %-hist opacity-%
     if ~ischar(hist_data.FaceAlpha)
         obj.data{histIndex}.opacity = 1.25*hist_data.FaceAlpha;
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{histIndex}.marker = extractPatchFace(hist_data);
-
-    %---------------------------------------------------------------------%
-
-    %-hist visible-%
     obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
 
-    %---------------------------------------------------------------------%
-
-    %-hist showlegend-%
     leg = hist_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{histIndex}.showlegend = showleg;
 end

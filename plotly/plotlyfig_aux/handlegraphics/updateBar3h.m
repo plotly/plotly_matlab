@@ -299,7 +299,8 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
         end
     end
 
-    % all_bars = [bar_data(pos, size)  for pos, size in zip(positions, sizes) if size[2]!=0]
+    % all_bars = [bar_data(pos, size)  for pos, size in
+    % zip(positions, sizes) if size[2]!=0]
     [r, q, p] = size(all_bars);
 
     % extract unique vertices from the list of all bar vertices
@@ -312,12 +313,16 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
     K = [];
 
     for k = 0:p-1
-        aux = ixr([1+8*k, 1+8*k+2,1+8*k, 1+8*k+5,1+8*k, 1+8*k+7, 1+8*k+5, 1+8*k+2, 1+8*k+3, 1+8*k+6, 1+8*k+7, 1+8*k+5]);
-        I = [ I;  aux(:)];
-        aux = ixr([1+8*k+1, 1+8*k+3, 1+8*k+4, 1+8*k+1, 1+8*k+3, 1+8*k+4, 1+8*k+1, 1+8*k+6, 1+8*k+7, 1+8*k+2, 1+8*k+4, 1+8*k+6]);
-        J = [ J;  aux(:)];
-        aux = ixr([1+8*k+2, 1+8*k, 1+8*k+5, 1+8*k, 1+8*k+7, 1+8*k, 1+8*k+2, 1+8*k+5, 1+8*k+6, 1+8*k+3, 1+8*k+5, 1+8*k+7]);
-        K = [ K;  aux(:)];
+        aux = ixr([1+8*k, 1+8*k+2,1+8*k, 1+8*k+5,1+8*k, 1+8*k+7, ...
+                1+8*k+5, 1+8*k+2, 1+8*k+3, 1+8*k+6, 1+8*k+7, 1+8*k+5]);
+        I = [I; aux(:)];
+        aux = ixr([1+8*k+1, 1+8*k+3, 1+8*k+4, 1+8*k+1, 1+8*k+3, ...
+                1+8*k+4, 1+8*k+1, 1+8*k+6, 1+8*k+7, 1+8*k+2, 1+8*k+4, ...
+                1+8*k+6]);
+        J = [J; aux(:)];
+        aux = ixr([1+8*k+2, 1+8*k, 1+8*k+5, 1+8*k, 1+8*k+7, 1+8*k, ...
+                1+8*k+2, 1+8*k+5, 1+8*k+6, 1+8*k+3, 1+8*k+5, 1+8*k+7]);
+        K = [K; aux(:)];
     end
 
 end

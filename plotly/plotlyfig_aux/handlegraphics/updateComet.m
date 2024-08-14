@@ -1,6 +1,5 @@
 function updateComet(obj,plotIndex)
     %----SCATTER FIELDS----%
-
     % x - [DONE]
     % y - [DONE]
     % r - [HANDLED BY SCATTER]
@@ -39,14 +38,12 @@ function updateComet(obj,plotIndex)
     % marker.maxdisplayed - [NOT SUPPORTED IN MATLAB]
 
     % LINE
-
     % line.color - [DONE]
     % line.width - [DONE]
     % line.dash - [DONE]
     % line.opacity --- [TODO]
     % line.smoothing - [NOT SUPPORTED IN MATLAB]
     % line.shape - [NOT SUPPORTED IN MATLAB]
-
     %---------------------------------------------------------------------%
 
     axisData = obj.State.Plot(plotIndex).AssociatedAxis;
@@ -84,28 +81,11 @@ function updateComet(obj,plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-scatter xaxis and yaxis-%
     obj.data{plotIndex}.xaxis = "x" + xsource;
     obj.data{plotIndex}.yaxis = "y" + ysource;
-
-    %---------------------------------------------------------------------%
-
-    %-scatter type-%
     obj.data{plotIndex}.type = 'scatter';
-
-    %---------------------------------------------------------------------%
-
-    %-scatter visible-%
     obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
-
-    %---------------------------------------------------------------------%
-
-    %-scatter x-%
     obj.data{plotIndex}.x = x(1);
-
-    %---------------------------------------------------------------------%
-
-    %-scatter y-%
     obj.data{plotIndex}.y = y(1);
 
     %---------------------------------------------------------------------%
@@ -150,27 +130,17 @@ function updateComet(obj,plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-scatter line-%
     obj.data{plotIndex}.line = extractLineLine(plotData);
-
-    %---------------------------------------------------------------------%
-
-    %-scatter marker-%
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
-    %---------------------------------------------------------------------%
-
-    %-scatter showlegend-%
     leg = plotData.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{plotIndex}.showlegend = showleg;
 
     %---------------------------------------------------------------------%
@@ -179,7 +149,6 @@ function updateComet(obj,plotIndex)
 
     %---------------------------------------------------------------------%
     if obj.PlotOptions.is3d
-
         %-aspect ratio-%
         asr = obj.PlotOptions.AspectRatio;
 

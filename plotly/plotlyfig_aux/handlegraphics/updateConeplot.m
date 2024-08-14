@@ -61,10 +61,6 @@ function obj = updateConeplot(obj, coneIndex)
         v = [v; yhead - ytail];
         w = [w; zhead - ztail];
 
-        % x = [x; xtail];
-        % y = [y; ytail];
-        % z = [z; ztail];
-
         x = [x; 0.5*(xtail+xhead)];
         y = [y; 0.5*(ytail+yhead)];
         z = [z; 0.5*(ztail+zhead)];

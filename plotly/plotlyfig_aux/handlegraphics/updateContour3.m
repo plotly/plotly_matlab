@@ -38,21 +38,14 @@ function obj = updateContour3(obj,contourIndex)
         
     %---------------------------------------------------------------------%
 
-    %-contour type-%
     obj.data{contourIndex}.type = 'surface';
 
-    %---------------------------------------------------------------------%
-
-    %-contour x and y data
     if isvector(xdata)
         [xdata, ydata] = meshgrid(xdata, ydata);
     end
     obj.data{contourIndex}.x = xdata;
     obj.data{contourIndex}.y = ydata;
 
-    %---------------------------------------------------------------------%
-
-    %-contour z data-%
     obj.data{contourIndex}.z = zdata;
 
     %---------------------------------------------------------------------%
@@ -142,32 +135,17 @@ function obj = updateContour3(obj,contourIndex)
 
     %---------------------------------------------------------------------%
 
-    %-contour visible-%
     obj.data{contourIndex}.visible = strcmp(contour_data.Visible, 'on');
-
-    %---------------------------------------------------------------------%
-
-    %-contour showscale-%
     obj.data{contourIndex}.showscale = false;
-
-    %---------------------------------------------------------------------%
-
-    %-contour reverse scale-%
     obj.data{contourIndex}.reversescale = false;
-
-    %---------------------------------------------------------------------%
-
-    %-contour showlegend-%
 
     leg = contour_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{contourIndex}.showlegend = showleg;
 end

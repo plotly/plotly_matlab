@@ -270,11 +270,6 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     scene.aspectratio.y = yar + fac1*(nax-1)*yar; 
     scene.aspectratio.z = (zar + fac1*(nax-1)*zar)*fac2; 
 
-    % optional equations
-    % scene.aspectratio.x = xar*(1+fac1); 
-    % scene.aspectratio.y = yar*(1+fac1); 
-    % scene.aspectratio.z = zar*fac2*(1+fac1); 
-
     %---------------------------------------------------------------------%
 
     %-camera eye-%

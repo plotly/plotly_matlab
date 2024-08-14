@@ -7,8 +7,6 @@ function updateScatterhistogram(obj, plotIndex)
 
     [~, ~, groupName] = getTraceData(plotData);
 
-    %---------------------------------------------------------------------%
-
     %-SET MAIN SCATTER PLOT-%
 
     %-set plotly layout-%
@@ -20,8 +18,6 @@ function updateScatterhistogram(obj, plotIndex)
 
     %-set plotly data-%
     updateMainScatter(obj, plotIndex);
-
-    %---------------------------------------------------------------------%
 
     %-SET MARGINAL PLOTS-%
 
@@ -50,21 +46,15 @@ function updateMainScatter(obj, plotIndex)
     %-get trace data-%
     traceIndex = plotIndex;
     [xData, yData, groupName] = getTraceData(plotData);
-    
-    %---------------------------------------------------------------------%
 
-    %-SET EACH ALL TRACES-%
+    %-SET ALL TRACES-%
 
     for t = 1:length(xData)
-
-        %-----------------------------------------------------------------%
         %-get current trace index-%
         if t > 1
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
             traceIndex = obj.PlotOptions.nPlots;
         end
-
-        %-----------------------------------------------------------------%
 
         %-set current trace-%
         obj.data{traceIndex}.type = 'scatter';
@@ -73,27 +63,21 @@ function updateMainScatter(obj, plotIndex)
         obj.data{traceIndex}.yaxis = sprintf('y%d', ySource);
         obj.data{traceIndex}.visible = strcmp(plotData.Visible,'on');
 
-        %-----------------------------------------------------------------%
-
         %-set current trace data-%
         obj.data{traceIndex}.x = xData{t};
         obj.data{traceIndex}.y = yData{t};
-
-        %-----------------------------------------------------------------%
 
         %-scatter marker-%
         childmarker = extractScatterhistogramMarker(plotData, t);
         obj.data{traceIndex}.marker = childmarker;
 
         %-legend-%
-
         if ~isempty(groupName)
             try
               obj.data{traceIndex}.name = char(groupName(t));
             catch
               obj.data{traceIndex}.name = char(string(groupName(t)));
             end
-
             obj.data{traceIndex}.legendgroup = obj.data{traceIndex}.name;
             obj.data{traceIndex}.showlegend = true;
         end
@@ -107,15 +91,13 @@ function updateMainScatterAxis(obj, plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
-    %-set x axis-%
     xaxis = getMainScatterAxis(plotData, 'X');
     xaxis.anchor = sprintf('y%d', xSource);
     obj.layout = setfield(obj.layout, sprintf('xaxis%d',xSource), xaxis);
 
-    %-set y axis-%
     yaxis = getMainScatterAxis(plotData, 'Y');
     yaxis.anchor = sprintf('x%d', ySource);
-    obj.layout = setfield(obj.layout, sprintf('yaxis%d',xSource), yaxis);
+    obj.layout = setfield(obj.layout, sprintf('yaxis%d',ySource), yaxis);
 end
 
 function ax = getMainScatterAxis(plotData, axName)
@@ -175,29 +157,21 @@ function updateMarginalHistogram(obj, plotIndex, axName)
     %-get trace data-%
     [xData, yData, groupName] = getTraceData(plotData);
 
-    %---------------------------------------------------------------------%
 
     %-SET ALL TRACES-%
-
     for t = 1:length(xData)
         %-get current trace index-%
         obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
         traceIndex = obj.PlotOptions.nPlots;
-
-        %-----------------------------------------------------------------%
 
         %-set current trace-%
         obj.data{traceIndex}.type = 'histogram';
         obj.data{traceIndex}.xaxis = sprintf('x%d', xySource);
         obj.data{traceIndex}.yaxis = sprintf('y%d', xySource);
 
-        %-----------------------------------------------------------------%
-
         %-set current plot data-%
         obj.data{traceIndex}.x = xData{t};
         obj.data{traceIndex}.y = yData{t};
-
-        %-----------------------------------------------------------------%
 
         %-set other trace properties-%
         traceColor = getStringColor(plotData.Color(t,:), 0.7);
@@ -216,8 +190,6 @@ function updateMarginalHistogram(obj, plotIndex, axName)
                 try obj.data{traceIndex}.nbinsy = plotData.NumBins(2,t); end
         end
 
-        %-----------------------------------------------------------------%
-
         %-link legend-%
         if ~isempty(groupName)
             try
@@ -225,7 +197,6 @@ function updateMarginalHistogram(obj, plotIndex, axName)
             catch
                 obj.data{traceIndex}.name = char(string(groupName(t)));
             end
-
             obj.data{traceIndex}.legendgroup = obj.data{traceIndex}.name;
         end
     end
@@ -243,27 +214,17 @@ function updateMarginalSmooth(obj, plotIndex, axName)
     axisLim = getAxisLim(plotData, axName);
     evalPoints = linspace(axisLim(1), axisLim(2), 500);
 
-    %---------------------------------------------------------------------%
-
     %-SET ALL TRACES-%
-
     for t = 1:length(xData)
-
-        %-----------------------------------------------------------------%
-
         %-get current trace index-%
         obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
         traceIndex = obj.PlotOptions.nPlots;
-
-        %-----------------------------------------------------------------%
 
         %-set current trace-%
         obj.data{traceIndex}.type = 'scatter';
         obj.data{traceIndex}.mode = 'lines';
         obj.data{traceIndex}.xaxis = sprintf('x%d', xySource);
         obj.data{traceIndex}.yaxis = sprintf('y%d', xySource);
-
-        %-----------------------------------------------------------------%
 
         %-get current trace data-%
         if strcmp(axName, 'X')
@@ -276,8 +237,6 @@ function updateMarginalSmooth(obj, plotIndex, axName)
         obj.data{traceIndex}.x = xSmooth;
         obj.data{traceIndex}.y = ySmooth;
 
-        %-----------------------------------------------------------------%
-
         %-set other trace properties-%
         traceColor = getStringColor(plotData.Color(t,:), 0.7);
         lineStyle = plotData.LineStyle(t);
@@ -286,8 +245,6 @@ function updateMarginalSmooth(obj, plotIndex, axName)
         obj.data{traceIndex}.line.width = 2*plotData.LineWidth(t);
         obj.data{traceIndex}.line.dash = getLineDash(lineStyle);
         obj.data{traceIndex}.showlegend = false;
-
-        %-----------------------------------------------------------------%
 
         %-link legend-%
         if ~isempty(groupName)
@@ -307,21 +264,18 @@ function updateXMarginalAxis(obj, plotIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
-    % [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     xySource = obj.State.Figure.NumAxes + 1;
-
-    %---------------------------------------------------------------------%
 
     %-set x axis-%
     xaxis = getXMarginalAxis(plotData, 'X');
     xaxis.anchor = sprintf('y%d', xySource);
-    obj.layout = setfield(obj.layout, sprintf('xaxis%d',xySource), xaxis);
+    obj.layout = setfield(obj.layout, sprintf('xaxis%d', xySource), xaxis);
 
     %-set y axis-%
     yaxis = getXMarginalAxis(plotData, 'Y');
     yaxis.anchor = sprintf('x%d', xySource);
-    obj.layout = setfield(obj.layout, sprintf('yaxis%d',xySource), yaxis);
+    obj.layout = setfield(obj.layout, sprintf('yaxis%d', xySource), yaxis);
 end
 
 function ax = getXMarginalAxis(plotData, axName)
@@ -349,10 +303,10 @@ function axisDomain = getXMarginalDomain(plotData, axName)
         case 'X'
             axisDomain = min([axisPos(1) sum(axisPos([1,3]))], 1);
         case 'Y'
-            if ~isempty(strfind(plotLocation, 'South'))
+            if contains(plotLocation, 'South')
                 yo = axisPos(2) + axisPos(4) + 0.01;
                 if isTitle, h=0.9-yo; else, h = 0.96 - yo; end
-            elseif ~isempty(strfind(plotLocation, 'North'))
+            elseif contains(plotLocation, 'North')
                 yo = 0.02; h = axisPos(2)*0.7-yo;
             end
             axisDomain = min([yo yo+h], 1); 
@@ -366,7 +320,6 @@ function updateYMarginalAxis(obj, plotIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
-    % [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     xySource = obj.State.Figure.NumAxes + 2;
 
@@ -401,10 +354,10 @@ function axisDomain = getYMarginalDomain(plotData, axName)
     plotLocation = plotData.ScatterPlotLocation;
     switch axName
         case 'X'
-            if ~isempty(strfind(plotLocation, 'West'))
+            if contains(plotLocation, 'West')
                 xo = axisPos(1) + axisPos(3) + 0.01;
                 w = 0.96-xo;
-            elseif ~isempty(strfind(plotLocation, 'East'))
+            elseif contains(plotLocation, 'East')
                 xo = 0.02; w = axisPos(1)*0.7-xo;
             end
             axisDomain = min([xo xo+w], 1); 
@@ -520,12 +473,12 @@ function updateLegend(obj, plotIndex, groupName)
             obj.layout.legend.title.font.family = fontFamily;
         end
 
-        if ~isempty(strfind(plotLocation, 'SouthWest'))
+        if contains(plotLocation, 'SouthWest')
             obj.layout.legend.x = 0.96;
             obj.layout.legend.y = 0.96;
             obj.layout.legend.xanchor = 'right';
             obj.layout.legend.yanchor = 'top';
-        elseif ~isempty(strfind(plotLocation, 'NorthEast'))
+        elseif contains(plotLocation, 'NorthEast')
             obj.layout.legend.x = 0.02;
             obj.layout.legend.y = 0.02;
             obj.layout.legend.xanchor = 'left';

@@ -114,17 +114,14 @@ function obj = updateSurfl(obj, surfaceIndex)
     if isnumeric(meshData.EdgeColor)
         cDataContour = sprintf("rgb(%d,%d,%d)", ...
                 round(255*meshData.EdgeColor));
-
     elseif strcmpi(meshData.EdgeColor, 'interp')
         cDataContour = zDataContour(:);
         obj.data{contourIndex}.line.colorscale = colorScale;
 
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
-
     elseif strcmpi(meshData.EdgeColor, 'flat')
         cData = meshData.CData;
-
         if size(cData, 3) ~= 1
             cMap = unique( reshape(cData, ...
                 [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
@@ -154,12 +151,10 @@ function obj = updateSurfl(obj, surfaceIndex)
 
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
-
     elseif strcmpi(meshData.EdgeColor, 'none')
         cDataContour = 'rgba(0,0,0,0)';
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
-
     end
 
     %-set edge color-%
@@ -243,13 +238,9 @@ function obj = updateSurfl(obj, surfaceIndex)
         obj.data{surfaceIndex}.lighting.ambient = 0.3;
     end
 
-    %-opacity-%
     obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
 
-    %---------------------------------------------------------------------%
-
     %-line style-%
-
     obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
 
     if strcmpi(meshData.LineStyle, '-')
@@ -368,17 +359,14 @@ function obj = updateSurfl(obj, surfaceIndex)
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 
-    %---------------------------------------------------------------------%
 
     leg = meshData.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{surfaceIndex}.showlegend = showleg;
 end

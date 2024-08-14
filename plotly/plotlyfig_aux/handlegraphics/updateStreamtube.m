@@ -21,16 +21,9 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
 
     %---------------------------------------------------------------------%
 
-    %-surface xaxis and yaxis-%
     obj.data{surfaceIndex}.xaxis = "x" + xsource;
     obj.data{surfaceIndex}.yaxis = "y" + ysource;
-        
-    %---------------------------------------------------------------------%
-
-    %-surface type-%
     obj.data{surfaceIndex}.type = 'surface';
-
-    %---------------------------------------------------------------------%
 
     %-getting plot data-%
     x = image_data.XData;
@@ -66,20 +59,11 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     z = imresize(z, [ysize, xsize]);
     cdata = imresize(cdata, [ysize, xsize]);
 
-    %-optional-%
-    % if isvector(x)
-    %     [x, y] = meshgrid(x,y);
-    % end
-
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.x = x;
     obj.data{surfaceIndex}.y = y;
     obj.data{surfaceIndex}.z = z;
     obj.PlotOptions.Image3D = true;
     obj.PlotOptions.ContourProjection = true;
-
-    %---------------------------------------------------------------------%
 
     %- setting grid mesh by default -%
     % x-direction
@@ -101,44 +85,38 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.y.show = true;
     obj.data{surfaceIndex}.contours.y.color = 'black';
 
-    %---------------------------------------------------------------------%
-
     %-get data-%
-
     %-aspect ratio-%
     ar = obj.PlotOptions.AspectRatio;
 
     if ~isempty(ar)
-    if ischar(ar)
-        scene.aspectmode = ar;
-    elseif isvector(ar) && length(ar) == 3
-        xar = ar(1);
-        yar = ar(2);
-        zar = ar(3);
-    end
+        if ischar(ar)
+            scene.aspectmode = ar;
+        elseif isvector(ar) && length(ar) == 3
+            xar = ar(1);
+            yar = ar(2);
+            zar = ar(3);
+        end
     else
-
-    %-define as default-%
-    xar = 0.5*max(x(:));
-    yar = 0.5*max(y(:));
-    zar = 0.4*max([xar, yar]);
+        %-define as default-%
+        xar = 0.5*max(x(:));
+        yar = 0.5*max(y(:));
+        zar = 0.4*max([xar, yar]);
     end
 
     scene.aspectratio.x = xar; 
     scene.aspectratio.y = yar; 
     scene.aspectratio.z = zar; 
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
     if ~isempty(ey)
-    if isvector(ey) && length(ey) == 3
-    scene.camera.eye.x = ey(1);
-    scene.camera.eye.y = ey(2);
-    scene.camera.eye.z = ey(3);
-    end
+        if isvector(ey) && length(ey) == 3
+            scene.camera.eye.x = ey(1);
+            scene.camera.eye.y = ey(2);
+            scene.camera.eye.z = ey(3);
+        end
     else
 
     %-define as default-%
@@ -154,37 +132,27 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
 
     obj.layout = setfield(obj.layout,['scene'], scene);
 
-    %---------------------------------------------------------------------%
-
     %-image colorscale-%
-
     cmap = figure_data.Colormap;
     len = length(cmap)-1;
-
     for c = 1: length(cmap)
         col = round(255 * cmap(c, :));
         obj.data{surfaceIndex}.colorscale{c} = ...
                 {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.surfacecolor = cdata;
     obj.data{surfaceIndex}.name = image_data.DisplayName;
     obj.data{surfaceIndex}.showscale = false;
     obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
 
-    %---------------------------------------------------------------------%
-
     leg = image_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{surfaceIndex}.showlegend = showleg;
 end

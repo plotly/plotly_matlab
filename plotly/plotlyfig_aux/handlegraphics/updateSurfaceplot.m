@@ -19,18 +19,11 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
     obj.data{surfaceIndex}.xaxis = "x" + xsource;
     obj.data{surfaceIndex}.yaxis = "y" + ysource;
 
-    %---------------------------------------------------------------------%
-
     % check for 3D
     if any(nonzeros(image_data.ZData))
-        
-        %-----------------------------------------------------------------%
-        
         %-surface type-%
         obj.data{surfaceIndex}.type = 'surface';
-        
-        %-----------------------------------------------------------------%
-        
+                
         %-format x an y data-%
         x = image_data.XData;
         y = image_data.YData;
@@ -38,17 +31,13 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
         if isvector(x)
             [x, y] = meshgrid(x,y);
         end
-        
-        %-----------------------------------------------------------------%
-        
+                
         obj.data{surfaceIndex}.x = x;
         obj.data{surfaceIndex}.y = y;
         obj.data{surfaceIndex}.z = image_data.ZData;
         obj.PlotOptions.Image3D = true;
         obj.PlotOptions.ContourProjection = true;
         
-        %-----------------------------------------------------------------%
-
         %- setting grid mesh by default -%
         % x-direction
         xmin = min(x(:));
@@ -72,17 +61,13 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
         %-surface type-%
         obj = updateImage(obj, surfaceIndex);
 
-        %-surface x-%
         obj.data{surfaceIndex}.x = image_data.XData(1,:);
-
-        %-surface y-%
         obj.data{surfaceIndex}.y = image_data.YData(:,1);
     end
 
     %---------------------------------------------------------------------%
 
     %-image colorscale-%
-
     cmap = figure_data.Colormap;
     len = length(cmap)-1;
 
@@ -92,24 +77,18 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
                 {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.surfacecolor = cdata;
     obj.data{surfaceIndex}.name = image_data.DisplayName;
     obj.data{surfaceIndex}.showscale = false;
     obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
 
-    %---------------------------------------------------------------------%
-
     leg = image_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{surfaceIndex}.showlegend = showleg;
 end

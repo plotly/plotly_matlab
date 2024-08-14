@@ -62,8 +62,6 @@ function updateScatterPolar(obj, plotIndex)
             obj.data{plotIndex}.showlegend = false;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set polar axes-%
     updatePolaraxes(obj, plotIndex);
 end
@@ -75,9 +73,6 @@ end
 %-------------------------------------------------------------------------%
 
 function updatePolaraxes(obj, plotIndex)
-
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 

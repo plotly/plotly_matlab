@@ -8,20 +8,14 @@ function obj = updateStem(obj, dataIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %---------------------------------------------------------------------%
-
     %-get coordenate x,y,z data-%
     xdata = data.XData;
     ydata = data.YData;
     zdata = data.ZData;
     npoints = length(xdata);
 
-    %---------------------------------------------------------------------%
-
     %-check if stem-%
     isstem = ~isempty(zdata);
-
-    %---------------------------------------------------------------------%
 
     %-SCENE-%
     if isstem
@@ -31,8 +25,6 @@ function obj = updateStem(obj, dataIndex)
         yaxis = obj.layout.("yaxis" + xsource);
     end
 
-    %---------------------------------------------------------------------%
-
     %-scatter3d scene-%
     if isstem
         stem_data.scene = "scene" + xsource;
@@ -41,8 +33,6 @@ function obj = updateStem(obj, dataIndex)
         stem_data.yaxis = "y" + xsource;
     end
 
-    %---------------------------------------------------------------------%
-
     %-scatter3d type-%
     if isstem
         stem_data.type = "scatter3d";
@@ -50,13 +40,10 @@ function obj = updateStem(obj, dataIndex)
         stem_data.type = "scatter";
     end
 
-    %---------------------------------------------------------------------%
-
     stem_data.visible = strcmp(data.Visible, "on");
     stem_data.name = data.DisplayName;
     stem_data.mode = "lines+markers";
 
-    %---------------------------------------------------------------------%
     if isdatetime(xdata)
         xdata = datenum(xdata);
     end
@@ -94,16 +81,11 @@ function obj = updateStem(obj, dataIndex)
             zdata_extended(m+1) = zdata(n);
             zdata_extended(m+2) = nan;
         end
-
         m = m + 3;
     end
 
-    %---------------------------------------------------------------------%
-
     stem_data.line = extractLineLine(data);
     stem_data.marker = extractLineMarker(data);
-
-    %---------------------------------------------------------------------%
 
     if isstem
         %-fix marker symbol-%
@@ -123,8 +105,6 @@ function obj = updateStem(obj, dataIndex)
             stem_data.line.dash = "dot";
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-hide every other marker-%
     markercolor = cell(3*npoints,1);
@@ -152,8 +132,6 @@ function obj = updateStem(obj, dataIndex)
     stem_data.marker.line.width = stem_data.marker.line.width * 2;
     stem_data.line.width = stem_data.line.width * 2;
 
-    %---------------------------------------------------------------------%
-
     %-set x y z data-%
     stem_data.x = xdata_extended;
     stem_data.y = ydata_extended;
@@ -162,15 +140,10 @@ function obj = updateStem(obj, dataIndex)
         stem_data.z = zdata_extended;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set plotly data-%
     obj.data{dataIndex} = stem_data;
 
-    %---------------------------------------------------------------------%
-
     %-SETTING SCENE-%
-
     if isstem
         %-aspect ratio-%
         asr = obj.PlotOptions.AspectRatio;
@@ -196,8 +169,6 @@ function obj = updateStem(obj, dataIndex)
         scene.aspectratio.x = xar;
         scene.aspectratio.y = yar;
         scene.aspectratio.z = zar;
-
-        %-----------------------------------------------------------------%
 
         %-camera eye-%
         ey = obj.PlotOptions.CameraEye;
@@ -233,8 +204,6 @@ function obj = updateStem(obj, dataIndex)
             scene.camera.eye.y = yey + yfac*yey;
             scene.camera.eye.z = zar + zfac*zar;
         end
-
-        %-----------------------------------------------------------------%
 
         %-zerolines hidded-%
         scene.xaxis.zeroline = false;

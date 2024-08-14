@@ -30,13 +30,9 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
             ternaryIndex = obj.PlotOptions.nPlots;
         end
 
-        %-----------------------------------------------------------------%
-
         %-trace type-%
         obj.data{ternaryIndex}.type = 'scatterternary';
         obj.data{ternaryIndex}.subplot = sprintf('ternary%d', xsource+1);
-
-        %-----------------------------------------------------------------%
 
         %-set mode and properties for trace-%
         if ~strcmpi('none', ternaryData.Marker) && ~strcmpi('none', ternaryData.LineStyle)
@@ -55,8 +51,6 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
             obj.data{ternaryIndex}.mode = 'none';
         end
 
-        %-----------------------------------------------------------------%
-
         %-convert from cartesian coordinates to trenary points-%
         yTernData = yData(:,t); yTernData(end+1) = yData(1,t);
         xTernData = xData(:,t); xTernData(end+1) = xData(1,t);
@@ -64,13 +58,9 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         aData = yTernData/sin(deg2rad(60));
         bData = 1 - xTernData - yTernData*cot(deg2rad(60));
 
-        %-----------------------------------------------------------------%
-
         %-set plot data-%
         obj.data{ternaryIndex}.a = aData;
         obj.data{ternaryIndex}.b = bData;
-
-        %-----------------------------------------------------------------%
 
         %-some trace properties-%
         obj.data{ternaryIndex}.name = ternaryData.DisplayName;
@@ -164,8 +154,6 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").title.font.family = labelFontFamily;
     end
 
-    %---------------------------------------------------------------------%
-
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);
     tick0 = str2num(axisData.Children(t0).String);
@@ -184,12 +172,8 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set ternary axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('ternary%d', xsource+1), ternary);
-
-    %---------------------------------------------------------------------%
 
     obj.PlotlyDefaults.isTernary = true;
 end

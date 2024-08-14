@@ -114,27 +114,17 @@ function updateArea(obj,areaIndex)
 
     %---------------------------------------------------------------------%
 
-    %-area line-%
     obj.data{areaIndex}.line = extractAreaLine(area_data);
-
-    %---------------------------------------------------------------------%
-
-    %-area fillcolor-%
     fill = extractAreaFace(area_data);
     obj.data{areaIndex}.fillcolor = fill.color;
 
-    %---------------------------------------------------------------------%
-
-    %-area showlegend-%
     leg = area_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case "on"
             showleg = true;
         case "off"
             showleg = false;
     end
-
     obj.data{areaIndex}.showlegend = showleg;
 end

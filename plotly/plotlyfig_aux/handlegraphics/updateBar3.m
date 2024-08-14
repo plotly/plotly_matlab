@@ -135,26 +135,17 @@ function obj = updateBar3(obj, surfaceIndex)
 
     %---------------------------------------------------------------------%
 
-    %-surface name-%
     obj.data{surfaceIndex}.name = bar_data.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-surface visible-%
     obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible, 'on');
-
-    %---------------------------------------------------------------------%
 
     leg = bar_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{surfaceIndex}.showlegend = showleg;
 
     %---------------------------------------------------------------------%
@@ -246,9 +237,11 @@ function obj = updateBar3(obj, surfaceIndex)
 end
 
 function bar_ = bar_data(position3d, size_)
-    % position3d - 3-list or array of shape (3,) that represents the point of coords (x, y, 0), where a bar is placed
-    % size = a 3-tuple whose elements are used to scale a unit cube to get a paralelipipedic bar
-    % returns - an array of shape(8,3) representing the 8 vertices of  a bar at position3d
+    % position3d - 3-list or array of shape (3,) that represents the point
+    % of coords (x, y, 0), where a bar is placed size = a 3-tuple whose
+    % elements are used to scale a unit cube to get a paralelipipedic bar
+    % returns - an array of shape(8,3) representing the 8 vertices of a bar
+    % at position3d
 
     if nargin < 2
         size_ = [1, 1, 1];
@@ -265,7 +258,7 @@ function bar_ = bar_data(position3d, size_)
             0, 1, 1 ...
             ]; % the vertices of the unit cube
 
-    for n =1:size(bar_, 1)
+    for n = 1:size(bar_, 1)
         % scale the cube to get the vertices of a parallelipipedic bar_
         bar_(n,:) = bar_(n,:) .* size_;
     end
@@ -283,7 +276,7 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
     %       used in instantiating the go.Mesh3d class.
 
     if nargin < 2
-        sizes = ones(size(positions,1), 3); %[(1,1,1)]*len(positions)
+        sizes = ones(size(positions,1), 3); % [(1,1,1)]*len(positions)
     end
 
     c = 1;
@@ -294,24 +287,30 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
         end
     end
 
-    % all_bars = [bar_data(pos, size)  for pos, size in zip(positions, sizes) if size[2]!=0]
+    % all_bars = [bar_data(pos, size)  for pos, size in
+    % zip(positions, sizes) if size[2]!=0]
     [r, q, p] = size(all_bars);
 
     % extract unique vertices from the list of all bar vertices
     all_bars = reshape(all_bars, [r, p*q])';
     [vertices, ~, ixr] = unique(all_bars, 'rows');
 
-    %for each bar, derive the sublists of indices i, j, k assocated to its chosen  triangulation
+    % for each bar, derive the sublists of indices i, j, k assocated to its
+    % chosen  triangulation
     I = [];
     J = [];
     K = [];
 
     for k = 0:p-1
-        aux = ixr([1+8*k, 1+8*k+2,1+8*k, 1+8*k+5,1+8*k, 1+8*k+7, 1+8*k+5, 1+8*k+2, 1+8*k+3, 1+8*k+6, 1+8*k+7, 1+8*k+5]);
+        aux = ixr([1+8*k, 1+8*k+2,1+8*k, 1+8*k+5,1+8*k, 1+8*k+7, ...
+                1+8*k+5, 1+8*k+2, 1+8*k+3, 1+8*k+6, 1+8*k+7, 1+8*k+5]);
         I = [ I;  aux(:)];
-        aux = ixr([1+8*k+1, 1+8*k+3, 1+8*k+4, 1+8*k+1, 1+8*k+3, 1+8*k+4, 1+8*k+1, 1+8*k+6, 1+8*k+7, 1+8*k+2, 1+8*k+4, 1+8*k+6]);
+        aux = ixr([1+8*k+1, 1+8*k+3, 1+8*k+4, 1+8*k+1, 1+8*k+3, ...
+                1+8*k+4, 1+8*k+1, 1+8*k+6, 1+8*k+7, 1+8*k+2, 1+8*k+4, ...
+                1+8*k+6]);
         J = [ J;  aux(:)];
-        aux = ixr([1+8*k+2, 1+8*k, 1+8*k+5, 1+8*k, 1+8*k+7, 1+8*k, 1+8*k+2, 1+8*k+5, 1+8*k+6, 1+8*k+3, 1+8*k+5, 1+8*k+7]);
+        aux = ixr([1+8*k+2, 1+8*k, 1+8*k+5, 1+8*k, 1+8*k+7, 1+8*k, ...
+                1+8*k+2, 1+8*k+5, 1+8*k+6, 1+8*k+3, 1+8*k+5, 1+8*k+7]);
         K = [ K;  aux(:)];
     end
 

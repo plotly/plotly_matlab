@@ -317,33 +317,20 @@ function obj = updateFmesh(obj, surfaceIndex)
 
     %---------------------------------------------------------------------%
 
-    %-surface name-%
     obj.data{surfaceIndex}.name = meshData.DisplayName;
     obj.data{contourIndex}.name = meshData.DisplayName;
-
-    %---------------------------------------------------------------------%
-
-    %-surface showscale-%
     obj.data{surfaceIndex}.showscale = false;
     obj.data{contourIndex}.showscale = false;
-
-    %---------------------------------------------------------------------%
-
-    %-surface visible-%
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 
-    %---------------------------------------------------------------------%
-
     leg = meshData.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{surfaceIndex}.showlegend = showleg;
 end

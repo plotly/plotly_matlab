@@ -6,7 +6,6 @@ function obj = updateHeatmapAnnotation(obj,anIndex)
     % titlefont.color...[DONE]
 
     %------ANNOTATION FIELDS-------%
-
     % x: ...[DONE]
     % y: ...[DONE]
     % xref: ...[DONE]
@@ -30,7 +29,6 @@ function obj = updateHeatmapAnnotation(obj,anIndex)
     % bgcolor: ...[DONE]
     % opacity: ...[NOT SUPPORTED IN MATLAB]
 
-
     %-AXIS INDEX-%
     nanns = length(obj.layout.annotations);
     axIndex = nanns + obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis);
@@ -44,54 +42,30 @@ function obj = updateHeatmapAnnotation(obj,anIndex)
     %-show arrow-%
     obj.layout.annotations{axIndex}.showarrow = false;
 
-    %---------------------------------------------------------------------%
-
     %-anchor title to paper-%
     if obj.State.Text(anIndex).Title
-        %-xref-%
-        obj.layout.annotations{axIndex}.xref = 'paper';
-        %-yref-%
-        obj.layout.annotations{axIndex}.yref = 'paper';
+        obj.layout.annotations{axIndex}.xref = "paper";
+        obj.layout.annotations{axIndex}.yref = "paper";
     else
-        %-xref-%
         obj.layout.annotations{axIndex}.xref = "x" + xsource;
-        %-yref-%
         obj.layout.annotations{axIndex}.yref = "y" + ysource;
     end
 
-    %---------------------------------------------------------------------%
-
-    %-xanchor-%
-    obj.layout.annotations{axIndex}.xanchor = 'middle';
-
-    %-align-%
-    obj.layout.annotations{axIndex}.align = 'middle';
-
-    %-xanchor-%
-    obj.layout.annotations{axIndex}.yanchor = 'top';
-
-
-    %---------------------------------------------------------------------%
-
-    %-text-%
-    obj.layout.annotations{axIndex}.text = sprintf('<b>%s</b>', title_name);
+    obj.layout.annotations{axIndex}.xanchor = "middle";
+    obj.layout.annotations{axIndex}.align = "middle";
+    obj.layout.annotations{axIndex}.yanchor = "top";
+    obj.layout.annotations{axIndex}.text = sprintf("<b>%s</b>", title_name);
     obj.layout.annotations{axIndex}.font.size = 14;
-
-    %---------------------------------------------------------------------%
 
     if obj.State.Text(anIndex).Title
         %-AXIS DATA-%
         xaxis = obj.layout.("xaxis" + xsource);
         yaxis = obj.layout.("yaxis" + ysource);
 
-        %-x position-%
         obj.layout.annotations{axIndex}.x = mean(xaxis.domain);
-        %-y position-%
         obj.layout.annotations{axIndex}.y = (yaxis.domain(2) + 0.04);
     else
-        %-x position-%
         obj.layout.annotations{axIndex}.x = text_data.Position(1);
-        %-y position-%
         obj.layout.annotations{axIndex}.y = text_data.Position(2);
     end
 end

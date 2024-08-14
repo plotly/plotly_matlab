@@ -1,6 +1,5 @@
 function obj = updateRectangle(obj, rectIndex)
     %----RECTANGLE FIELDS----%
-
     % x - [DONE]
     % y - [DONE]
     % mode - [DONE]
@@ -42,32 +41,20 @@ function obj = updateRectangle(obj, rectIndex)
 
     %---------------------------------------------------------------------%
 
-    %-rectangle xaxis and yaxis-%
     obj.data{rectIndex}.xaxis = "x" + xsource;
     obj.data{rectIndex}.yaxis = "y" + ysource;
-
-    %---------------------------------------------------------------------%
-
-    %-rectangle type-%
     obj.data{rectIndex}.type = 'scatter';
 
-    %---------------------------------------------------------------------%
-
-    %-rectangle x-%
     obj.data{rectIndex}.x = [rect_data.Position(1) rect_data.Position(1) ...
         rect_data.Position(1) + rect_data.Position(3) ...
         rect_data.Position(1) + rect_data.Position(3) ...
         rect_data.Position(1)];
 
-    %---------------------------------------------------------------------%
-
-    %-rectangle y-%
-    obj.data{rectIndex}.y = [rect_data.Position(2) rect_data.Position(2) + rect_data.Position(4) ...
+    obj.data{rectIndex}.y = [rect_data.Position(2) ...
+        rect_data.Position(2) + rect_data.Position(4) ...
         rect_data.Position(2) + rect_data.Position(4) ...
         rect_data.Position(2) ...
         rect_data.Position(2)];
-
-    %---------------------------------------------------------------------%
 
     obj.data{rectIndex}.name = rect_data.DisplayName;
     obj.data{rectIndex}.mode = 'lines';
@@ -77,18 +64,13 @@ function obj = updateRectangle(obj, rectIndex)
     fill = extractPatchFace(rect_data);
     obj.data{rectIndex}.fillcolor = fill.color;
 
-    %---------------------------------------------------------------------%
-
-    %-rectangle showlegend-%
     leg = rect_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{rectIndex}.showlegend = showleg;
 end

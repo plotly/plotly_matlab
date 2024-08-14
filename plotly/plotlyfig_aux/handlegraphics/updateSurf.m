@@ -19,13 +19,9 @@ function obj = updateSurf(obj, surfaceIndex)
     contourIndex = obj.PlotOptions.nPlots;
     obj.PlotOptions.contourIndex(surfaceIndex) = contourIndex;
 
-    %---------------------------------------------------------------------%
-
     %-associate scene-%
     obj.data{surfaceIndex}.scene = sprintf('scene%d', xsource);
     obj.data{contourIndex}.scene = sprintf('scene%d', xsource);
-
-    %---------------------------------------------------------------------%
 
     %-surface type for face color-%
     obj.data{surfaceIndex}.type = 'surface';
@@ -33,8 +29,6 @@ function obj = updateSurf(obj, surfaceIndex)
     %-scatter3d type for contour mesh lines-%
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
-
-    %---------------------------------------------------------------------%
 
     %-get plot data-%
     xData = meshData.XData;
@@ -66,8 +60,6 @@ function obj = updateSurf(obj, surfaceIndex)
     yDataContour = [yDataContourDir1(:); yDataContourDir2(:)];
     zDataContour = [zDataContourDir1(:); zDataContourDir2(:)];
 
-    %---------------------------------------------------------------------%
-
     %-set data on surface-%
     obj.data{surfaceIndex}.x = xDataSurface;
     obj.data{surfaceIndex}.y = yDataSurface;
@@ -87,8 +79,6 @@ function obj = updateSurf(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.y.end = yData(end);
     obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
     obj.data{surfaceIndex}.contours.y.show = true;
-
-    %---------------------------------------------------------------------%
 
     %-set data on scatter3d-%
     obj.data{contourIndex}.x = xDataContour(:);
@@ -170,13 +160,10 @@ function obj = updateSurf(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.x.color = cDataContour;
     obj.data{surfaceIndex}.contours.y.color = cDataContour;
 
-    %---------------------------------------------------------------------%
-
     %-get face color-%
     faceColor = meshData.FaceColor;
 
     if isnumeric(faceColor)
-
         if all(faceColor == [1, 1, 1])
             faceColor = [0.96, 0.96, 0.96];
         end
@@ -197,7 +184,6 @@ function obj = updateSurf(obj, surfaceIndex)
 
         obj.data{surfaceIndex}.cmin = axisData.CLim(1);
         obj.data{surfaceIndex}.cmax = axisData.CLim(2);
-
     elseif strcmpi(faceColor, 'interp')
         cDataSurface = zDataSurface;
 
@@ -216,10 +202,8 @@ function obj = updateSurf(obj, surfaceIndex)
                 obj.data{idx}.cmax = cMax;
             end
         end
-
     elseif strcmpi(faceColor, 'flat')
         cData = meshData.CData;
-
         if size(cData, 3) ~= 1
             cMap = unique( reshape(cData, ...
                 [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
@@ -237,7 +221,6 @@ function obj = updateSurf(obj, surfaceIndex)
             obj.data{surfaceIndex}.cmin = axisData.CLim(1);
             obj.data{surfaceIndex}.cmax = axisData.CLim(2);
         end
-        
     end
 
     %-set face color-%
@@ -245,7 +228,6 @@ function obj = updateSurf(obj, surfaceIndex)
     obj.data{surfaceIndex}.surfacecolor = cDataSurface;
 
     %-lighting settings-%
-
     if isnumeric(meshData.FaceColor) && all(meshData.FaceColor == [1, 1, 1])
         obj.data{surfaceIndex}.lighting.diffuse = 0.5;
         obj.data{surfaceIndex}.lighting.ambient = 0.725;
@@ -261,13 +243,7 @@ function obj = updateSurf(obj, surfaceIndex)
         obj.data{surfaceIndex}.lighting.ambient = 0.3;
     end
 
-    %-opacity-%
     obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
-
-    %---------------------------------------------------------------------%
-
-    %-line style-%
-
     obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
 
     if strcmpi(meshData.LineStyle, '-')
@@ -296,7 +272,6 @@ function obj = updateSurf(obj, surfaceIndex)
             zar = asr(3);
         end
     else
-
         %-define as default-%
         xar = max(xData(:));
         yar = max(yData(:));
@@ -320,7 +295,6 @@ function obj = updateSurf(obj, surfaceIndex)
             scene.camera.eye.z = ey(3);
         end
     else
-
         %-define as default-%
         xey = - xyar; if xey>0 xfac = -0.0; else xfac = 0.0; end
         yey = - xyar; if yey>0 yfac = -0.3; else yfac = 0.3; end
@@ -334,7 +308,6 @@ function obj = updateSurf(obj, surfaceIndex)
     %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
-
     scene.xaxis.range = axisData.XLim;
     scene.yaxis.range = axisData.YLim;
     scene.zaxis.range = axisData.ZLim;
@@ -394,13 +367,11 @@ function obj = updateSurf(obj, surfaceIndex)
 
     leg = meshData.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{surfaceIndex}.showlegend = showleg;
 end

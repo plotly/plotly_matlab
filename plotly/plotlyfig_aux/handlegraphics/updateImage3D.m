@@ -128,7 +128,6 @@ function obj = updateImage3D(obj, imageIndex)
     %---------------------------------------------------------------------%
 
     %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
-
     %-image colorscale-%
 
     if ~isrgbimg

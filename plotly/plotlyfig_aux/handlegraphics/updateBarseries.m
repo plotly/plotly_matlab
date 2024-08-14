@@ -50,7 +50,6 @@ function obj = updateBarseries(obj,barIndex)
     % smoothing: ...[NA]
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
-
     %---------------------------------------------------------------------%
 
     %-AXIS INDEX-%
@@ -93,12 +92,10 @@ function obj = updateBarseries(obj,barIndex)
     switch bar_data.Horizontal
         case 'off'
             obj.data{barIndex}.orientation = 'v';
-            %-bar x and y data-%
             obj.data{barIndex}.x = bar_data.XData;
             obj.data{barIndex}.y = bar_data.YData;
         case 'on'
             obj.data{barIndex}.orientation = 'h';
-            %-bar x and y data-%
             obj.data{barIndex}.x = bar_data.YData;
             obj.data{barIndex}.y = bar_data.XData;
     end

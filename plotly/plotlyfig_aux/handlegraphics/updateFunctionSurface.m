@@ -149,9 +149,6 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     if isnumeric(meshData.FaceColor) && all(meshData.FaceColor == [1, 1, 1])
         obj.data{surfaceIndex}.lighting.diffuse = 0.5;
         obj.data{surfaceIndex}.lighting.ambient = 0.725;
-    else
-        % obj.data{surfaceIndex}.lighting.diffuse = 1.0;
-        % obj.data{surfaceIndex}.lighting.ambient = 0.9;
     end
 
     if meshData.FaceAlpha ~= 1

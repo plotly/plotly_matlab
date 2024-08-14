@@ -102,10 +102,8 @@ function obj = updateFunctionContour(obj,contourIndex)
 
     %-start-%
     obj.data{contourIndex}.contours.start = cstart;
-
     %-end-%
     obj.data{contourIndex}.contours.end = cend;
-
     %-step-%
     obj.data{contourIndex}.contours.size = csize;
 
@@ -136,28 +134,22 @@ function obj = updateFunctionContour(obj,contourIndex)
                 LineStyle = 'dashdot';
         end
         obj.data{contourIndex}.line.dash = LineStyle;
-
-        %-contour smoothing-%
         obj.data{contourIndex}.line.smoothing = 0;
     else
-        %-contours showlines-%
         obj.data{contourIndex}.contours.showlines = false;
     end
 
     %---------------------------------------------------------------------%
 
     %-contour showlegend-%
-
     leg = contour_data.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{contourIndex}.showlegend = showleg;
 
     %---------------------------------------------------------------------%

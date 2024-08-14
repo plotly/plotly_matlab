@@ -92,22 +92,12 @@ function updateContourOnly(obj, contourIndex)
         n = n + m + 1;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set data on scatter3d-%
     obj.data{contourIndex}.x = xData;
     obj.data{contourIndex}.y = yData;
     obj.data{contourIndex}.z = zData;
 
-    %---------------------------------------------------------------------%
-
-    %-set edge color-%
     obj.data{contourIndex}.line.color = cData;
-
-    %---------------------------------------------------------------------%
-
-    %-line style-%
-
     obj.data{contourIndex}.line.width = 2*contourData.LineWidth;
 
     switch contourData.LineStyle
@@ -120,8 +110,6 @@ function updateContourOnly(obj, contourIndex)
         case ':'
             obj.data{contourIndex}.line.dash = 'dot';
     end
-
-    %---------------------------------------------------------------------%
 
     obj.data{contourIndex}.name = contourData.DisplayName;
     obj.data{contourIndex}.showscale = false;
@@ -308,7 +296,6 @@ function updateSurfOnly(obj, surfaceIndex)
     faceColor = meshData.FaceColor;
 
     if isnumeric(faceColor)
-
         if all(faceColor == [1, 1, 1])
             faceColor = [0.96, 0.96, 0.96];
         end
@@ -329,10 +316,8 @@ function updateSurfOnly(obj, surfaceIndex)
 
         obj.data{surfaceIndex}.cmin = axisData.CLim(1);
         obj.data{surfaceIndex}.cmax = axisData.CLim(2);
-
     elseif strcmpi(faceColor, 'interp')
         cDataSurface = zDataSurface;
-
         if surfaceIndex > xsource
             cData = [];
 
@@ -348,10 +333,8 @@ function updateSurfOnly(obj, surfaceIndex)
                 obj.data{idx}.cmax = cMax;
             end
         end
-
     elseif strcmpi(faceColor, 'flat')
         cData = meshData.CData;
-
         if size(cData, 3) ~= 1
             cMap = unique(reshape(cData, [size(cData,1)*size(cData,2), ...
                     size(cData,3)]), 'rows');
@@ -367,7 +350,6 @@ function updateSurfOnly(obj, surfaceIndex)
         else
             cDataSurface = cData;
         end
-        
     end
 
     %-set face color-%
@@ -375,13 +357,9 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.surfacecolor = cDataSurface;
 
     %-lighting settings-%
-
     if isnumeric(meshData.FaceColor) && all(meshData.FaceColor == [1, 1, 1])
         obj.data{surfaceIndex}.lighting.diffuse = 0.5;
         obj.data{surfaceIndex}.lighting.ambient = 0.725;
-    else
-        % obj.data{surfaceIndex}.lighting.diffuse = 1.0;
-        % obj.data{surfaceIndex}.lighting.ambient = 0.9;
     end
 
     if meshData.FaceAlpha ~= 1
@@ -394,14 +372,11 @@ function updateSurfOnly(obj, surfaceIndex)
         obj.data{surfaceIndex}.lighting.ambient = 0.3;
     end
 
-    %-opacity-%
     obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
 
-    %---------------------------------------------------------------------%
 
     %-line style-%
     obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
-
     if strcmpi(meshData.LineStyle, '-')
         obj.data{contourIndex}.line.dash = 'solid';
     else
@@ -428,7 +403,6 @@ function updateSurfOnly(obj, surfaceIndex)
             zar = asr(3);
         end
     else
-
         %-define as default-%
         xar = max(xData(:));
         yar = max(yData(:));
@@ -440,8 +414,6 @@ function updateSurfOnly(obj, surfaceIndex)
     scene.aspectratio.y = 1.0*xyar;
     scene.aspectratio.z = zar;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -452,7 +424,6 @@ function updateSurfOnly(obj, surfaceIndex)
             scene.camera.eye.z = ey(3);
         end
     else
-
         %-define as default-%
         xey = - xyar; if xey>0 xfac = 0.1; else xfac = -0.1; end
         yey = - xyar; if yey>0 yfac = -0.5; else yfac = 0.5; end
@@ -463,10 +434,7 @@ function updateSurfOnly(obj, surfaceIndex)
         scene.camera.eye.z = zar + zfac*zar;
     end
 
-    %---------------------------------------------------------------------%
-
     %-scene axis configuration-%
-
     scene.xaxis.range = axisData.XLim;
     scene.yaxis.range = axisData.YLim;
     scene.zaxis.range = axisData.ZLim;
@@ -508,8 +476,6 @@ function updateSurfOnly(obj, surfaceIndex)
     scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
-    %---------------------------------------------------------------------%
-
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
 
@@ -520,17 +486,13 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 
-    %---------------------------------------------------------------------%
-
     leg = meshData.Annotation;
     legInfo = leg.LegendInformation;
-
     switch legInfo.IconDisplayStyle
         case 'on'
             showleg = true;
         case 'off'
             showleg = false;
     end
-
     obj.data{surfaceIndex}.showlegend = showleg;
 end

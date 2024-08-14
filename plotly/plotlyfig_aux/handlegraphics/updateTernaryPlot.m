@@ -140,12 +140,8 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set ternary axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('ternary%d', xsource+1), ternary);
-
-    %---------------------------------------------------------------------%
 
     obj.PlotlyDefaults.isTernary = true;
 end

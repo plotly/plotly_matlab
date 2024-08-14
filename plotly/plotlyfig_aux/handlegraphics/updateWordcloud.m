@@ -5,7 +5,6 @@ function updateWordcloud(obj,scatterIndex)
     %-SCATTER DATA STRUCTURE- %
     scatter_data = obj.State.Plot(scatterIndex).Handle;
 
-
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
@@ -40,18 +39,12 @@ function updateWordcloud(obj,scatterIndex)
     xdata(~inds) = NaN;
     ydata(~inds) = NaN;
 
-    %---------------------------------------------------------------------%
-
     %-get frequency-%
     [B, inds] = sort(scatter_data.SizeData, 'descend');
-
-    %---------------------------------------------------------------------%
 
     %-take more freq words-%
     nwords = numel(xdata);
     inds = inds(1:nwords);
-
-    %---------------------------------------------------------------------%
 
     %-get indices for distribution-%
     middle = round(nwords*0.5);
@@ -61,8 +54,6 @@ function updateWordcloud(obj,scatterIndex)
     inds2 = round(linspace(nwords,middle+1, round(middle/2)));
     inds(inds1) = inds_aux(inds2);
     inds(inds2) = inds_aux(inds1);
-
-    %---------------------------------------------------------------------%
 
     %-exchange columns-%
     inds = reshape(inds, size(xdata));
@@ -75,20 +66,13 @@ function updateWordcloud(obj,scatterIndex)
     inds(:,mc+2) = inds_aux(:,mc+1);
     inds = inds(:);
 
-    %---------------------------------------------------------------------%
-
     %-get data to wordcloud-%
-
-    % sizedata
     sizedata = scatter_data.SizeData(inds);
 
-    % worddata
     worddata = cell(nwords,1);
     for w = 1:nwords
         worddata{w} = char(scatter_data.WordData(inds(w)));
     end
-
-    %---------------------------------------------------------------------%
 
     %-sent data to plotly-%
     obj.data{scatterIndex}.mode = 'text';
@@ -96,8 +80,6 @@ function updateWordcloud(obj,scatterIndex)
     obj.data{scatterIndex}.y = ydata(:);
     obj.data{scatterIndex}.text = worddata;
     obj.data{scatterIndex}.textfont.size = sizedata;
-
-    %---------------------------------------------------------------------%
 
     %-coloring-%
     is_colormap = size(scatter_data.Color, 1) > 1;
@@ -121,13 +103,8 @@ function updateWordcloud(obj,scatterIndex)
     end
 
     obj.data{scatterIndex}.textfont.color = col;
-
-    %---------------------------------------------------------------------%
-
     obj.data{scatterIndex}.textfont.family = matlab2plotlyfont(scatter_data.FontName);
     obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
-
-    %---------------------------------------------------------------------%
 
     %-set layout-%
     xaxis.showgrid = false;
@@ -149,8 +126,6 @@ function updateWordcloud(obj,scatterIndex)
     obj.layout = setfield(obj.layout, sprintf('xaxis%d',xsource), xaxis);
     obj.layout = setfield(obj.layout, sprintf('yaxis%d',ysource), yaxis);
 
-    %---------------------------------------------------------------------%
-
     obj.layout.annotations{1}.xref = 'paper';
     obj.layout.annotations{1}.yref = 'paper';
     obj.layout.annotations{1}.showarrow = false;
@@ -160,4 +135,3 @@ function updateWordcloud(obj,scatterIndex)
     obj.layout.annotations{1}.font.color = 'rgb(0,0,0)';
     obj.layout.annotations{1}.font.size = 15;
 end
-
