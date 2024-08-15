@@ -27,7 +27,7 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
                 obj.State.Plot(traceIndex).AssociatedAxis);
         [xSource, ySource] = findSourceAxis(obj, axIndex);
         xAxis = obj.layout.("xaxis" + xSource);
-        yAxis = obj.layout.("yaxis" + xSource);
+        yAxis = obj.layout.("yaxis" + ySource);
 
         allDomain(traceIndex, 1) = max(xAxis.domain);
         allDomain(traceIndex, 2) = max(yAxis.domain);
@@ -55,22 +55,11 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     % only displays last legend as global Plotly legend
     obj.layout.legend = struct();
 
-    %---------------------------------------------------------------------%
-
-    %-layout showlegend-%
     obj.layout.showlegend = strcmpi(legendData.Visible,'on');
-
-    %---------------------------------------------------------------------%
-
-    %-legend (x,y) coordenates-%
     obj.layout.legend.x = 1.005 * max(allDomain(:,1));
     obj.layout.legend.y = 1.001 * max(allDomain(:,2));
-
-    %-legend (x,y) refs-%
     obj.layout.legend.xref = 'paper';
     obj.layout.legend.yref = 'paper';
-
-    %-legend (x,y) anchors-%
     obj.layout.legend.xanchor = 'left';
     obj.layout.legend.yanchor = 'top';
 
