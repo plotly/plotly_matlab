@@ -79,7 +79,7 @@ This lives here: [https://plot.ly/matlab](https://plot.ly/matlab)
 
 ## Questions & troubleshooting
 
-- https://community.plotly.com/c/api/matlab/
+Ask on the [Plotly Community Forum](https://community.plotly.com/c/plotly-r-matlab-julia-net)
 
 ## Contribute
 
