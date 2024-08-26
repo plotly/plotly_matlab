@@ -23,7 +23,7 @@ function plotlygenimage(figure_or_data, filename, varargin)
         figure = struct('data', data);
     end
 
-    payload = struct(figure=figure, format=format);
+    payload = struct('figure',figure,'format',format);
 
     [un, key, domain] = signin;
 
