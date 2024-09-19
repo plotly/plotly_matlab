@@ -41,8 +41,6 @@ function obj = updateBar(obj,barIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
 
@@ -52,29 +50,21 @@ function obj = updateBar(obj,barIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
-    %---------------------------------------------------------------------%
-
     %-associate axis-%
     obj.data{barIndex}.xaxis = "x" + xSource;
     obj.data{barIndex}.yaxis = "y" + ySource;
-
-    %---------------------------------------------------------------------%
-
-    %-set trace-%
     obj.data{barIndex}.type = "bar";
     obj.data{barIndex}.name = barData.DisplayName;
     obj.data{barIndex}.visible = strcmp(barData.Visible,"on");
-
-    %---------------------------------------------------------------------%
 
     %-set plot data-%
     xData = barData.XData;
     yData = barData.YData;
 
-    if isduration(xData) || isdatetime(xData)
+    if isdatetime(xData)
         xData = datenum(xData);
     end
-    if isduration(yData) || isdatetime(yData)
+    if isdatetime(yData)
         yData = datenum(yData);
     end
 
@@ -89,15 +79,11 @@ function obj = updateBar(obj,barIndex)
             obj.data{barIndex}.y = xData;
     end
 
-    %---------------------------------------------------------------------%
-
     %-trace settings-%
     markerline = extractAreaLine(barData); 
 
     obj.data{barIndex}.marker = extractAreaFace(barData);
     obj.data{barIndex}.marker.line = markerline; 
-
-    %---------------------------------------------------------------------%
 
     %-layout settings-%
     obj.layout.bargroupgap = 1-barData.BarWidth;
@@ -117,8 +103,6 @@ function obj = updateBar(obj,barIndex)
         case "stacked"
             obj.layout.barmode = "relative";
     end
-
-    %---------------------------------------------------------------------%
 
     %-bar showlegend-%
     leg = barData.Annotation;
