@@ -87,7 +87,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %=====================================================================%
 
     %-get tick label data-%
-    tickLabels = toC(axisData.(axisName + "TickLabel"));
+    tickLabels = axisData.(axisName + "TickLabel");
     tickValues = axisData.(axisName + "Tick");
 
     if ischar(tickLabels)
