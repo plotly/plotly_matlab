@@ -169,97 +169,76 @@ classdef plotlyfig < handle
 
                     % parse property/values
                     for a = parseinit:2:length(varargin)
-                        if (strcmpi(varargin{a},'filename'))
-                            obj.PlotOptions.FileName = varargin{a+1};
-                            % overwrite if filename provided
-                            obj.PlotOptions.FileOpt = 'overwrite';
-                        end
-                        if (strcmpi(varargin{a},'savefolder'))
-                            obj.PlotOptions.SaveFolder = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'fileopt'))
-                            obj.PlotOptions.FileOpt = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'world_readable'))
-                            obj.PlotOptions.WorldReadable = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'link'))
-                            obj.PlotOptions.ShowURL = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'open'))
-                            obj.PlotOptions.OpenURL = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'strip'))
-                            obj.PlotOptions.Strip = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'writeFile'))
-                            obj.PlotOptions.WriteFile = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'visible'))
-                            obj.PlotOptions.Visible = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'offline'))
-                            obj.PlotOptions.Offline = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'showlink'))
-                            obj.PlotOptions.ShowLinkText = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'linktext'))
-                            obj.PlotOptions.LinkText = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'include_plotlyjs'))
-                            obj.PlotOptions.IncludePlotlyjs = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'layout'))
-                            obj.layout= varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'data'))
-                            obj.data = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'StripMargins'))
-                            obj.PlotOptions.StripMargins = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'TriangulatePatch'))
-                            obj.PlotOptions.TriangulatePatch = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'TreatAs'))
-                            if ~iscell(varargin{a+1})
-                                obj.PlotOptions.TreatAs = {varargin{a+1}};
-                            else
-                                obj.PlotOptions.TreatAs = varargin{a+1};
-                            end
-                        end
-                        if (strcmpi(varargin{a},'AxisEqual'))
-                            obj.PlotOptions.AxisEqual = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'AspectRatio'))
-                            obj.PlotOptions.AspectRatio = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'CameraEye'))
-                            obj.PlotOptions.CameraEye = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'Quality'))
-                            obj.PlotOptions.Quality = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'Zmin'))
-                            obj.PlotOptions.Zmin = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'FrameDuration'))
-                            if varargin{a+1} > 0
-                                obj.PlotOptions.FrameDuration = varargin{a+1};
-                            end
-                        end
-                        if (strcmpi(varargin{a},'FrameTransitionDuration'))
-                            if varargin{a+1} >= 0
-                                obj.PlotOptions.FrameTransitionDuration = varargin{a+1};
-                            end
-                        end
-                        if (strcmpi(varargin{a},'geoRenderType'))
-                            obj.PlotOptions.geoRenderType = varargin{a+1};
-                        end
-                        if (strcmpi(varargin{a},'DomainFactor'))
-                            len = length(varargin{a+1});
-                            obj.PlotOptions.DomainFactor(1:len) = varargin{a+1};
+                        property = lower(varargin{a});
+                        value = varargin{a+1};
+                        switch property
+                            case "filename"
+                                obj.PlotOptions.FileName = value;
+                                % overwrite if filename provided
+                                obj.PlotOptions.FileOpt = 'overwrite';
+                            case "savefolder"
+                                obj.PlotOptions.SaveFolder = value;
+                            case "fileopt"
+                                obj.PlotOptions.FileOpt = value;
+                            case "world_readable"
+                                obj.PlotOptions.WorldReadable = value;
+                            case "link"
+                                obj.PlotOptions.ShowURL = value;
+                            case "open"
+                                obj.PlotOptions.OpenURL = value;
+                            case "strip"
+                                obj.PlotOptions.Strip = value;
+                            case "writefile"
+                                obj.PlotOptions.WriteFile = value;
+                            case "visible"
+                                obj.PlotOptions.Visible = value;
+                            case "offline"
+                                obj.PlotOptions.Offline = value;
+                            case "showlink"
+                                obj.PlotOptions.ShowLinkText = value;
+                            case "linktext"
+                                obj.PlotOptions.LinkText = value;
+                            case "include_plotlyjs"
+                                obj.PlotOptions.IncludePlotlyjs = value;
+                            case "layout"
+                                obj.layout= value;
+                            case "data"
+                                obj.data = value;
+                            case "stripmargins"
+                                obj.PlotOptions.StripMargins = value;
+                            case "triangulatepatch"
+                                obj.PlotOptions.TriangulatePatch = value;
+                            case "treatas"
+                                if ~iscell(value)
+                                    obj.PlotOptions.TreatAs = {value};
+                                else
+                                    obj.PlotOptions.TreatAs = value;
+                                end
+                            case "axisequal"
+                                obj.PlotOptions.AxisEqual = value;
+                            case "aspectratio"
+                                obj.PlotOptions.AspectRatio = value;
+                            case "cameraeye"
+                                obj.PlotOptions.CameraEye = value;
+                            case "quality"
+                                obj.PlotOptions.Quality = value;
+                            case "zmin"
+                                obj.PlotOptions.Zmin = value;
+                            case "frameduration"
+                                if value > 0
+                                    obj.PlotOptions.FrameDuration = value;
+                                end
+                            case "frametransitionduration"
+                                if value >= 0
+                                    obj.PlotOptions.FrameTransitionDuration = value;
+                                end
+                            case "georendertype"
+                                obj.PlotOptions.geoRenderType = value;
+                            case "domainfactor"
+                                len = length(value);
+                                obj.PlotOptions.DomainFactor(1:len) = value;
+                            otherwise
+                                warning("Unrecognized property name ""%s""", property);
                         end
                     end
             end
