@@ -129,7 +129,9 @@ function ax = getMainScatterAxis(plotData, axName)
 
     %-label-%
     ax.title.text = axisLabel;
-    if ~isempty(axisLabel), axisLabel = parseString(axisLabel); end
+    if ~isempty(axisLabel)
+        axisLabel = parseString(axisLabel);
+    end
     ax.title.font.size = 1.2*plotData.FontSize;
     ax.title.font.color = 1.2*axisColor;
     ax.title.font.family = matlab2plotlyfont(plotData.FontName);
@@ -149,7 +151,11 @@ end
 function updateMarginalHistogram(obj, plotIndex, axName)
     %-INITIALIZATIONS-%
     plotData = obj.State.Plot(plotIndex).Handle;
-    if strcmp(axName, 'X'), xySource = 1; else, xySource = 2; end
+    if strcmp(axName, 'X')
+        xySource = 1;
+    else
+        xySource = 2;
+    end
     xySource = obj.State.Figure.NumAxes + xySource;
 
     %-get trace data-%
@@ -203,7 +209,11 @@ end
 function updateMarginalSmooth(obj, plotIndex, axName)
     %-INITIALIZATIONS-%
     plotData = obj.State.Plot(plotIndex).Handle;
-    if strcmp(axName, 'X'), xySource = 1; else, xySource = 2; end
+    if strcmp(axName, 'X')
+        xySource = 1;
+    else
+        xySource = 2;
+    end
     xySource = obj.State.Figure.NumAxes + xySource;
 
     %-get trace data-%
@@ -298,7 +308,11 @@ function axisDomain = getXMarginalDomain(plotData, axName)
         case 'Y'
             if contains(plotLocation, 'South')
                 yo = axisPos(2) + axisPos(4) + 0.01;
-                if isTitle, h=0.9-yo; else, h = 0.96 - yo; end
+                if isTitle
+                    h=0.9-yo;
+                else
+                    h = 0.96 - yo;
+                end
             elseif contains(plotLocation, 'North')
                 yo = 0.02; h = axisPos(2)*0.7-yo;
             end
@@ -381,8 +395,12 @@ function [xData, yData, groupName] = getTraceData(plotData)
     xPlot = plotData.XData;
     yPlot = plotData.YData;
 
-    if iscategorical(xPlot), [~, ~, xPlot] = unique(xPlot); end
-    if iscategorical(yPlot), [~, ~, yPlot] = unique(yPlot); end
+    if iscategorical(xPlot)
+        [~, ~, xPlot] = unique(xPlot);
+    end
+    if iscategorical(yPlot)
+        [~, ~, yPlot] = unique(yPlot);
+    end
 
     xData = {}; yData = {};
     groupData = plotData.GroupData;
@@ -390,14 +408,18 @@ function [xData, yData, groupName] = getTraceData(plotData)
     groupName = {};
 
     if isByGroups
-        if iscellstr(groupData), groupData = string(groupData); end
+        if iscellstr(groupData)
+            groupData = string(groupData);
+        end
         groupName = unique(groupData,'stable');
         for g = 1:length(groupName)
             groudInd = groupData == groupName(g);
             xData{g} = xPlot(groudInd);
             yData{g} = yPlot(groudInd);
         end
-        if isnumeric(groupName), groupName=num2str(groupName); end;
+        if isnumeric(groupName)
+            groupName=num2str(groupName);
+        end
     else
         xData{1} = xPlot;
         yData{1} = yPlot;

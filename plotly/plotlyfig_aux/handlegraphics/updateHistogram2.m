@@ -12,18 +12,28 @@ function obj = updateHistogram2(obj,dataIndex)
     %-get trace data-%
 
     values = plotData.Values;
-    if strcmp(plotData.ShowEmptyBins, 'on'), values = values+1; end
+    if strcmp(plotData.ShowEmptyBins, 'on')
+        values = values+1;
+    end
     xEdges = plotData.XBinEdges;
     yEdges = plotData.YBinEdges;
 
     dx = diff(xEdges(2:end-1));
     dy = diff(yEdges(2:end-1));
 
-    if isinf(xEdges(1)) xEdges(1) = xEdges(2) - dx(1); end
-    if isinf(yEdges(1)) yEdges(1) = yEdges(2) - dy(1); end
+    if isinf(xEdges(1))
+        xEdges(1) = xEdges(2) - dx(1);
+    end
+    if isinf(yEdges(1))
+        yEdges(1) = yEdges(2) - dy(1);
+    end
 
-    if isinf(xEdges(end)) xEdges(end) = xEdges(end-1) + dx(1); end
-    if isinf(yEdges(end)) yEdges(end) = yEdges(end-1) + dy(1); end
+    if isinf(xEdges(end))
+        xEdges(end) = xEdges(end-1) + dx(1);
+    end
+    if isinf(yEdges(end))
+        yEdges(end) = yEdges(end-1) + dy(1);
+    end
 
     [xData, yData, zData, iData, jData, kData] = ...
             getPlotlyMesh3d( xEdges, yEdges, values, barGap );
@@ -154,7 +164,9 @@ function ax = getSceneAxis(axisData, axName)
     %-label-%
     label = axisData.(axName + "Label");
     ax.title = label.String;
-    if ~isempty(ax.title), ax.title = parseString(ax.title); end
+    if ~isempty(ax.title)
+        ax.title = parseString(ax.title);
+    end
     ax.titlefont.size = label.FontSize;
     ax.titlefont.color = getStringColor(255*label.Color);
     ax.titlefont.family = matlab2plotlyfont(label.FontName);
@@ -176,10 +188,14 @@ function ax = getSceneAxis(axisData, axName)
 
     %-grid-%
     axGrid = axisData.(axName + "Grid");
-    if strcmp(axGrid, 'off'), ax.showgrid = false; end
+    if strcmp(axGrid, 'off')
+        ax.showgrid = false;
+    end
 
     %-box-%
-    if strcmp(axisData.Box, 'on'), ax.mirror = true; end
+    if strcmp(axisData.Box, 'on')
+        ax.mirror = true;
+    end
 end
 
 function bar_ = barData(position3d, size_)

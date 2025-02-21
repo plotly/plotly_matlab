@@ -11,7 +11,9 @@ function obj = updateQuiver(obj, dataIndex)
     yData = plotData.YData;
     zData = plotData.ZData;
 
-    if isvector(xData), [xData, yData] = meshgrid(xData, yData); end
+    if isvector(xData)
+        [xData, yData] = meshgrid(xData, yData);
+    end
 
     if strcmpi(plotData.AutoScale, 'on')
         scaleFactor = getScaleFactor(xData, plotData.UData, 45);
@@ -27,7 +29,9 @@ function obj = updateQuiver(obj, dataIndex)
     isQuiver3D = ~isempty(zData);
 
     %-update axis-%
-    if isQuiver3D, updateScene(obj, dataIndex); end
+    if isQuiver3D
+        updateScene(obj, dataIndex);
+    end
 
     %-set trace-%
     if isQuiver3D
@@ -206,9 +210,15 @@ function updateScene(obj, dataIndex)
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
     %-grid-%
-    if strcmp(axisData.XGrid, 'off'), scene.xaxis.showgrid = false; end
-    if strcmp(axisData.YGrid, 'off'), scene.yaxis.showgrid = false; end
-    if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
+    if strcmp(axisData.XGrid, 'off')
+        scene.xaxis.showgrid = false;
+    end
+    if strcmp(axisData.YGrid, 'off')
+        scene.yaxis.showgrid = false;
+    end
+    if strcmp(axisData.ZGrid, 'off')
+        scene.zaxis.showgrid = false;
+    end
 
     %-SET SCENE TO LAYOUT-%
     obj.layout.("scene" + xsource) = scene;

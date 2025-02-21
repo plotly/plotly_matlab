@@ -292,9 +292,23 @@ function obj = updateMesh(obj, surfaceIndex)
         end
     else
         %-define as default-%
-        xey = - xyar; if xey>0 xfac = -0.0; else xfac = 0.0; end
-        yey = - xyar; if yey>0 yfac = -0.3; else yfac = 0.3; end
-        if zar>0 zfac = -0.1; else zfac = 0.1; end
+        xey = - xyar;
+        if xey>0
+            xfac = -0.0;
+        else
+            xfac = 0.0;
+        end
+        yey = - xyar;
+        if yey>0
+            yfac = -0.3;
+        else
+            yfac = 0.3;
+        end
+        if zar>0
+            zfac = -0.1;
+        else
+            zfac = 0.1;
+        end
 
         scene.camera.eye.x = xey + xfac*xey;
         scene.camera.eye.y = yey + yfac*yey;

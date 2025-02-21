@@ -115,9 +115,23 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
 
     %-define as default-%
     fac = 0.35;
-    xey = - xar; if xey>0 xfac = -fac; else xfac = fac; end
-    yey = - yar; if yey>0 yfac = -fac; else yfac = fac; end
-    if zar>0 zfac = fac; else zfac = -fac; end
+    xey = - xar;
+    if xey>0
+        xfac = -fac;
+    else
+        xfac = fac;
+    end
+    yey = - yar;
+    if yey>0
+        yfac = -fac;
+    else
+        yfac = fac;
+    end
+    if zar>0
+        zfac = fac;
+    else
+        zfac = -fac;
+    end
 
     scene.camera.eye.x = xey + xfac*xey;
     scene.camera.eye.y = yey + yfac*yey;

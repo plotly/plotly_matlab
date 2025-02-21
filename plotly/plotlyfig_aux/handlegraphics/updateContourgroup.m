@@ -7,8 +7,14 @@ function obj = updateContourgroup(obj,plotIndex)
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
-    xData = plotData.XData; if ~isvector(xData), xData = xData(1,:); end
-    yData = plotData.YData; if ~isvector(yData), yData = yData(:,1); end
+    xData = plotData.XData;
+    if ~isvector(xData)
+        xData = xData(1,:);
+    end
+    yData = plotData.YData;
+    if ~isvector(yData)
+        yData = yData(:,1);
+    end
     zData = plotData.ZData;
 
     contourStart = plotData.TextList(1);
@@ -112,7 +118,9 @@ function colorScale = getColorScale(plotData, axisData)
     isBackground = any(plotData.ZData(:) < plotData.TextList(1));
     nContours = length(plotData.TextList);
     cScaleInd = linspace(0,1, nContours);
-    if nContours==1, cScaleInd = 0.5; end
+    if nContours==1
+        cScaleInd = 0.5;
+    end
     cMapInd = floor( (nColors-1)*cScaleInd ) + 1;
 
     %-colorscale-%
@@ -122,7 +130,10 @@ function colorScale = getColorScale(plotData, axisData)
             cScaleInd = linspace(1/nContours, 1, nContours);
         end
         for n = 1:nContours
-            m = n; if isBackground, m = n+1; end
+            m = n;
+            if isBackground
+                m = n+1;
+            end
             stringColor = getStringColor( 255*cMap(cMapInd(n), :) );
             colorScale{m} = {cScaleInd(n), stringColor};
         end

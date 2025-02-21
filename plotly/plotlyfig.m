@@ -435,8 +435,9 @@ classdef plotlyfig < handle
                 end
             end
 
-            %---------- checking the overlapping of the graphs ------------%
-            temp_ax = ax; deleted_idx = 0;
+            %---------- checking the overlapping of the graphs -----------%
+            temp_ax = ax;
+            deleted_idx = 0;
             for i = 1:length(ax)
                 for j = i:length(ax)
                     try

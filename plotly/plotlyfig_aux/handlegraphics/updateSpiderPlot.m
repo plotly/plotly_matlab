@@ -194,7 +194,9 @@ function setAnnotation(obj, axesStruct, spiderIndex)
     nAxes = axesStruct.nAxes;
     axesAngle = axesStruct.axesAngle;
     nTicks = axesStruct.nTicks;
-    if strcmp(axesDisplay, 'data'), nTicks = size(plotData.P, 1); end
+    if strcmp(axesDisplay, 'data')
+        nTicks = size(plotData.P, 1);
+    end
 
     labelColor = 'rgb(0,0,0)';
     labelSize = plotData.LabelFontSize;
@@ -217,7 +219,9 @@ function setAnnotation(obj, axesStruct, spiderIndex)
 
         %-text label-%
         textLabel = axesLabels{l};
-        if isempty(textLabel), textLabel = parseString(textLabel, 'tex'); end
+        if isempty(textLabel)
+            textLabel = parseString(textLabel, 'tex');
+        end
 
         annotations{anIndex}.text = textLabel;
 
@@ -339,11 +343,17 @@ function setAnnotation(obj, axesStruct, spiderIndex)
 
             %-stop according AxesDisplay-%
             if strcmp(axesDisplay, 'one')
-                if a==1, break; end
+                if a==1
+                    break;
+                end
             elseif strcmp(axesDisplay, 'two')
-                if a==2, break; end
+                if a==2
+                    break;
+                end
             elseif strcmp(axesDisplay, 'three')
-                if a==3, break; end
+                if a==3
+                    break;
+                end
             end
         end
     end

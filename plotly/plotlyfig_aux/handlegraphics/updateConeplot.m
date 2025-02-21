@@ -123,9 +123,23 @@ function obj = updateConeplot(obj, coneIndex)
         end
     else
         %-define as default-%
-        xey = - xar; if xey>0 xfac = -0.2; else xfac = 0.2; end
-        yey = - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end
-        if zar>0 zfac = 0.2; else zfac = -0.2; end
+        xey = - xar;
+        if xey>0
+            xfac = -0.2;
+        else
+            xfac = 0.2;
+        end
+        yey = - yar;
+        if yey>0
+            yfac = -0.2;
+        else
+            yfac = 0.2;
+        end
+        if zar>0
+            zfac = 0.2;
+        else
+            zfac = -0.2;
+        end
 
         scene.camera.eye.x = xey + xfac*xey;
         scene.camera.eye.y = yey + yfac*yey;

@@ -259,7 +259,9 @@ function [tickVals, tickText, expoFormat] = getNumTicks(axisLim, nTicks)
         expoFormat = refPot;
     end
 
-    if abs(expoFormat) < 3 expoFormat = 0; end
+    if abs(expoFormat) < 3
+        expoFormat = 0;
+    end
 
     tickVals = getTickVals(axisLim, refVals, refPot, nTicks);
 
@@ -276,7 +278,9 @@ function tickVals = getTickVals(axisLim, refVals, refPot, nTicks)
             vp = v*10^p;
 
             startTick = axisLim(1) - mod(axisLim(1), vp);
-            if startTick < axisLim, startTick = startTick + vp; end
+            if startTick < axisLim
+                startTick = startTick + vp;
+            end
             endTick = axisLim(2) - mod(axisLim(2), vp);
 
             tickVals = startTick:vp:endTick;
@@ -288,7 +292,9 @@ function tickVals = getTickVals(axisLim, refVals, refPot, nTicks)
             end
         end
 
-        if done, break; end
+        if done
+            break;
+        end
     end
 end
 
@@ -296,7 +302,9 @@ function updateTitle(obj, titleText, xySource)
     xaxis = obj.layout.("xaxis" + xySource(1));
     yaxis = obj.layout.("yaxis" + xySource(2));
     anIndex = 1;
-    if ~isempty(titleText), titleText = parseString(titleText); end
+    if ~isempty(titleText)
+        titleText = parseString(titleText);
+    end
 
     ann.showarrow = false;
     ann.text = sprintf('<b>%s</b>', titleText);

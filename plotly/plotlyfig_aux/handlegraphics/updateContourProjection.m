@@ -90,9 +90,23 @@ function obj = updateContourProjection(obj,contourIndex)
         end
     else
         %-define as default-%
-        xey = - xyar; if xey>0 xfac = -0.2; else xfac = 0.2; end
-        yey = - xyar; if yey>0 yfac = -0.2; else yfac = 0.2; end
-        if zar>0 zfac = 0.2; else zfac = -0.2; end
+        xey = - xyar;
+        if xey>0
+            xfac = -0.2;
+        else
+            xfac = 0.2;
+        end
+        yey = - xyar;
+        if yey>0
+            yfac = -0.2;
+        else
+            yfac = 0.2;
+        end
+        if zar>0
+            zfac = 0.2;
+        else
+            zfac = -0.2;
+        end
 
         obj.layout.scene.camera.eye.x = xey + xfac*xey;
         obj.layout.scene.camera.eye.y = yey + yfac*yey;

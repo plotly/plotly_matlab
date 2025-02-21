@@ -133,9 +133,15 @@ function updateScene(obj, dataIndex)
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
     %-grid-%
-    if strcmp(axisData.XGrid, 'off'), scene.xaxis.showgrid = false; end
-    if strcmp(axisData.YGrid, 'off'), scene.yaxis.showgrid = false; end
-    if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
+    if strcmp(axisData.XGrid, 'off')
+        scene.xaxis.showgrid = false;
+    end
+    if strcmp(axisData.YGrid, 'off')
+        scene.yaxis.showgrid = false;
+    end
+    if strcmp(axisData.ZGrid, 'off')
+        scene.zaxis.showgrid = false;
+    end
 
     %-SET SCENE TO LAYOUT-%
     obj.layout.("scene" + xsource) = scene;
