@@ -3,7 +3,7 @@ function obj = updateBar3(obj, surfaceIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-SURFACE DATA STRUCTURE- %
     bar_data = obj.State.Plot(surfaceIndex).Handle;
@@ -290,7 +290,6 @@ function [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap)
     % x, y - array-like of shape (n,), defining the x, and y-coordinates of
     % data set for which we plot a 3d hist.
 
-    xsize = xedges(2)-xedges(1)-bargap;
     ysize = yedges(2)-yedges(1)-bargap;
     [xe, ye]= meshgrid(xedges(1:end-1), yedges(1:end-1));
     ze = zeros(size(xe));

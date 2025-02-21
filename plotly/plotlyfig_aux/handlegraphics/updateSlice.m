@@ -3,9 +3,7 @@ function obj = updateSlice(obj, dataIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = plotData.Parent;
-    figureData = obj.State.Figure.Handle;
-    [xSource, ~] = findSourceAxis(obj,axIndex);
+    xSource = findSourceAxis(obj,axIndex);
 
     %-update scene-%
     updateScene(obj, dataIndex)
@@ -67,7 +65,7 @@ function updateScene(obj, dataIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
-    [xSource, ~] = findSourceAxis(obj, axIndex);
+    xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.("scene" + xSource);
 
     aspectRatio = axisData.PlotBoxAspectRatio;
@@ -146,18 +144,12 @@ end
 function updateSurfaceEdgeColor(obj, dataIndex)
     %-INITIALIZATIONS-%
 
-    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = plotData.Parent;
 
     xData = plotData.XData;
     yData = plotData.YData;
     zData = plotData.ZData;
-    cData = plotData.CData;
     edgeColor = plotData.EdgeColor;
-    cData = plotData.CData;
-    cLim = axisData.CLim;
-    colorMap = axisData.Colormap;
 
     xConst = ( xData(:) - min(xData(:)) ) <= 1e-6;
     yConst = ( yData(:) - min(yData(:)) ) <= 1e-6;
@@ -207,7 +199,6 @@ end
 function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
     %-INITIALIZATIONS-%
 
-    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
 

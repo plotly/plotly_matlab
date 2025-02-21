@@ -41,10 +41,6 @@ function obj = updateImage(obj, imageIndex)
     %-IMAGE DATA STRUCTURE- %
     image_data = obj.State.Plot(imageIndex).Handle;
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     obj.data{imageIndex}.xaxis = "x" + xsource;
     obj.data{imageIndex}.yaxis = "y" + ysource;
     obj.data{imageIndex}.type = 'heatmap';

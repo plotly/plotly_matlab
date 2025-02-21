@@ -3,7 +3,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-SURFACE DATA STRUCTURE- %
     meshData = obj.State.Plot(surfaceIndex).Handle;

@@ -187,14 +187,12 @@ function setAnnotation(obj, axesStruct, spiderIndex)
     axesLabels = plotData.AxesLabels;
     axesLabelsOffset = plotData.AxesLabelsOffset * 0.5;
     axesDisplay = plotData.AxesDisplay;
-    axesLim = plotData.AxesLimits;
     axesFontColor = plotData.AxesFontColor;
     axesPrecision = plotData.AxesPrecision;
     axesLabelsEdge = plotData.AxesLabelsEdge;
 
     nAxes = axesStruct.nAxes;
     axesAngle = axesStruct.axesAngle;
-    tickValues = axesStruct.axesAngle;
     nTicks = axesStruct.nTicks;
     if strcmp(axesDisplay, 'data'), nTicks = size(plotData.P, 1); end
 
@@ -469,9 +467,7 @@ end
 
 function setLegeng(obj, spiderIndex)
     %-INITIALIZATIONS-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(spiderIndex).AssociatedAxis);
     plotData = obj.State.Plot(spiderIndex).Handle;
-    [xSource, ySource] = findSourceAxis(obj, axIndex);
 
     legData = plotData.LegendHandle;
     obj.layout.showlegend = strcmpi(plotData.Visible,'on');

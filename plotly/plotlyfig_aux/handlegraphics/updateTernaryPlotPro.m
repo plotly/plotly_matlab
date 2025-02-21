@@ -8,7 +8,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
     figureData = obj.State.Figure.Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj, axIndex);
+    xsource = findSourceAxis(obj, axIndex);
 
     %=====================================================================%
     %

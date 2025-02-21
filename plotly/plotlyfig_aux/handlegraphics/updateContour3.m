@@ -5,18 +5,12 @@ function obj = updateContour3(obj,contourIndex)
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(contourIndex).AssociatedAxis);
 
-    %-AXIS DATA STRUCTURE-%
-    axis_data = obj.State.Plot(contourIndex).AssociatedAxis;
-
     %-PLOT DATA STRUCTURE- %
     contour_data = obj.State.Plot(contourIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
 
     %-contour xaxis and yaxis-%
     obj.data{contourIndex}.xaxis = "x" + xsource;

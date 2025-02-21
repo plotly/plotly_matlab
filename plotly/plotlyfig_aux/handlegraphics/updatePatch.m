@@ -52,10 +52,6 @@ function obj = updatePatch(obj, patchIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     %-patch xaxis and yaxis-%
     obj.data{patchIndex}.xaxis = "x" + xsource;
     obj.data{patchIndex}.yaxis = "y" + ysource;
@@ -79,7 +75,6 @@ function obj = updatePatch(obj, patchIndex)
         if isvector(xdata)
             obj.data{patchIndex}.x = [xdata' xdata(1)];
         else
-            xtemp = reshape(xdata,[],1);
             xnew = [];
             for n = 1:size(xdata,2)
                 xnew = [xnew ; xdata(:,n) ; xdata(1,n); NaN];
@@ -94,7 +89,6 @@ function obj = updatePatch(obj, patchIndex)
         if isvector(ydata)
             obj.data{patchIndex}.y = [ydata' ydata(1)];
         else
-            ytemp = reshape(ydata,[],1);
             ynew = [];
             for n = 1:size(ydata,2)
                 ynew = [ynew ; ydata(:,n) ; ydata(1,n); NaN];
@@ -110,7 +104,6 @@ function obj = updatePatch(obj, patchIndex)
             if isvector(ydata)
                 obj.data{patchIndex}.z = [zdata' zdata(1)];
             else
-                ztemp = reshape(zdata,[],1);
                 znew = [];
                 for n = 1:size(zdata,2)
                     znew = [znew ; zdata(:,n) ; zdata(1,n); NaN];

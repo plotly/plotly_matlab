@@ -64,10 +64,6 @@ function updateScattergroup(obj,scatterIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     obj.data{scatterIndex}.xaxis = "x" + xsource;
     obj.data{scatterIndex}.yaxis = "y" + ysource;
 

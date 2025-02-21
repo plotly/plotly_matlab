@@ -5,18 +5,11 @@ function obj = updateContourProjection(obj,contourIndex)
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(contourIndex).AssociatedAxis);
 
-    %-AXIS DATA STRUCTURE-%
-    axis_data = obj.State.Plot(contourIndex).AssociatedAxis;
-
     %-PLOT DATA STRUCTURE- %
     contour_data = obj.State.Plot(contourIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
-
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
 
     obj.data{contourIndex}.xaxis = "x" + xsource;
     obj.data{contourIndex}.yaxis = "y" + ysource;
@@ -72,8 +65,6 @@ function obj = updateContourProjection(obj,contourIndex)
         if ischar(ar)
             obj.layout.scene.aspectmode = ar;
         elseif isvector(ar) && length(ar) == 3
-            xar = ar(1);
-            yar = ar(2);
             zar = ar(3);
         end
     else

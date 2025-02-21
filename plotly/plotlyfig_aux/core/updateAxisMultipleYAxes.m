@@ -16,7 +16,7 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     axisData = obj.State.Axis(axIndex).Handle;
 
     xaxis = extractAxisData(obj,axisData, 'X');
-    [yaxis, yAxisLim] = extractAxisDataMultipleYAxes(obj, axisData, yaxIndex);
+    yaxis = extractAxisDataMultipleYAxes(obj, axisData, yaxIndex);
 
     %-getting and setting position data-%
     xo = axisData.Position(1);
@@ -31,9 +31,7 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     end
 
     xaxis.domain = min([xo xo + w],1);
-    scene.domain.x = min([xo xo + w],1);
     yaxis.domain = min([yo yo + h],1);
-    scene.domain.y = min([yo yo + h],1);
 
     [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj, axIndex, yaxIndex);
 

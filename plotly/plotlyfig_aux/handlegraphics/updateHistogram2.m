@@ -2,7 +2,7 @@ function obj = updateHistogram2(obj,dataIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    [xSource, ~] = findSourceAxis(obj, axIndex);
+    xSource = findSourceAxis(obj, axIndex);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
 
@@ -91,12 +91,11 @@ function updateScene(obj, dataIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
-    [xSource, ~] = findSourceAxis(obj, axIndex);
+    xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.("scene" + xSource);
 
     aspectRatio = axisData.PlotBoxAspectRatio;
     cameraPosition = axisData.CameraPosition;
-    dataAspectRatio = axisData.DataAspectRatio;
     cameraUpVector = axisData.CameraUpVector;
     cameraEye = cameraPosition;
 

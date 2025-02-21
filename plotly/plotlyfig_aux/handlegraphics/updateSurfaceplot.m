@@ -9,10 +9,6 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
     image_data = obj.State.Plot(surfaceIndex).Handle;
     figure_data = obj.State.Figure.Handle;
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     %-surface xaxis and yaxis-%
     obj.data{surfaceIndex}.xaxis = "x" + xsource;
     obj.data{surfaceIndex}.yaxis = "y" + ysource;

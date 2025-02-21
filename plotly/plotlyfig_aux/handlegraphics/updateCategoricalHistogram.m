@@ -54,10 +54,6 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     obj.data{histIndex}.xaxis = "x" + xsource;
     obj.data{histIndex}.yaxis = "y" + ysource;
     obj.data{histIndex}.type = 'bar';

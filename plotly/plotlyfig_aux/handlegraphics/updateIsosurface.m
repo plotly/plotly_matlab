@@ -4,7 +4,7 @@ function obj = updateIsosurface(obj, isoIndex)
 	axIndex = obj.getAxisIndex(obj.State.Plot(isoIndex).AssociatedAxis);
 	plotData = obj.State.Plot(isoIndex).Handle;
 	axisData = plotData.Parent;
-	[xSource, ySource] = findSourceAxis(obj, axIndex);
+	xSource = findSourceAxis(obj, axIndex);
 
 	%-update scene-%
 	updateScene(obj, isoIndex)
@@ -61,7 +61,7 @@ function updateScene(obj, isoIndex)
 	axIndex = obj.getAxisIndex(obj.State.Plot(isoIndex).AssociatedAxis);
 	plotData = obj.State.Plot(isoIndex).Handle;
 	axisData = plotData.Parent;
-	[xSource, ySource] = findSourceAxis(obj, axIndex);
+	xSource = findSourceAxis(obj, axIndex);
 	scene = obj.layout.("scene" + xSource);
 
 	aspectRatio = axisData.PlotBoxAspectRatio;

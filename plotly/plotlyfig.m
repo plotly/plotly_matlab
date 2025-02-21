@@ -508,9 +508,6 @@ classdef plotlyfig < handle
                     end
                 end
 
-                % add baseline objects
-                baselines = findobj(ax(axrev),'-property','BaseLine');
-
                 % check if current axes have multiple y-axes
                 try
                     obj.PlotlyDefaults.isMultipleYAxes(axrev) = length(ax(axrev).YAxis) == 2;

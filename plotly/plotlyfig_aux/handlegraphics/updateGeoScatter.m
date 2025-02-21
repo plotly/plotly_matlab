@@ -4,7 +4,7 @@ function updateGeoScatter(obj,geoIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
     geoData = obj.State.Plot(geoIndex).Handle;
     axisData = geoData.Parent;
-    [xSource, ~] = findSourceAxis(obj,axIndex);
+    xSource = findSourceAxis(obj,axIndex);
 
     %-set trace-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')

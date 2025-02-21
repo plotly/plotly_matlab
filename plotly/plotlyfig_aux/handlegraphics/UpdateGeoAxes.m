@@ -6,7 +6,7 @@ function UpdateGeoAxes(obj, geoIndex)
     geoData = obj.State.Plot(geoIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-set domain geo plot-%
     xo = geoData.Position(1);

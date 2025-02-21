@@ -8,7 +8,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
     figureData = obj.State.Figure.Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj, axIndex);
+    xsource = findSourceAxis(obj, axIndex);
 
     %=====================================================================%
     %
@@ -131,7 +131,7 @@ function fillContours(obj, ternaryIndex)
     figureData = obj.State.Figure.Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj, axIndex);
+    xsource = findSourceAxis(obj, axIndex);
 
     %-get zLevels-%
     contourMatrix = ternaryData.ContourMatrix;
@@ -275,7 +275,7 @@ function ternaryAxes(obj, ternaryIndex)
     axisData = obj.State.Plot(ternaryIndex).AssociatedAxis;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj, axIndex);
+    xsource = findSourceAxis(obj, axIndex);
 
     %-set domain plot-%
     xo = axisData.Position(1);

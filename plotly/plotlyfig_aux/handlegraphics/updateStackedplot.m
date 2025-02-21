@@ -1,7 +1,6 @@
 function updateStackedplot(obj, plotIndex)
     %-INITIALIZATIONS-%
 
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
     lineData = plotData.LineProperties(end:-1:1);
 
@@ -75,7 +74,6 @@ end
 function updateStackedplotAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
 
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
 
     %-SET X-AXIS-%
@@ -108,10 +106,8 @@ end
 function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     %-INITIALIZATIONS-%
 
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    lineFactor = obj.PlotlyDefaults.AxisLineIncreaseFactor;
     axisPos = plotData.Position;
     axisColor = getStringColor(zeros(1,3));
     lineWidth = 1;
@@ -258,7 +254,6 @@ end
 function [tickVals, tickText, expoFormat] = getNumTicks(axisLim, nTicks)
     refVals = [1, 2, 5];
     refPot = floor(log10(range(axisLim)));
-    nonStop = true;
 
     fixAxisLim = fix(axisLim);
 
@@ -287,7 +282,6 @@ function tickVals = getTickVals(axisLim, refVals, refPot, nTicks)
             startTick = axisLim(1) - mod(axisLim(1), vp);
             if startTick < axisLim, startTick = startTick + vp; end
             endTick = axisLim(2) - mod(axisLim(2), vp);
-            nPoints = floor(range([startTick, endTick])/vp) + 1;
 
             tickVals = startTick:vp:endTick;
             lenTicks = length(tickVals);

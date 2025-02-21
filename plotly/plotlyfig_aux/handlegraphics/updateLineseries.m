@@ -98,11 +98,9 @@ function updateScene(obj, dataIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
-    [xSource, ~] = findSourceAxis(obj, axIndex);
+    xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.("scene" + xSource);
 
-    cameraTarget = axisData.CameraTarget;
-    position = axisData.Position;
     aspectRatio = axisData.PlotBoxAspectRatio;
     cameraPosition = axisData.CameraPosition;
     dataAspectRatio = axisData.DataAspectRatio;
@@ -232,7 +230,7 @@ end
 function updateDefaultPolaraxes(obj, plotIndex)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
-    [xSource, ysource] = findSourceAxis(obj, axIndex);
+    xSource = findSourceAxis(obj, axIndex);
     plotData = obj.State.Plot(plotIndex).Handle;
     axisData = plotData.Parent;
 

@@ -6,7 +6,7 @@ function obj = updateConeplot(obj, coneIndex)
     cone_data = obj.State.Plot(coneIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-SCENE DATA-%
     scene = obj.layout.("scene" + xsource);

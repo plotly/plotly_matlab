@@ -4,7 +4,7 @@ function obj = updateQuiver(obj, dataIndex)
     %-get structures-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
-    [xSource, ySource] = findSourceAxis(obj,axIndex);
+    xSource = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
     xData = plotData.XData;
@@ -117,10 +117,9 @@ function updateScene(obj, dataIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
-    [xSource, ~] = findSourceAxis(obj, axIndex);
+    xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.("scene" + xSource);
 
-    position = axisData.Position;
     aspectRatio = axisData.PlotBoxAspectRatio;
     cameraPosition = axisData.CameraPosition;
     dataAspectRatio = axisData.DataAspectRatio;

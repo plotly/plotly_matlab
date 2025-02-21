@@ -70,7 +70,7 @@ function obj = updatePatchPie3(obj, patchIndex)
     end
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-AXIS DATA-%
     scene = obj.layout.("scene" + xsource);
@@ -86,7 +86,6 @@ function obj = updatePatchPie3(obj, patchIndex)
     if isvector(xdata)
         obj.data{patchIndex}.x = [xdata' xdata(1)];
     else
-        xtemp = reshape(xdata,[],1);
         xnew = [];
         for n = 1:size(xdata,2)
             xnew = [xnew ; xdata(:,n) ; xdata(1,n); NaN];
@@ -99,7 +98,6 @@ function obj = updatePatchPie3(obj, patchIndex)
     if isvector(ydata)
         obj.data{patchIndex}.y = [ydata' ydata(1)];
     else
-        ytemp = reshape(ydata,[],1);
         ynew = [];
         for n = 1:size(ydata,2)
             ynew = [ynew ; ydata(:,n) ; ydata(1,n); NaN];
@@ -113,7 +111,6 @@ function obj = updatePatchPie3(obj, patchIndex)
     if isvector(ydata)
         obj.data{patchIndex}.z = [zdata' zdata(1)];
     else
-        ztemp = reshape(zdata,[],1);
         znew = [];
         for n = 1:size(zdata,2)
             znew = [znew ; zdata(:,n) ; zdata(1,n); NaN];
@@ -183,7 +180,7 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-SURFACE DATA STRUCTURE- %
     image_data = obj.State.Plot(surfaceIndex).Handle;
@@ -254,7 +251,6 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
             scene.camera.eye.z = ey(3);
         end
     else
-
         %-define as default-%
         xey = - xar; if xey>0 xfac = -0.2; else xfac = 0.2; end
         yey = - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end

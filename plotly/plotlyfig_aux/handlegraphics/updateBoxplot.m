@@ -81,7 +81,6 @@ function obj = updateBoxplot(obj, boxIndex)
 
         %-AXIS DATA-%
         xaxis = obj.layout.("xaxis" + xsource);
-        yaxis = obj.layout.("yaxis" + ysource);
         obj.data{boxIndex}.xaxis = "x" + xsource;
         obj.data{boxIndex}.yaxis = "y" + ysource;
         obj.data{boxIndex}.type = 'box';

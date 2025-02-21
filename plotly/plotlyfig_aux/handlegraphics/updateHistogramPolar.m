@@ -45,9 +45,6 @@ function obj = updateHistogramPolar(obj,histIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %-AXIS INDEX-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
-
     %-HIST DATA STRUCTURE- %
     hist_data = obj.State.Plot(histIndex).Handle;
 

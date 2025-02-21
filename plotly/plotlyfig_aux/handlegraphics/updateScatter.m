@@ -64,7 +64,7 @@ function updateScene(obj, dataIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
-    [xSource, ~] = findSourceAxis(obj, axIndex);
+    xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.("scene" + xSource);
 
     aspectRatio = axisData.PlotBoxAspectRatio;

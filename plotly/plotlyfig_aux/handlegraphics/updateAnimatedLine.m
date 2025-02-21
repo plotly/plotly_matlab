@@ -18,10 +18,6 @@ function updateAnimatedLine(obj,plotIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     %-if polar plot or not-%
     treatas = obj.PlotOptions.TreatAs;
     ispolar = strcmpi(treatas, 'compass') || strcmpi(treatas, 'ezpolar');
@@ -118,8 +114,6 @@ function updateAnimatedLine(obj,plotIndex)
             if ischar(asr)
                 scene.aspectmode = asr;
             elseif isvector(ar) && length(asr) == 3
-                xar = asr(1);
-                yar = asr(2);
                 zar = asr(3);
             end
         else

@@ -13,7 +13,7 @@ function updateContourOnly(obj, contourIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(contourIndex).AssociatedAxis);
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-AXIS DATA STRUCTURE-%
     axisData = obj.State.Plot(contourIndex).AssociatedAxis;
@@ -114,7 +114,7 @@ function updateSurfOnly(obj, surfaceIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-SURFACE DATA STRUCTURE- %
     meshData = obj.State.Plot(surfaceIndex).Handle;
@@ -368,8 +368,6 @@ function updateSurfOnly(obj, surfaceIndex)
         if ischar(asr)
             scene.aspectmode = asr;
         elseif isvector(ar) && length(asr) == 3
-            xar = asr(1);
-            yar = asr(2);
             zar = asr(3);
         end
     else

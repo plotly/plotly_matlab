@@ -3,7 +3,6 @@ function updateScatterhistogram(obj, plotIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
-    [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj,axIndex);
 
     [~, ~, groupName] = getTraceData(plotData);
 
@@ -149,7 +148,6 @@ end
 
 function updateMarginalHistogram(obj, plotIndex, axName)
     %-INITIALIZATIONS-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
     if strcmp(axName, 'X'), xySource = 1; else, xySource = 2; end
     xySource = obj.State.Figure.NumAxes + xySource;
@@ -204,7 +202,6 @@ end
 
 function updateMarginalSmooth(obj, plotIndex, axName)
     %-INITIALIZATIONS-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
     if strcmp(axName, 'X'), xySource = 1; else, xySource = 2; end
     xySource = obj.State.Figure.NumAxes + xySource;
@@ -261,8 +258,6 @@ end
 
 function updateXMarginalAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
-
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
 
     xySource = obj.State.Figure.NumAxes + 1;
@@ -317,8 +312,6 @@ end
 
 function updateYMarginalAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
-
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
 
     xySource = obj.State.Figure.NumAxes + 2;
@@ -420,7 +413,7 @@ end
 function updateTitle(obj, plotIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
-    [xSource, ~] = findSourceAxis(obj,axIndex);
+    xSource = findSourceAxis(obj,axIndex);
     isTitle = ~isempty(plotData.Title);
 
     obj.layout.annotations{1}.text = plotData.Title;
@@ -446,9 +439,7 @@ function updateTitle(obj, plotIndex)
 end
 
 function updateLegend(obj, plotIndex, groupName)
-    axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
-    isTitle = isempty(plotData.Title);
 
     if ~isempty(groupName)
         fontFamily = matlab2plotlyfont(plotData.FontName);

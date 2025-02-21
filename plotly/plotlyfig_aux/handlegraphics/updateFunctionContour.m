@@ -14,10 +14,6 @@ function obj = updateFunctionContour(obj,contourIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     obj.data{contourIndex}.xaxis = "x" + xsource;
     obj.data{contourIndex}.yaxis = "y" + ysource;
     obj.data{contourIndex}.name = contour_data.DisplayName;

@@ -35,10 +35,6 @@ function obj = updateRectangle(obj, rectIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     obj.data{rectIndex}.xaxis = "x" + xsource;
     obj.data{rectIndex}.yaxis = "y" + ysource;
     obj.data{rectIndex}.type = 'scatter';

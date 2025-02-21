@@ -7,7 +7,7 @@ function updatePolarplot(obj, plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj, axIndex);
+    xsource = findSourceAxis(obj, axIndex);
 
     %-ASSOCIATE POLAR-AXES LAYOUT-%
     obj.data{plotIndex}.subplot = sprintf('polar%d', xsource+1);
@@ -70,7 +70,7 @@ function updatePolaraxes(obj, plotIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj, axIndex);
+    xsource = findSourceAxis(obj, axIndex);
 
     %-GET DATA STRUCTURES-%
     plotData = obj.State.Plot(plotIndex).Handle;

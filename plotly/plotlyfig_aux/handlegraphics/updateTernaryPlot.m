@@ -5,10 +5,9 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     %-GET DATA STRUCTURES-%
     ternaryData = obj.State.Plot(ternaryIndex).Handle;
     axisData = obj.State.Plot(ternaryIndex).AssociatedAxis;
-    figureData = obj.State.Figure.Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj, axIndex);
+    xsource = findSourceAxis(obj, axIndex);
 
     %-ASSOCIATE TERNARY-AXES WITH LAYOUT-%
     obj.data{ternaryIndex}.subplot = sprintf('ternary%d', xsource+1);

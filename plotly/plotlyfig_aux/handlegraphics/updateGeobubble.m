@@ -3,7 +3,7 @@ function updateGeobubble(obj,geoIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
     geoData = obj.State.Plot(geoIndex).Handle;
-    [xSource, ~] = findSourceAxis(obj,axIndex);
+    xSource = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
     bubbleRange = geoData.BubbleWidthRange;

@@ -3,7 +3,7 @@ function obj = updateSurf(obj, surfaceIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(surfaceIndex).AssociatedAxis);
 
     %-CHECK FOR MULTIPLE AXES-%
-    [xsource, ysource] = findSourceAxis(obj,axIndex);
+    xsource = findSourceAxis(obj,axIndex);
 
     %-SURFACE DATA STRUCTURE- %
     meshData = obj.State.Plot(surfaceIndex).Handle;
@@ -257,8 +257,6 @@ function obj = updateSurf(obj, surfaceIndex)
         if ischar(asr)
             scene.aspectmode = asr;
         elseif isvector(ar) && length(asr) == 3
-            xar = asr(1);
-            yar = asr(2);
             zar = asr(3);
         end
     else

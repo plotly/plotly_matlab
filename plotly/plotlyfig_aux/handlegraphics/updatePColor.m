@@ -9,10 +9,6 @@ function obj = updatePColor(obj, patchIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     %-pcolor xaxis and yaxis-%
     obj.data{patchIndex}.xaxis = "x" + xsource;
     obj.data{patchIndex}.yaxis = "y" + ysource;
@@ -40,7 +36,6 @@ function obj = updatePColor(obj, patchIndex)
 
     for n = 1:size(XData, 2)-1
         for m = 1:size(XData, 1)-1
-
             % get indices
             n1 = 2*(n-1)+1; m1 = 2*(m-1)+1;
 

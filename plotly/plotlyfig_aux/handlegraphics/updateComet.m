@@ -68,10 +68,6 @@ function updateComet(obj,plotIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-AXIS DATA-%
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
-
     %-getting data-%
     [x,y,z] = getpoints(tail);
 
@@ -138,8 +134,6 @@ function updateComet(obj,plotIndex)
             if ischar(asr)
                 scene.aspectmode = asr;
             elseif isvector(ar) && length(asr) == 3
-                xar = asr(1);
-                yar = asr(2);
                 zar = asr(3);
             end
         else
