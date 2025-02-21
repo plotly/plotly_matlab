@@ -125,131 +125,7 @@ classdef plotlyfig < handle
                 'PlotlyDomain', obj.UserData.PlotlyDomain ...
             );
 
-            % initialize figure handle
-            fig_han = [];
-
-            % initialize autoupdate key
-            updatekey = false;
-
-            noFig = false;
-
-            % parse inputs
-            switch nargin
-                case 0
-                case 1
-                    % check for figure handle
-                    if ishandle(varargin{1})
-                        if strcmp(get(varargin{1},'type'),'figure')
-                            fig_han = varargin{1};
-                            updatekey = true;
-                        end
-                    else
-                        errkey = 'plotlyfigConstructor:invalidInputs';
-                        error(errkey , plotlymsg(errkey));
-                    end
-                otherwise
-                    % check for figure handle
-                    if ishandle(varargin{1})
-                        if strcmp(get(varargin{1},'type'),'figure')
-                            fig_han = varargin{1};
-                            updatekey = true;
-                            parseinit = 2;
-                        end
-                    elseif iscell(varargin{1}) && isstruct(varargin{2})
-                        obj.data = varargin{1}{:};
-                        structargs = varargin{2};
-                        ff=fieldnames(structargs);
-                        for i=1:length(ff)
-                            varargin{2*i-1}=ff{i};
-                            varargin{2*i}=structargs.(ff{i});
-                        end
-                        noFig=true;
-                        parseinit = 1;
-                    else
-                        parseinit = 1;
-                    end
-
-                    % check for proper property/value structure
-                    if mod(length(parseinit:nargin),2) ~= 0
-                        errkey = 'plotlyfigConstructor:invalidInputs';
-                        error(errkey , plotlymsg(errkey));
-                    end
-
-                    % parse property/values
-                    for a = parseinit:2:length(varargin)
-                        property = lower(varargin{a});
-                        value = varargin{a+1};
-                        switch property
-                            case "filename"
-                                obj.PlotOptions.FileName = value;
-                                % overwrite if filename provided
-                                obj.PlotOptions.FileOpt = 'overwrite';
-                            case "savefolder"
-                                obj.PlotOptions.SaveFolder = value;
-                            case "fileopt"
-                                obj.PlotOptions.FileOpt = value;
-                            case "world_readable"
-                                obj.PlotOptions.WorldReadable = value;
-                            case "link"
-                                obj.PlotOptions.ShowURL = value;
-                            case "open"
-                                obj.PlotOptions.OpenURL = value;
-                            case "strip"
-                                obj.PlotOptions.Strip = value;
-                            case "writefile"
-                                obj.PlotOptions.WriteFile = value;
-                            case "visible"
-                                obj.PlotOptions.Visible = value;
-                            case "offline"
-                                obj.PlotOptions.Offline = value;
-                            case "showlink"
-                                obj.PlotOptions.ShowLinkText = value;
-                            case "linktext"
-                                obj.PlotOptions.LinkText = value;
-                            case "include_plotlyjs"
-                                obj.PlotOptions.IncludePlotlyjs = value;
-                            case "layout"
-                                obj.layout= value;
-                            case "data"
-                                obj.data = value;
-                            case "stripmargins"
-                                obj.PlotOptions.StripMargins = value;
-                            case "triangulatepatch"
-                                obj.PlotOptions.TriangulatePatch = value;
-                            case "treatas"
-                                if ~iscell(value)
-                                    obj.PlotOptions.TreatAs = {value};
-                                else
-                                    obj.PlotOptions.TreatAs = value;
-                                end
-                            case "axisequal"
-                                obj.PlotOptions.AxisEqual = value;
-                            case "aspectratio"
-                                obj.PlotOptions.AspectRatio = value;
-                            case "cameraeye"
-                                obj.PlotOptions.CameraEye = value;
-                            case "quality"
-                                obj.PlotOptions.Quality = value;
-                            case "zmin"
-                                obj.PlotOptions.Zmin = value;
-                            case "frameduration"
-                                if value > 0
-                                    obj.PlotOptions.FrameDuration = value;
-                                end
-                            case "frametransitionduration"
-                                if value >= 0
-                                    obj.PlotOptions.FrameTransitionDuration = value;
-                                end
-                            case "georendertype"
-                                obj.PlotOptions.geoRenderType = value;
-                            case "domainfactor"
-                                len = length(value);
-                                obj.PlotOptions.DomainFactor(1:len) = value;
-                            otherwise
-                                warning("Unrecognized property name ""%s""", property);
-                        end
-                    end
-            end
+            [fig_han,updatekey,noFig] = obj.parseInputs(varargin);
 
             if ~noFig
                 % create figure/axes if empty
@@ -1064,6 +940,134 @@ classdef plotlyfig < handle
             link_domain = strrep(plotly_domain, 'https://', '');
             link_domain = strrep(link_domain, 'http://', '');
             link_text = ['Export to ' link_domain];
+        end
+
+        function [fig_han,updatekey,noFig] = parseInputs(obj,varargs)
+            % initialize figure handle
+            fig_han = [];
+
+            % initialize autoupdate key
+            updatekey = false;
+
+            noFig = false;
+            nargs = numel(varargs);
+
+            switch nargs
+                case 0
+                case 1
+                    % check for figure handle
+                    if ishandle(varargs{1})
+                        if strcmp(get(varargs{1},'type'),'figure')
+                            fig_han = varargs{1};
+                            updatekey = true;
+                        end
+                    else
+                        errkey = 'plotlyfigConstructor:invalidInputs';
+                        error(errkey , plotlymsg(errkey));
+                    end
+                otherwise
+                    % check for figure handle
+                    if ishandle(varargs{1})
+                        if strcmp(get(varargs{1},'type'),'figure')
+                            fig_han = varargs{1};
+                            updatekey = true;
+                            parseinit = 2;
+                        end
+                    elseif iscell(varargs{1}) && isstruct(varargs{2})
+                        obj.data = varargs{1}{:};
+                        structargs = varargs{2};
+                        ff=fieldnames(structargs);
+                        for i=1:length(ff)
+                            varargs{2*i-1}=ff{i};
+                            varargs{2*i}=structargs.(ff{i});
+                        end
+                        noFig=true;
+                        parseinit = 1;
+                    else
+                        parseinit = 1;
+                    end
+
+                    % check for proper property/value structure
+                    if mod(length(parseinit:nargs),2) ~= 0
+                        errkey = 'plotlyfigConstructor:invalidInputs';
+                        error(errkey , plotlymsg(errkey));
+                    end
+
+                    % parse property/values
+                    for a = parseinit:2:length(varargs)
+                        property = lower(varargs{a});
+                        value = varargs{a+1};
+                        switch property
+                            case "filename"
+                                obj.PlotOptions.FileName = value;
+                                % overwrite if filename provided
+                                obj.PlotOptions.FileOpt = 'overwrite';
+                            case "savefolder"
+                                obj.PlotOptions.SaveFolder = value;
+                            case "fileopt"
+                                obj.PlotOptions.FileOpt = value;
+                            case "world_readable"
+                                obj.PlotOptions.WorldReadable = value;
+                            case "link"
+                                obj.PlotOptions.ShowURL = value;
+                            case "open"
+                                obj.PlotOptions.OpenURL = value;
+                            case "strip"
+                                obj.PlotOptions.Strip = value;
+                            case "writefile"
+                                obj.PlotOptions.WriteFile = value;
+                            case "visible"
+                                obj.PlotOptions.Visible = value;
+                            case "offline"
+                                obj.PlotOptions.Offline = value;
+                            case "showlink"
+                                obj.PlotOptions.ShowLinkText = value;
+                            case "linktext"
+                                obj.PlotOptions.LinkText = value;
+                            case "include_plotlyjs"
+                                obj.PlotOptions.IncludePlotlyjs = value;
+                            case "layout"
+                                obj.layout= value;
+                            case "data"
+                                obj.data = value;
+                            case "stripmargins"
+                                obj.PlotOptions.StripMargins = value;
+                            case "triangulatepatch"
+                                obj.PlotOptions.TriangulatePatch = value;
+                            case "treatas"
+                                if ~iscell(value)
+                                    obj.PlotOptions.TreatAs = {value};
+                                else
+                                    obj.PlotOptions.TreatAs = value;
+                                end
+                            case "axisequal"
+                                obj.PlotOptions.AxisEqual = value;
+                            case "aspectratio"
+                                obj.PlotOptions.AspectRatio = value;
+                            case "cameraeye"
+                                obj.PlotOptions.CameraEye = value;
+                            case "quality"
+                                obj.PlotOptions.Quality = value;
+                            case "zmin"
+                                obj.PlotOptions.Zmin = value;
+                            case "frameduration"
+                                if value > 0
+                                    obj.PlotOptions.FrameDuration = value;
+                                end
+                            case "frametransitionduration"
+                                if value >= 0
+                                    obj.PlotOptions.FrameTransitionDuration = value;
+                                end
+                            case "georendertype"
+                                obj.PlotOptions.geoRenderType = value;
+                            case "domainfactor"
+                                len = length(value);
+                                obj.PlotOptions.DomainFactor(1:len) = value;
+                            otherwise
+                                warning("Unrecognized property name ""%s""", property);
+                        end
+                    end
+            end
         end
     end
 end
