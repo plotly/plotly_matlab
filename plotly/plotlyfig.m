@@ -259,7 +259,10 @@ classdef plotlyfig < handle
                 end
 
                 % plotly figure default style
-                set(fig_han,'Name',obj.PlotOptions.FileName,'Color',[1 1 1],'NumberTitle','off', 'Visible', obj.PlotOptions.Visible);
+                fig_han.Name = obj.PlotOptions.FileName;
+                fig_han.Color = [1 1 1];
+                fig_han.NumberTitle = 'off';
+                fig_han.Visible = obj.PlotOptions.Visible;
 
                 % figure state
                 obj.State.Figure.Handle = fig_han;
