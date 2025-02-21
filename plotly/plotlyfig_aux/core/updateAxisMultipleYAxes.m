@@ -47,11 +47,11 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
-        obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
+        obj.layout.("xaxis" + xsource) = xaxis;
     end
 
     % update the layout field (do not overwrite source)
-    obj.layout = setfield(obj.layout, "yaxis" + ysource, yaxis);
+    obj.layout.("yaxis" + ysource) = yaxis;
 
     %-REVERT UNITS-%
     obj.State.Axis(axIndex).Handle.Units = axisUnits;

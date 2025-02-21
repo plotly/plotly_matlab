@@ -445,7 +445,7 @@ function updateSurfOnly(obj, surfaceIndex)
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
+    obj.layout.("scene" + xsource) = scene;
 
     obj.data{surfaceIndex}.name = meshData.DisplayName;
     obj.data{contourIndex}.name = meshData.DisplayName;

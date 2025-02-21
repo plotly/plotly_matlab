@@ -211,7 +211,7 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
+    obj.layout.("scene" + xsource) = scene;
 end
 
 function quiverBarb = getQuiverBarb2D(...

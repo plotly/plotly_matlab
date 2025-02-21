@@ -144,13 +144,13 @@ function obj = updateAxis(obj,axIndex)
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
-        obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
-        obj.layout = setfield(obj.layout, "scene" + xsource, scene);
+        obj.layout.("xaxis" + xsource) = xaxis;
+        obj.layout.("scene" + xsource) = scene;
     end
 
     % update the layout field (do not overwrite source)
     if ysource == axIndex
-        obj.layout = setfield(obj.layout, "yaxis" + ysource, yaxis);
+        obj.layout.("yaxis" + ysource) = yaxis;
     end
 
     %-REVERT UNITS-%

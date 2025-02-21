@@ -206,8 +206,7 @@ function obj = updateBoxplot(obj, boxIndex)
     xaxis.showticklabels = true;
     xaxis.autorange = true;
 
-    %-set the layout axis field-%
-    obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
+    obj.layout.("xaxis" + xsource) = xaxis;
 
     %-REVERT UNITS-%
     text_child(1).FontUnits = fontunits;

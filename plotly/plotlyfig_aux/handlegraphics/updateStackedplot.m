@@ -76,17 +76,13 @@ function updateStackedplotAxis(obj, plotIndex)
 
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    %-SET X-AXIS-%
-
     [xaxis, xExpoFormat] = getAxis(obj, plotIndex, 'X');
-    obj.layout = setfield(obj.layout, 'xaxis1', xaxis{1});
-
-    %-SET Y-AXIS-%
+    obj.layout.xaxis1 = xaxis{1};
 
     [yaxis, yExpoFormat] = getAxis(obj, plotIndex, 'Y');
 
     for a = 1:length(yaxis)
-        obj.layout = setfield(obj.layout, sprintf('yaxis%d', a), yaxis{a});
+        obj.layout.(sprintf('yaxis%d', a)) = yaxis{a};
     end
 
     %-SET AXES ANNOTATIONS-%

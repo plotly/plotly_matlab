@@ -221,6 +221,5 @@ function updatePolaraxes(obj, plotIndex)
                 round(255*rAxis.Color));
     end
 
-    %-set polaraxes to layout-%
-    obj.layout = setfield(obj.layout, sprintf('polar%d', xsource+1), polarAxis);
+    obj.layout.(sprintf('polar%d', xsource+1)) = polarAxis;
 end

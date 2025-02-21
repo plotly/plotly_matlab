@@ -348,9 +348,7 @@ function setAnnotation(obj, axesStruct, spiderIndex)
         end
     end
 
-    %-set annotations to layout-%
-    obj.layout = setfield(obj.layout, 'annotations', annotations);
-
+    obj.layout.annotations = annotations;
     obj.PlotlyDefaults.anIndex = anIndex;
 end
 
@@ -460,9 +458,8 @@ function updateSpiderLayout(obj, spiderIndex)
     yaxis.showgrid = false;
     yaxis.showticklabels = false;
 
-    %-set axis-%
-    obj.layout = setfield(obj.layout, sprintf('xaxis%d', xSource), xaxis);
-    obj.layout = setfield(obj.layout, sprintf('yaxis%d', ySource), yaxis);
+    obj.layout.(sprintf('xaxis%d', xSource)) = xaxis;
+    obj.layout.(sprintf('yaxis%d', ySource)) = yaxis;
 end
 
 function setLegeng(obj, spiderIndex)

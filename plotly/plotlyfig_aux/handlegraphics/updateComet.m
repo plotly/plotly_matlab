@@ -222,7 +222,7 @@ function updateComet(obj,plotIndex)
         %-----------------------------------------------------------------%
 
         %-SET SCENE TO LAYOUT-%
-        obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
+        obj.layout.("scene" + xsource) = scene;
     end
 
     %-Add a temporary tag-%

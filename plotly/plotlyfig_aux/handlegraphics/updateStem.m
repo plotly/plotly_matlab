@@ -234,8 +234,7 @@ function obj = updateStem(obj, dataIndex)
         scene.yaxis.title = data.Parent.YLabel.String;
         scene.zaxis.title = data.Parent.ZLabel.String;
 
-        %-update scene-%
-        obj.layout = setfield(obj.layout, "scene" + xsource, scene);
+        obj.layout.("scene" + xsource) = scene;
     else
         yaxis.zeroline = true;
 
@@ -251,8 +250,7 @@ function obj = updateStem(obj, dataIndex)
         xaxis.title = data.Parent.XLabel.String;
         yaxis.title = data.Parent.YLabel.String;
 
-        %-update axis-%
-        obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
-        obj.layout = setfield(obj.layout, "yaxis" + ysource, yaxis);
+        obj.layout.("xaxis" + xsource) = xaxis;
+        obj.layout.("yaxis" + ysource) = yaxis;
     end
 end

@@ -195,7 +195,7 @@ function updateAnimatedLine(obj,plotIndex)
         scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
         %-SET SCENE TO LAYOUT-%
-        obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
+        obj.layout.("scene" + xsource) = scene;
     end
 
     %-Add a temporary tag-%

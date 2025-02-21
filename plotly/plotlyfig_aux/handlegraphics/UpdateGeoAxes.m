@@ -142,8 +142,8 @@ function UpdateGeoAxes(obj, geoIndex)
 
     %-set geo axes to layout-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        obj.layout = setfield(obj.layout, sprintf('geo%d', xsource+1), geoaxes);
+        obj.layout.(sprintf('geo%d', xsource+1)) = geoaxes;
     elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
-        obj.layout = setfield(obj.layout, sprintf('mapbox%d', xsource+1), geoaxes);
+        obj.layout.(sprintf('mapbox%d', xsource+1)) = geoaxes;
     end
 end

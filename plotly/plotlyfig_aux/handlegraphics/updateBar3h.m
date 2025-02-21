@@ -208,7 +208,7 @@ function obj = updateBar3h(obj, surfaceIndex)
     scene.zaxis.title = axis_data.ZLabel.String;
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
+    obj.layout.("scene" + xsource) = scene;
 end
 
 function bar_ = bar_data(position3d, size_)

@@ -92,11 +92,11 @@ function updateMainScatterAxis(obj, plotIndex)
 
     xaxis = getMainScatterAxis(plotData, 'X');
     xaxis.anchor = sprintf('y%d', xSource);
-    obj.layout = setfield(obj.layout, sprintf('xaxis%d',xSource), xaxis);
+    obj.layout.(sprintf('xaxis%d', xSource)) = xaxis;
 
     yaxis = getMainScatterAxis(plotData, 'Y');
     yaxis.anchor = sprintf('x%d', ySource);
-    obj.layout = setfield(obj.layout, sprintf('yaxis%d',ySource), yaxis);
+    obj.layout.(sprintf('yaxis%d', ySource)) = yaxis;
 end
 
 function ax = getMainScatterAxis(plotData, axName)
@@ -262,15 +262,13 @@ function updateXMarginalAxis(obj, plotIndex)
 
     xySource = obj.State.Figure.NumAxes + 1;
 
-    %-set x axis-%
     xaxis = getXMarginalAxis(plotData, 'X');
     xaxis.anchor = sprintf('y%d', xySource);
-    obj.layout = setfield(obj.layout, sprintf('xaxis%d', xySource), xaxis);
+    obj.layout.(sprintf('xaxis%d', xySource)) = xaxis;
 
-    %-set y axis-%
     yaxis = getXMarginalAxis(plotData, 'Y');
     yaxis.anchor = sprintf('x%d', xySource);
-    obj.layout = setfield(obj.layout, sprintf('yaxis%d', xySource), yaxis);
+    obj.layout.(sprintf('yaxis%d', xySource)) = yaxis;
 end
 
 function ax = getXMarginalAxis(plotData, axName)
@@ -308,23 +306,19 @@ function axisDomain = getXMarginalDomain(plotData, axName)
     end
 end
 
-
-
 function updateYMarginalAxis(obj, plotIndex)
     %-INITIALIZATIONS-%
     plotData = obj.State.Plot(plotIndex).Handle;
 
     xySource = obj.State.Figure.NumAxes + 2;
 
-    %-set x axis-%
     xaxis = getYMarginalAxis(plotData, 'X');
     xaxis.anchor = sprintf('y%d', xySource);
-    obj.layout = setfield(obj.layout, sprintf('xaxis%d',xySource), xaxis);
+    obj.layout.(sprintf('xaxis%d', xySource)) = xaxis;
 
-    %-set y axis-%
     yaxis = getYMarginalAxis(plotData, 'Y');
     yaxis.anchor = sprintf('x%d', xySource);
-    obj.layout = setfield(obj.layout, sprintf('yaxis%d',xySource), yaxis);
+    obj.layout.(sprintf('yaxis%d', xySource)) = yaxis;
 end
 
 function ax = getYMarginalAxis(plotData, axName)

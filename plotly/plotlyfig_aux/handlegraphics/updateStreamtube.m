@@ -124,7 +124,7 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     scene.camera.eye.z = zar + zfac*zar;
     end
 
-    obj.layout = setfield(obj.layout,['scene'], scene);
+    obj.layout.scene = scene;
 
     %-image colorscale-%
     cmap = figure_data.Colormap;

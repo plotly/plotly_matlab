@@ -139,7 +139,7 @@ function updateScene(obj, dataIndex)
     end
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
+    obj.layout.("scene" + xsource) = scene;
 end
 
 function ax = getSceneAxis(axisData, axName)

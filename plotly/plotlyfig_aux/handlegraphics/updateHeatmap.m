@@ -71,8 +71,7 @@ function obj = updateHeatmap(obj,heatIndex)
         end
     end
 
-    %-set annotations to layout-%
-    obj.layout = setfield(obj.layout, 'annotations', ann);
+    obj.layout.annotations = ann;
 
     %-set background color if any NaN in cdata-%
     if any(isnan(cdata(:)))

@@ -180,9 +180,9 @@ function updateGeobubble(obj,geoIndex)
 
     %-set geo geoaxes to layout-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        obj.layout = setfield(obj.layout, sprintf('geo%d', xSource+1), geoaxes);
+        obj.layout.(sprintf('geo%d', xSource+1)) = geoaxes;
     elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
-        obj.layout = setfield(obj.layout, sprintf('mapbox%d', xSource+1), geoaxes);
+        obj.layout.(sprintf('mapbox%d', xSource+1)) = geoaxes;
     end
 
     %-remove any annotation text-%

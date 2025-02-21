@@ -117,8 +117,8 @@ function updateWordcloud(obj,scatterIndex)
     xaxis.domain = min([xo xo + w],1);
     yaxis.domain = min([yo yo + h],1);
 
-    obj.layout = setfield(obj.layout, sprintf('xaxis%d',xsource), xaxis);
-    obj.layout = setfield(obj.layout, sprintf('yaxis%d',ysource), yaxis);
+    obj.layout.(sprintf('xaxis%d',xsource)) = xaxis;
+    obj.layout.(sprintf('yaxis%d',ysource)) = yaxis;
 
     obj.layout.annotations{1}.xref = 'paper';
     obj.layout.annotations{1}.yref = 'paper';

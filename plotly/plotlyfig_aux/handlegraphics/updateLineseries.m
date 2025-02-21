@@ -224,7 +224,7 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
+    obj.layout.("scene" + xsource) = scene;
 end
 
 function updateDefaultPolaraxes(obj, plotIndex)
@@ -307,7 +307,5 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
             rLabel.FontName);
 
-    %-set Polar Axes to layout-%
-    obj.layout = setfield(obj.layout, sprintf('polar%d', xSource+1), ...
-            polarAxis);
+    obj.layout.(sprintf('polar%d', xSource+1)) = polarAxis;
 end

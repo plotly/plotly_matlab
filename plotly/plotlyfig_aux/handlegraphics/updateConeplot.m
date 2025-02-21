@@ -133,6 +133,6 @@ function obj = updateConeplot(obj, coneIndex)
     end
 
     %-set scene to layout-%
-    obj.layout = setfield(obj.layout,"scene" + xsource, scene);
+    obj.layout.("scene" + xsource) = scene;
     obj.data{coneIndex}.scene = "scene" + xsource;
 end

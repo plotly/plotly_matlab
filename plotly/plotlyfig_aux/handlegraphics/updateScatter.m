@@ -198,8 +198,7 @@ function updateScene(obj, dataIndex)
         scene.zaxis.showgrid = false;
     end
 
-    %-SET SCENE TO LAYOUT-%
-    obj.layout = setfield(obj.layout, sprintf("scene%d", xSource), scene);
+    obj.layout.(sprintf("scene%d", xSource)) = scene;
 end
 
 function updateCategoricalAxis(obj, plotIndex)
