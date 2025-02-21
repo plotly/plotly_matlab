@@ -45,13 +45,9 @@ function obj = updateImage(obj, imageIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{imageIndex}.xaxis = "x" + xsource;
     obj.data{imageIndex}.yaxis = "y" + ysource;
     obj.data{imageIndex}.type = 'heatmap';
-
-    %---------------------------------------------------------------------%
 
     %-image x-%
     x = image_data.XData;
@@ -63,8 +59,6 @@ function obj = updateImage(obj, imageIndex)
         obj.data{imageIndex}.x = image_data.XData;
     end
 
-    %---------------------------------------------------------------------%
-
     %-image y-%
     y = image_data.YData;
 
@@ -73,8 +67,6 @@ function obj = updateImage(obj, imageIndex)
     else
         obj.data{imageIndex}.y = y;
     end
-
-    %---------------------------------------------------------------------%
 
     %-image z-%
     isrgbimg = (size(image_data.CData,3) > 1);
@@ -86,8 +78,6 @@ function obj = updateImage(obj, imageIndex)
         obj.data{imageIndex}.z = cdata;
     end
 
-    %---------------------------------------------------------------------%
-
     %-image name-%
     try
         obj.data{imageIndex}.name = image_data.DisplayName;
@@ -95,15 +85,11 @@ function obj = updateImage(obj, imageIndex)
         obj.data{imageIndex}.name = '';
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{imageIndex}.opacity = image_data.AlphaData;
     obj.data{imageIndex}.visible = strcmp(image_data.Visible, 'on');
     obj.data{imageIndex}.showscale = false;
     obj.data{imageIndex}.zauto = false;
     obj.data{imageIndex}.zmin = axis_data.CLim(1);
-
-    %---------------------------------------------------------------------%
 
     %-image zmax-%
     if ~strcmpi(image_data.CDataMapping, 'direct')
@@ -111,8 +97,6 @@ function obj = updateImage(obj, imageIndex)
     else
         obj.data{imageIndex}.zmax = 255;
     end
-
-    %---------------------------------------------------------------------%
 
     %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
 
@@ -129,8 +113,6 @@ function obj = updateImage(obj, imageIndex)
         obj.data{imageIndex}.colorscale{c} = ...
                 {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
-
-    %---------------------------------------------------------------------%
 
     %-image showlegend-%
     try

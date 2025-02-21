@@ -68,8 +68,6 @@ function updateScattergroup(obj,scatterIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{scatterIndex}.xaxis = "x" + xsource;
     obj.data{scatterIndex}.yaxis = "y" + ysource;
 
@@ -82,8 +80,6 @@ function updateScattergroup(obj,scatterIndex)
     obj.data{scatterIndex}.mode = 'markers';
     obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
     obj.data{scatterIndex}.name = scatter_data.DisplayName;
-
-    %---------------------------------------------------------------------%
 
     %-scatter patch data-%
     for m = 1:length(scatter_child_data)

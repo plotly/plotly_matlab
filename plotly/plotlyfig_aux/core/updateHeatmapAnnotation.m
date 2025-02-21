@@ -39,7 +39,6 @@ function obj = updateHeatmapAnnotation(obj,anIndex)
     %-get heatmap title name-%
     title_name = obj.State.Text(anIndex).Handle;
 
-    %-show arrow-%
     obj.layout.annotations{axIndex}.showarrow = false;
 
     %-anchor title to paper-%

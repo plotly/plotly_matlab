@@ -56,12 +56,8 @@ function updateArea(obj,areaIndex)
     % visible: ...[DONE]
     % type: ...[DONE]
 
-    %---------------------------------------------------------------------%
-
     %-store original area handle-%
     area_data = obj.State.Plot(areaIndex).Handle;
-
-    %---------------------------------------------------------------------%
 
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
@@ -78,14 +74,10 @@ function updateArea(obj,areaIndex)
         [xsource, ysource] = findSourceAxis(obj,axIndex);
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{areaIndex}.xaxis = "x" + xsource;
     obj.data{areaIndex}.yaxis = "y" + ysource;
     obj.data{areaIndex}.type = "scatter";
     obj.data{areaIndex}.x = area_data.XData;
-
-    %---------------------------------------------------------------------%
 
     %-area y-%
     prevAreaIndex = find(cellfun(@(x) isfield(x,"fill") ...
@@ -97,12 +89,8 @@ function updateArea(obj,areaIndex)
         obj.data{areaIndex}.y = area_data.YData;
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{areaIndex}.name = area_data.DisplayName;
     obj.data{areaIndex}.visible = strcmp(area_data.Visible, "on");
-
-    %---------------------------------------------------------------------%
 
     %-area fill-%
     if ~isempty(prevAreaIndex)
@@ -111,8 +99,6 @@ function updateArea(obj,areaIndex)
         obj.data{areaIndex}.fill = "tozeroy";
     end
 
-    %---------------------------------------------------------------------%
-
     %-AREA MODE-%
     if isprop(area_data, "LineStyle") ...
             && isequal(area_data.LineStyle, "none")
@@ -120,8 +106,6 @@ function updateArea(obj,areaIndex)
     else
         obj.data{areaIndex}.mode = "lines";
     end
-
-    %---------------------------------------------------------------------%
 
     obj.data{areaIndex}.line = extractAreaLine(area_data);
     fill = extractAreaFace(area_data);

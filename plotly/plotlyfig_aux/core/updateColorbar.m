@@ -45,8 +45,6 @@ function obj = updateColorbar(obj,colorbarIndex)
     colorbarUnits = colorbarData.Units;
     obj.State.Colorbar(colorbarIndex).Handle.Units = 'normalized';
 
-    %---------------------------------------------------------------------%
-
     %-variable initialization-%
     if isHG2
         outlineColor = [0 0 0];
@@ -66,8 +64,6 @@ function obj = updateColorbar(obj,colorbarIndex)
             * obj.layout.width, colorbarData.TickLength(1) ...
             * colorbarData.Position(4) * obj.layout.height));
 
-    %---------------------------------------------------------------------%
-
     %-colorbar placement-%
     colorbar.x = colorbarData.Position(1);
     colorbar.y = colorbarData.Position(2);
@@ -85,8 +81,6 @@ function obj = updateColorbar(obj,colorbarIndex)
     colorbar.thicknessmode = 'fraction';
     colorbar.lenmode = 'fraction';
 
-    %---------------------------------------------------------------------%
-
     %-tick settings-%
     colorbar.tickcolor = outlineColor;
     colorbar.tickfont.color = outlineColor;
@@ -94,8 +88,6 @@ function obj = updateColorbar(obj,colorbarIndex)
     colorbar.tickfont.family = matlab2plotlyfont(colorbarData.FontName);
     colorbar.ticklen = tickLength;
     colorbar.tickwidth = lineWidth;
-
-    %---------------------------------------------------------------------%
 
     %-get colorbar title and labels-%
     colorbarTitle = colorbarData.Label;
@@ -113,8 +105,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         colorbarYLabelData = colorbarYLabel;
     end
 
-    %---------------------------------------------------------------------%
-
     %-STANDARDIZE UNITS FOR TITLE-%
     titleunits = colorbarTitleData.Units;
     titlefontunits = colorbarTitleData.FontUnits;
@@ -130,8 +120,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         colorbarXLabel.Units = 'data';
         colorbarXLabel.FontUnits = 'points';
     end
-
-    %---------------------------------------------------------------------%
 
     %-colorbar title settings-%
     isTitle = true;
@@ -180,8 +168,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         colorbar.titlefont.family = titleFontFamily;
     end
 
-    %---------------------------------------------------------------------%
-
     %-REVERT UNITS FOR TITLE-%
     colorbarTitle.Units = titleunits;
     colorbarTitle.FontUnits = titlefontunits;
@@ -193,9 +179,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         colorbarXLabel.FontUnits = xlabelfontunits;
     end
 
-    %---------------------------------------------------------------------%
-
-    %-tick labels-%
     tickValues = colorbarData.Ticks;
     tickLabels = colorbarData.TickLabels;
     showTickLabels = true;
@@ -232,8 +215,6 @@ function obj = updateColorbar(obj,colorbarIndex)
         colorbar = setTicksNotHG2(colorbar, colorbarData);
     end
 
-    %---------------------------------------------------------------------%
-
     %-colorbar bg-color-%
     if ~isHG2
         if ~ischar(colorbarData.Color)
@@ -244,8 +225,6 @@ function obj = updateColorbar(obj,colorbarIndex)
 
         obj.layout.plot_bgcolor = sprintf("rgb(%d,%d,%d)", bgColor);
     end
-
-    %---------------------------------------------------------------------%
 
     %-ASSOCIATED DATA-%
     if isfield(colorbarData.UserData, 'dataref')
@@ -258,8 +237,6 @@ function obj = updateColorbar(obj,colorbarIndex)
     obj.data{colorbarDataIndex}.colorbar = colorbar;
     obj.data{colorbarDataIndex}.showscale = true;
 
-    %---------------------------------------------------------------------%
-
     %-REVERT UNITS-%
     obj.State.Colorbar(colorbarIndex).Handle.Units = colorbarUnits;
 end
@@ -269,7 +246,6 @@ function colorbar = setTicksNotHG2(colorbar, colorbarData)
 
     if verticalOrientation
         if isempty(colorbarData.YTick)
-            %-show tick labels-%
             colorbar.ticks = '';
             colorbar.showticklabels = false;
         else
@@ -282,22 +258,16 @@ function colorbar = setTicksNotHG2(colorbar, colorbarData)
             end
 
             if strcmp(colorbarData.YTickLabelMode, 'auto')
-                %-autotick-%
                 colorbar.autotick = true;
-                %-numticks-%
                 % nticks = max ticks (so + 1)
                 colorbar.nticks = length(colorbarData.YTick) + 1;
             else
-                %-show tick labels-%
                 if isempty(colorbarData.YTickLabel)
                     colorbar.showticklabels = false;
                 else
-                    %-autotick-%
                     colorbar.autotick = false;
-                    %-tick0-%
                     colorbar.tick0 = ...
                             str2double(colorbarData.YTickLabel(1,:));
-                    %-dtick-%
                     colorbar.dtick = ...
                             str2double(colorbarData.YTickLabel(2,:)) ...
                             - str2double(colorbarData.YTickLabel(1,:));
@@ -306,7 +276,6 @@ function colorbar = setTicksNotHG2(colorbar, colorbarData)
         end
     else
         if isempty(colorbarData.XTick)
-            %-show tick labels-%
             colorbar.ticks = '';
             colorbar.showticklabels = false;
         else
@@ -319,21 +288,15 @@ function colorbar = setTicksNotHG2(colorbar, colorbarData)
             end
 
             if strcmp(colorbarData.XTickLabelMode, 'auto')
-                %-autotick-%
                 colorbar.autotick = true;
-                %-numticks-%
                 colorbar.nticks = length(colorbarData.XTick) + 1;
             else
-                %-show tick labels-%
                 if isempty(colorbarData.XTickLabel)
                     colorbar.showticklabels = false;
                 else
-                    %-autotick-%
                     colorbar.autotick = false;
-                    %-tick0-%
                     colorbar.tick0 = ...
                             str2double(colorbarData.XTickLabel(1,:));
-                    %-dtick-%
                     colorbar.dtick = ...
                             str2double(colorbarData.XTickLabel(2,:)) ...
                             - str2double(colorbarData.XTickLabel(1,:));

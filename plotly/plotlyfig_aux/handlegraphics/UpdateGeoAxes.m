@@ -8,8 +8,6 @@ function UpdateGeoAxes(obj, geoIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %---------------------------------------------------------------------%
-
     %-set domain geo plot-%
     xo = geoData.Position(1);
     yo = geoData.Position(2);
@@ -19,14 +17,10 @@ function UpdateGeoAxes(obj, geoIndex)
     geoaxes.domain.x = min([xo xo + w],1);
     geoaxes.domain.y = min([yo yo + h],1);
 
-    %---------------------------------------------------------------------%
-
     %-setting projection-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.projection.type = 'mercator';
     end
-
-    %---------------------------------------------------------------------%
 
     %-setting basemap-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -45,8 +39,6 @@ function UpdateGeoAxes(obj, geoIndex)
         geoaxes.showland = true;
     end
 
-    %---------------------------------------------------------------------%
-
     %-setting latitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         latTick = geoData.LatitudeAxis.TickValues;
@@ -62,8 +54,6 @@ function UpdateGeoAxes(obj, geoIndex)
                     [round(255*geoData.GridColor) geoData.GridAlpha]);
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-setting longitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -81,20 +71,14 @@ function UpdateGeoAxes(obj, geoIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-set map center-%
     geoaxes.center.lat = geoData.MapCenter(1);
     geoaxes.center.lon = geoData.MapCenter(2);
-
-    %---------------------------------------------------------------------%
 
     %-set better resolution-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.resolution = '50';
     end
-
-    %---------------------------------------------------------------------%
 
     %-set mapbox style-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
@@ -105,8 +89,6 @@ function UpdateGeoAxes(obj, geoIndex)
             geoaxes.style = 'stamen-terrain';
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-TEXT SETTINGS-%
     isText = false;
@@ -157,8 +139,6 @@ function UpdateGeoAxes(obj, geoIndex)
             obj.data{geoIndex}.subplot = obj.data{geoIndex-1}.subplot;
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-set geo axes to layout-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')

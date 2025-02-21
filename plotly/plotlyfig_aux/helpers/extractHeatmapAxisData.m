@@ -3,15 +3,11 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     %   axis_data is the data extracted from the figure, axisName take the
     %   values 'x' 'y' or 'z'
 
-    %---------------------------------------------------------------------%
-
     axis.zeroline = false;
     axis.autorange = false;
     axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
     axis.tickfont.size = axis_data.FontSize;
     axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
-
-    %---------------------------------------------------------------------%
 
     tl = axis_data.(axisName + "Data");
     tl = length(tl);
@@ -24,8 +20,6 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
 
     axis.ticklen = 0.1; %ticklength;
 
-    %---------------------------------------------------------------------%
-
     axiscol = 'rgb(150, 150, 150)';
 
     axis.linecolor = axiscol;
@@ -33,11 +27,7 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     axis.tickfont.color = 'black';
     axis.gridcolor = 'rgb(0, 0, 0)';
 
-    %---------------------------------------------------------------------%
-
     axis.showgrid = true;
-
-    %---------------------------------------------------------------------%
 
     lw = 0.5;
     linewidth = max(1,lw*obj.PlotlyDefaults.AxisLineIncreaseFactor);
@@ -45,8 +35,6 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     axis.linewidth = linewidth;
     axis.tickwidth = linewidth;
     axis.gridwidth = linewidth*1.2;
-
-    %---------------------------------------------------------------------%
 
     %-setting ticks-%
     axis.ticks = 'inside';
@@ -72,8 +60,6 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     axis.tickfont.size = axis_data.FontSize*1.15;
     axis.titlefont.family = matlab2plotlyfont(axis_data.FontName);
     axis.tickfont.family = matlab2plotlyfont(axis_data.FontName);
-
-    %---------------------------------------------------------------------%
 
     if strcmp(axis_data.Visible,'on')
         axis.showline = true;

@@ -15,17 +15,11 @@ function obj = updateBar3(obj, surfaceIndex)
     %-GET SCENE-%
     scene = obj.layout.("scene" + xsource);
 
-    %---------------------------------------------------------------------%
-
     %-associate scene-%
     obj.data{surfaceIndex}.scene = sprintf('scene%d', xsource);
 
-    %---------------------------------------------------------------------%
-
     %-surface type-%
     obj.data{surfaceIndex}.type = 'mesh3d';
-
-    %---------------------------------------------------------------------%
 
     %-FORMAT DATA-%
     xdata = bar_data.XData;
@@ -49,13 +43,9 @@ function obj = updateBar3(obj, surfaceIndex)
     %-parse offsets-%
     offsets = zdata(1:6:end, 2)';
 
-    %---------------------------------------------------------------------%
-
     %-get the values to use plotly's mesh3D-%
     bargap = diff(yedges(1:2)) - diff(ydata(2:3));
     [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap);
-
-    %---------------------------------------------------------------------%
 
     %-reformat Z according to offsets-%
     m = 1;
@@ -67,8 +57,6 @@ function obj = updateBar3(obj, surfaceIndex)
         m = m + 1;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set mesh3d data-%
     obj.data{surfaceIndex}.x = X;
     obj.data{surfaceIndex}.y = Y;
@@ -76,8 +64,6 @@ function obj = updateBar3(obj, surfaceIndex)
     obj.data{surfaceIndex}.i = int16(I-1);
     obj.data{surfaceIndex}.j = int16(J-1);
     obj.data{surfaceIndex}.k = int16(K-1);
-
-    %---------------------------------------------------------------------%
 
     %-coloring-%
     cmap = figure_data.Colormap;
@@ -110,15 +96,11 @@ function obj = updateBar3(obj, surfaceIndex)
 
     obj.data{surfaceIndex}.color = col;
 
-    %---------------------------------------------------------------------%
-
     %-some settings-%
     obj.data{surfaceIndex}.contour.show = true;
     obj.data{surfaceIndex}.contour.width = 6;
     obj.data{surfaceIndex}.contour.color= "rgb(0,0,0)";
     obj.data{surfaceIndex}.flatshading = false;
-
-    %---------------------------------------------------------------------%
 
     %-lighting settings-%
     obj.data{surfaceIndex}.lighting.diffuse = 0.8;
@@ -133,8 +115,6 @@ function obj = updateBar3(obj, surfaceIndex)
     obj.data{surfaceIndex}.lightposition.y = 0;
     obj.data{surfaceIndex}.lightposition.z = 0;
 
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.name = bar_data.DisplayName;
     obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible, 'on');
 
@@ -148,11 +128,7 @@ function obj = updateBar3(obj, surfaceIndex)
     end
     obj.data{surfaceIndex}.showlegend = showleg;
 
-    %---------------------------------------------------------------------%
-
     %-SETTING SCENE-%
-
-    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     ar = obj.PlotOptions.AspectRatio;
@@ -176,8 +152,6 @@ function obj = updateBar3(obj, surfaceIndex)
     scene.aspectratio.y = yar;
     scene.aspectratio.z = zar;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -193,8 +167,6 @@ function obj = updateBar3(obj, surfaceIndex)
         scene.camera.eye.y = yar - 2;
         scene.camera.eye.z = zar + 0.5;
     end
-
-    %---------------------------------------------------------------------%
 
     %-axis configuration-%
     scene.xaxis.range = axis_data.XLim(end:-1:1);
@@ -229,8 +201,6 @@ function obj = updateBar3(obj, surfaceIndex)
     scene.xaxis.title = axis_data.XLabel.String;
     scene.yaxis.title = axis_data.YLabel.String;
     scene.zaxis.title = axis_data.ZLabel.String;
-
-    %---------------------------------------------------------------------%
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);

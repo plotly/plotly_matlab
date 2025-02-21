@@ -31,8 +31,6 @@ function p = fig2plotly(varargin)
 
     % For full documentation and examples, see https://plot.ly/matlab
 
-    %---------------------------------------------------------------------%
-
     %--FIGURE INITIALIZATION--%
     if nargin == 0
         varargin{1} = gcf;

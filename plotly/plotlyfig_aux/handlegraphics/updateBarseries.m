@@ -50,8 +50,6 @@ function obj = updateBarseries(obj,barIndex)
     % smoothing: ...[NA]
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
 
@@ -67,8 +65,6 @@ function obj = updateBarseries(obj,barIndex)
     %-AXIS DATA-%
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
-
-    %---------------------------------------------------------------------%
 
     obj.data{barIndex}.xaxis = "x" + xsource;
     obj.data{barIndex}.yaxis = "y" + ysource;
@@ -86,8 +82,6 @@ function obj = updateBarseries(obj,barIndex)
     obj.layout.bargroupgap = 1-bar_data.BarWidth;
     obj.layout.bargap = obj.PlotlyDefaults.Bargap;
 
-    %---------------------------------------------------------------------%
-
     %-bar orientation-%
     switch bar_data.Horizontal
         case 'off'
@@ -99,8 +93,6 @@ function obj = updateBarseries(obj,barIndex)
             obj.data{barIndex}.x = bar_data.YData;
             obj.data{barIndex}.y = bar_data.XData;
     end
-
-    %---------------------------------------------------------------------%
 
     %-bar showlegend-%
     leg = bar_data.Annotation;
@@ -115,14 +107,10 @@ function obj = updateBarseries(obj,barIndex)
 
     obj.data{barIndex}.showlegend = showleg;
 
-    %---------------------------------------------------------------------%
-
     %-bar opacity-%
     if ~ischar(bar_child_data.FaceAlpha)
         obj.data{barIndex}.opacity = bar_child_data.FaceAlpha;
     end
-
-    %---------------------------------------------------------------------%
 
     %-bar marker-%
     obj.data{barIndex}.marker = extractPatchFace(bar_child_data);

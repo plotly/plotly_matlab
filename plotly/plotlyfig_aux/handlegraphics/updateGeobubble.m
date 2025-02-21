@@ -112,14 +112,10 @@ function updateGeobubble(obj,geoIndex)
     geoaxes.domain.x = min([xo xo + w],1);
     geoaxes.domain.y = min([yo yo + h],1);
 
-    %---------------------------------------------------------------------%
-
     %-setting projection-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.projection.type = 'mercator';
     end
-
-    %---------------------------------------------------------------------%
 
     %-setting basemap-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -140,8 +136,6 @@ function updateGeobubble(obj,geoIndex)
         geoaxes.showland = true;
     end
 
-    %---------------------------------------------------------------------%
-
     %-setting latitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.lataxis.range = geoData.LatitudeLimits;
@@ -152,8 +146,6 @@ function updateGeobubble(obj,geoIndex)
             geoaxes.lataxis.gridcolor = 'rgba(38.250000,38.250000,38.250000,0.150000)';
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-setting longitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -166,20 +158,14 @@ function updateGeobubble(obj,geoIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-set map center-%
     geoaxes.center.lat = geoData.MapCenter(1);
     geoaxes.center.lon = geoData.MapCenter(2);
-
-    %---------------------------------------------------------------------%
 
     %-set better resolution-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geo.resolution = '50';
     end
-
-    %---------------------------------------------------------------------%
 
     %-set mapbox style-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
@@ -192,8 +178,6 @@ function updateGeobubble(obj,geoIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-set geo geoaxes to layout-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         obj.layout = setfield(obj.layout, sprintf('geo%d', xSource+1), geoaxes);
@@ -201,14 +185,10 @@ function updateGeobubble(obj,geoIndex)
         obj.layout = setfield(obj.layout, sprintf('mapbox%d', xSource+1), geoaxes);
     end
 
-    %---------------------------------------------------------------------%
-
     %-remove any annotation text-%
     istitle = length(geoData.Title) > 0;
     obj.layout.annotations{1}.text = ' ';
     obj.layout.annotations{1}.showarrow = false;
-
-    %---------------------------------------------------------------------%
 
     %-layout title-%
     if istitle

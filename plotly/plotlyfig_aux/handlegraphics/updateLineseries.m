@@ -42,8 +42,6 @@ function updateLineseries(obj, plotIndex)
         zData = plotData.ZData;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     if isPolar
         obj.data{plotIndex}.type = 'scatterpolar';
@@ -63,8 +61,6 @@ function updateLineseries(obj, plotIndex)
     obj.data{plotIndex}.name = plotData.DisplayName;
     obj.data{plotIndex}.mode = getScatterMode(plotData);
 
-    %---------------------------------------------------------------------%
-
     %-set trace data-%
     if isPolar
         obj.data{plotIndex}.r = rData;
@@ -83,8 +79,6 @@ function updateLineseries(obj, plotIndex)
             obj.PlotOptions.is3d = true;
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-set trace line-%
     obj.data{plotIndex}.line = extractLineLine(plotData);
@@ -119,8 +113,6 @@ function updateScene(obj, dataIndex)
     normFac = abs(min(cameraEye));
     normFac = normFac / (max(aspectRatio)/min(aspectRatio) + cameraOffset);
 
-    %---------------------------------------------------------------------%
-
     %-aspect ratio-%
     scene.aspectratio.x = 1.0*aspectRatio(1);
     scene.aspectratio.y = 1.0*aspectRatio(2);
@@ -135,8 +127,6 @@ function updateScene(obj, dataIndex)
     scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
-
-    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
     scene.xaxis.range = axisData.XLim;
@@ -235,8 +225,6 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.YGrid, 'off'), scene.yaxis.showgrid = false; end
     if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
 
-    %---------------------------------------------------------------------%
-
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
 end
@@ -251,8 +239,6 @@ function updateDefaultPolaraxes(obj, plotIndex)
     thetaAxis = axisData.XAxis;
     rAxis = axisData.YAxis;
 
-    %---------------------------------------------------------------------%
-
     %-set domain plot-%
     xo = axisData.Position(1);
     yo = axisData.Position(2);
@@ -264,8 +250,6 @@ function updateDefaultPolaraxes(obj, plotIndex)
 
     tickValues = rAxis.TickValues;
     tickValues = tickValues(find(tickValues==0) + 1 : end);
-
-    %---------------------------------------------------------------------%
 
     %-SET ANGULAR AXIS-%
 
@@ -298,8 +282,6 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
             thetaLabel.FontName);
 
-    %---------------------------------------------------------------------%
-
     %-SET RADIAL AXIS-%
 
     polarAxis.radialaxis.ticklen = 0;
@@ -326,8 +308,6 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.radialaxis.title.font.color = getStringColor(255*rLabel.Color);
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
             rLabel.FontName);
-
-    %---------------------------------------------------------------------%
 
     %-set Polar Axes to layout-%
     obj.layout = setfield(obj.layout, sprintf('polar%d', xSource+1), ...

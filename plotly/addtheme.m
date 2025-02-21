@@ -26,8 +26,6 @@ function f = addtheme(f, theme)
         throw(ME)
     end
 
-    %---------------------------------------------------------------------%
-
     %-add theme to figure-%
 
     fname = sprintf('%s/%s.json', themePath, theme);

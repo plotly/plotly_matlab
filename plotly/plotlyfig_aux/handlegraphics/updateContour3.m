@@ -18,25 +18,17 @@ function obj = updateContour3(obj,contourIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     %-contour xaxis and yaxis-%
     obj.data{contourIndex}.xaxis = "x" + xsource;
     obj.data{contourIndex}.yaxis = "y" + ysource;
 
-    %---------------------------------------------------------------------%
-
     %-contour name-%
     obj.data{contourIndex}.name = contour_data.DisplayName;
-
-    %---------------------------------------------------------------------%
 
     %-setting the plot-%
     xdata = contour_data.XData;
     ydata = contour_data.YData;
     zdata = contour_data.ZData;
-
-    %---------------------------------------------------------------------%
 
     obj.data{contourIndex}.type = 'surface';
 
@@ -47,8 +39,6 @@ function obj = updateContour3(obj,contourIndex)
     obj.data{contourIndex}.y = ydata;
 
     obj.data{contourIndex}.z = zdata;
-
-    %---------------------------------------------------------------------%
 
     %-setting for contour lines z-direction-%
     if length(contour_data.LevelList) > 1
@@ -69,8 +59,6 @@ function obj = updateContour3(obj,contourIndex)
     obj.data{contourIndex}.contours.z.width = 2*contour_data.LineWidth;
     obj.data{contourIndex}.hidesurface = true;
 
-    %---------------------------------------------------------------------%
-
     %-colorscale-%
     colormap = figure_data.Colormap;
 
@@ -79,8 +67,6 @@ function obj = updateContour3(obj,contourIndex)
         obj.data{contourIndex}.colorscale{c} = ...
                 {(c-1)/(size(colormap,1)-1), sprintf("rgb(%d,%d,%d)", col)};
     end
-
-    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     ar = obj.PlotOptions.AspectRatio;
@@ -104,8 +90,6 @@ function obj = updateContour3(obj,contourIndex)
     obj.layout.scene.aspectratio.y = yar;
     obj.layout.scene.aspectratio.z = zar;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -126,14 +110,10 @@ function obj = updateContour3(obj,contourIndex)
         obj.layout.scene.camera.eye.z = zar + zfac*zar;
     end
 
-    %---------------------------------------------------------------------%
-
     %-zerolines hidden-%
     obj.layout.scene.xaxis.zeroline = false;
     obj.layout.scene.yaxis.zeroline = false;
     obj.layout.scene.zaxis.zeroline = false;
-
-    %---------------------------------------------------------------------%
 
     obj.data{contourIndex}.visible = strcmp(contour_data.Visible, 'on');
     obj.data{contourIndex}.showscale = false;

@@ -37,8 +37,6 @@ function obj = updateFigure(obj)
     %-FIGURE DATA-%
     figure_data = obj.State.Figure.Handle;
 
-    %---------------------------------------------------------------------%
-
     obj.layout.autosize = false;
     obj.layout.margin.pad = obj.PlotlyDefaults.MarginPad;
 
@@ -52,8 +50,6 @@ function obj = updateFigure(obj)
     obj.layout.margin.r = 0;
     obj.layout.margin.b = 0;
     obj.layout.margin.t = 0;
-
-    %---------------------------------------------------------------------%
 
     if obj.PlotOptions.AxisEqual
         wh = min(figure_data.Position(3:4));

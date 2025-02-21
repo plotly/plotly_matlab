@@ -19,13 +19,9 @@ function obj = updateFmesh(obj, surfaceIndex)
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
     contourIndex = obj.PlotOptions.nPlots;
 
-    %---------------------------------------------------------------------%
-
     %-associate scene-%
     obj.data{surfaceIndex}.scene = sprintf('scene%d', xsource);
     obj.data{contourIndex}.scene = sprintf('scene%d', xsource);
-
-    %---------------------------------------------------------------------%
 
     %-surface type for face color-%
     obj.data{surfaceIndex}.type = 'surface';
@@ -33,8 +29,6 @@ function obj = updateFmesh(obj, surfaceIndex)
     %-scatter3d type for contour mesh lines-%
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
-
-    %---------------------------------------------------------------------%
 
     %-get plot data-%
     meshDensity = meshData.MeshDensity;
@@ -59,25 +53,17 @@ function obj = updateFmesh(obj, surfaceIndex)
     yDataContour = [yDataContour; NaN(1, size(yDataContour, 2))];
     zDataContour = [zDataContour; NaN(1, size(zDataContour, 2))];
 
-    %---------------------------------------------------------------------%
-
     %-set data on surface-%
     obj.data{surfaceIndex}.x = xDataSurface;
     obj.data{surfaceIndex}.y = yDataSurface;
     obj.data{surfaceIndex}.z = zDataSurface;
-
-    %---------------------------------------------------------------------%
 
     %-set data on scatter3d-%
     obj.data{contourIndex}.x = xDataContour(:);
     obj.data{contourIndex}.y = yDataContour(:);
     obj.data{contourIndex}.z = zDataContour(:);
 
-    %---------------------------------------------------------------------%
-
     %-COLORING-%
-
-    %---------------------------------------------------------------------%
 
     %-get colormap-%
     cMap = figureData.Colormap;
@@ -90,8 +76,6 @@ function obj = updateFmesh(obj, surfaceIndex)
             sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :))), ...
         };
     end
-
-    %---------------------------------------------------------------------%
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
         cDataContour = sprintf("rgb(%d,%d,%d)", ...
@@ -105,8 +89,6 @@ function obj = updateFmesh(obj, surfaceIndex)
 
     %-set edge color-%
     obj.data{contourIndex}.line.color = cDataContour;
-
-    %---------------------------------------------------------------------%
 
     %-get face color-%
     if isnumeric(meshData.FaceColor)
@@ -170,8 +152,6 @@ function obj = updateFmesh(obj, surfaceIndex)
     %-opacity-%
     obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
 
-    %---------------------------------------------------------------------%
-
     %-line style-%
 
     obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
@@ -186,8 +166,6 @@ function obj = updateFmesh(obj, surfaceIndex)
         case ':'
             obj.data{contourIndex}.line.dash = 'dot';
     end
-
-    %---------------------------------------------------------------------%
 
     %-show contours-%
 
@@ -213,11 +191,7 @@ function obj = updateFmesh(obj, surfaceIndex)
         obj.data{projectionIndex}.contours.z.project.z = true;
     end
 
-    %---------------------------------------------------------------------%
-
     %-SCENE CONFIGURATION-%
-
-    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     asr = obj.PlotOptions.AspectRatio;
@@ -243,8 +217,6 @@ function obj = updateFmesh(obj, surfaceIndex)
     scene.aspectratio.y = 1.0*xyar;
     scene.aspectratio.z = zar;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -264,8 +236,6 @@ function obj = updateFmesh(obj, surfaceIndex)
         scene.camera.eye.y = yey + yfac*yey;
         scene.camera.eye.z = zar + zfac*zar;
     end
-
-    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
 
@@ -310,12 +280,8 @@ function obj = updateFmesh(obj, surfaceIndex)
     scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
-    %---------------------------------------------------------------------%
-
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
-
-    %---------------------------------------------------------------------%
 
     obj.data{surfaceIndex}.name = meshData.DisplayName;
     obj.data{contourIndex}.name = meshData.DisplayName;

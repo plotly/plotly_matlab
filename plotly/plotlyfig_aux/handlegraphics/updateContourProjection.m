@@ -18,13 +18,9 @@ function obj = updateContourProjection(obj,contourIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{contourIndex}.xaxis = "x" + xsource;
     obj.data{contourIndex}.yaxis = "y" + ysource;
     obj.data{contourIndex}.name = contour_data.DisplayName;
-
-    %---------------------------------------------------------------------%
 
     %-setting the plot-%
     xdata = contour_data.XData;
@@ -54,12 +50,8 @@ function obj = updateContourProjection(obj,contourIndex)
     obj.data{contourIndex}.contours.z.project.y = true;
     obj.data{contourIndex}.contours.z.project.z = true;
 
-    %---------------------------------------------------------------------%
-
     obj.data{contourIndex}.visible = strcmp(contour_data.Visible,'on');
     obj.data{contourIndex}.showscale = false;
-
-    %---------------------------------------------------------------------%
 
     %-colorscale (ASSUMES PATCH CDATAMAP IS 'SCALED')-%
     colormap = figure_data.Colormap;
@@ -70,12 +62,8 @@ function obj = updateContourProjection(obj,contourIndex)
                 {(c-1)/(size(colormap,1)-1), sprintf("rgb(%d,%d,%d)", col)};
     end
 
-    %---------------------------------------------------------------------%
-
     %-contour reverse scale-%
     obj.data{contourIndex}.reversescale = false;
-
-    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     ar = obj.PlotOptions.AspectRatio;
@@ -100,8 +88,6 @@ function obj = updateContourProjection(obj,contourIndex)
     obj.layout.scene.aspectratio.y = xyar;
     obj.layout.scene.aspectratio.z = zar;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -121,8 +107,6 @@ function obj = updateContourProjection(obj,contourIndex)
         obj.layout.scene.camera.eye.y = yey + yfac*yey;
         obj.layout.scene.camera.eye.z = zar + zfac*zar;
     end
-
-    %---------------------------------------------------------------------%
 
     %-contour showlegend-%
     leg = contour_data.Annotation;

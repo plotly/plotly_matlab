@@ -11,19 +11,13 @@ function obj = updateConeplot(obj, coneIndex)
     %-SCENE DATA-%
     scene = obj.layout.("scene" + xsource);
 
-    %---------------------------------------------------------------------%
-
     %-cone type-%
     obj.data{coneIndex}.type = 'cone';
-
-    %---------------------------------------------------------------------%
 
     %-get plot data-%
     xdata = cone_data.XData;
     ydata = cone_data.YData;
     zdata = cone_data.ZData;
-
-    %---------------------------------------------------------------------%
 
     %-reformat data-%
     nfaces = size(xdata, 2);
@@ -66,8 +60,6 @@ function obj = updateConeplot(obj, coneIndex)
         z = [z; 0.5*(ztail+zhead)];
     end
 
-    %---------------------------------------------------------------------%
-
     %-set plot data-%
     obj.data{coneIndex}.x = x;
     obj.data{coneIndex}.y = y;
@@ -76,22 +68,16 @@ function obj = updateConeplot(obj, coneIndex)
     obj.data{coneIndex}.v = v;
     obj.data{coneIndex}.w = w;
 
-    %---------------------------------------------------------------------%
-
     %-set cone color-%
     obj.data{coneIndex}.colorscale{1} = ...
             {0, sprintf("rgb(%f,%f,%f)", cone_data.EdgeColor)};
     obj.data{coneIndex}.colorscale{2} = ...
             {1, sprintf("rgb(%f,%f,%f)", cone_data.EdgeColor)};
 
-    %---------------------------------------------------------------------%
-
     %-plot setting-%
     obj.data{coneIndex}.showscale = false;
     obj.data{coneIndex}.sizemode = 'scaled';
     obj.data{coneIndex}.sizeref = 1.5;
-
-    %---------------------------------------------------------------------%
 
     %-scene axis-%
     scene.xaxis.tickvals = cone_data.Parent.XTick;
@@ -100,8 +86,6 @@ function obj = updateConeplot(obj, coneIndex)
     scene.yaxis.ticktext = cone_data.Parent.YTickLabel;
     scene.zaxis.range = cone_data.Parent.ZLim;
     scene.zaxis.nticks = 10;
-
-    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     ar = obj.PlotOptions.AspectRatio;
@@ -128,8 +112,6 @@ function obj = updateConeplot(obj, coneIndex)
     scene.aspectratio.y = yar;
     scene.aspectratio.z = zar;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -149,8 +131,6 @@ function obj = updateConeplot(obj, coneIndex)
         scene.camera.eye.y = yey + yfac*yey;
         scene.camera.eye.z = zar + zfac*zar;
     end
-
-    %---------------------------------------------------------------------%
 
     %-set scene to layout-%
     obj.layout = setfield(obj.layout,"scene" + xsource, scene);

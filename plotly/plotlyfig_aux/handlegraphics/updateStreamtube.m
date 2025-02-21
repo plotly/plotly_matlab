@@ -19,8 +19,6 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.xaxis = "x" + xsource;
     obj.data{surfaceIndex}.yaxis = "y" + ysource;
     obj.data{surfaceIndex}.type = 'surface';

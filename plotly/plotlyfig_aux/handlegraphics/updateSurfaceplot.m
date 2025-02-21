@@ -13,8 +13,6 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     %-surface xaxis and yaxis-%
     obj.data{surfaceIndex}.xaxis = "x" + xsource;
     obj.data{surfaceIndex}.yaxis = "y" + ysource;
@@ -64,8 +62,6 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
         obj.data{surfaceIndex}.x = image_data.XData(1,:);
         obj.data{surfaceIndex}.y = image_data.YData(:,1);
     end
-
-    %---------------------------------------------------------------------%
 
     %-image colorscale-%
     cmap = figure_data.Colormap;

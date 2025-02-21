@@ -3,8 +3,6 @@ function marker = extractPatchMarker(patch_data)
     % OF TYPE "PATCH". THESE OBJECTS ARE USED IN AREASERIES
     % BARSERIES, CONTOURGROUP, SCATTERGROUP.
 
-    %---------------------------------------------------------------------%
-
     %-AXIS STRUCTURE-%
     axis_data = ancestor(patch_data.Parent, 'axes');
 
@@ -14,13 +12,9 @@ function marker = extractPatchMarker(patch_data)
     %-INITIALIZE OUTPUT-%
     marker = struct();
 
-    %---------------------------------------------------------------------%
-
     marker.sizeref = 1;
     marker.sizemode = 'diameter';
     marker.size = patch_data.MarkerSize;
-
-    %---------------------------------------------------------------------%
 
     %-MARKER SYMBOL (STYLE)-%
     if ~strcmp(patch_data.Marker, 'none')
@@ -55,12 +49,8 @@ function marker = extractPatchMarker(patch_data)
         marker.symbol = marksymbol;
     end
 
-    %---------------------------------------------------------------------%
-
     %-MARKER LINE WIDTH (STYLE)-%
     marker.line.width = patch_data.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %--MARKER FILL COLOR--%
 
@@ -116,8 +106,6 @@ function marker = extractPatchMarker(patch_data)
         end
         marker.color = markercolor;
     end
-
-    %---------------------------------------------------------------------%
 
     %-MARKER LINE COLOR-%
 

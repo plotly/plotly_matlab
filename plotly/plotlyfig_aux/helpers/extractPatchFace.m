@@ -2,8 +2,6 @@ function marker = extractPatchFace(patch_data)
     % EXTRACTS THE FACE STYLE USED FOR MATLAB OBJECTS
     % OF TYPE "PATCH". THESE OBJECTS ARE USED BOXPLOTS.
 
-    %---------------------------------------------------------------------%
-
     %-AXIS STRUCTURE-%
     axis_data = ancestor(patch_data.Parent,"axes");
 
@@ -13,12 +11,8 @@ function marker = extractPatchFace(patch_data)
     %-INITIALIZE OUTPUT-%
     marker = struct();
 
-    %---------------------------------------------------------------------%
-
     %-PATCH EDGE WIDTH-%
     marker.line.width = patch_data.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %-PATCH FACE COLOR-%
 
@@ -53,8 +47,6 @@ function marker = extractPatchFace(patch_data)
         end
     end
     marker.color = sprintf("rgba(%d,%d,%d,%f)", col);
-
-    %---------------------------------------------------------------------%
 
     %-PATCH EDGE COLOR-%
     if isnumeric(patch_data.EdgeColor)

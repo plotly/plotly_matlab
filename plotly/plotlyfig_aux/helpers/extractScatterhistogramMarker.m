@@ -3,8 +3,6 @@ function marker = extractScatterhistogramMarker(patch_data, t)
     % OF TYPE "PATCH". THESE OBJECTS ARE USED IN AREASERIES
     % BARSERIES, CONTOURGROUP, SCATTERGROUP.
 
-    %---------------------------------------------------------------------%
-
     %-AXIS STRUCTURE-%
     axis_data = ancestor(patch_data.Parent, 'axes');
 
@@ -14,12 +12,8 @@ function marker = extractScatterhistogramMarker(patch_data, t)
     %-INITIALIZE OUTPUT-%
     marker = struct();
 
-    %---------------------------------------------------------------------%
-
     %-MARKER SIZE (STYLE)-%
     marker.size = patch_data.MarkerSize(t)*0.20;
-
-    %---------------------------------------------------------------------%
 
     %-MARKER SYMBOL (STYLE)-%
     if ~strcmp(patch_data.MarkerStyle(t), 'none')
@@ -54,12 +48,8 @@ function marker = extractScatterhistogramMarker(patch_data, t)
         marker.symbol = marksymbol;
     end
 
-    %---------------------------------------------------------------------%
-
     %-MARKER LINE WIDTH (STYLE)-%
     marker.line.width = patch_data.LineWidth(t);
-
-    %---------------------------------------------------------------------%
 
     %--MARKER COLOR--%
 

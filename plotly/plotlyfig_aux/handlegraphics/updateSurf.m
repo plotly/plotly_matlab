@@ -85,11 +85,7 @@ function obj = updateSurf(obj, surfaceIndex)
     obj.data{contourIndex}.y = yDataContour(:);
     obj.data{contourIndex}.z = zDataContour(:);
 
-    %---------------------------------------------------------------------%
-
     %-COLORING-%
-
-    %---------------------------------------------------------------------%
 
     %-get colormap-%
     cMap = axisData.Colormap;
@@ -100,8 +96,6 @@ function obj = updateSurf(obj, surfaceIndex)
         colorScale{c} = {(c-1)*fac, ...
                 sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
     end
-
-    %---------------------------------------------------------------------%
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
@@ -254,11 +248,7 @@ function obj = updateSurf(obj, surfaceIndex)
         obj.data{surfaceIndex}.contours.y.show = false;
     end
 
-    %---------------------------------------------------------------------%
-
     %-SCENE CONFIGURATION-%
-
-    %---------------------------------------------------------------------%
 
     %-aspect ratio-%
     asr = obj.PlotOptions.AspectRatio;
@@ -283,8 +273,6 @@ function obj = updateSurf(obj, surfaceIndex)
     scene.aspectratio.y = 1.0*xyar;
     scene.aspectratio.z = zar;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -304,8 +292,6 @@ function obj = updateSurf(obj, surfaceIndex)
         scene.camera.eye.y = yey + yfac*yey;
         scene.camera.eye.z = zar + zfac*zar;
     end
-
-    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
     scene.xaxis.range = axisData.XLim;
@@ -349,12 +335,8 @@ function obj = updateSurf(obj, surfaceIndex)
     scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
-    %---------------------------------------------------------------------%
-
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
-
-    %---------------------------------------------------------------------%
 
     obj.data{surfaceIndex}.name = meshData.DisplayName;
     obj.data{contourIndex}.name = meshData.DisplayName;
@@ -362,8 +344,6 @@ function obj = updateSurf(obj, surfaceIndex)
     obj.data{contourIndex}.showscale = false;
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
-
-    %---------------------------------------------------------------------%
 
     leg = meshData.Annotation;
     legInfo = leg.LegendInformation;

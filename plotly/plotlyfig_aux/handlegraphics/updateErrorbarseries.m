@@ -11,8 +11,6 @@ function obj = updateErrorbarseries(obj, errorbarIndex)
     % opacity: ---[TODO]
     % visible: ...[DONE]
 
-    %---------------------------------------------------------------------%
-
     %-ERRORBAR STRUCTURE-%
     errorbar_data = obj.State.Plot(errorbarIndex).Handle;
 
@@ -22,12 +20,8 @@ function obj = updateErrorbarseries(obj, errorbarIndex)
     %-ERROR BAR LINE CHILD-%
     errorbar_line_child_data = errorbar_child(2);
 
-    %---------------------------------------------------------------------%
-
     %-UPDATE LINESERIES-%
     updateLineseries(obj, errorbarIndex);
-
-    %---------------------------------------------------------------------%
 
     obj.data{errorbarIndex}.error_y.visible = true;
     obj.data{errorbarIndex}.error_y.type = 'data';
@@ -36,8 +30,6 @@ function obj = updateErrorbarseries(obj, errorbarIndex)
     obj.data{errorbarIndex}.error_y.arrayminus = errorbar_data.LData;
     obj.data{errorbarIndex}.error_y.thickness = errorbar_line_child_data.LineWidth;
     obj.data{errorbarIndex}.error_y.width = obj.PlotlyDefaults.ErrorbarWidth;
-
-    %---------------------------------------------------------------------%
 
     %-errorbar color-%
     col = round(255*errorbar_line_child_data.Color);

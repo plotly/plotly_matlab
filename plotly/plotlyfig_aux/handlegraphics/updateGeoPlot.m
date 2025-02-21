@@ -6,8 +6,6 @@ function updateGeoPlot(obj,geoIndex)
     axisData = geoData.Parent;
     [xSource, ~] = findSourceAxis(obj,axIndex);
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         obj.data{geoIndex}.geo = sprintf('geo%d', xSource+1);
@@ -19,13 +17,9 @@ function updateGeoPlot(obj,geoIndex)
 
     obj.data{geoIndex}.mode = 'lines+markers';
 
-    %---------------------------------------------------------------------%
-
     %-set trace data-%
     obj.data{geoIndex}.lat = geoData.LatitudeData;
     obj.data{geoIndex}.lon = geoData.LongitudeData;
-
-    %---------------------------------------------------------------------%
 
     %-set trace's marker and line-%
     [marker, linee] = extractGeoLinePlusMarker(geoData, axisData);

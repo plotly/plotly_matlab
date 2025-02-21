@@ -8,14 +8,10 @@ function updateConstantLine(obj,plotIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    %---------------------------------------------------------------------%
-
     obj.data{plotIndex}.xaxis = "x" + xsource;
     obj.data{plotIndex}.yaxis = "y" + ysource;
     obj.data{plotIndex}.type = "scatter";
     obj.data{plotIndex}.visible = strcmp(plotData.Visible, "on");
-
-    %---------------------------------------------------------------------%
 
     %-scatter-%
     xaxis = obj.layout.("xaxis"+xsource);
@@ -93,8 +89,6 @@ function updateConstantLine(obj,plotIndex)
         obj.layout.annotations{end+1} = annotation;
     end
 
-    %---------------------------------------------------------------------%
-
     %-For 3D plots-%
     obj.PlotOptions.is3d = false; % by default
 
@@ -112,12 +106,8 @@ function updateConstantLine(obj,plotIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-scatter name-%
     obj.data{plotIndex}.name = plotData.DisplayName;
-
-    %---------------------------------------------------------------------%
 
     %-scatter mode-%
     if plotData.Type ~= "constantline" ...
@@ -135,19 +125,13 @@ function updateConstantLine(obj,plotIndex)
 
     obj.data{plotIndex}.mode = mode;
 
-    %---------------------------------------------------------------------%
-
     %-scatter line-%
     obj.data{plotIndex}.line = extractLineLine(plotData);
-
-    %---------------------------------------------------------------------%
 
     %-scatter marker-%
     if plotData.Type ~= "constantline"
         obj.data{plotIndex}.marker = extractLineMarker(plotData);
     end
-
-    %---------------------------------------------------------------------%
 
     %-scatter showlegend-%
     leg = get(plotData.Annotation);

@@ -8,12 +8,8 @@ function updateWordcloud(obj,scatterIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %---------------------------------------------------------------------%
-
     %-scatter type-%
     obj.data{scatterIndex}.type = 'scatter';
-
-    %---------------------------------------------------------------------%
 
     %-format the mesh domain-%
     maxx = scatter_data.MaxDisplayWords;
@@ -31,8 +27,6 @@ function updateWordcloud(obj,scatterIndex)
     yrand = diff(ydomain(1:2)) * (rand(size(ydata)) - 0.5);
     xdata = xdata + xrand;
     ydata = ydata + yrand;
-
-    %---------------------------------------------------------------------%
 
     %-make oval effect-%
     inds = (xdata-0.5*xdomain(end)).^2 + (ydata-0.5*ydomain(end)).^2 < (0.5*maxx)^2;

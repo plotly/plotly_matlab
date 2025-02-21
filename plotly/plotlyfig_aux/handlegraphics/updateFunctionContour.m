@@ -18,14 +18,10 @@ function obj = updateFunctionContour(obj,contourIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{contourIndex}.xaxis = "x" + xsource;
     obj.data{contourIndex}.yaxis = "y" + ysource;
     obj.data{contourIndex}.name = contour_data.DisplayName;
     obj.data{contourIndex}.type = 'contour';
-
-    %---------------------------------------------------------------------%
 
     %-setting the plot-%
     xdata = contour_data.XData;
@@ -49,8 +45,6 @@ function obj = updateFunctionContour(obj,contourIndex)
     %-contour z data-%
     obj.data{contourIndex}.z = zdata;
 
-    %---------------------------------------------------------------------%
-
     obj.data{contourIndex}.xtype = 'array';
     obj.data{contourIndex}.ytype = 'array';
     obj.data{contourIndex}.visible = strcmp(contour_data.Visible,'on');
@@ -58,8 +52,6 @@ function obj = updateFunctionContour(obj,contourIndex)
     obj.data{contourIndex}.zauto = false;
     obj.data{contourIndex}.zmin = axis_data.CLim(1);
     obj.data{contourIndex}.zmax = axis_data.CLim(2);
-
-    %---------------------------------------------------------------------%
 
     %-colorscale (ASSUMES PATCH CDATAMAP IS 'SCALED')-%
     colormap = figure_data.Colormap;
@@ -70,12 +62,8 @@ function obj = updateFunctionContour(obj,contourIndex)
                 {(c-1)/(size(colormap,1)-1), sprintf("rgb(%d,%d,%d)", col)};
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{contourIndex}.reversescale = false;
     obj.data{contourIndex}.autocontour = false;
-
-    %---------------------------------------------------------------------%
 
     %-contour contours-%
 
@@ -86,8 +74,6 @@ function obj = updateFunctionContour(obj,contourIndex)
         case 'on'
             obj.data{contourIndex}.contours.coloring = 'fill';
     end
-
-    %---------------------------------------------------------------------%
 
     %-contour levels-%
     if length(contour_data.LevelList) > 1
@@ -106,8 +92,6 @@ function obj = updateFunctionContour(obj,contourIndex)
     obj.data{contourIndex}.contours.end = cend;
     %-step-%
     obj.data{contourIndex}.contours.size = csize;
-
-    %---------------------------------------------------------------------%
 
     if (~strcmp(contour_data.LineStyle,'none'))
         %-contour line colour-%
@@ -139,8 +123,6 @@ function obj = updateFunctionContour(obj,contourIndex)
         obj.data{contourIndex}.contours.showlines = false;
     end
 
-    %---------------------------------------------------------------------%
-
     %-contour showlegend-%
     leg = contour_data.Annotation;
     legInfo = leg.LegendInformation;
@@ -151,8 +133,6 @@ function obj = updateFunctionContour(obj,contourIndex)
             showleg = false;
     end
     obj.data{contourIndex}.showlegend = showleg;
-
-    %---------------------------------------------------------------------%
 
     %-axis layout-%
     t = 'linear';

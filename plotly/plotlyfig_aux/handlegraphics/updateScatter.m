@@ -12,8 +12,6 @@ function updateScatter(obj,plotIndex)
         isScatter3D = false;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     if ~isScatter3D
         obj.data{plotIndex}.type = "scatter";
@@ -30,8 +28,6 @@ function updateScatter(obj,plotIndex)
     obj.data{plotIndex}.mode = "markers";
     obj.data{plotIndex}.visible = strcmp(plotData.Visible, "on");
     obj.data{plotIndex}.name = plotData.DisplayName;
-
-    %---------------------------------------------------------------------%
 
     %-set trace data-%
     [xData, yData] = getTraceData2D(plotData);
@@ -50,8 +46,6 @@ function updateScatter(obj,plotIndex)
             obj.data{plotIndex}.z = repelem(obj.data{plotIndex}.z,1,2);
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-set trace marker-%
     obj.data{plotIndex}.marker = extractScatterMarker(plotData);
@@ -83,8 +77,6 @@ function updateScene(obj, dataIndex)
     normFac = abs(min(cameraEye));
     normFac = normFac / (max(aspectRatio)/min(aspectRatio) + cameraOffset);
 
-    %---------------------------------------------------------------------%
-
     %-aspect ratio-%
     scene.aspectratio.x = 1.0*aspectRatio(1);
     scene.aspectratio.y = 1.0*aspectRatio(2);
@@ -99,8 +91,6 @@ function updateScene(obj, dataIndex)
     scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
-
-    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
     scene.xaxis.range = axisData.XLim;
@@ -207,8 +197,6 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.ZGrid, "off")
         scene.zaxis.showgrid = false;
     end
-
-    %---------------------------------------------------------------------%
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf("scene%d", xSource), scene);

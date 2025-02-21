@@ -2,8 +2,6 @@ function marker = extractBarMarker(bar_data)
     % EXTRACTS THE FACE STYLE USED FOR MATLAB OBJECTS
     % OF TYPE "bar". THESE OBJECTS ARE USED BARGRAPHS.
 
-    %---------------------------------------------------------------------%
-
     %-AXIS STRUCTURE-%
     axis_data = ancestor(bar_data.Parent,'axes');
 
@@ -13,12 +11,8 @@ function marker = extractBarMarker(bar_data)
     %-INITIALIZE OUTPUT-%
     marker = struct();
 
-    %---------------------------------------------------------------------%
-
     %-bar EDGE WIDTH-%
     marker.line.width = bar_data.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %-bar FACE COLOR-%
 
@@ -48,8 +42,6 @@ function marker = extractBarMarker(bar_data)
                 marker.color = sprintf("rgb(%d,%d,%d)", col);
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-bar EDGE COLOR-%
 

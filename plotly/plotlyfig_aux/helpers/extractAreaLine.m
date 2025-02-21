@@ -3,12 +3,8 @@ function line = extractAreaLine(area_data)
     % OF TYPE "LINE". THESE OBJECTS ARE USED IN LINESERIES,
     % STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
 
-    %---------------------------------------------------------------------%
-
     %-INITIALIZE OUTPUT-%
     line = struct();
-
-    %---------------------------------------------------------------------%
 
     %-AREA LINE COLOR-%
 

@@ -20,8 +20,6 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
     xData = ternaryData.XData;
     yData = ternaryData.YData;
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     for t = 1:size(xData,2)
         %-get new ternaryIndex-%
@@ -119,8 +117,6 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
 
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
-
-    %---------------------------------------------------------------------%
 
     %-label settings-%
     l = 1; t = 1;

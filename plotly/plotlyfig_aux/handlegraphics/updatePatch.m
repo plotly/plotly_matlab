@@ -56,13 +56,9 @@ function obj = updatePatch(obj, patchIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     %-patch xaxis and yaxis-%
     obj.data{patchIndex}.xaxis = "x" + xsource;
     obj.data{patchIndex}.yaxis = "y" + ysource;
-
-    %---------------------------------------------------------------------%
 
     %-patch type-%
     if any(nonzeros(patch_data.ZData))
@@ -76,8 +72,6 @@ function obj = updatePatch(obj, patchIndex)
     else
         obj.data{patchIndex}.type = 'scatter';
     end
-
-    %---------------------------------------------------------------------%
 
     if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
         %-patch x-%
@@ -195,8 +189,6 @@ function obj = updatePatch(obj, patchIndex)
         fill = extractPatchFace(patch_data);
         obj.data{patchIndex}.color = fill.color;
     end
-
-    %---------------------------------------------------------------------%
 
     %-patch showlegend-%
     leg = patch_data.Annotation;

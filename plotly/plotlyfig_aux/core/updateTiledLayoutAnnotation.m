@@ -8,8 +8,6 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
     obj.layout.annotations{anIndex}.yref = 'paper';
     obj.layout.annotations{anIndex}.align = titleStruct.HorizontalAlignment;
 
-    %---------------------------------------------------------------------%
-
     %-anchors-%
     obj.layout.annotations{anIndex}.xanchor = titleStruct.HorizontalAlignment;
 
@@ -21,8 +19,6 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
         case {'baseline','bottom'}
             obj.layout.annotations{anIndex}.yanchor = 'bottom';
     end
-
-    %---------------------------------------------------------------------%
 
     %-text-%
     titleString = titleStruct.String;
@@ -36,13 +32,9 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
 
     obj.layout.annotations{anIndex}.text = titleTex;
 
-    %---------------------------------------------------------------------%
-
     %-text location-%
     obj.layout.annotations{anIndex}.x = 0.5;
     obj.layout.annotations{anIndex}.y = 0.95;
-
-    %---------------------------------------------------------------------%
 
     %-font properties-%
     titleColor = sprintf("rgb(%d,%d,%d)", round(255*titleStruct.Color));
@@ -60,18 +52,12 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
         otherwise
     end
 
-    %---------------------------------------------------------------------%
-
     %-title angle-%
     textAngle = titleStruct.Rotation;
-
     if textAngle > 180
         textAngle = textAngle - 360;
     end
-
     obj.layout.annotations{anIndex}.textangle = textAngle;
-
-    %---------------------------------------------------------------------%
 
     %-hide text (a workaround)-%
     if strcmp(titleStruct.Visible,'off')

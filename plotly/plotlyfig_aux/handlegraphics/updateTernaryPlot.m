@@ -32,8 +32,6 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
         obj.data{ternaryIndex}.mode = 'none';
     end
 
-    %---------------------------------------------------------------------%
-
     %-get plot data-%
     xData = ternaryData.XData;
     yData = ternaryData.YData;
@@ -46,8 +44,6 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     obj.data{ternaryIndex}.a = aData;
     obj.data{ternaryIndex}.b = bData;
 
-    %---------------------------------------------------------------------%
-
     %-trace line settings-%
     obj.data{ternaryIndex}.line = extractLineLine(ternaryData);
     obj.data{ternaryIndex}.marker = extractLineMarker(ternaryData);
@@ -56,8 +52,6 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     obj.data{ternaryIndex}.name = ternaryData.DisplayName;
     obj.data{ternaryIndex}.showscale = false;
     obj.data{ternaryIndex}.visible = strcmp(ternaryData.Visible,'on');
-
-    %---------------------------------------------------------------------%
 
     %-legend-%
     leg = ternaryData.Annotation;
@@ -86,8 +80,6 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
 
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
-
-    %---------------------------------------------------------------------%
 
     %-label settings-%
     l = 1; t = 1;
@@ -119,8 +111,6 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
         ternary.(labelLetter{l} + "axis").title.font.size = labelFontSize;
         ternary.(labelLetter{l} + "axis").title.font.family = labelFontFamily;
     end
-
-    %---------------------------------------------------------------------%
 
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);

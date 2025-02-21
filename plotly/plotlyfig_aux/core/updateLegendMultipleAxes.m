@@ -39,15 +39,11 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     obj.data{traceIndex}.showlegend = allShowLegens(traceIndex);
     end
 
-    %---------------------------------------------------------------------%
-
     %-STANDARDIZE UNITS-%
     legendUnits = obj.State.Legend(legIndex).Handle.Units;
     fontUnits = obj.State.Legend(legIndex).Handle.FontUnits;
     obj.State.Legend(legIndex).Handle.Units = 'normalized';
     obj.State.Legend(legIndex).Handle.FontUnits = 'points';
-
-    %---------------------------------------------------------------------%
 
     %-LEGEND DATA STRUCTURE-%
     legendData = obj.State.Legend(legIndex).Handle;

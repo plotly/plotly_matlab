@@ -1,9 +1,8 @@
 classdef plotlyfig < handle
-    %----CLASS PROPERTIES----%
     properties
         data; % data of the plot
-        layout;  % layout of the plot
-        frames;  % for animations
+        layout; % layout of the plot
+        frames; % for animations
         url; % url response of making post request
         error; % error response of making post request
         warning; % warning response of making post request
@@ -11,7 +10,7 @@ classdef plotlyfig < handle
     end
 
     properties (SetObservable)
-        UserData;% credentials/configuration/verbose
+        UserData; % credentials/configuration/verbose
         PlotOptions; % filename,fileopt,world_readable
     end
 
@@ -25,9 +24,7 @@ classdef plotlyfig < handle
         InitialState; % initial userdata
     end
 
-    %----CLASS METHODS----%
     methods
-        %----CONSTRUCTOR---%
         function obj = plotlyfig(varargin)
             %-Core-%
             obj.data = {};
@@ -37,7 +34,6 @@ classdef plotlyfig < handle
 
             obj.UserData.Verbose = true;
 
-            %-PlotOptions-%
             obj.PlotOptions.CleanFeedTitle = true;
             obj.PlotOptions.FileName = '';
             obj.PlotOptions.FileOpt = 'new';
@@ -56,8 +52,8 @@ classdef plotlyfig < handle
             obj.PlotOptions.AspectRatio = [];
             obj.PlotOptions.CameraEye = [];
             obj.PlotOptions.is_headmap_axis = false;
-            obj.PlotOptions.FrameDuration = 1;      % in ms.
-            obj.PlotOptions.FrameTransitionDuration = 0;      % in ms.
+            obj.PlotOptions.FrameDuration = 1; % in ms.
+            obj.PlotOptions.FrameTransitionDuration = 0; % in ms.
             obj.PlotOptions.geoRenderType = 'geo';
             obj.PlotOptions.DomainFactor = [1 1 1 1];
 
@@ -68,7 +64,6 @@ classdef plotlyfig < handle
             obj.PlotOptions.IncludePlotlyjs = true;
             obj.PlotOptions.SaveFolder = pwd;
 
-            %-UserData-%
             try
                 [obj.UserData.Username,...
                     obj.UserData.ApiKey,...
@@ -85,7 +80,6 @@ classdef plotlyfig < handle
                 end
             end
 
-            %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 10;
             obj.PlotlyDefaults.TitleHeight = 0.01;
             obj.PlotlyDefaults.TitleFontSizeIncrease = 40;
@@ -103,7 +97,6 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.isGeoaxis = false;
             obj.PlotlyDefaults.isTernary = false;
 
-            %-State-%
             obj.State.Figure = [];
             obj.State.Axis = [];
             obj.State.Plot = [];
@@ -118,10 +111,8 @@ classdef plotlyfig < handle
             obj.State.Figure.NumColorbars = 0;
             obj.State.Figure.NumTexts = 0;
 
-            %-PlotlyReference-%
             obj.PlotlyReference = [];
 
-            %-InitialState-%
             obj.InitialState.Username = obj.UserData.Username;
             obj.InitialState.ApiKey = obj.UserData.ApiKey;
             obj.InitialState.PlotlyDomain = obj.UserData.PlotlyDomain;
@@ -287,7 +278,6 @@ classdef plotlyfig < handle
                 obj.State.Figure.Handle = fig_han;
             end
 
-            % update
             if updatekey
                 obj.update;
             end
@@ -514,27 +504,25 @@ classdef plotlyfig < handle
                 end
             end
 
-            %get args
             args.filename = obj.PlotOptions.FileName;
             args.fileopt = obj.PlotOptions.FileOpt;
             args.world_readable = obj.PlotOptions.WorldReadable;
             args.offline = obj.PlotOptions.Offline;
 
-            %layout
             args.layout = obj.layout;
 
             if obj.PlotOptions.WriteFile
-                %send to plotly
+                % send to plotly
                 if ~obj.PlotOptions.Offline
                     response = plotly(obj.data, args);
 
-                    %update response
+                    % update response
                     obj.url = response.url;
                     obj.error = response.error;
                     obj.warning = response.warning;
                     obj.message = response.message;
 
-                    %open url in browser
+                    % open url in browser
                     if obj.PlotOptions.OpenURL
                         web(response.url, '-browser');
                     end
@@ -549,7 +537,7 @@ classdef plotlyfig < handle
 
         %-----------------------FIGURE CONVERSION-------------------------%
 
-        %automatic figure conversion
+        % automatic figure conversion
         function obj = update(obj)
             % reset figure object count
             obj.State.Figure.NumAxes = 0;
@@ -606,7 +594,6 @@ classdef plotlyfig < handle
             ax = temp_ax;
             %---------- checking the overlapping of the graphs ------------%
 
-            % update number of axes
             obj.State.Figure.NumAxes = length(ax);
 
             % update number of annotations (one title per axis)
@@ -617,7 +604,6 @@ classdef plotlyfig < handle
                 % reverse axes
                 axrev = length(ax) - a + 1;
 
-                % set axis handle field
                 obj.State.Axis(a).Handle = ax(axrev);
 
                 % add title
@@ -659,7 +645,7 @@ classdef plotlyfig < handle
                 % add baseline objects
                 baselines = findobj(ax(axrev),'-property','BaseLine');
 
-                % check is current axes have multiple y-axes
+                % check if current axes have multiple y-axes
                 try
                     obj.PlotlyDefaults.isMultipleYAxes(axrev) = length(ax(axrev).YAxis) == 2;
                 catch
@@ -841,17 +827,14 @@ classdef plotlyfig < handle
 
         %----------------------EXTRACT PLOTLY INDICES---------------------%
 
-        %----GET CURRENT AXIS INDEX ----%
         function currentAxisIndex = getAxisIndex(obj,axishan)
             currentAxisIndex = find(arrayfun(@(x)(eq(x.Handle,axishan)),obj.State.Axis));
         end
 
-        %----GET CURRENT DATA INDEX ----%
         function currentDataIndex = getDataIndex(obj,plothan)
             currentDataIndex = find(arrayfun(@(x)(eq(x.Handle,plothan)),obj.State.Plot));
         end
 
-        %----GET CURRENT ANNOTATION INDEX ----%
         function currentAnnotationIndex = getAnnotationIndex(obj,annothan)
             currentAnnotationIndex = find(arrayfun(@(x)(eq(x.Handle,annothan)),obj.State.Text));
         end
@@ -860,12 +843,10 @@ classdef plotlyfig < handle
 
         %----UPDATE FIGURE OPTIONS----%
         function obj = updateFigureVisible(obj,src,event)
-            % update PlotOptions.Visible
             obj.PlotOptions.Visible = obj.State.Figure.Handle.Visible;
         end
 
         function obj = updateFigureName(obj,src,event)
-            % update PlotOptions.Name
             obj.PlotOptions.FileName = obj.State.Figure.Handle.Name;
         end
 
@@ -985,9 +966,9 @@ classdef plotlyfig < handle
             [y,t,x] = initial(varargin{:});
             % fake output by calling plot
             plot(t,y);
-            %update object
+            % update object
             obj.update;
-            %send to plotly
+            % send to plotly
             obj.plotly;
         end
 
@@ -1006,14 +987,11 @@ classdef plotlyfig < handle
     methods (Access=private)
         %----STRIP THE FIELDS OF A SPECIFIED KEY-----%
         function stripped = stripkeys(obj, fields, fieldname, key)
-            %plorlt reference
+            % plorlt reference
             pr = obj.PlotlyReference;
 
-            % initialize output
-            % fields
             stripped = fields;
 
-            % get fieldnames
             fn = fieldnames(stripped);
             fnmod = fn;
 
@@ -1039,11 +1017,11 @@ classdef plotlyfig < handle
                             annot = stripped.(fn{d});
                             fnmod{d} = 'annotation';
                             for a = 1:length(annot)
-                                %recursive call to stripkeys
+                                % recursive call to stripkeys
                                 stripped.annotations{a} = obj.stripkeys(annot{a}, fnmod{d}, key);
                             end
                         else
-                            %recursive call to stripkeys
+                            % recursive call to stripkeys
                             stripped.(fn{d}) = obj.stripkeys(stripped.(fn{d}), fnmod{d}, key);
                         end
 

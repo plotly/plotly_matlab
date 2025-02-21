@@ -3,20 +3,14 @@ function face = extractAreaFace(area_data)
     % OF TYPE "PATCH". THESE OBJECTS ARE USED IN AREASERIES
     % BARSERIES, CONTOURGROUP, SCATTERGROUP.
 
-    %---------------------------------------------------------------------%
-
     %-AXIS STRUCTURE-%
     axis_data = ancestor(area_data,"axes");
 
     %-FIGURE STRUCTURE-%
     figure_data = ancestor(area_data,"figure");
 
-    %---------------------------------------------------------------------%
-
     %-INITIALIZE OUTPUT-%
     face = struct();
-
-    %---------------------------------------------------------------------%
 
     %--FACE FILL COLOR--%
 

@@ -3,8 +3,6 @@ function line = extractPatchLine(patch_data)
     % OF TYPE "LINE". THESE OBJECTS ARE USED IN LINESERIES,
     % STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
 
-    %---------------------------------------------------------------------%
-
     %-AXIS STRUCTURE-%
     axis_data = ancestor(patch_data.Parent,'axes');
 
@@ -13,8 +11,6 @@ function line = extractPatchLine(patch_data)
 
     %-INITIALIZE OUTPUT-%
     line = struct();
-
-    %---------------------------------------------------------------------%
 
     %-PATCH LINE COLOR-%
 

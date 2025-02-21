@@ -39,8 +39,6 @@ function obj = updateRectangle(obj, rectIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{rectIndex}.xaxis = "x" + xsource;
     obj.data{rectIndex}.yaxis = "y" + ysource;
     obj.data{rectIndex}.type = 'scatter';

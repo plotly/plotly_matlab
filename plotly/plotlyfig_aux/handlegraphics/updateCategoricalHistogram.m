@@ -45,8 +45,6 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
 
@@ -60,15 +58,11 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{histIndex}.xaxis = "x" + xsource;
     obj.data{histIndex}.yaxis = "y" + ysource;
     obj.data{histIndex}.type = 'bar';
     obj.data{histIndex}.width = hist_data.BarWidth;
     obj.data{histIndex}.y = hist_data.Values;
-
-    %---------------------------------------------------------------------%
 
     %-hist categorical layout on x-axis-%
     gap = 1 - hist_data.BarWidth;
@@ -78,8 +72,6 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     obj.layout.("xaxis" + xsource).type = 'category';
     obj.layout.("xaxis" + xsource).autotick = false;
     obj.layout.("xaxis" + xsource).range = {xmin, xmax};
-
-    %---------------------------------------------------------------------%
 
     obj.data{histIndex}.name = hist_data.DisplayName;
     obj.layout.barmode = 'group';

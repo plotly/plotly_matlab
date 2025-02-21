@@ -3,12 +3,8 @@ function marker = extractLineMarker(line_data)
     % OF TYPE "LINE". THESE OBJECTS ARE USED IN LINESERIES,
     % STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
 
-    %---------------------------------------------------------------------%
-
     %-INITIALIZE OUTPUT-%
     marker = struct();
-
-    %---------------------------------------------------------------------%
 
     %-MARKER SIZE-%
     marker.size = line_data.MarkerSize;
@@ -18,8 +14,6 @@ function marker = extractLineMarker(line_data)
     elseif length(marker.size) == 1
         marker.size = 0.6*marker.size;
     end
-
-    %---------------------------------------------------------------------%
 
     %-MARKER SYMBOL-%
     if ~strcmp(line_data.Marker, "none")
@@ -57,19 +51,13 @@ function marker = extractLineMarker(line_data)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-MARKER LINE WIDTH-%
     marker.line.width = line_data.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     filledMarkerSet = ["o","square","s","diamond","d",...
             "v","^", "<",">","hexagram","pentagram"];
 
     filledMarker = ismember(line_data.Marker,filledMarkerSet);
-
-    %---------------------------------------------------------------------%
 
     %--MARKER FILL COLOR--%
     MarkerColor = line_data.MarkerFaceColor;
@@ -88,8 +76,6 @@ function marker = extractLineMarker(line_data)
         end
         marker.color = markercolor;
     end
-
-    %---------------------------------------------------------------------%
 
     %-MARKER LINE COLOR-%
     MarkerLineColor = line_data.MarkerEdgeColor;

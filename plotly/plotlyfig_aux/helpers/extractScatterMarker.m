@@ -23,8 +23,6 @@ function marker = extractScatterMarker(plotData)
             '<', '>', 'hexagram', 'pentagram'};
     filledMarker = ismember(plotData.Marker, filledMarkerSet);
 
-    %---------------------------------------------------------------------%
-
     %-get marker symbol-%
     if ~strcmp(plotData.Marker,'none')
         switch plotData.Marker
@@ -58,8 +56,6 @@ function marker = extractScatterMarker(plotData)
         end
         marker.symbol = markerSymbol;
     end
-
-    %---------------------------------------------------------------------%
 
     %-marker fill-%
     markerFaceColor = plotData.MarkerFaceColor;
@@ -103,8 +99,6 @@ function marker = extractScatterMarker(plotData)
         marker.color = faceColor;
         marker.opacity = faceAlpha;
     end
-
-    %---------------------------------------------------------------------%
 
     %-marker line-%
     markerEdgeColor = plotData.MarkerEdgeColor;
@@ -150,8 +144,6 @@ function flatColor = getScatterFlatColor(plotData, axisData, opacity)
         nMarkers = length(plotData.XData);
         cDataByIndex = lenCData == nMarkers || lenCData == 1;
     end
-
-    %---------------------------------------------------------------------%
 
     if cDataByIndex
         cMapInd = getcMapInd(cData, cLim, nColors);

@@ -44,8 +44,6 @@ function updateComet(obj,plotIndex)
     % line.opacity --- [TODO]
     % line.smoothing - [NOT SUPPORTED IN MATLAB]
     % line.shape - [NOT SUPPORTED IN MATLAB]
-    %---------------------------------------------------------------------%
-
     axisData = obj.State.Plot(plotIndex).AssociatedAxis;
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(axisData);
@@ -74,12 +72,8 @@ function updateComet(obj,plotIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     %-getting data-%
     [x,y,z] = getpoints(tail);
-
-    %---------------------------------------------------------------------%
 
     obj.data{plotIndex}.xaxis = "x" + xsource;
     obj.data{plotIndex}.yaxis = "y" + ysource;
@@ -87,8 +81,6 @@ function updateComet(obj,plotIndex)
     obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
     obj.data{plotIndex}.x = x(1);
     obj.data{plotIndex}.y = y(1);
-
-    %---------------------------------------------------------------------%
 
     %-For 3D plots-%
     obj.PlotOptions.is3d = false; % by default
@@ -107,12 +99,8 @@ function updateComet(obj,plotIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-scatter name-%
     obj.data{plotIndex}.name = plotData.Tag;
-
-    %---------------------------------------------------------------------%
 
     %-scatter mode-%
     if ~strcmpi('none', plotData.Marker) ...
@@ -128,8 +116,6 @@ function updateComet(obj,plotIndex)
 
     obj.data{plotIndex}.mode = mode;
 
-    %---------------------------------------------------------------------%
-
     obj.data{plotIndex}.line = extractLineLine(plotData);
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
@@ -143,11 +129,7 @@ function updateComet(obj,plotIndex)
     end
     obj.data{plotIndex}.showlegend = showleg;
 
-    %---------------------------------------------------------------------%
-
     %-SCENE CONFIGURATION-% for 3D animations, like comet3
-
-    %---------------------------------------------------------------------%
     if obj.PlotOptions.is3d
         %-aspect ratio-%
         asr = obj.PlotOptions.AspectRatio;
@@ -249,12 +231,8 @@ function updateComet(obj,plotIndex)
         obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
     end
 
-    %---------------------------------------------------------------------%
-
     %-Add a temporary tag-%
     obj.layout.isAnimation = true;
-
-    %---------------------------------------------------------------------%
 
     %-Create Frames-%
     frameData = obj.data{plotIndex};

@@ -54,20 +54,14 @@ function obj = updateAxis(obj,axIndex)
     %-AXIS DATA STRUCTURE-%
     axisData = obj.State.Axis(axIndex).Handle;
 
-    %---------------------------------------------------------------------%
-
     %-check if headmap axis-%
     isHeatmapAxis = axisData.Type == "heatmap";
     obj.PlotOptions.is_headmap_axis = isHeatmapAxis;
-
-    %---------------------------------------------------------------------%
 
     %-check if geo-axis-%
     isGeoaxis = isfield(axisData, 'Type') ...
             && strcmpi(axisData.Type, 'geoaxes');
     obj.PlotlyDefaults.isGeoaxis = isGeoaxis;
-
-    %---------------------------------------------------------------------%
 
     if isHeatmapAxis
         xaxis = extractHeatmapAxisData(obj,axisData, 'X');
@@ -92,12 +86,8 @@ function obj = updateAxis(obj,axIndex)
     yaxis.domain = min([axisPos(2) sum(axisPos([2,4]))], 1);
     scene.domain.y = yaxis.domain;
 
-    %---------------------------------------------------------------------%
-
     %-get source axis-%
     [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj,axIndex);
-
-    %---------------------------------------------------------------------%
 
     %-set exponent format-%
     anIndex = obj.State.Figure.NumTexts;
@@ -142,8 +132,6 @@ function obj = updateAxis(obj,axIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     xaxis.anchor = "y" + ysource;
     yaxis.anchor = "x" + xsource;
 
@@ -154,22 +142,16 @@ function obj = updateAxis(obj,axIndex)
         yaxis.overlaying = "y" + yoverlay;
     end
 
-    %---------------------------------------------------------------------%
-
     % update the layout field (do not overwrite source)
     if xsource == axIndex
         obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
         obj.layout = setfield(obj.layout, "scene" + xsource, scene);
     end
 
-    %---------------------------------------------------------------------%
-
     % update the layout field (do not overwrite source)
     if ysource == axIndex
         obj.layout = setfield(obj.layout, "yaxis" + ysource, yaxis);
     end
-
-    %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
     obj.State.Axis(axIndex).Handle.Units = axisUnits;

@@ -28,8 +28,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     axis.linewidth = lineWidth;
     axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
-    %---------------------------------------------------------------------%
-
     %-general tick settings-%
     tickRotation = axisData.(axisName + "TickLabelRotation");
     tickLength = min(obj.PlotlyDefaults.MaxTickLength,...
@@ -52,8 +50,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             axis.ticks = "outside";
     end
 
-    %---------------------------------------------------------------------%
-
     %-set axis grid-%
     isGrid = axisData.(axisName + "Grid");
     isMinorGrid = axisData.(axisName + "MinorGrid");
@@ -65,8 +61,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.showgrid = false;
     end
 
-    %---------------------------------------------------------------------%
-
     %-axis grid color-%
     try
         axis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
@@ -74,8 +68,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     catch
         axis.gridcolor = axisColor;
     end
-
-    %---------------------------------------------------------------------%
 
     %-axis type-%
     axis.type = axisData.(axisName + "Scale");
@@ -102,8 +94,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         tickLabels = tickLabels(1:numel(tickValues));
     end
     assert(isequal(numel(tickLabels),numel(tickValues)));
-
-    %---------------------------------------------------------------------%
 
     %-there is not tick label case-%
     if isempty(tickValues)
@@ -186,8 +176,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-axis direction-%
     axisDirection = axisData.(axisName + "Dir");
 
@@ -205,13 +193,9 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     label = axisData.(axisName + "Label");
     labelData = label;
 
-    %---------------------------------------------------------------------%
-
     %-STANDARDIZE UNITS-%
     fontunits = label.FontUnits;
     label.FontUnits = "points";
-
-    %---------------------------------------------------------------------%
 
     %-title label settings-%
     if ~isempty(labelData.String)
@@ -223,12 +207,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     axis.titlefont.size = labelData.FontSize;
     axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
 
-    %---------------------------------------------------------------------%
-
     %-REVERT UNITS-%
     label.FontUnits = fontunits;
-
-    %---------------------------------------------------------------------%
 
     %-set visibility conditions-%
     if strcmp(axisData.Visible, "on")

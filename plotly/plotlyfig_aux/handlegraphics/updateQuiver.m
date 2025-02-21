@@ -29,8 +29,6 @@ function obj = updateQuiver(obj, dataIndex)
     %-update axis-%
     if isQuiver3D, updateScene(obj, dataIndex); end
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     if isQuiver3D
         obj.data{dataIndex}.type = 'scatter3d';
@@ -45,16 +43,12 @@ function obj = updateQuiver(obj, dataIndex)
     obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
     obj.data{dataIndex}.name = plotData.DisplayName;
 
-    %---------------------------------------------------------------------%
-
     %-quiver line color-%
     lineColor = 255 * plotData.Color;
     obj.data{dataIndex}.line.color = getStringColor(lineColor);
 
     %-quiver line width-%
     obj.data{dataIndex}.line.width = 2.5 * plotData.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %-set trace data for quiver line only-%
     m = 1;
@@ -75,8 +69,6 @@ function obj = updateQuiver(obj, dataIndex)
         end
         m = m + 3;
     end
-
-    %---------------------------------------------------------------------%
 
     %-set trace data for quiver barb-%
     if isHG2() && strcmp(plotData.ShowArrowHead, 'on')
@@ -105,8 +97,6 @@ function obj = updateQuiver(obj, dataIndex)
             end
         end
     end
-
-    %---------------------------------------------------------------------%
 
     %-set trace legend-%
     leg = plotData.Annotation;
@@ -149,8 +139,6 @@ function updateScene(obj, dataIndex)
     r3 = range([ 1, prod(aspectRatio([2,3])) ]);
     r = max([r1, r2, r3]);
 
-    %---------------------------------------------------------------------%
-
     %-aspect ratio-%
     scene.aspectratio.x = 1.0*aspectRatio(1);
     scene.aspectratio.y = 1.0*aspectRatio(2);
@@ -168,8 +156,6 @@ function updateScene(obj, dataIndex)
 
     %-camera projection-%
     % scene.camera.projection.type = axisData.Projection;
-
-    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
     rangeFac = 0.0;
@@ -225,8 +211,6 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.YGrid, 'off'), scene.yaxis.showgrid = false; end
     if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
 
-    %---------------------------------------------------------------------%
-
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
 end
@@ -249,8 +233,6 @@ function quiverBarb = getQuiverBarb2D(...
     xHead = xData + uData;
     yHead = yData + vData;
     head = [xHead; yHead];
-
-    %---------------------------------------------------------------------%
 
     quiverBarb = getBarb2D(head, refAngle, refLen, maxHeadSize, headWidth);
 end
@@ -309,8 +291,6 @@ function quiverBarb = getQuiverBarb3D(...
     yHead = yData + vData;
     zHead = zData + wData;
     head = [xHead; yHead; zHead];
-
-    %---------------------------------------------------------------------%
 
     xBarb = getBarb3D(head, refAngle, refLen, maxHeadSize, headWidth, 'x');
     yBarb = getBarb3D(head, refAngle, refLen, maxHeadSize, headWidth, 'y');

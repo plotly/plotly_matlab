@@ -76,14 +76,10 @@ function obj = updatePatchPie3(obj, patchIndex)
     scene = obj.layout.("scene" + xsource);
     obj.PlotOptions.scene_anchor = "scene" + xsource;
 
-    %---------------------------------------------------------------------%
-
     %-scene to be set-%
     obj.PlotOptions.scene = scene;
 
     obj.data{patchIndex}.type = 'scatter3d';
-
-    %---------------------------------------------------------------------%
 
     %-patch x-%
     xdata = patch_data.XData;
@@ -98,8 +94,6 @@ function obj = updatePatchPie3(obj, patchIndex)
         obj.data{patchIndex}.x = xnew;
     end
 
-    %---------------------------------------------------------------------%
-
     %-patch y-%
     ydata = patch_data.YData;
     if isvector(ydata)
@@ -112,8 +106,6 @@ function obj = updatePatchPie3(obj, patchIndex)
         end
         obj.data{patchIndex}.y = ynew;
     end
-
-    %---------------------------------------------------------------------%
 
     %-patch z-%
     zdata = patch_data.ZData;
@@ -129,8 +121,6 @@ function obj = updatePatchPie3(obj, patchIndex)
         obj.data{patchIndex}.z = znew;
     end
 
-    %---------------------------------------------------------------------%
-
     %-patch name-%
     if ~isempty(patch_data.DisplayName)
         obj.data{patchIndex}.name = patch_data.DisplayName;
@@ -138,12 +128,8 @@ function obj = updatePatchPie3(obj, patchIndex)
         obj.data{patchIndex}.name = patch_data.DisplayName;
     end
 
-    %---------------------------------------------------------------------%
-
     %-patch visible-%
     obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
-
-    %---------------------------------------------------------------------%
 
     %-patch fill-%
     % obj.data{patchIndex}.fill = 'tozeroy';
@@ -164,8 +150,6 @@ function obj = updatePatchPie3(obj, patchIndex)
     obj.data{patchIndex}.marker = extractPatchMarker(patch_data);
     obj.data{patchIndex}.line = extractPatchLine(patch_data);
 
-    %---------------------------------------------------------------------%
-
     %-patch fillcolor-%
     fill = extractPatchFace(patch_data);
     obj.data{patchIndex}.surfacecolor = fill.color;
@@ -175,14 +159,10 @@ function obj = updatePatchPie3(obj, patchIndex)
         obj.data{patchIndex}.line.color = fill.color;
     end
 
-    %---------------------------------------------------------------------%
-
     %-surfaceaxis-%
     minstd = min([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)]);
     ind = find([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)] == minstd)-1;
     obj.data{patchIndex}.surfaceaxis = ind;
-
-    %---------------------------------------------------------------------%
 
     %-patch showlegend-%
     leg = patch_data.Annotation;
@@ -213,14 +193,10 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     scene = obj.layout.("scene" + xsource);
     obj.PlotOptions.scene_anchor = "scene" + xsource;
 
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.type = 'surface';
     obj.data{surfaceIndex}.x = image_data.XData;
     obj.data{surfaceIndex}.y = image_data.YData;
     obj.data{surfaceIndex}.z = image_data.ZData;
-
-    %---------------------------------------------------------------------%
 
     %-image colorscale-%
 
@@ -237,8 +213,6 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
             255*(image_data.CData-1) / (obj.PlotOptions.nbars{xsource} - 1);
     obj.data{surfaceIndex}.cmax = 255;
     obj.data{surfaceIndex}.cmin = 0;
-
-    %---------------------------------------------------------------------%
 
     %-get data-%
     xdata = image_data.XData;
@@ -270,8 +244,6 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     scene.aspectratio.y = yar + fac1*(nax-1)*yar;
     scene.aspectratio.z = (zar + fac1*(nax-1)*zar)*fac2;
 
-    %---------------------------------------------------------------------%
-
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
@@ -293,8 +265,6 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
         scene.camera.eye.z = zar + zfac*zar;
     end
 
-    %---------------------------------------------------------------------%
-
     %-scene to be set-%
     obj.PlotOptions.scene = scene;
 
@@ -302,8 +272,6 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     obj.data{surfaceIndex-1}.name = image_data.DisplayName;
     obj.data{surfaceIndex}.showscale = false;
     obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
-
-    %---------------------------------------------------------------------%
 
     leg = image_data.Annotation;
     legInfo = leg.LegendInformation;

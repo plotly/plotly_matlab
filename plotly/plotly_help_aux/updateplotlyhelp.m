@@ -24,8 +24,6 @@ function updateplotlyhelp
     pr.annotation.yref.key_type = 'plot_info';
     pr.line.shape.key_type = 'plot_info';
 
-    %---------------------------------------------------------------------%
-
     % save directory
     helpdir = fullfile(fileparts(which('updateplotlyhelp')), 'plotly_reference');
 

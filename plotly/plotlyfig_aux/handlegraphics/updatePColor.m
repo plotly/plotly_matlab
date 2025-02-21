@@ -13,18 +13,12 @@ function obj = updatePColor(obj, patchIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     %-pcolor xaxis and yaxis-%
     obj.data{patchIndex}.xaxis = "x" + xsource;
     obj.data{patchIndex}.yaxis = "y" + ysource;
 
-    %---------------------------------------------------------------------%
-
     %-plot type: surface-%
     obj.data{patchIndex}.type = 'surface';
-
-    %---------------------------------------------------------------------%
 
     %-format data-%
     XData = pcolor_data.XData;
@@ -58,14 +52,10 @@ function obj = updatePColor(obj, patchIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-x,y,z-data-%
     obj.data{patchIndex}.x = xdata;
     obj.data{patchIndex}.y = ydata;
     obj.data{patchIndex}.z = zdata;
-
-    %---------------------------------------------------------------------%
 
     %-coloring-%
     cmap = figure_data.Colormap;
@@ -81,8 +71,6 @@ function obj = updatePColor(obj, patchIndex)
     obj.data{patchIndex}.showscale = false;
     obj.data{patchIndex}.cmin = min(CData(:));
     obj.data{patchIndex}.cmax = max(CData(:));
-
-    %---------------------------------------------------------------------%
 
     %-setting grid mesh-%
     if usegrid
@@ -106,21 +94,15 @@ function obj = updatePColor(obj, patchIndex)
         obj.data{patchIndex}.contours.y.color = 'black';
     end
 
-    %---------------------------------------------------------------------%
-
     %-aspectratio-%
     obj.layout.scene.aspectratio.x = 12;
     obj.layout.scene.aspectratio.y = 10;
     obj.layout.scene.aspectratio.z = 0.0001;
 
-    %---------------------------------------------------------------------%
-
     %-camera.eye-%
     obj.layout.scene.camera.eye.x = 0;
     obj.layout.scene.camera.eye.y = -0.5;
     obj.layout.scene.camera.eye.z = 14;
-
-    %---------------------------------------------------------------------%
 
     %-hide axis-x-%
     obj.layout.scene.xaxis.showticklabels = true;
@@ -128,15 +110,11 @@ function obj = updatePColor(obj, patchIndex)
     obj.layout.scene.xaxis.showgrid = false;
     obj.layout.scene.xaxis.title = '';
 
-    %---------------------------------------------------------------------%
-
     %-hide axis-y-%
     obj.layout.scene.yaxis.zeroline = false;
     obj.layout.scene.yaxis.showgrid = false;
     obj.layout.scene.yaxis.showticklabels = true;
     obj.layout.scene.yaxis.title = '';
-
-    %---------------------------------------------------------------------%
 
     %-hide axis-z-%
     obj.layout.scene.zaxis.title = '';
@@ -145,8 +123,6 @@ function obj = updatePColor(obj, patchIndex)
     obj.layout.scene.zaxis.showline = false;
     obj.layout.scene.zaxis.showticklabels = false;
     obj.layout.scene.zaxis.showgrid = false;
-
-    %---------------------------------------------------------------------%
 
     %-patch showlegend-%
     leg = pcolor_data.Annotation;

@@ -37,8 +37,6 @@ function obj = updateHistogram2(obj,dataIndex)
         cData(n:n+1) = max(zData(n:n+1));
     end
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     updateScene(obj, dataIndex);
 
@@ -48,8 +46,6 @@ function obj = updateHistogram2(obj,dataIndex)
     obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
     obj.layout.bargap = barGap;
 
-    %---------------------------------------------------------------------%
-
     %-set trace data-%
     obj.data{dataIndex}.x = xData;
     obj.data{dataIndex}.y = yData;
@@ -57,8 +53,6 @@ function obj = updateHistogram2(obj,dataIndex)
     obj.data{dataIndex}.i = int16(iData - 1);
     obj.data{dataIndex}.j = int16(jData - 1);
     obj.data{dataIndex}.k = int16(kData - 1);
-
-    %---------------------------------------------------------------------%
 
     %-set trace coloring-%
     faceColor = plotData.FaceColor;
@@ -92,8 +86,6 @@ end
 
 function updateScene(obj, dataIndex)
 
-    %---------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
@@ -123,8 +115,6 @@ function updateScene(obj, dataIndex)
 
     cameraEye = cameraEye / eyeNorm;
 
-    %---------------------------------------------------------------------%
-
     %-aspect ratio-%
     scene.aspectratio.x = aspectRatio(1);
     scene.aspectratio.y = aspectRatio(2);
@@ -140,8 +130,6 @@ function updateScene(obj, dataIndex)
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
-    %---------------------------------------------------------------------%
-
     %-get each scene axis-%
     scene.xaxis = getSceneAxis(axisData, 'X');
     scene.yaxis = getSceneAxis(axisData, 'Y');
@@ -150,8 +138,6 @@ function updateScene(obj, dataIndex)
     if strcmp(plotData.DisplayStyle, 'tile')
         scene.zaxis.visible = false;
     end
-
-    %---------------------------------------------------------------------%
 
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);

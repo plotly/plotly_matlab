@@ -22,13 +22,9 @@ function updateAnimatedLine(obj,plotIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     %-if polar plot or not-%
     treatas = obj.PlotOptions.TreatAs;
     ispolar = strcmpi(treatas, 'compass') || strcmpi(treatas, 'ezpolar');
-
-    %---------------------------------------------------------------------%
 
     %-getting data-%
     try
@@ -39,37 +35,25 @@ function updateAnimatedLine(obj,plotIndex)
         z = plotData.ZData;
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{plotIndex}.xaxis = "x" + xsource;
     obj.data{plotIndex}.yaxis = "y" + ysource;
 
-    %---------------------------------------------------------------------%
-
     %-scatter type-%
     obj.data{plotIndex}.type = 'scatter';
-
     if ispolar
         obj.data{plotIndex}.type = 'scatterpolar';
     end
 
-    %---------------------------------------------------------------------%
-
     %-scatter visible-%
     obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
 
-    %---------------------------------------------------------------------%
-
     %-scatter x-%
-
     if ispolar
         r = sqrt(x.^2 + y.^2);
         obj.data{plotIndex}.r = r;
     else
         obj.data{plotIndex}.x = [x(1) x(1)];
     end
-
-    %---------------------------------------------------------------------%
 
     %-scatter y-%
     if ispolar
@@ -79,8 +63,6 @@ function updateAnimatedLine(obj,plotIndex)
         obj.data{plotIndex}.y = [y(1) y(1)];
     end
 
-    %---------------------------------------------------------------------%
-
     %-For 3D plots-%
     obj.PlotOptions.is3d = false; % by default
 
@@ -89,21 +71,15 @@ function updateAnimatedLine(obj,plotIndex)
         if any(z)
             %-scatter z-%
             obj.data{plotIndex}.z = [z(1) z(1)];
-
             %-overwrite type-%
             obj.data{plotIndex}.type = 'scatter3d';
-
             %-flag to manage 3d plots-%
             obj.PlotOptions.is3d = true;
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-scatter name-%
     obj.data{plotIndex}.name = plotData.DisplayName;
-
-    %---------------------------------------------------------------------%
 
     %-scatter mode-%
     if ~strcmpi('none', plotData.Marker) ...
@@ -118,13 +94,8 @@ function updateAnimatedLine(obj,plotIndex)
     end
 
     obj.data{plotIndex}.mode = mode;
-
-    %---------------------------------------------------------------------%
-
     obj.data{plotIndex}.line = extractLineLine(plotData);
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
-
-    %---------------------------------------------------------------------%
 
     %-scatter showlegend-%
     leg = plotData.Annotation;
@@ -139,16 +110,10 @@ function updateAnimatedLine(obj,plotIndex)
 
     obj.data{plotIndex}.showlegend = showleg;
 
-    %---------------------------------------------------------------------%
-
     %-SCENE CONFIGURATION-% for 3D animations, like comet3
-
-    %---------------------------------------------------------------------%
     if obj.PlotOptions.is3d
-
         %-aspect ratio-%
         asr = obj.PlotOptions.AspectRatio;
-
         if ~isempty(asr)
             if ischar(asr)
                 scene.aspectmode = asr;
@@ -158,7 +123,6 @@ function updateAnimatedLine(obj,plotIndex)
                 zar = asr(3);
             end
         else
-
             %-define as default-%
             xar = max(x(:));
             yar = max(y(:));
@@ -170,8 +134,6 @@ function updateAnimatedLine(obj,plotIndex)
         scene.aspectratio.y = 1.0*xyar;
         scene.aspectratio.z = zar;
 
-        %-----------------------------------------------------------------%
-
         %-camera eye-%
         ey = obj.PlotOptions.CameraEye;
 
@@ -182,7 +144,6 @@ function updateAnimatedLine(obj,plotIndex)
                 scene.camera.eye.z = ey(3);
             end
         else
-
             %-define as default-%
             xey = - xyar; if xey>0, xfac = -0.0; else, xfac = 0.0; end
             yey = - xyar; if yey>0, yfac = -0.3; else, yfac = 0.3; end
@@ -193,10 +154,7 @@ function updateAnimatedLine(obj,plotIndex)
             scene.camera.eye.z = zar + zfac*zar;
         end
 
-        %-----------------------------------------------------------------%
-
         %-scene axis configuration-%
-
         scene.xaxis.range = axisData.XLim;
         scene.yaxis.range = axisData.YLim;
         scene.zaxis.range = axisData.ZLim;
@@ -242,18 +200,12 @@ function updateAnimatedLine(obj,plotIndex)
         scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
         scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
-        %-----------------------------------------------------------------%
-
         %-SET SCENE TO LAYOUT-%
         obj.layout = setfield(obj.layout, sprintf('scene%d', xsource), scene);
     end
 
-    %---------------------------------------------------------------------%
-
     %-Add a temporary tag-%
     obj.layout.isAnimation = true;
-
-    %---------------------------------------------------------------------%
 
     %-Create Frames-%
     frameData = obj.data{plotIndex};

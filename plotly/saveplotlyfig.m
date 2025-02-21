@@ -37,8 +37,6 @@ function p = saveplotlyfig(figure_or_data, filename, varargin)
     % For full documentation and examples, see
     % https://plot.ly/matlab/static-image-export/
 
-    %---------------------------------------------------------------------%
-
     %--PARSE FIGURE_OR_DATA--%
     if iscell(figure_or_data)
         p = plotlyfig('Visible','off');

@@ -45,8 +45,6 @@ function obj = updateHistogram(obj,histIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
 
@@ -56,13 +54,9 @@ function obj = updateHistogram(obj,histIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %---------------------------------------------------------------------%
-
     obj.data{histIndex}.xaxis = "x" + xsource;
     obj.data{histIndex}.yaxis = "y" + ysource;
     obj.data{histIndex}.type = "bar";
-
-    %---------------------------------------------------------------------%
 
     if isprop(hist_data, "Orientation")
         %-Matlab 2014+ histogram() function-%
@@ -83,8 +77,6 @@ function obj = updateHistogram(obj,histIndex)
             %-hist x data-%
             xdata = mean(hist_data.XData(2:3,:));
 
-            %-------------------------------------------------------------%
-
             %-hist y data-%
             xlength = 0;
             for d = 1:length(xdata)
@@ -93,20 +85,14 @@ function obj = updateHistogram(obj,histIndex)
                 xlength = length(obj.data{histIndex}.x);
             end
 
-            %-------------------------------------------------------------%
-
             %-hist autobinx-%
             obj.data{histIndex}.autobinx = false;
-
-            %-------------------------------------------------------------%
 
             %-hist xbins-%
             xbins.start = hist_data.XData(2,1);
             xbins.end = hist_data.XData(3,end);
             xbins.size = diff(hist_data.XData(2:3,1));
             obj.data{histIndex}.xbins = xbins;
-
-            %-------------------------------------------------------------%
 
             %-layout bargap-%
             obj.layout.bargap = ...
@@ -116,8 +102,6 @@ function obj = updateHistogram(obj,histIndex)
             %-hist y data-%
             ydata = mean(hist_data.YData(2:3,:));
 
-            %-------------------------------------------------------------%
-
             ylength = 0;
             for d = 1:length(ydata)
                 ynew = repmat(ydata(d),1,hist_data.XData(2,d));
@@ -125,12 +109,8 @@ function obj = updateHistogram(obj,histIndex)
                 ylength = length(obj.data{histIndex}.y);
             end
 
-            %-------------------------------------------------------------%
-
             %-hist autobiny-%
             obj.data{histIndex}.autobiny = false;
-
-            %-------------------------------------------------------------%
 
             %-hist ybins-%
             ybins.start = hist_data.YData(2,1);
@@ -138,15 +118,11 @@ function obj = updateHistogram(obj,histIndex)
             ybins.size = diff(hist_data.YData(2:3,1));
             obj.data{histIndex}.ybins = ybins;
 
-            %-------------------------------------------------------------%
-
             %-layout bargap-%
             obj.layout.bargap = ...
                     (hist_data.XData(3,1) - hist_data.XData(2,2)) ...
                     / (hist_data.XData(3,1) - hist_data.XData(2,1));
     end
-
-    %---------------------------------------------------------------------%
 
     obj.data{histIndex}.name = hist_data.DisplayName;
     obj.layout.barmode = "overlay";

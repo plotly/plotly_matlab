@@ -40,8 +40,6 @@ function obj = updateSlice(obj, dataIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     obj.data{dataIndex}.type = 'surface';
     obj.data{dataIndex}.name = plotData.DisplayName;
@@ -50,14 +48,10 @@ function obj = updateSlice(obj, dataIndex)
     obj.data{dataIndex}.showscale = false;
     obj.data{dataIndex}.surfacecolor = cDataSurf;
 
-    %---------------------------------------------------------------------%
-
     %-set trace data-%
     obj.data{dataIndex}.x = xDataSurf;
     obj.data{dataIndex}.y = yDataSurf;
     obj.data{dataIndex}.z = zDataSurf;
-
-    %---------------------------------------------------------------------%
 
     %-update face color-%
     updateSurfaceFaceColor(obj, dataIndex, cDataSurf);
@@ -83,8 +77,6 @@ function updateScene(obj, dataIndex)
     cameraEye = cameraPosition./dataAspectRatio;
     normFac = 0.625*abs(min(cameraEye));
 
-    %---------------------------------------------------------------------%
-
     %-aspect ratio-%
     scene.aspectratio.x = 1.15*aspectRatio(1);
     scene.aspectratio.y = 1.0*aspectRatio(2);
@@ -102,8 +94,6 @@ function updateScene(obj, dataIndex)
 
     %-camera projection-%
     % scene.camera.projection.type = axisData.Projection;
-
-    %---------------------------------------------------------------------%
 
     %-scene axis configuration-%
     scene.xaxis.range = axisData.XLim;
@@ -149,8 +139,6 @@ function updateScene(obj, dataIndex)
     if strcmp(axisData.YGrid, 'off'), scene.yaxis.showgrid = false; end
     if strcmp(axisData.ZGrid, 'off'), scene.zaxis.showgrid = false; end
 
-    %---------------------------------------------------------------------%
-
     %-SET SCENE TO LAYOUT-%
     obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
 end
@@ -173,8 +161,6 @@ function updateSurfaceEdgeColor(obj, dataIndex)
 
     xConst = ( xData(:) - min(xData(:)) ) <= 1e-6;
     yConst = ( yData(:) - min(yData(:)) ) <= 1e-6;
-
-    %---------------------------------------------------------------------%
 
     %-edge lines in x direction-%
     xContourSize = mean(diff(xData(1,:)));
@@ -209,8 +195,6 @@ function updateSurfaceEdgeColor(obj, dataIndex)
         obj.data{dataIndex}.contours.z.size = zContourSize;
     end
 
-    %---------------------------------------------------------------------%
-
     %-coloring-%
     numColor = 255 * edgeColor;
     stringColor = getStringColor(numColor);
@@ -233,8 +217,6 @@ function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
 
     obj.data{dataIndex}.cauto = false;
     obj.data{dataIndex}.autocolorscale = false;
-
-    %---------------------------------------------------------------------%
 
     if isnumeric(faceColor)
         numColor = 255 * faceColor;

@@ -45,28 +45,20 @@ function obj = updateHistogramPolar(obj,histIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
 
     %-HIST DATA STRUCTURE- %
     hist_data = obj.State.Plot(histIndex).Handle;
 
-    %---------------------------------------------------------------------%
-
     %-barpolar type-%
     obj.data{histIndex}.type = 'barpolar';
-
-    %---------------------------------------------------------------------%
 
     %-barpolar data-%
     binedges = rad2deg(hist_data.BinEdges);
     obj.data{histIndex}.theta = binedges(1:end-1) + 0.5*diff(binedges);
     obj.data{histIndex}.width = diff(binedges);
     obj.data{histIndex}.r = double(hist_data.BinCounts);
-
-    %---------------------------------------------------------------------%
 
     obj.data{histIndex}.name = hist_data.DisplayName;
     obj.layout.barmode = 'group';

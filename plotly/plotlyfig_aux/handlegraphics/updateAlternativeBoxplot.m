@@ -8,10 +8,7 @@ function obj = updateAlternativeBoxplot(obj, dataIndex)
 	nTraces = length(plotData);
 	traceIndex = dataIndex;
 
-	%---------------------------------------------------------------------%
-
 	%-update traces-%
-
 	for t = 1:nTraces
 		if t ~= 1
 			obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
@@ -45,8 +42,6 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
         yData = ones(1,2)*yData;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     obj.data{traceIndex}.type = 'scatter';
     obj.data{traceIndex}.mode = getScatterMode(plotData);
@@ -55,18 +50,12 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
     obj.data{traceIndex}.xaxis = sprintf('x%d', xSource);
     obj.data{traceIndex}.yaxis = sprintf('y%d', ySource);
 
-    %---------------------------------------------------------------------%
-
     %-set trace data-%
     obj.data{traceIndex}.x = xData;
     obj.data{traceIndex}.y = yData;
 
-    %---------------------------------------------------------------------%
-
     obj.data{traceIndex}.marker = extractLineMarker(plotData);
     obj.data{traceIndex}.line = extractLineLine(plotData);
-
-    %---------------------------------------------------------------------%
 
     %-legend-%
     leg = plotData.Annotation;

@@ -35,8 +35,6 @@ function obj = updateBoxplot(obj, boxIndex)
     % shape: ...[DONE]
     % smoothing: ...[NOT SUPPORTED IN MATLAB]
 
-    %---------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(boxIndex).AssociatedAxis);
 
@@ -45,8 +43,6 @@ function obj = updateBoxplot(obj, boxIndex)
 
     %-BOX CHILDREN-%
     box_child = box_data.Children;
-
-    %---------------------------------------------------------------------%
 
     %-CONFIRM PROPER BOXPLOT STRUCTURE-%
 
@@ -77,8 +73,6 @@ function obj = updateBoxplot(obj, boxIndex)
     obj.layout.bargroupgap = 1/bpnum;
     obj.data{boxIndex}.name = box_data.DisplayName;
 
-    %---------------------------------------------------------------------%
-
     % iterate through box plot children in reverse order
     for bp = bpnum:-1:1
 
@@ -93,9 +87,6 @@ function obj = updateBoxplot(obj, boxIndex)
         obj.data{boxIndex}.type = 'box';
         obj.data{boxIndex}.visible = strcmp(box_data.Visible,'on');
         obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
-
-        %-----------------------------------------------------------------%
-
         %-box showlegend-%
         leg = box_data.Annotation;
         legInfo = leg.LegendInformation;
@@ -216,12 +207,8 @@ function obj = updateBoxplot(obj, boxIndex)
     xaxis.showticklabels = true;
     xaxis.autorange = true;
 
-    %---------------------------------------------------------------------%
-
     %-set the layout axis field-%
     obj.layout = setfield(obj.layout, "xaxis" + xsource, xaxis);
-
-    %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
     text_child(1).FontUnits = fontunits;

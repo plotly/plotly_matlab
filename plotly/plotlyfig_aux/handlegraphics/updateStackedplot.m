@@ -31,12 +31,8 @@ function updateStackedplot(obj, plotIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-UPDATE STACKEDPLOT AXIS-%
     updateStackedplotAxis(obj, plotIndex)
-
-    %---------------------------------------------------------------------%
 
     %-SET TRACES-%
     traceIndex = plotIndex;
@@ -82,14 +78,10 @@ function updateStackedplotAxis(obj, plotIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    %---------------------------------------------------------------------%
-
     %-SET X-AXIS-%
 
     [xaxis, xExpoFormat] = getAxis(obj, plotIndex, 'X');
     obj.layout = setfield(obj.layout, 'xaxis1', xaxis{1});
-
-    %---------------------------------------------------------------------%
 
     %-SET Y-AXIS-%
 
@@ -98,8 +90,6 @@ function updateStackedplotAxis(obj, plotIndex)
     for a = 1:length(yaxis)
         obj.layout = setfield(obj.layout, sprintf('yaxis%d', a), yaxis{a});
     end
-
-    %---------------------------------------------------------------------%
 
     %-SET AXES ANNOTATIONS-%
 
@@ -128,8 +118,6 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     fontSize = plotData.FontSize;
     fontFamily = matlab2plotlyfont(plotData.FontName);;
     tickLen = 5;
-
-    %---------------------------------------------------------------------%
 
     %-Parse parameters according to axisName (X or Y)
 
@@ -161,8 +149,6 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
                 nTicks = [3, 5];
             end
     end
-
-    %---------------------------------------------------------------------%
 
     %-GET EACH AXIS-%
 

@@ -11,8 +11,6 @@ function updateScatterPolar(obj, plotIndex)
     %-ASSOCIATE POLAR-AXES LAYOUT-%
     obj.data{plotIndex}.subplot = sprintf('polar%d', xsource+1);
 
-    %---------------------------------------------------------------------%
-
     %-parse plot data-%
     rData = plotData.RData;
     thetaData = rad2deg(plotData.ThetaData);
@@ -20,21 +18,15 @@ function updateScatterPolar(obj, plotIndex)
     thetaData(rData<0) = mod(thetaData(rData<0)+180, 360);
     rData = abs(rData);
 
-    %---------------------------------------------------------------------%
-
     %-scatterpolar trace setting-%
     obj.data{plotIndex}.type = 'scatterpolar';
     obj.data{plotIndex}.mode = 'markers';
     obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
     obj.data{plotIndex}.name = plotData.DisplayName;
 
-    %---------------------------------------------------------------------%
-
     %-set scatterpolar data-%
     obj.data{plotIndex}.r = rData;
     obj.data{plotIndex}.theta = thetaData;
-
-    %---------------------------------------------------------------------%
 
     %-trace settings-%
     markerStruct = extractScatterMarker(plotData);
@@ -48,8 +40,6 @@ function updateScatterPolar(obj, plotIndex)
     if length(markerStruct.line.color) > 1
         obj.data{plotIndex}.marker.line.color = markerStruct.line.color{1};
     end
-
-    %---------------------------------------------------------------------%
 
     %-legend setting-%
     leg = plotData.Annotation;
@@ -85,8 +75,6 @@ function updatePolaraxes(obj, plotIndex)
     thetaAxis = axisData.ThetaAxis;
     rAxis = axisData.RAxis;
 
-    %---------------------------------------------------------------------%
-
     %-set domain plot-%
     xo = axisData.Position(1);
     yo = axisData.Position(2);
@@ -95,8 +83,6 @@ function updatePolaraxes(obj, plotIndex)
 
     polarAxis.domain.x = min([xo xo + w], 1);
     polarAxis.domain.y = min([yo yo + h], 1);
-
-    %---------------------------------------------------------------------%
 
     %-setting angular axis-%
     gridColor = sprintf("rgba(%d,%d,%d,%f)", ...
@@ -118,8 +104,6 @@ function updatePolaraxes(obj, plotIndex)
         polarAxis.angularaxis.gridcolor = gridColor;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set angular axis label-%
     thetaLabel = thetaAxis.Label;
 
@@ -129,8 +113,6 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
     polarAxis.radialaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
             round(255*thetaLabel.Color));
-
-    %---------------------------------------------------------------------%
 
     %-setting radial axis-%
     rLim = rAxis.Limits;
@@ -151,8 +133,6 @@ function updatePolaraxes(obj, plotIndex)
         polarAxis.radialaxis.gridcolor = gridColor;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set radial axis label-%
     rLabel = thetaAxis.Label;
 
@@ -162,8 +142,6 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.angularaxis.title.font.size = rLabel.FontSize;
     polarAxis.angularaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
             round(255*rLabel.Color));
-
-    %---------------------------------------------------------------------%
 
     %-angular tick labels settings-%
     tickValues = axisData.ThetaTick;
@@ -209,8 +187,6 @@ function updatePolaraxes(obj, plotIndex)
     end
 
 
-    %---------------------------------------------------------------------%
-
     %-radial tick labels settings-%
     tickValues = axisData.RTick;
     tickLabels = axisData.RTickLabel;
@@ -244,8 +220,6 @@ function updatePolaraxes(obj, plotIndex)
         polarAxis.radialaxis.tickfont.color = sprintf("rgb(%d,%d,%d)", ...
                 round(255*rAxis.Color));
     end
-
-    %---------------------------------------------------------------------%
 
     %-set polaraxes to layout-%
     obj.layout = setfield(obj.layout, sprintf('polar%d', xsource+1), polarAxis);

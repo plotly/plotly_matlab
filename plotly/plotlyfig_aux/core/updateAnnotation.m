@@ -44,40 +44,21 @@ function annotation = updateAnnotation(obj,anIndex)
     %-TEXT DATA STRUCTURE-%
     text_data = obj.State.Text(anIndex).Handle;
 
-    %---------------------------------------------------------------------%
-
-    %-show arrow-%
     annotation.showarrow = false;
-
-    %---------------------------------------------------------------------%
 
     %-anchor title to paper-%
     if obj.State.Text(anIndex).Title
-        %-xref-%
         annotation.xref = "paper";
-        %-yref-%
         annotation.yref = "paper";
     else
-        %-xref-%
         annotation.xref = "x" + xsource;
-        %-yref-%
         annotation.yref = "y" + ysource;
     end
 
-    %---------------------------------------------------------------------%
-
-    %-xanchor-%
     annotation.xanchor = text_data.HorizontalAlignment;
-
-    %---------------------------------------------------------------------%
-
-    %-align-%
     annotation.align = text_data.HorizontalAlignment;
 
-    %---------------------------------------------------------------------%
-
     switch text_data.VerticalAlignment
-        %-yanchor-%
         case {"top", "cap"}
             annotation.yanchor = "top";
         case "middle"
@@ -86,9 +67,6 @@ function annotation = updateAnnotation(obj,anIndex)
             annotation.yanchor = "bottom";
     end
 
-    %---------------------------------------------------------------------%
-
-    %-text-%
     if obj.State.Text(anIndex).Title
         annotation.text = parseString( ...
                 text_data.String,text_data.Interpreter);
@@ -117,42 +95,24 @@ function annotation = updateAnnotation(obj,anIndex)
     %     annotation.text = "<b></b>";
     % end
 
-    %---------------------------------------------------------------------%
-
     if obj.State.Text(anIndex).Title
-
         %-AXIS DATA-%
         xaxis = obj.layout.("xaxis" + xsource);
         yaxis = obj.layout.("yaxis" + xsource);
 
-        %-x position-%
         annotation.x = mean(xaxis.domain);
-        %-y position-%
         annotation.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
     else
-        %-x position-%
         annotation.x = text_data.Position(1);
-        %-y position-%
         annotation.y = text_data.Position(2);
     end
 
-
-
-    %-font color-%
     col = round(255*text_data.Color);
     annotation.font.color = sprintf("rgb(%d,%d,%d)", col);
 
-    %---------------------------------------------------------------------%
-
-    %-font family-%
     annotation.font.family = matlab2plotlyfont(text_data.FontName);
 
-    %---------------------------------------------------------------------%
-
-    %-font size-%
     annotation.font.size = text_data.FontSize;
-
-    %---------------------------------------------------------------------%
 
     switch text_data.FontWeight
         case {"bold","demi"}
@@ -160,8 +120,6 @@ function annotation = updateAnnotation(obj,anIndex)
             annotation.text = "<b>" + annotation.text + "</b>";
         otherwise
     end
-
-    %---------------------------------------------------------------------%
 
     %-background color-%
     if ~ischar(text_data.BackgroundColor)
@@ -172,9 +130,6 @@ function annotation = updateAnnotation(obj,anIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
-    %-border color-%
     if ~ischar(text_data.EdgeColor)
         col = round(255*text_data.EdgeColora);
         annotation.bordercolor = sprintf("rgb(%d,%d,%d)", col);
@@ -183,31 +138,18 @@ function annotation = updateAnnotation(obj,anIndex)
         annotation.bordercolor = "rgba(0,0,0,0)";
     end
 
-    %---------------------------------------------------------------------%
-
-    %-text angle-%
     annotation.textangle = text_data.Rotation;
     if text_data.Rotation > 180
         annotation.textangle = text_data.Rotation - 360;
     end
 
-    %---------------------------------------------------------------------%
-
-    %-border width-%
     annotation.borderwidth = text_data.LineWidth;
-
-    %---------------------------------------------------------------------%
-
-    %-border pad-%
     annotation.borderpad = text_data.Margin;
 
-
-    %hide text (a workaround)
+    %-hide text (a workaround)
     if strcmp(text_data.Visible,"off")
         annotation.text = " ";
     end
-
-    %---------------------------------------------------------------------%
 
     %-REVERT UNITS-%
     obj.State.Text(anIndex).Handle.Units = textunits;

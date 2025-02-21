@@ -74,14 +74,10 @@ function obj = updateTernaryContour(obj, ternaryIndex)
             traceIndex = obj.PlotOptions.nPlots;
         end
 
-        %-----------------------------------------------------------------%
-
         %-set trace-%
         obj.data{traceIndex}.type = 'scatterternary';
         obj.data{traceIndex}.mode = 'lines';
         obj.data{traceIndex}.subplot = sprintf('ternary%d', xsource+1);
-
-        %-----------------------------------------------------------------%
 
         %-convert from cartesian coordinates to trenary points-%
         aData = yData{c}/sin(deg2rad(60));
@@ -90,8 +86,6 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         %-set plot data-%
         obj.data{traceIndex}.a = aData;
         obj.data{traceIndex}.b = bData;
-
-        %-----------------------------------------------------------------%
 
         %-line settings-%
         obj.data{traceIndex}.line.width = 1.0*ternaryData.LineWidth;
@@ -138,8 +132,6 @@ function fillContours(obj, ternaryIndex)
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
-
-    %---------------------------------------------------------------------%
 
     %-get zLevels-%
     contourMatrix = ternaryData.ContourMatrix;

@@ -5,25 +5,17 @@ function obj = updateStemseries(obj,dataIndex)
     %-get children-%
     stem_child = stem_group.Children;
 
-    %---------------------------------------------------------------------%
-
     %-update line-%
     obj.State.Plot(dataIndex).Handle = stem_child(1);
     updateLineseries(obj,dataIndex);
     stem_temp_data = obj.data{dataIndex};
 
-    %---------------------------------------------------------------------%
-
     %-scatter mode-%
     stem_temp_data.mode = 'lines+markers';
-
-    %---------------------------------------------------------------------%
 
     %-update marker-%
     obj.State.Plot(dataIndex).Handle = stem_child(2);
     updateLineseries(obj,dataIndex);
-
-    %---------------------------------------------------------------------%
 
     stem_temp_data.marker = obj.data{dataIndex}.marker;
 
@@ -43,8 +35,6 @@ function obj = updateStemseries(obj,dataIndex)
     % add new marker/line colors
     stem_temp_data.marker.color = color_temp;
     stem_temp_data.marker.line.color = line_color_temp;
-
-    %---------------------------------------------------------------------%
 
     %-revert handle-%
     obj.State.Plot(dataIndex).Handle = stem_group;

@@ -21,8 +21,6 @@ function obj = updateContourgroup(obj,plotIndex)
         contourSize = 2e-3;
     end
 
-    %---------------------------------------------------------------------%
-
     %-set trace-%
     obj.data{plotIndex}.type = 'contour';
     obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
@@ -31,8 +29,6 @@ function obj = updateContourgroup(obj,plotIndex)
     obj.data{plotIndex}.visible = strcmp(plotData.Visible, 'on');
     obj.data{plotIndex}.xtype = 'array';
     obj.data{plotIndex}.ytype = 'array';
-
-    %---------------------------------------------------------------------%
 
     %-set trace data-%
     obj.data{plotIndex}.x = xData;
@@ -44,8 +40,6 @@ function obj = updateContourgroup(obj,plotIndex)
     obj.data{plotIndex}.contours.start = contourStart;
     obj.data{plotIndex}.contours.end = contourEnd;
     obj.data{plotIndex}.contours.size = contourSize;
-
-    %---------------------------------------------------------------------%
 
     %-set trace coloring-%
     obj.data{plotIndex}.zauto = false;

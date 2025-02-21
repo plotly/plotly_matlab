@@ -14,8 +14,6 @@ function p = getplotlyfig(file_owner, file_id)
     % [ADDITIONAL RESOURCES]:
     % For full documentation and examples, see
     % https://plot.ly/matlab/get-requests/
-    %---------------------------------------------------------------------%
-
     %--CONSTRUCT PLOTLY FIGURE OBJECT--%
     p = plotlyfig('Visible','off');
 

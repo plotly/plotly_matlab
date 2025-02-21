@@ -13,13 +13,9 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.xaxis = "x" + xsource;
     obj.data{surfaceIndex}.yaxis = "y" + ysource;
     obj.data{surfaceIndex}.type = 'surface';
-
-    %---------------------------------------------------------------------%
 
     %-getting x,y,z surface data-%
 
@@ -56,14 +52,10 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     X(Z < z(1)) = nan; X(Z > z(2)) = nan;
     Y(Z < z(1)) = nan; Y(Z > z(2)) = nan;
 
-    %---------------------------------------------------------------------%
-
     %-surface x,z,y-%
     obj.data{surfaceIndex}.x = X;
     obj.data{surfaceIndex}.y = Y;
     obj.data{surfaceIndex}.z = Z;
-
-    %---------------------------------------------------------------------%
 
     %- setting grid mesh by default -%
     % x-direction
@@ -89,8 +81,6 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.z.show = true;
     obj.data{surfaceIndex}.contours.z.color = 'black';
 
-    %---------------------------------------------------------------------%
-
     %-image colorscale-%
 
     cmap = figure_data.Colormap;
@@ -102,14 +92,10 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
                 {(c-1)/len , sprintf("rgb(%d,%d,%d)", col)};
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{surfaceIndex}.surfacecolor = Z;
     obj.data{surfaceIndex}.name = image_data.DisplayName;
     obj.data{surfaceIndex}.showscale = false;
     obj.data{surfaceIndex}.visible = strcmp(image_data.Visible, 'on');
-
-    %---------------------------------------------------------------------%
 
     leg = image_data.Annotation;
     legInfo = leg.LegendInformation;

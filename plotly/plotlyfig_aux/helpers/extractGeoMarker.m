@@ -5,13 +5,9 @@ function marker = extractGeoMarker(geoData, axisData)
     %-INITIALIZE OUTPUT-%
     marker = struct();
 
-    %---------------------------------------------------------------------%
-
     marker.sizeref = 1;
     marker.sizemode = 'area';
     marker.size = geoData.SizeData;
-
-    %---------------------------------------------------------------------%
 
     %-MARKER SYMBOL (STYLE)-%
     if ~strcmp(geoData.Marker, 'none')
@@ -47,12 +43,8 @@ function marker = extractGeoMarker(geoData, axisData)
         marker.symbol = marksymbol;
     end
 
-    %---------------------------------------------------------------------%
-
     %-MARKER LINE WIDTH (STYLE)-%
     marker.line.width = 2*geoData.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %--MARKER FILL COLOR--%
 
@@ -94,8 +86,6 @@ function marker = extractGeoMarker(geoData, axisData)
         end
         marker.color = markerColor;
     end
-
-    %---------------------------------------------------------------------%
 
     %-MARKER LINE COLOR-%
 

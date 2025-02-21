@@ -192,8 +192,6 @@ function obj = updateData(obj, dataIndex)
         xaxis = obj.layout.("xaxis" + xsource);
         yaxis = obj.layout.("yaxis" + ysource);
 
-        %-----------------------------------------------------------------%
-
         % check for xaxis dates
         if strcmpi(xaxis.type, "date")
             obj.data{dataIndex}.x = convertDate(obj.data{dataIndex}.x);
@@ -224,8 +222,6 @@ function obj = updateData(obj, dataIndex)
             obj.layout.("yaxis" + xsource).autotick = true;
         end
     end
-
-    %---------------------------------------------------------------------%
 
     try
         if obj.layout.isAnimation

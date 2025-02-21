@@ -46,13 +46,9 @@ function obj = updateImage3D(obj, imageIndex)
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
 
-    %---------------------------------------------------------------------%
-
     obj.data{imageIndex}.xaxis = "x" + xsource;
     obj.data{imageIndex}.yaxis = "y" + ysource;
     obj.data{imageIndex}.type = 'surface';
-
-    %---------------------------------------------------------------------%
 
     %-format x an y data-%
     x = image_data.XData;
@@ -71,13 +67,9 @@ function obj = updateImage3D(obj, imageIndex)
         [x, y] = meshgrid(x, y);
     end
 
-    %---------------------------------------------------------------------%
-
     %-surface x and y-%
     obj.data{imageIndex}.x = x;
     obj.data{imageIndex}.y = y;
-
-    %---------------------------------------------------------------------%
 
     %-surface z-%
     isrgbimg = (size(image_data.CData,3) > 1);
@@ -89,17 +81,11 @@ function obj = updateImage3D(obj, imageIndex)
         obj.data{imageIndex}.z = zeros(size(cdata));
     end
 
-    %---------------------------------------------------------------------%
-
     %-surface coloring-%
     obj.data{imageIndex}.surfacecolor = cdata;
 
-    %---------------------------------------------------------------------%
-
     %-surface setting-%
     obj.layout.scene.aspectmode = 'cube';
-
-    %---------------------------------------------------------------------%
 
     %-image name-%
     try
@@ -108,15 +94,11 @@ function obj = updateImage3D(obj, imageIndex)
         obj.data{imageIndex}.name = '';
     end
 
-    %---------------------------------------------------------------------%
-
     obj.data{imageIndex}.opacity = image_data.AlphaData;
     obj.data{imageIndex}.visible = strcmp(image_data.Visible, 'on');
     obj.data{imageIndex}.showscale = false;
     obj.data{imageIndex}.zauto = false;
     obj.data{imageIndex}.zmin = axis_data.CLim(1);
-
-    %---------------------------------------------------------------------%
 
     %-image zmax-%
     if ~strcmpi(image_data.CDataMapping, 'direct')
@@ -124,8 +106,6 @@ function obj = updateImage3D(obj, imageIndex)
     else
         obj.data{imageIndex}.zmax = 255;
     end
-
-    %---------------------------------------------------------------------%
 
     %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
     %-image colorscale-%
@@ -141,8 +121,6 @@ function obj = updateImage3D(obj, imageIndex)
         obj.data{imageIndex}.colorscale{c} = ...
                 {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
-
-    %---------------------------------------------------------------------%
 
     %-image showlegend-%
     try

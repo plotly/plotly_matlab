@@ -18,14 +18,10 @@ function obj = updateIsosurface(obj, isoIndex)
 	jData = plotData.Faces(:, 2) - 1;
 	kData = plotData.Faces(:, 3) - 1;
 
-	%---------------------------------------------------------------------%
-
 	%-get trace-%
 	obj.data{isoIndex}.type = 'mesh3d';
 	obj.data{isoIndex}.name = plotData.DisplayName;
 	obj.data{isoIndex}.showscale = false;
-
-	%---------------------------------------------------------------------%
 
 	%-set mesh data-%
 	obj.data{isoIndex}.x = xData;
@@ -36,8 +32,6 @@ function obj = updateIsosurface(obj, isoIndex)
 	obj.data{isoIndex}.j = jData;
 	obj.data{isoIndex}.k = kData;
 
-	%---------------------------------------------------------------------%
-
 	%-mesh coloring-%
 	faceColor = getFaceColor(plotData, axisData);
 
@@ -46,8 +40,6 @@ function obj = updateIsosurface(obj, isoIndex)
 	else
 		obj.data{isoIndex}.color = faceColor;
 	end
-
-	%---------------------------------------------------------------------%
 
 	%-lighting settings-%
 	if ~strcmp(plotData.FaceLighting, 'flat')
@@ -59,8 +51,6 @@ function obj = updateIsosurface(obj, isoIndex)
 		obj.data{isoIndex}.lighting.vertexnormalsepsilon = 1e-12;
 		obj.data{isoIndex}.lighting.facenormalsepsilon = 1e-6;
 	end
-
-	%---------------------------------------------------------------------%
 
 	%-associate scene to trace-%
 	obj.data{isoIndex}.scene = sprintf('scene%d', xSource);

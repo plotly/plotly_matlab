@@ -5,12 +5,8 @@ function obj = updateHeatmap(obj,heatIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,heatIndex);
 
-    %---------------------------------------------------------------------%
-
     %-heatmap type-%
     obj.data{heatIndex}.type = 'heatmap';
-
-    %---------------------------------------------------------------------%
 
     %-format data-%
     xdata = heat_data.XDisplayData;
@@ -23,8 +19,6 @@ function obj = updateHeatmap(obj,heatIndex)
     obj.data{heatIndex}.connectgaps = false;
     obj.data{heatIndex}.hoverongaps = false;
 
-    %---------------------------------------------------------------------%
-
     %-heatmap colorscale-%
     cmap = heat_data.Colormap;
     len = length(cmap)-1;
@@ -35,14 +29,10 @@ function obj = updateHeatmap(obj,heatIndex)
                 {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
     end
 
-    %---------------------------------------------------------------------%
-
     %-setting plot-%
     obj.data{heatIndex}.hoverinfo = 'text';
     obj.data{heatIndex}.text = heat_data.ColorData(end:-1:1, :);
     obj.data{heatIndex}.hoverlabel.bgcolor = 'white';
-
-    %---------------------------------------------------------------------%
 
     %-show colorbar-%
     obj.data{heatIndex}.showscale = false;
@@ -55,13 +45,9 @@ function obj = updateHeatmap(obj,heatIndex)
         obj.data{heatIndex}.colorbar.outlinecolor = 'rgb(150,150,150)';
     end
 
-    %---------------------------------------------------------------------%
-
     %-hist visible-%
     obj.data{heatIndex}.visible = strcmp(heat_data.Visible,'on');
     obj.data{heatIndex}.opacity = 0.95;
-
-    %---------------------------------------------------------------------%
 
     %-setting annotation text-%
     c = 1;
@@ -88,12 +74,8 @@ function obj = updateHeatmap(obj,heatIndex)
         end
     end
 
-    %---------------------------------------------------------------------%
-
     %-set annotations to layout-%
     obj.layout = setfield(obj.layout, 'annotations', ann);
-
-    %---------------------------------------------------------------------%
 
     %-set background color if any NaN in cdata-%
     if any(isnan(cdata(:)))

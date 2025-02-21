@@ -1,15 +1,11 @@
 function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
 
-    %---------------------------------------------------------------------%
-
     %-FIGURE STRUCTURE-%
     figureData = ancestor(geoData.Parent,'figure');
 
     %-INITIALIZE OUTPUTS-%
     marker = struct();
     linee = struct();
-
-    %---------------------------------------------------------------------%
 
     %-LINE SETTINGS-%
 
@@ -57,13 +53,9 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
 
     linee.dash = lineStyle;
 
-    %---------------------------------------------------------------------%
-
     marker.sizeref = 1;
     marker.sizemode = 'area';
     marker.size = geoData.MarkerSize;
-
-    %---------------------------------------------------------------------%
 
     %-MARKER SYMBOL (STYLE)-%
     if ~strcmp(geoData.Marker, 'none')
@@ -99,12 +91,8 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
         marker.symbol = marksymbol;
     end
 
-    %---------------------------------------------------------------------%
-
     %-MARKER LINE WIDTH (STYLE)-%
     marker.line.width = 2*geoData.LineWidth;
-
-    %---------------------------------------------------------------------%
 
     %--MARKER FILL COLOR--%
 
@@ -146,8 +134,6 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
         end
         marker.color = markerColor;
     end
-
-    %---------------------------------------------------------------------%
 
     %-MARKER LINE COLOR-%
 
