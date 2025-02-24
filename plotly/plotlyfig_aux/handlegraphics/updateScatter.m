@@ -299,7 +299,7 @@ function jitData = getJitData(refData, jitWeight, jitType)
         end
     elseif strcmp(jitType, "rand")
         jitData = jitWeight * jitData;
-    elseif strcmp(jitType, "rand")
+    elseif strcmp(jitType, "randn")
         jitData = jitWeight * rescale(randn(size(refData)), -0.5, 0.5);
     end
 end
