@@ -118,12 +118,7 @@ function obj = updatePatchPie3(obj, patchIndex)
         obj.data{patchIndex}.z = znew;
     end
 
-    %-patch name-%
-    if ~isempty(patch_data.DisplayName)
-        obj.data{patchIndex}.name = patch_data.DisplayName;
-    else
-        obj.data{patchIndex}.name = patch_data.DisplayName;
-    end
+    obj.data{patchIndex}.name = patch_data.DisplayName;
 
     %-patch visible-%
     obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
