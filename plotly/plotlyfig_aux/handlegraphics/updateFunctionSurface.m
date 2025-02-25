@@ -199,7 +199,6 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
             zar = asr(3);
         end
     else
-
         %-define as default-%
         xar = max(xData(:));
         yar = max(yData(:));

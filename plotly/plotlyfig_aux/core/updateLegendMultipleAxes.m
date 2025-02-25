@@ -75,7 +75,6 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
 
         col = round(255*legendData.TextColor);
         obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", col);
-
     end
 
     %-REVERT UNITS-%

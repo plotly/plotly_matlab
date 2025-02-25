@@ -86,7 +86,6 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
                         error('plotly:copyPlotly',permissionMessage('copy the Plotly folder'));
                     end
                 end
-
             end
 
             %add it to the searchpath (startup.m will handle this next time!)

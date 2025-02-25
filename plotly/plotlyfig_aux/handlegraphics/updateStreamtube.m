@@ -112,7 +112,6 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
             scene.camera.eye.z = ey(3);
         end
     else
-
     %-define as default-%
     fac = 0.35;
     xey = - xar;

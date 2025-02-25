@@ -65,7 +65,6 @@ function plotlysetup_online(username, api_key, varargin)
                     fprintf('\n[NO OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n');
                 end
             else %toolbox Plotly not yet created
-
                 %worked (without interruption)...just a formatting thing!
                 fprintf('Done\n');
 

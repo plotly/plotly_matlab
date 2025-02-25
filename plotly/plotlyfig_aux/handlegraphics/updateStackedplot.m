@@ -37,7 +37,6 @@ function updateStackedplot(obj, plotIndex)
     traceIndex = plotIndex;
 
     for t = 1:nTraces
-
         %-update current trace Index-%
         if t ~= 1
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
@@ -67,7 +66,6 @@ function updateStackedplot(obj, plotIndex)
                 obj.data{traceIndex}.mode = 'lines';
                 obj.data{traceIndex}.line = extractLineLine(lineData(t));
         end
-
     end
 end
 
@@ -145,7 +143,6 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     %-GET EACH AXIS-%
 
     for a = 1:nAxis
-
         %-general-%
         ax{a}.domain = axisDomain{a};
         ax{a}.anchor = axisAnchor{a};
@@ -176,7 +173,6 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         elseif isduration(axisLim{a}) || isdatetime(axisLim{a})
             [tickVals, tickText] = getDateTicks(axisLim{a}, nTicks);
             expoFormat(a) = 0;
-
         end
 
         ax{a}.showticklabels = true;

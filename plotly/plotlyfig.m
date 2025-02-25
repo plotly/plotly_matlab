@@ -172,7 +172,6 @@ classdef plotlyfig < handle
         %----LOAD PLOTLY REFERENCE-----%
         function obj = loadplotlyref(obj)
             if isempty(obj.PlotlyReference)
-
                 % plotly reference
                 plotlyref = load('plotly_reference.mat');
 
@@ -206,7 +205,6 @@ classdef plotlyfig < handle
 
             % strip the style keys from layout
             obj.layout = obj.stripkeys(obj.layout, 'layout', 'style');
-
         end
 
         %----GET THE FIELDS OF TYPE DATA----%
@@ -237,7 +235,6 @@ classdef plotlyfig < handle
 
             % validate layout fields
             obj.stripkeys(obj.layout, 'layout', 'style');
-
         end
 
         %----GET PLOTLY FIGURE-----%

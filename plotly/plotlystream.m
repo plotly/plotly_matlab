@@ -126,7 +126,6 @@ classdef plotlystream < handle
                     ME.message '. Please check the online documentation ', ...
                     'found @ plot.ly/matlab for more information or contact chuck@plot.ly']);
             end
-
         end
 
         %-----------CONNECT TO STREAM-----------%

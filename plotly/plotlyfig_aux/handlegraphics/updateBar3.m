@@ -283,7 +283,6 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
                 1+8*k+2, 1+8*k+5, 1+8*k+6, 1+8*k+3, 1+8*k+5, 1+8*k+7]);
         K = [ K;  aux(:)];
     end
-
 end
 
 function [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap)

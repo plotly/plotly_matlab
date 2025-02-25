@@ -18,13 +18,11 @@ function cleanFeedTitle(obj)
 % annotation title (with its flexibility over positioning).
 
     if ~isempty(obj.State.Figure.NumTexts)
-
         % grab the title of the first plot added to the figure.
         first_title_index = find(arrayfun(@(x)(isequal(x.Title, 1)), ...
             obj.State.Text), 1, 'first');
 
         if ~isempty(first_title_index)
-
             first_title_handle = obj.State.Text(first_title_index).Handle;
 
             % grab the string of the first title
@@ -36,7 +34,6 @@ function cleanFeedTitle(obj)
 
             % check for a single plot
             if (obj.State.Figure.NumPlots == 1)
-
                 % grab the font style if not stripped
                 if ~obj.PlotOptions.Strip
                     obj.layout.titlefont = ...
@@ -53,7 +50,6 @@ function cleanFeedTitle(obj)
                     obj.PlotlyDefaults.MinTitleMargin,...
                     obj.layout.margin.t);
             else
-
                 % multiple plots ---> make the title invisible
                 obj.layout.titlefont.color = 'rgba(0,0,0,0)';
             end

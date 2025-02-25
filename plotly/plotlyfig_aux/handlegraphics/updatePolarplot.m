@@ -170,7 +170,6 @@ function updatePolaraxes(obj, plotIndex)
     else
         polarAxis.angularaxis.tickvals = tickValues;
         polarAxis.angularaxis.ticktext = tickLabels;
-
     end
 
     if showTickLabels

@@ -79,7 +79,6 @@ function updateContourOnly(obj, contourIndex)
             obj.data{contourIndex}.line.colorscale = colorScale;
         elseif strcmpi(contourData.LineColor, 'none')
             cData = 'rgba(0,0,0,0)';
-
         end
         n = n + m + 1;
     end
@@ -258,7 +257,6 @@ function updateSurfOnly(obj, surfaceIndex)
 
     elseif strcmpi(meshData.EdgeColor, 'none')
         cDataContour = 'rgba(0,0,0,0)';
-
     end
 
     %-set edge color-%

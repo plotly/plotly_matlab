@@ -61,7 +61,6 @@ function obj = updateSpiderPlot(obj,spiderIndex)
                 obj.data{plotIndex}.showlegend = true;
             end
         end
-
     end
 end
 
@@ -142,7 +141,6 @@ function markerStruct = getMarker(plotData, traceIndex)
 
     %-marker symbol-%
     if ~strcmp(plotData.Marker{traceIndex, 1}, 'none')
-
         switch plotData.Marker{traceIndex, 1}
             case '.'
                 mSymbol = 'circle';

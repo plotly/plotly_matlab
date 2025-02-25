@@ -34,7 +34,6 @@ function obj = updateSlice(obj, dataIndex)
             elseif strcmp(plotData.FaceColor, 'interp')
                 cDataSurf(m2:m2+1,n2:n2+1) = cData(m:m+1,n:n+1);
             end
-
         end
     end
 

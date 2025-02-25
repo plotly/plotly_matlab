@@ -146,7 +146,6 @@ function obj = updateSurf(obj, surfaceIndex)
         cDataContour = 'rgba(0,0,0,0)';
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
-
     end
 
     %-set edge color-%

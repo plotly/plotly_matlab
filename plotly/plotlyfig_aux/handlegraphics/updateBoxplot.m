@@ -75,7 +75,6 @@ function obj = updateBoxplot(obj, boxIndex)
 
     % iterate through box plot children in reverse order
     for bp = bpnum:-1:1
-
         %-CHECK FOR MULTIPLE AXES-%
         [xsource, ysource] = findSourceAxis(obj,axIndex);
 

@@ -146,7 +146,6 @@ function obj = updateMesh(obj, surfaceIndex)
         cDataContour = 'rgba(0,0,0,0)';
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
-
     end
 
     %-set edge color-%
@@ -158,7 +157,6 @@ function obj = updateMesh(obj, surfaceIndex)
     faceColor = meshData.FaceColor;
 
     if isnumeric(faceColor)
-
         if all(faceColor == [1, 1, 1])
             faceColor = [0.96, 0.96, 0.96];
         end
@@ -219,7 +217,6 @@ function obj = updateMesh(obj, surfaceIndex)
             obj.data{surfaceIndex}.cmin = axisData.CLim(1);
             obj.data{surfaceIndex}.cmax = axisData.CLim(2);
         end
-
     end
 
     %-set face color-%
