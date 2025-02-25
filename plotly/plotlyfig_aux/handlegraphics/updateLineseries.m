@@ -44,20 +44,20 @@ function updateLineseries(obj, plotIndex)
 
     %-set trace-%
     if isPolar
-        obj.data{plotIndex}.type = 'scatterpolar';
+        obj.data{plotIndex}.type = "scatterpolar";
         updateDefaultPolaraxes(obj, plotIndex)
-        obj.data{plotIndex}.subplot = sprintf('polar%d', xSource+1);
+        obj.data{plotIndex}.subplot = sprintf("polar%d", xSource+1);
     elseif ~isPlot3D
-        obj.data{plotIndex}.type = 'scatter';
-        obj.data{plotIndex}.xaxis = sprintf('x%d', xSource);
-        obj.data{plotIndex}.yaxis = sprintf('y%d', ySource);
+        obj.data{plotIndex}.type = "scatter";
+        obj.data{plotIndex}.xaxis = "x" + xSource;
+        obj.data{plotIndex}.yaxis = "y" + ySource;
     else
-        obj.data{plotIndex}.type = 'scatter3d';
-        obj.data{plotIndex}.scene = sprintf('scene%d', xSource);
+        obj.data{plotIndex}.type = "scatter3d";
+        obj.data{plotIndex}.scene = "scene" + xSource;
         updateScene(obj, plotIndex);
     end
 
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.visible = strcmp(plotData.Visible,"on");
     obj.data{plotIndex}.name = plotData.DisplayName;
     obj.data{plotIndex}.mode = getScatterMode(plotData);
 
@@ -139,17 +139,17 @@ function updateScene(obj, dataIndex)
     scene.yaxis.showline = true;
     scene.zaxis.showline = true;
 
-    scene.xaxis.ticklabelposition = 'outside';
-    scene.yaxis.ticklabelposition = 'outside';
-    scene.zaxis.ticklabelposition = 'outside';
+    scene.xaxis.ticklabelposition = "outside";
+    scene.yaxis.ticklabelposition = "outside";
+    scene.zaxis.ticklabelposition = "outside";
 
     scene.xaxis.title = axisData.XLabel.String;
     scene.yaxis.title = axisData.YLabel.String;
     scene.zaxis.title = axisData.ZLabel.String;
 
-    scene.xaxis.titlefont.color = 'rgba(0,0,0,1)';
-    scene.yaxis.titlefont.color = 'rgba(0,0,0,1)';
-    scene.zaxis.titlefont.color = 'rgba(0,0,0,1)';
+    scene.xaxis.titlefont.color = "rgba(0,0,0,1)";
+    scene.yaxis.titlefont.color = "rgba(0,0,0,1)";
+    scene.zaxis.titlefont.color = "rgba(0,0,0,1)";
     scene.xaxis.titlefont.size = axisData.XLabel.FontSize;
     scene.yaxis.titlefont.size = axisData.YLabel.FontSize;
     scene.zaxis.titlefont.size = axisData.ZLabel.FontSize;
@@ -208,9 +208,9 @@ function updateScene(obj, dataIndex)
     scene.zaxis.tickvals = zTick;
     scene.zaxis.ticktext = axisData.ZTickLabel;
 
-    scene.xaxis.tickcolor = 'rgba(0,0,0,1)';
-    scene.yaxis.tickcolor = 'rgba(0,0,0,1)';
-    scene.zaxis.tickcolor = 'rgba(0,0,0,1)';
+    scene.xaxis.tickcolor = "rgba(0,0,0,1)";
+    scene.yaxis.tickcolor = "rgba(0,0,0,1)";
+    scene.zaxis.tickcolor = "rgba(0,0,0,1)";
     scene.xaxis.tickfont.size = axisData.FontSize;
     scene.yaxis.tickfont.size = axisData.FontSize;
     scene.zaxis.tickfont.size = axisData.FontSize;
@@ -219,13 +219,13 @@ function updateScene(obj, dataIndex)
     scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
 
     %-grid-%
-    if strcmp(axisData.XGrid, 'off')
+    if strcmp(axisData.XGrid, "off")
         scene.xaxis.showgrid = false;
     end
-    if strcmp(axisData.YGrid, 'off')
+    if strcmp(axisData.YGrid, "off")
         scene.yaxis.showgrid = false;
     end
-    if strcmp(axisData.ZGrid, 'off')
+    if strcmp(axisData.ZGrid, "off")
         scene.zaxis.showgrid = false;
     end
 
