@@ -5,12 +5,7 @@ function updateScatter(obj,plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     %-check is 3D scatter-%
-    try
-        isScatter3D = isfield(plotData, "ZData");
-        isScatter3D = isScatter3D & ~isempty(plotData.ZData);
-    catch
-        isScatter3D = false;
-    end
+    isScatter3D = isfield(plotData, "ZData") && ~isempty(plotData.ZData);
 
     %-set trace-%
     if ~isScatter3D

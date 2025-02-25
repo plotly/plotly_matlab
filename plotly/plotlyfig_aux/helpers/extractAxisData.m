@@ -15,9 +15,10 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     lineWidth = max(1, ...
             axisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
-    try
+    if isprop(axisData, axisName + "Axis") ...
+            && isprop(axisData.(axisName + "Axis"), "Exponent")
         exponentFormat = axisData.(axisName + "Axis").Exponent;
-    catch
+    else
         exponentFormat = 0;
     end
 
@@ -62,10 +63,10 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     end
 
     %-axis grid color-%
-    try
+    if isprop(axisData, "GridColor") && isprop(axisData, "GridAlpha")
         axis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
                 [round(255*axisData.GridColor) axisData.GridAlpha]);
-    catch
+    else
         axis.gridcolor = axisColor;
     end
 

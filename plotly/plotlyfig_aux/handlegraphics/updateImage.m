@@ -75,9 +75,9 @@ function obj = updateImage(obj, imageIndex)
     end
 
     %-image name-%
-    try
+    if isprop(image_data, "DisplayName")
         obj.data{imageIndex}.name = image_data.DisplayName;
-    catch
+    else
         obj.data{imageIndex}.name = '';
     end
 

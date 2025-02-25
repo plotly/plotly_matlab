@@ -40,19 +40,17 @@ function obj = updateAxis(obj,axIndex)
     % side:...[DONE]
     % position:...[NOT SUPPORTED IN MATLAB]
 
-    %-STANDARDIZE UNITS-%
-    axisUnits = obj.State.Axis(axIndex).Handle.Units;
-    obj.State.Axis(axIndex).Handle.Units = 'normalized';
-
-    try
-        fontUnits = obj.State.Axis(axIndex).Handle.FontUnits;
-        obj.State.Axis(axIndex).Handle.FontUnits = 'points';
-    catch
-        % TODO
-    end
-
     %-AXIS DATA STRUCTURE-%
     axisData = obj.State.Axis(axIndex).Handle;
+
+    %-STANDARDIZE UNITS-%
+    axisUnits = axisData.Units;
+    axisData.Units = 'normalized';
+
+    if isprop(axisData, "FontUnits")
+        fontUnits = axisData.FontUnits;
+        axisData.FontUnits = 'points';
+    end
 
     %-check if headmap axis-%
     isHeatmapAxis = axisData.Type == "heatmap";
@@ -154,11 +152,9 @@ function obj = updateAxis(obj,axIndex)
     end
 
     %-REVERT UNITS-%
-    obj.State.Axis(axIndex).Handle.Units = axisUnits;
+    axisData.Units = axisUnits;
 
-    try
-        obj.State.Axis(axIndex).Handle.FontUnits = fontUnits;
-    catch
-        % TODO
+    if isprop(axisData, "FontUnits")
+        axisData.FontUnits = fontUnits;
     end
 end

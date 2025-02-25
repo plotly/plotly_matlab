@@ -151,12 +151,8 @@ function updatePolaraxes(obj, plotIndex)
     tickLabels = axisData.ThetaTickLabel;
     showTickLabels = true;
 
-    try
-        if tickValues(1) == 0 && tickValues(end) == 360
-            tickValues = tickValues(1:end-1);
-        end
-    catch
-        tickValues = tickValues;
+    if ~isempty(tickValues) && tickValues(1) == 0 && tickValues(end) == 360
+        tickValues = tickValues(1:end-1);
     end
 
     if isempty(tickValues)

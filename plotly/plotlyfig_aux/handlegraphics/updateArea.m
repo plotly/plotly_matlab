@@ -63,14 +63,15 @@ function updateArea(obj,areaIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
 
     %-check for multiple axes-%
-    try
+    if numel(area_data.Parent.YAxis) > 1
+        yaxMatch = zeros(1,2);
         for yax = 1:2
             yAxisColor = area_data.Parent.YAxis(yax).Color;
-            yaxIndex(yax) = sum(yAxisColor == area_data.FaceColor);
+            yaxMatch(yax) = sum(yAxisColor == area_data.FaceColor);
         end
-        [~, yaxIndex] = max(yaxIndex);
+        [~, yaxIndex] = max(yaxMatch);
         [xsource, ysource] = findSourceAxis(obj, axIndex, yaxIndex);
-    catch
+    else
         [xsource, ysource] = findSourceAxis(obj,axIndex);
     end
 

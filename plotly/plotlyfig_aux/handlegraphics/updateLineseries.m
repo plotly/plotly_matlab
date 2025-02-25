@@ -5,14 +5,15 @@ function updateLineseries(obj, plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     %-check for multiple axes-%
-    try
+    if numel(plotData.Parent.YAxis) > 1
+        yaxMatch = zeros(1,2);
         for yax = 1:2
             yAxisColor = plotData.Parent.YAxis(yax).Color;
-            yaxIndex(yax) = sum(yAxisColor == plotData.Color);
+            yaxMatch(yax) = sum(yAxisColor == plotData.Color);
         end
-        [~, yaxIndex] = max(yaxIndex);
+        [~, yaxIndex] = max(yaxMatch);
         [xSource, ySource] = findSourceAxis(obj, axIndex, yaxIndex);
-    catch
+    else
         [xSource, ySource] = findSourceAxis(obj,axIndex);
     end
 
@@ -21,12 +22,7 @@ function updateLineseries(obj, plotIndex)
     isPolar = ismember('compass', treatAs) || ismember('ezpolar', treatAs);
 
     %-check is 3D plot-%
-    try
-        isPlot3D = isfield(plotData,'ZData');
-        isPlot3D = isPlot3D & ~isempty(plotData.ZData);
-    catch
-        isPlot3D = false;
-    end
+    isPlot3D = isfield(plotData, "ZData") && ~isempty(plotData.ZData);
 
     %-get trace data-%
     xData = plotData.XData;

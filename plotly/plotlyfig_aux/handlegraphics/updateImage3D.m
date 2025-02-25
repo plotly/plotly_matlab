@@ -84,9 +84,9 @@ function obj = updateImage3D(obj, imageIndex)
     obj.layout.scene.aspectmode = 'cube';
 
     %-image name-%
-    try
+    if isprop(image_data, "DisplayName")
         obj.data{imageIndex}.name = image_data.DisplayName;
-    catch
+    else
         obj.data{imageIndex}.name = '';
     end
 

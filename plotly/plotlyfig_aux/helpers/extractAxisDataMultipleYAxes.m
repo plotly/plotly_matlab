@@ -27,11 +27,11 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
     axis.tickcolor = axiscol;
     axis.tickfont.color = axiscol;
 
-    try
+    if isprop(parentAxisData, "GridColor") && isprop(parentAxisData, "GridAlpha")
         axis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
                 round(255*parentAxisData.GridColor), ...
                 parentAxisData.GridAlpha);
-    catch
+    else
         axis.gridcolor = axiscol;
     end
 

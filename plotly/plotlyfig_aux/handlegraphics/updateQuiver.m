@@ -131,9 +131,9 @@ function updateScene(obj, dataIndex)
     cameraEye = cameraPosition./dataAspectRatio;
     normFac = abs(min(cameraEye));
 
-    try
+    if isprop(axisData, "Layout") && isprop(axisData.Layout, "TileSpan")
         fac = size(axisData.Layout.TileSpan, 2);
-    catch
+    else
         fac = 1;
     end
 
