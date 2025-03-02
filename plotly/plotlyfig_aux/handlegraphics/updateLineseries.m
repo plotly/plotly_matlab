@@ -5,7 +5,7 @@ function updateLineseries(obj, plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     %-check for multiple axes-%
-    if numel(plotData.Parent.YAxis) > 1
+    if isprop(plotData.Parent, "YAxis") && numel(plotData.Parent.YAxis) > 1
         yaxMatch = zeros(1,2);
         for yax = 1:2
             yAxisColor = plotData.Parent.YAxis(yax).Color;
