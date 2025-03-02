@@ -109,9 +109,9 @@ function updateScene(obj, dataIndex)
     cameraUpVector = axisData.CameraUpVector;
     cameraEye = cameraPosition;
 
-    rangeXLim = range(axisData.XLim);
-    rangeYLim = range(axisData.YLim);
-    rangeZLim = range(axisData.ZLim);
+    rangeXLim = rangeLength(axisData.XLim);
+    rangeYLim = rangeLength(axisData.YLim);
+    rangeZLim = rangeLength(axisData.ZLim);
     cameraEye = cameraEye./[rangeXLim, rangeYLim rangeZLim];
     eyeNorm = max(abs(cameraEye)) - 1.4;
 

@@ -137,9 +137,9 @@ function updateScene(obj, dataIndex)
         fac = 1;
     end
 
-    r1 = range([ 1, prod(aspectRatio([1,2])) ]);
-    r2 = range([ 1, prod(aspectRatio([1,3])) ]);
-    r3 = range([ 1, prod(aspectRatio([2,3])) ]);
+    r1 = rangeLength([ 1, prod(aspectRatio([1,2])) ]);
+    r2 = rangeLength([ 1, prod(aspectRatio([1,3])) ]);
+    r3 = rangeLength([ 1, prod(aspectRatio([2,3])) ]);
     r = max([r1, r2, r3]);
 
     %-aspect ratio-%
@@ -163,15 +163,15 @@ function updateScene(obj, dataIndex)
     %-scene axis configuration-%
     rangeFac = 0.0;
 
-    xRange = range(axisData.XLim);
+    xRange = rangeLength(axisData.XLim);
     scene.xaxis.range(1) = axisData.XLim(1) - rangeFac * xRange;
     scene.xaxis.range(2) = axisData.XLim(2) + rangeFac * xRange;
 
-    yRange = range(axisData.YLim);
+    yRange = rangeLength(axisData.YLim);
     scene.yaxis.range(1) = axisData.YLim(1) - rangeFac * yRange;
     scene.yaxis.range(2) = axisData.YLim(2) + rangeFac * yRange;
 
-    zRange = range(axisData.ZLim);
+    zRange = rangeLength(axisData.ZLim);
     scene.zaxis.range(1) = axisData.ZLim(1) - rangeFac * zRange;
     scene.zaxis.range(2) = axisData.ZLim(2) + rangeFac * zRange;
 

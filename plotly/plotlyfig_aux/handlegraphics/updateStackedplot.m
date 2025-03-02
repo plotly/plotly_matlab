@@ -245,12 +245,12 @@ end
 
 function [tickVals, tickText, expoFormat] = getNumTicks(axisLim, nTicks)
     refVals = [1, 2, 5];
-    refPot = floor(log10(range(axisLim)));
+    refPot = floor(log10(rangeLength(axisLim)));
 
     fixAxisLim = fix(axisLim);
 
     if ~all(fixAxisLim == 0)
-        expoFormat = floor(log10(max(1, range(fixAxisLim))));
+        expoFormat = floor(log10(max(1, rangeLength(fixAxisLim))));
     else
         expoFormat = refPot;
     end
