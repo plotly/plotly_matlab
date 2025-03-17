@@ -1,4 +1,4 @@
-function obj = updateAnnotation(obj,anIndex)
+function annotation = updateAnnotation(obj,anIndex)
     %-------X/YLABEL FIELDS--------%
     % title...[DONE]
     % titlefont.size...[DONE]
@@ -47,75 +47,74 @@ function obj = updateAnnotation(obj,anIndex)
     %---------------------------------------------------------------------%
 
     %-show arrow-%
-    obj.layout.annotations{anIndex}.showarrow = false;
+    annotation.showarrow = false;
 
     %---------------------------------------------------------------------%
 
     %-anchor title to paper-%
     if obj.State.Text(anIndex).Title
         %-xref-%
-        obj.layout.annotations{anIndex}.xref = "paper";
+        annotation.xref = "paper";
         %-yref-%
-        obj.layout.annotations{anIndex}.yref = "paper";
+        annotation.yref = "paper";
     else
         %-xref-%
-        obj.layout.annotations{anIndex}.xref = "x" + xsource;
+        annotation.xref = "x" + xsource;
         %-yref-%
-        obj.layout.annotations{anIndex}.yref = "y" + ysource;
+        annotation.yref = "y" + ysource;
     end
 
     %---------------------------------------------------------------------%
 
     %-xanchor-%
-    obj.layout.annotations{anIndex}.xanchor = text_data.HorizontalAlignment;
+    annotation.xanchor = text_data.HorizontalAlignment;
 
     %---------------------------------------------------------------------%
 
     %-align-%
-    obj.layout.annotations{anIndex}.align = text_data.HorizontalAlignment;
+    annotation.align = text_data.HorizontalAlignment;
 
     %---------------------------------------------------------------------%
 
     switch text_data.VerticalAlignment
         %-yanchor-%
         case {"top", "cap"}
-            obj.layout.annotations{anIndex}.yanchor = "top";
+            annotation.yanchor = "top";
         case "middle"
-            obj.layout.annotations{anIndex}.yanchor = "middle";
+            annotation.yanchor = "middle";
         case {"baseline","bottom"}
-            obj.layout.annotations{anIndex}.yanchor = "bottom";
+            annotation.yanchor = "bottom";
     end
 
     %---------------------------------------------------------------------%
 
     %-text-%
     if obj.State.Text(anIndex).Title
-        obj.layout.annotations{anIndex}.text = parseString( ...
+        annotation.text = parseString( ...
                 text_data.String,text_data.Interpreter);
         if isempty(text_data.String)
-            obj.layout.annotations{anIndex}.text = "<b></b>"; %empty string annotation
+            annotation.text = "<b></b>"; %empty string annotation
         else
-            obj.layout.annotations{anIndex}.text = "<b>" + join( ...
-                    string(obj.layout.annotations{anIndex}.text), ...
-                    "<br>") + "</b>";
+            annotation.text = "<b>" + join( ...
+                    string(annotation.text), "<br>") + "</b>";
         end
     else
         if ~strcmpi(obj.PlotOptions.TreatAs, "pie3")
-            obj.layout.annotations{anIndex}.text = parseString( ...
+            annotation.text = parseString( ...
                     text_data.String,text_data.Interpreter);
         else
-            obj.layout.annotations{anIndex}.text = "<b></b>";
+            annotation.text = "<b></b>";
         end
     end
 
     %-optional code flow-%
     % if ~strcmpi(obj.PlotOptions.TreatAs, "pie3")
-    %     obj.layout.annotations{anIndex}.text = parseString(text_data.String,text_data.Interpreter);
+    %     annotation.text = parseString(text_data.String,text_data.Interpreter);
     %     if obj.State.Text(anIndex).Title && isempty(text_data.String)
-    %         obj.layout.annotations{anIndex}.text = "<b></b>"; %empty string annotation
+    %         annotation.text = "<b></b>"; %empty string annotation
     %     end
     % else
-    %     obj.layout.annotations{anIndex}.text = "<b></b>";
+    %     annotation.text = "<b></b>";
     % end
 
     %---------------------------------------------------------------------%
@@ -127,42 +126,38 @@ function obj = updateAnnotation(obj,anIndex)
         yaxis = obj.layout.("yaxis" + xsource);
 
         %-x position-%
-        obj.layout.annotations{anIndex}.x = mean(xaxis.domain);
+        annotation.x = mean(xaxis.domain);
         %-y position-%
-        obj.layout.annotations{anIndex}.y = (yaxis.domain(2) ...
-                + obj.PlotlyDefaults.TitleHeight);
+        annotation.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
     else
         %-x position-%
-        obj.layout.annotations{anIndex}.x = text_data.Position(1);
+        annotation.x = text_data.Position(1);
         %-y position-%
-        obj.layout.annotations{anIndex}.y = text_data.Position(2);
+        annotation.y = text_data.Position(2);
     end
 
 
 
     %-font color-%
     col = round(255*text_data.Color);
-    obj.layout.annotations{anIndex}.font.color = ...
-            sprintf("rgb(%d,%d,%d)", col);
+    annotation.font.color = sprintf("rgb(%d,%d,%d)", col);
 
     %---------------------------------------------------------------------%
 
     %-font family-%
-    obj.layout.annotations{anIndex}.font.family = matlab2plotlyfont( ...
-            text_data.FontName);
+    annotation.font.family = matlab2plotlyfont(text_data.FontName);
 
     %---------------------------------------------------------------------%
 
     %-font size-%
-    obj.layout.annotations{anIndex}.font.size = text_data.FontSize;
+    annotation.font.size = text_data.FontSize;
 
     %---------------------------------------------------------------------%
 
     switch text_data.FontWeight
         case {"bold","demi"}
             %-bold text-%
-            obj.layout.annotations{anIndex}.text = ...
-                "<b>" + obj.layout.annotations{anIndex}.text + "</b>";
+            annotation.text = "<b>" + annotation.text + "</b>";
         otherwise
     end
 
@@ -172,7 +167,7 @@ function obj = updateAnnotation(obj,anIndex)
     if ~ischar(text_data.BackgroundColor)
         switch text_data.BackgroundColor
             case "ne"
-                obj.layout.annotations{anIndex}.bgcolor = "rgba(0,0,0,0)";
+                annotation.bgcolor = "rgba(0,0,0,0)";
             otherwise
         end
     end
@@ -182,39 +177,34 @@ function obj = updateAnnotation(obj,anIndex)
     %-border color-%
     if ~ischar(text_data.EdgeColor)
         col = round(255*text_data.EdgeColora);
-        obj.layout.annotations{anIndex}.bordercolor = ...
-                sprintf("rgb(%d,%d,%d)", col);
+        annotation.bordercolor = sprintf("rgb(%d,%d,%d)", col);
     else
         %-none-%
-        obj.layout.annotations{anIndex}.bordercolor = "rgba(0,0,0,0)";
+        annotation.bordercolor = "rgba(0,0,0,0)";
     end
 
     %---------------------------------------------------------------------%
 
     %-text angle-%
-    obj.layout.annotations{anIndex}.textangle = text_data.Rotation;
+    annotation.textangle = text_data.Rotation;
     if text_data.Rotation > 180
-        obj.layout.annotations{anIndex}.textangle = ...
-                text_data.Rotation - 360;
+        annotation.textangle = text_data.Rotation - 360;
     end
 
     %---------------------------------------------------------------------%
 
     %-border width-%
-    obj.layout.annotations{anIndex}.borderwidth = text_data.LineWidth;
+    annotation.borderwidth = text_data.LineWidth;
 
     %---------------------------------------------------------------------%
 
     %-border pad-%
-    obj.layout.annotations{anIndex}.borderpad = text_data.Margin;
+    annotation.borderpad = text_data.Margin;
 
 
     %hide text (a workaround)
     if strcmp(text_data.Visible,"off")
-        obj.layout.annotations{anIndex}.text = " ";
-    else
-        obj.layout.annotations{anIndex}.text = ...
-                obj.layout.annotations{anIndex}.text;
+        annotation.text = " ";
     end
 
     %---------------------------------------------------------------------%

@@ -38,7 +38,7 @@ classdef plotlyfig < handle
             obj.UserData.Verbose = true;
 
             %-PlotOptions-%
-            obj.PlotOptions.CleanFeedTitle = true; 
+            obj.PlotOptions.CleanFeedTitle = true;
             obj.PlotOptions.FileName = '';
             obj.PlotOptions.FileOpt = 'new';
             obj.PlotOptions.WorldReadable = true;
@@ -63,8 +63,8 @@ classdef plotlyfig < handle
 
             % offline options
             obj.PlotOptions.Offline = true;
-            obj.PlotOptions.ShowLinkText = true; 
-            obj.PlotOptions.LinkText = obj.get_link_text; 
+            obj.PlotOptions.ShowLinkText = true;
+            obj.PlotOptions.LinkText = obj.get_link_text;
             obj.PlotOptions.IncludePlotlyjs = true;
             obj.PlotOptions.SaveFolder = pwd;
 
@@ -88,7 +88,7 @@ classdef plotlyfig < handle
             %-PlotlyDefaults-%
             obj.PlotlyDefaults.MinTitleMargin = 10;
             obj.PlotlyDefaults.TitleHeight = 0.01;
-            obj.PlotlyDefaults.TitleFontSizeIncrease = 40; 
+            obj.PlotlyDefaults.TitleFontSizeIncrease = 40;
             obj.PlotlyDefaults.FigureIncreaseFactor = 1.5;
             obj.PlotlyDefaults.AxisLineIncreaseFactor = 1.5;
             obj.PlotlyDefaults.MarginPad = 0;
@@ -97,7 +97,7 @@ classdef plotlyfig < handle
             obj.PlotlyDefaults.ErrorbarWidth = 6;
             obj.PlotlyDefaults.ShowBaselineLegend = false;
             obj.PlotlyDefaults.Bargap = 0;
-            obj.PlotlyDefaults.CaptionMarginIncreaseFactor = 1.2; 
+            obj.PlotlyDefaults.CaptionMarginIncreaseFactor = 1.2;
             obj.PlotlyDefaults.MinCaptionMargin = 80;
             obj.PlotlyDefaults.IsLight = false;
             obj.PlotlyDefaults.isGeoaxis = false;
@@ -314,7 +314,7 @@ classdef plotlyfig < handle
         end
 
         %----LOAD PLOTLY REFERENCE-----%
-        function obj = loadplotlyref(obj) 
+        function obj = loadplotlyref(obj)
             if isempty(obj.PlotlyReference)
 
                 % plotly reference
@@ -327,7 +327,7 @@ classdef plotlyfig < handle
 
         %----KEEP THE MATLAB STYLE DEFAULTS----%
         function obj = revert(obj)
-            obj.PlotOptions.Strip = false; 
+            obj.PlotOptions.Strip = false;
             obj.update;
         end
 
@@ -356,10 +356,10 @@ classdef plotlyfig < handle
         %----GET THE FIELDS OF TYPE DATA----%
         function data = getdata(obj)
             obj.loadplotlyref;
-            
+
             % initialize output
             data = cell(1,length(obj.data));
-            
+
             % remove style / plot_info types in data
             for d = 1:length(obj.data)
                 data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, {'style','plot_info'});
@@ -381,7 +381,7 @@ classdef plotlyfig < handle
 
             % validate layout fields
             obj.stripkeys(obj.layout, 'layout', 'style');
-            
+
         end
 
         %----GET PLOTLY FIGURE-----%
@@ -422,7 +422,7 @@ classdef plotlyfig < handle
                 obj.saveas(obj.PlotOptions.FileName,'jpeg');
             end
         end
-        
+
         %----SAVE STATIC PDF IMAGE-----%
         function obj = pdf(obj, filename)
             if nargin > 1
@@ -452,29 +452,29 @@ classdef plotlyfig < handle
 
         %----ADD A CUSTOM CAPTION-----%
         function obj = add_caption(obj, caption_string, varargin)
-            caption.text = caption_string; 
+            caption.text = caption_string;
 
             % defaults
             caption.xref = 'paper';
             caption.yref = 'paper';
             caption.xanchor = 'left';
             caption.yanchor = 'top';
-            caption.x = 0.1; 
+            caption.x = 0.1;
             caption.y = -0.05;
-            caption.showarrow = false; 
+            caption.showarrow = false;
 
             % inject any custom annotation specs
             for n = 1:2:length(varargin)
-                caption = setfield(caption, varargin{n}, varargin{n+1}); 
+                caption = setfield(caption, varargin{n}, varargin{n+1});
             end
 
             % adjust the bottom margin
             obj.layout.margin.b = max(obj.layout.margin.b, ...
-                    obj.PlotlyDefaults.MinCaptionMargin); 
+                    obj.PlotlyDefaults.MinCaptionMargin);
 
             % add the new caption to the figure
             obj.State.Figure.NumTexts = obj.State.Figure.NumTexts + 1;
-            obj.layout.annotations{obj.State.Figure.NumTexts} = caption; 
+            obj.layout.annotations{obj.State.Figure.NumTexts} = caption;
 
             % update the figure state
             obj.State.Text(obj.State.Figure.NumTexts).Handle = NaN;
@@ -543,8 +543,8 @@ classdef plotlyfig < handle
                     if obj.PlotOptions.OpenURL
                         web(obj.url, '-browser');
                     end
-                end 
-            end           
+                end
+            end
         end
 
         %-----------------------FIGURE CONVERSION-------------------------%
@@ -595,7 +595,7 @@ classdef plotlyfig < handle
                             end
                             temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
                             temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
-                            temp_ax(j - deleted_idx) = []; 
+                            temp_ax(j - deleted_idx) = [];
                             deleted_idx = deleted_idx + 1;
                         end
                     catch
@@ -660,7 +660,7 @@ classdef plotlyfig < handle
                 baselines = findobj(ax(axrev),'-property','BaseLine');
 
                 % check is current axes have multiple y-axes
-                try 
+                try
                     obj.PlotlyDefaults.isMultipleYAxes(axrev) = length(ax(axrev).YAxis) == 2;
                 catch
                     obj.PlotlyDefaults.isMultipleYAxes(axrev) = false;
@@ -729,10 +729,10 @@ classdef plotlyfig < handle
 
             for g = 1:length(legs)
                 obj.State.Legend(g).Handle = handle(legs(g));
-                
+
                 % find associated axis
                 legendAxis = findLegendAxis(obj, handle(legs(g)));
-                
+
                 % update colorbar associated axis
                 obj.State.Legend(g).AssociatedAxis = legendAxis;
             end
@@ -766,6 +766,7 @@ classdef plotlyfig < handle
 
             % reset layout
             obj.layout = struct();
+            obj.layout.annotations = {};
 
             % update figure
             updateFigure(obj);
@@ -800,7 +801,7 @@ classdef plotlyfig < handle
                         % TODO
                     else
                         if ~obj.PlotlyDefaults.isTernary
-                            updateAnnotation(obj,n);
+                            obj.layout.annotations{end+1} = updateAnnotation(obj,n);
 
                             if obj.State.Figure.NumAxes == 1
                                 obj.PlotOptions.CleanFeedTitle = false;
@@ -983,7 +984,7 @@ classdef plotlyfig < handle
             % call initial
             [y,t,x] = initial(varargin{:});
             % fake output by calling plot
-            plot(t,y); 
+            plot(t,y);
             %update object
             obj.update;
             %send to plotly
@@ -1082,7 +1083,7 @@ classdef plotlyfig < handle
                                 exception.message(1:end-1) ' in ' ...
                                 fieldname '\n\n']);
                     end
-                end 
+                end
             end
         end
 
@@ -1092,9 +1093,9 @@ classdef plotlyfig < handle
             else
                 plotly_domain = obj.UserData.PlotlyDomain;
             end
-            link_domain = strrep(plotly_domain, 'https://', ''); 
-            link_domain = strrep(link_domain, 'http://', ''); 
-            link_text = ['Export to ' link_domain]; 
-        end   
+            link_domain = strrep(plotly_domain, 'https://', '');
+            link_domain = strrep(link_domain, 'http://', '');
+            link_text = ['Export to ' link_domain];
+        end
     end
 end
