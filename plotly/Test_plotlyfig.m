@@ -247,6 +247,34 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             ), AbsTol=1e-15);
         end
 
+        function testSingleBarPlotData(tc)
+            fig = figure("Visible","off");
+            bar(1,1);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqual(p.data{1}, struct( ...
+                "xaxis", "x1", ...
+                "yaxis", "y1", ...
+                "type", "bar", ...
+                "name", '', ...
+                "visible", true, ...
+                "orientation", "v", ...
+                "x", {{1}}, ...
+                "y", {{1}}, ...
+                "marker", struct( ...
+                    "line", struct( ...
+                        "width", 0.5, ...
+                        "color", "rgba(0,0,0,1.000000)", ...
+                        "dash", "solid" ...
+                    ), ...
+                    "color", "rgba(0,114,189,1.000000)" ...
+                ), ...
+                "showlegend", true ...
+            ));
+        end
+
         function testVerticalBarPlotData(tc)
             fig = figure("Visible","off");
             x = 1:12;
@@ -789,11 +817,11 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             x = linspace(0,10);
             y = sin(3*x);
             yyaxis left
-            plot(x,y)
+            plot(x,y);
             y2 = sin(3*x).*exp(0.5*x);
             yyaxis right
-            plot(x,y2)
-            ylim([-150 150])
+            plot(x,y2);
+            ylim([-150 150]);
 
             p = plotlyfig(fig,"visible","off");
 
@@ -896,11 +924,11 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             x = linspace(0,10);
             y = sin(3*x);
             yyaxis left
-            area(x,y)
+            area(x,y);
             y2 = sin(3*x).*exp(0.5*x);
             yyaxis right
-            area(x,y2)
-            ylim([-150 150])
+            area(x,y2);
+            ylim([-150 150]);
 
             p = plotlyfig(fig,"visible","off");
 

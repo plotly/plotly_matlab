@@ -79,11 +79,19 @@ function obj = updateBar(obj,barIndex)
             obj.data{barIndex}.y = xData;
     end
 
+    % Plotly requires x and y to be iterable
+    if isscalar(obj.data{barIndex}.x)
+        obj.data{barIndex}.x = {obj.data{barIndex}.x};
+    end
+    if isscalar(obj.data{barIndex}.y)
+        obj.data{barIndex}.y = {obj.data{barIndex}.y};
+    end
+
     %-trace settings-%
-    markerline = extractAreaLine(barData); 
+    markerline = extractAreaLine(barData);
 
     obj.data{barIndex}.marker = extractAreaFace(barData);
-    obj.data{barIndex}.marker.line = markerline; 
+    obj.data{barIndex}.marker.line = markerline;
 
     %-layout settings-%
     obj.layout.bargroupgap = 1-barData.BarWidth;
