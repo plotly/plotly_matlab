@@ -1,6 +1,6 @@
 function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     %extract information related to each axis
-    %   axis_data is the data extrated from the figure, axisName take the
+    %   axis_data is the data extracted from the figure, axisName take the
     %   values 'x' 'y' or 'z'
 
     %---------------------------------------------------------------------%

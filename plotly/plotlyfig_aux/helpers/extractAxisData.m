@@ -1,6 +1,6 @@
 function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     % extract information related to each axis
-    %   axisData is the data extrated from the figure, axisName take the
+    %   axisData is the data extracted from the figure, axisName take the
     %   values "x" "y" or "z"
 
     %=====================================================================%

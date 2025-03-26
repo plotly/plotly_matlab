@@ -7,7 +7,7 @@ function obj = updateBaseline(obj, baseIndex)
 
     %-CHECK FOR MULTIPLE BASELINES-%
     if isMultipleBaseline(obj, baseIndex)
-        %-hide baseline if mutliple-%
+        %-hide baseline if multiple-%
         obj.data{baseIndex}.visible = false;
     end
 end

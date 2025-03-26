@@ -22,7 +22,7 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
 
     %---------------------------------------------------------------------%
 
-    %-getting and setting postion data-%
+    %-getting and setting position data-%
 
     xo = axisData.Position(1);
     yo = axisData.Position(2);
@@ -83,7 +83,7 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
 
     %---------------------------------------------------------------------%
 
-    %-do y-axes visibles-%
+    %-do y-axes visible-%
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
     plotIndex = obj.PlotOptions.nPlots;
 

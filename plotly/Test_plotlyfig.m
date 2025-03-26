@@ -902,10 +902,10 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
         function testVerticalConstantLineWithLabel(tc)
             fig = figure("Visible","off");
             label = "label";
-            alignemnt = "left";
+            alignment = "left";
             width = 3;
             xl = xline(1,'r--',label,LineWidth=width);
-            xl.LabelHorizontalAlignment = alignemnt;
+            xl.LabelHorizontalAlignment = alignment;
 
             p = plotlyfig(fig,"visible","off");
 
@@ -916,7 +916,7 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
                 "dash", 'dash' ...
             ));
             tc.verifyTrue(any(cellfun(@(ann) contains(ann.text,label), p.layout.annotations)));
-            tc.verifyTrue(any(cellfun(@(ann) ann.xanchor == alignemnt, p.layout.annotations)));
+            tc.verifyTrue(any(cellfun(@(ann) ann.xanchor == alignment, p.layout.annotations)));
         end
 
         function testDoubleYAxisAreaPlotData(tc)

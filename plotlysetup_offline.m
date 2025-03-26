@@ -62,7 +62,7 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
                     fprintf('\n[NO OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n');
                 end
             else %toolbox Plotly not yet created
-                %worked (without interuption)...just a formatting thing!
+                %worked (without interruption)...just a formatting thing!
                 fprintf('Done\n');
 
                 %make the plotlyToolboxPath dir.

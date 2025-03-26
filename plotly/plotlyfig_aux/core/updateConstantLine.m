@@ -95,7 +95,7 @@ function updateConstantLine(obj,plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-Fro 3D plots-%
+    %-For 3D plots-%
     obj.PlotOptions.is3d = false; % by default
 
     if isfield(plotData,"ZData")

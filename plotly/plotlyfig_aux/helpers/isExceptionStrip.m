@@ -10,7 +10,7 @@ function check = isExceptionStrip(grstruct, fieldname)
         % comparison function
         compfun = exceptions{e+1};
         % look for fieldnames of type exceptions{e} and compare the
-        % underyling data using exceptions{e+1}
+        % underlying data using exceptions{e+1}
         if strcmp(fieldname, exceptions{e}) ...
                 && compfun(grstruct.(fieldname))
             check = true;

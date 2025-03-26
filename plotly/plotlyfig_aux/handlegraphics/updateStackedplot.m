@@ -101,7 +101,7 @@ function updateStackedplotAxis(obj, plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-SET AXES ANOTATIONS-%
+    %-SET AXES ANNOTATIONS-%
 
     %-trace title-%
     updateTitle(obj, plotData.Title, [1, 3]);
@@ -131,7 +131,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
 
     %---------------------------------------------------------------------%
 
-    %-Parse parameters accorging to axisName (X or Y)
+    %-Parse parameters according to axisName (X or Y)
 
     switch axName
         case {'x', 'X'}

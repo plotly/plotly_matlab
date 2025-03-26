@@ -15,7 +15,7 @@ function cleanFeedTitle(obj)
 % If multiple plots are present, only the text of the title is used so
 % that the title appears in the feed. The text color is set so that the
 % Plotly title is hidden from the graph, favouring the
-% annotation title (with its flexibilty over positioning).
+% annotation title (with its flexibility over positioning).
 
     if ~isempty(obj.State.Figure.NumTexts)
 

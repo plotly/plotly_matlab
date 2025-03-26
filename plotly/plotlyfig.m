@@ -16,13 +16,13 @@ classdef plotlyfig < handle
     end
 
     properties (Hidden = true)
-        PlotlyDefaults; % plotly specific conversion defualts
+        PlotlyDefaults; % plotly specific conversion defaults
         State; % state of plot (FIGURE/AXIS/PLOTS)
     end
 
     properties (Access = private)
         PlotlyReference; % load the plotly reference
-        InitialState; % inital userdata
+        InitialState; % initial userdata
     end
 
     %----CLASS METHODS----%
@@ -581,7 +581,7 @@ classdef plotlyfig < handle
                 end
             end
 
-            %---------- checking the overlaping of the graphs ------------%
+            %---------- checking the overlapping of the graphs ------------%
             temp_ax = ax; deleted_idx = 0;
             for i = 1:length(ax)
                 for j = i:length(ax)
@@ -599,12 +599,12 @@ classdef plotlyfig < handle
                             deleted_idx = deleted_idx + 1;
                         end
                     catch
-                        % TODO: error with ax(i).Children.Type. isfield is no enogh
+                        % TODO: error with ax(i).Children.Type. isfield is no enough
                     end
                 end
             end
             ax = temp_ax;
-            %---------- checking the overlaping of the graphs ------------%
+            %---------- checking the overlapping of the graphs ------------%
 
             % update number of axes
             obj.State.Figure.NumAxes = length(ax);

@@ -128,7 +128,7 @@ function obj = updateContour3(obj,contourIndex)
 
     %---------------------------------------------------------------------%
 
-    %-zerolines hidded-%
+    %-zerolines hidden-%
     obj.layout.scene.xaxis.zeroline = false;
     obj.layout.scene.yaxis.zeroline = false;
     obj.layout.scene.zaxis.zeroline = false;

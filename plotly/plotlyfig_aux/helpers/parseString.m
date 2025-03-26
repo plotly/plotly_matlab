@@ -5,15 +5,15 @@ function formatStr = parseString(inputStr,interpreter)
     %
     % TeX: parses through inputStr for instances of
     % the specials characters: \, _, and ^. Uses whitespace
-    % as a delimter for the end of \reservedwords (enforced
+    % as a delimiter for the end of \reservedwords (enforced
     % if not already present), uses either the enclosing { }
-    % brackets  as delimeters for _ and ^ or simply the
+    % brackets  as delimiters for _ and ^ or simply the
     % immediately proceeding character if no curly brackets
     % are present. If the immediately proceeding character
     % of ^ or _ is a \reservedword, the entire word up to the
     % next whitespace is taken. All other characters are
     % contained within \text{ } blocks. Resulting string is
-    % placed within inline: formatStr = $ ...parsedStr... $ delimeters.
+    % placed within inline: formatStr = $ ...parsedStr... $ delimiters.
     %
     % LaTeX: parses through inputStr for instances of $
     % or $$. Assumes that $/$$ are only ever used as
@@ -21,9 +21,9 @@ function formatStr = parseString(inputStr,interpreter)
     % $/$ or $$/$$ blocks are placed within a \text{ } block.
     % Finally, all instances of $/$$ are removed and the
     % resulting string is placed (if no $$ instance is present)
-    % within inline: formatStr = $ ...parsedStr...$ delimeters
-    % or (if an instance of $$ is present) wihtin block:
-    % formatStr $$... parsedStr ... $$ delimeters.
+    % within inline: formatStr = $ ...parsedStr...$ delimiters
+    % or (if an instance of $$ is present) within block:
+    % formatStr $$... parsedStr ... $$ delimiters.
 
     %initialize output
     formatStr = inputStr;

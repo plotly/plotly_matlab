@@ -178,21 +178,21 @@ function updateSurfaceEdgeColor(obj, dataIndex)
 
     %-edge lines in x direction-%
     xContourSize = mean(diff(xData(1,:)));
-    xContourStard = min(xData(1,:));
+    xContourStart = min(xData(1,:));
     xContourEnd = max(xData(1,:));
 
     obj.data{dataIndex}.contours.x.show = true;
-    obj.data{dataIndex}.contours.x.start = xContourStard;
+    obj.data{dataIndex}.contours.x.start = xContourStart;
     obj.data{dataIndex}.contours.x.end = xContourEnd;
     obj.data{dataIndex}.contours.x.size = xContourSize;
 
     %-edge lines in y direction-%
     yContourSize = mean(diff(yData(:,1)));
-    yContourStard = min(yData(:,1));
+    yContourStart = min(yData(:,1));
     yContourEnd = max(yData(:,1));
 
     obj.data{dataIndex}.contours.y.show = true;
-    obj.data{dataIndex}.contours.y.start = yContourStard;
+    obj.data{dataIndex}.contours.y.start = yContourStart;
     obj.data{dataIndex}.contours.y.end = yContourEnd;
     obj.data{dataIndex}.contours.y.size = yContourSize;
 
@@ -200,11 +200,11 @@ function updateSurfaceEdgeColor(obj, dataIndex)
 
     if all(xConst) || all(yConst)
         zContourSize = mean(diff(zData(1,:)));
-        zContourStard = min(zData(1,:));
+        zContourStart = min(zData(1,:));
         zContourEnd = max(zData(1,:));
 
         obj.data{dataIndex}.contours.z.show = true;
-        obj.data{dataIndex}.contours.z.start = zContourStard;
+        obj.data{dataIndex}.contours.z.start = zContourStart;
         obj.data{dataIndex}.contours.z.end = zContourEnd;
         obj.data{dataIndex}.contours.z.size = zContourSize;
     end

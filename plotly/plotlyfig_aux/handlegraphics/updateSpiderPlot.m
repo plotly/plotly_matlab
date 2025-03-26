@@ -90,7 +90,7 @@ function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
         end
         rPoint = rescale(rPoint, 1/nTicks, 1);
 
-        %-convertion-%
+        %-conversion-%
         xData(a) = rPoint(1) * cos(axesAngle(a));
         yData(a) = rPoint(1) * sin(axesAngle(a));
     end

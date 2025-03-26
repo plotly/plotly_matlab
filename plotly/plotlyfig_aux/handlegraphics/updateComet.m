@@ -145,7 +145,7 @@ function updateComet(obj,plotIndex)
 
     %---------------------------------------------------------------------%
 
-    %-SCENE CONFIGUTATION-% for 3D animations, like comet3
+    %-SCENE CONFIGURATION-% for 3D animations, like comet3
 
     %---------------------------------------------------------------------%
     if obj.PlotOptions.is3d

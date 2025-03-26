@@ -3,7 +3,7 @@ function plotlysetup_online(username, api_key, varargin)
     % CALL: plotlysetup_online('username','api_key','kwargs'[optional]);
     % WHERE: kwargs are of the form ..,'property,value,'property',value,...
     % VALID PROPERTIES [OPTIONAL]: 'stream_ids' -> your stream ids [cell array] (found online)
-    %                              'plotly_domain' -> your desired REST API enpoint [string]
+    %                              'plotly_domain' -> your desired REST API endpoint [string]
     %                              'plotly_streaming_domain'-> your desired Stream API endpoint [string]
     % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
     % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
@@ -66,7 +66,7 @@ function plotlysetup_online(username, api_key, varargin)
                 end
             else %toolbox Plotly not yet created
 
-                %worked (without interuption)...just a formatting thing!
+                %worked (without interruption)...just a formatting thing!
                 fprintf('Done\n');
 
                 %make the plotlyToolboxPath dir.

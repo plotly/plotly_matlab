@@ -95,7 +95,7 @@ function obj = updateHeatmap(obj,heatIndex)
 
     %---------------------------------------------------------------------%
 
-    %-set backgroud color if any NaN in cdata-%
+    %-set background color if any NaN in cdata-%
     if any(isnan(cdata(:)))
         obj.layout.plot_bgcolor = 'rgb(40,40,40)';
         obj.data{heatIndex}.opacity = 1;

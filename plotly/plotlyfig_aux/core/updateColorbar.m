@@ -87,7 +87,7 @@ function obj = updateColorbar(obj,colorbarIndex)
 
     %---------------------------------------------------------------------%
 
-    %-tick setings-%
+    %-tick settings-%
     colorbar.tickcolor = outlineColor;
     colorbar.tickfont.color = outlineColor;
     colorbar.tickfont.size = colorbarData.FontSize;

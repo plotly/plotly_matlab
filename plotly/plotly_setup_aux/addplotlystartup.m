@@ -1,5 +1,5 @@
 function [warnings] = addplotlystartup(startupPaths)
-    %[1]looks at statup.m files specified by the entries of startupPaths
+    %[1]looks at startup.m files specified by the entries of startupPaths
     %[2]appends the addplotly function to startup.m files (if not already
     % present)
     %[3]checks for other plotly addpath calls within any startup.m and

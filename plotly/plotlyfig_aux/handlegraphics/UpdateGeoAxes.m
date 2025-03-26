@@ -108,7 +108,7 @@ function UpdateGeoAxes(obj, geoIndex)
 
     %---------------------------------------------------------------------%
 
-    %-TEXT STTINGS-%
+    %-TEXT SETTINGS-%
     isText = false;
     child = geoData.Children;
     t = 1;

@@ -16,7 +16,7 @@ function [converted,type] = convertDuration(duration)
             converted = years(duration);
             type = 'yrs';
         otherwise
-            % no convertion is applied
+            % no conversion is applied
             converted = duration;
             type = '';
     end

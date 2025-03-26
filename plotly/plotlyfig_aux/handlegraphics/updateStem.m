@@ -8,7 +8,7 @@ function obj = updateStem(obj, dataIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    %-get coordenate x,y,z data-%
+    %-get coordinate x,y,z data-%
     xdata = data.XData;
     ydata = data.YData;
     zdata = data.ZData;
@@ -205,7 +205,7 @@ function obj = updateStem(obj, dataIndex)
             scene.camera.eye.z = zar + zfac*zar;
         end
 
-        %-zerolines hidded-%
+        %-zerolines hidden-%
         scene.xaxis.zeroline = false;
         scene.yaxis.zeroline = false;
         scene.zaxis.zeroline = false;

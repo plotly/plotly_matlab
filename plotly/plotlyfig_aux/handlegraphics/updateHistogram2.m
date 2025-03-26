@@ -253,7 +253,7 @@ function [vertices, I, J, K] = triangulateBarFaces(positions, sizes)
     all_bars = reshape(all_bars, [r, p*q])';
     [vertices, ~, ixr] = unique(all_bars, 'rows');
 
-    %for each bar, derive the sublists of indices i, j, k assocated to its chosen  triangulation
+    %for each bar, derive the sublists of indices i, j, k associated to its chosen  triangulation
     I = [];
     J = [];
     K = [];
@@ -269,7 +269,7 @@ function [vertices, I, J, K] = triangulateBarFaces(positions, sizes)
 end
 
 function [X, Y, Z, I, J, K] = getPlotlyMesh3d(xedges, yedges, values, bargap)
-    % x, y- array-like of shape (n,), defining the x, and y-ccordinates of data set for which we plot a 3d hist
+    % x, y- array-like of shape (n,), defining the x, and y-coordinates of data set for which we plot a 3d hist
 
     xsize = xedges(2)-xedges(1)-bargap;
     ysize = yedges(2)-yedges(1)-bargap;

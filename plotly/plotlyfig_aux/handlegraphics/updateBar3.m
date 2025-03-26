@@ -295,7 +295,7 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
     all_bars = reshape(all_bars, [r, p*q])';
     [vertices, ~, ixr] = unique(all_bars, 'rows');
 
-    % for each bar, derive the sublists of indices i, j, k assocated to its
+    % for each bar, derive the sublists of indices i, j, k associated to its
     % chosen  triangulation
     I = [];
     J = [];
@@ -317,7 +317,7 @@ function [vertices, I, J, K] = triangulate_bar_faces(positions, sizes)
 end
 
 function [X, Y, Z, I, J, K] = get_plotly_mesh3d(xedges, yedges, values, bargap)
-    % x, y - array-like of shape (n,), defining the x, and y-ccordinates of
+    % x, y - array-like of shape (n,), defining the x, and y-coordinates of
     % data set for which we plot a 3d hist.
 
     xsize = xedges(2)-xedges(1)-bargap;

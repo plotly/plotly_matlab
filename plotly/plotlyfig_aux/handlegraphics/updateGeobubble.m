@@ -1,5 +1,5 @@
 function updateGeobubble(obj,geoIndex)
-    %-INTIALIZATIONS-%
+    %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
     geoData = obj.State.Plot(geoIndex).Handle;

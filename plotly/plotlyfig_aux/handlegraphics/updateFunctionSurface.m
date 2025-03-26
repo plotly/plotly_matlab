@@ -209,7 +209,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
 
     %---------------------------------------------------------------------%
 
-    %-SCENE CONFIGUTATION-%
+    %-SCENE CONFIGURATION-%
 
     %---------------------------------------------------------------------%
 
