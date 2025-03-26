@@ -219,4 +219,3 @@ function message = permissionMessage(spec)
             '>>saveplotlyconfig(''your_base_domain'')\n\n',...
             'Questions? Ask https://community.plotly.com/c/api/matlab/\n\n'];
 end
-

@@ -168,4 +168,3 @@ function updateScattergroup(obj,scatterIndex)
         end
     end
 end
-

@@ -320,4 +320,3 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     %-REVERT UNITS-%
     obj.State.Colorbar(colorbarIndex).Handle.Units = colorbarunits;
 end
-

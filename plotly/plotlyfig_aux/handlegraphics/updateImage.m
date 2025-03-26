@@ -147,4 +147,3 @@ function obj = updateImage(obj, imageIndex)
         %TODO to future
     end
 end
-

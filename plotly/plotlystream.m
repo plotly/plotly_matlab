@@ -277,5 +277,3 @@ classdef plotlystream < handle
         end
     end
 end
-
-
