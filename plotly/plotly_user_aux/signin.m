@@ -27,7 +27,7 @@ function [un, key, domain] = signin(varargin)
             try
                 config = loadplotlyconfig();
                 PLOTLY_DOMAIN = config.plotly_domain;
-            catch 
+            catch
                 % fails cuz either creds haven't been written yet
                 % or because plotly_domain wasn't a key in the
                 % creds file.

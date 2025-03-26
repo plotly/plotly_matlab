@@ -49,7 +49,7 @@ function obj = updateHeatmap(obj,heatIndex)
     if strcmpi(heat_data.ColorbarVisible, 'on')
         obj.data{heatIndex}.showscale = true;
         obj.data{heatIndex}.colorbar.x = 0.87;
-        obj.data{heatIndex}.colorbar.y = 0.52; 
+        obj.data{heatIndex}.colorbar.y = 0.52;
         obj.data{heatIndex}.colorbar.ypad = 55;
         obj.data{heatIndex}.colorbar.xpad = obj.PlotlyDefaults.MarginPad;
         obj.data{heatIndex}.colorbar.outlinecolor = 'rgb(150,150,150)';

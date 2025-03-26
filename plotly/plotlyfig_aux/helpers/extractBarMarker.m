@@ -11,7 +11,7 @@ function marker = extractBarMarker(bar_data)
     figure_data = ancestor(bar_data.Parent,'figure');
 
     %-INITIALIZE OUTPUT-%
-    marker = struct(); 
+    marker = struct();
 
     %---------------------------------------------------------------------%
 

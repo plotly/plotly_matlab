@@ -13,7 +13,7 @@ function updatePie3(obj,plotIndex)
     obj.PlotOptions.scene.xaxis.showline = false;
     obj.PlotOptions.scene.xaxis.showticklabels = false;
     obj.PlotOptions.scene.xaxis.showgrid = false;
-    
+
     %-hide axis-y-%
     obj.PlotOptions.scene.yaxis.title = '';
     obj.PlotOptions.scene.yaxis.autotick = false;
@@ -21,7 +21,7 @@ function updatePie3(obj,plotIndex)
     obj.PlotOptions.scene.yaxis.showline = false;
     obj.PlotOptions.scene.yaxis.showticklabels = false;
     obj.PlotOptions.scene.yaxis.showgrid = false;
-    
+
     %-hide axis-z-%
     obj.PlotOptions.scene.zaxis.title = '';
     obj.PlotOptions.scene.zaxis.autotick = false;
@@ -29,7 +29,7 @@ function updatePie3(obj,plotIndex)
     obj.PlotOptions.scene.zaxis.showline = false;
     obj.PlotOptions.scene.zaxis.showticklabels = false;
     obj.PlotOptions.scene.zaxis.showgrid = false;
-    
+
     %-put text-%
     obj.data{plotIndex}.hoverinfo = 'text';
     obj.data{plotIndex}.hovertext = obj.PlotOptions.perc;
@@ -60,12 +60,12 @@ function obj = updatePatchPie3(obj, patchIndex)
     if ~any(nonzeros(patch_data.ZData))
         t1 = atan2(patch_data.YData(2), patch_data.XData(2));
         t2 = atan2(patch_data.YData(end-1), patch_data.XData(end-1));
-        
+
         a = rad2deg(t2-t1);
         if a < 0
             a = a+360;
         end
-        
+
         obj.PlotOptions.perc = sprintf('%d %%', round(100*a/360));
     end
 
@@ -266,9 +266,9 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     fac2 = 0.175;
     nax = length(obj.PlotOptions.nbars);
 
-    scene.aspectratio.x = xar + fac1*(nax-1)*xar; 
-    scene.aspectratio.y = yar + fac1*(nax-1)*yar; 
-    scene.aspectratio.z = (zar + fac1*(nax-1)*zar)*fac2; 
+    scene.aspectratio.x = xar + fac1*(nax-1)*xar;
+    scene.aspectratio.y = yar + fac1*(nax-1)*yar;
+    scene.aspectratio.z = (zar + fac1*(nax-1)*zar)*fac2;
 
     %---------------------------------------------------------------------%
 
@@ -287,8 +287,8 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
         xey = - xar; if xey>0 xfac = -0.2; else xfac = 0.2; end
         yey = - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end
         if zar>0 zfac = 0.2; else zfac = -0.2; end
-        
-        scene.camera.eye.x = xey + xfac*xey; 
+
+        scene.camera.eye.x = xey + xfac*xey;
         scene.camera.eye.y = yey + yfac*yey;
         scene.camera.eye.z = zar + zfac*zar;
     end

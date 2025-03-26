@@ -49,7 +49,7 @@ function obj = updateSlice(obj, dataIndex)
     obj.data{dataIndex}.scene = sprintf('scene%d', xSource);
     obj.data{dataIndex}.showscale = false;
     obj.data{dataIndex}.surfacecolor = cDataSurf;
-    
+
     %---------------------------------------------------------------------%
 
     %-set trace data-%
@@ -96,7 +96,7 @@ function updateScene(obj, dataIndex)
     scene.camera.eye.z = cameraEye(3) / normFac;
 
     %-camera up-%
-    scene.camera.up.x = cameraUpVector(1); 
+    scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
@@ -179,7 +179,7 @@ function updateSurfaceEdgeColor(obj, dataIndex)
     %-edge lines in x direction-%
     xContourSize = mean(diff(xData(1,:)));
     xContourStard = min(xData(1,:));
-    xContourEnd = max(xData(1,:));    
+    xContourEnd = max(xData(1,:));
 
     obj.data{dataIndex}.contours.x.show = true;
     obj.data{dataIndex}.contours.x.start = xContourStard;
@@ -190,7 +190,7 @@ function updateSurfaceEdgeColor(obj, dataIndex)
     yContourSize = mean(diff(yData(:,1)));
     yContourStard = min(yData(:,1));
     yContourEnd = max(yData(:,1));
-    
+
     obj.data{dataIndex}.contours.y.show = true;
     obj.data{dataIndex}.contours.y.start = yContourStard;
     obj.data{dataIndex}.contours.y.end = yContourEnd;
@@ -233,7 +233,7 @@ function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
 
     obj.data{dataIndex}.cauto = false;
     obj.data{dataIndex}.autocolorscale = false;
-    
+
     %---------------------------------------------------------------------%
 
     if isnumeric(faceColor)

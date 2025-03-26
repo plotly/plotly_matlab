@@ -109,7 +109,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     if isempty(tickValues)
         axis.ticks = "";
         axis.showticklabels = false;
-        axis.autorange = true; 
+        axis.autorange = true;
 
         switch axisData.Box
             case "on"

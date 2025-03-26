@@ -48,39 +48,39 @@ function plotlysetup_online(username, api_key, varargin)
         try
             %embed the api to the matlabroot/toolbox dir.
             fprintf('\nAdding Plotly to MATLAB toolbox directory ...  ');
-            
+
             %plotly folder in the matlab/toolbox dir.
             plotlyToolboxPath = fullfile(matlabroot,'toolbox','plotly');
-            
+
             if (exist(plotlyToolboxPath,'dir')) %check for overwrite...
                 fprintf(['\n\n[UPDATE]: \n\nHey! We see that a copy of Plotly has previously been added to\n' ...
                     'your Matlab toolboxes. Would you like us to overwrite it with:\n' plotlyFolderPath ' ? \n'...
                     'Careful! You may lose data saved to this Plotly directory.\n\n']);
-                
+
                 overwrite = input('Overwrite (y/n) ? : ','s');
-                
+
                 if (strcmpi(overwrite,'y'));
                     fprintf('\n[OVERWRITE]:\n\nOverwriting Plotly! ... Done \n');
                 else
                     fprintf('\n[NO OVERWRITE]:\n\nDid not overwrite Plotly! ... Done \n');
                 end
             else %toolbox Plotly not yet created
-                
+
                 %worked (without interuption)...just a formatting thing!
                 fprintf('Done\n');
-                
+
                 %make the plotlyToolboxPath dir.
                 status = mkdir(plotlyToolboxPath);
-                
+
                 %set status to overwrite
                 overwrite = 'y';
-                
+
                 %check that the folder was created
                 if (status == 0)
                     error('plotly:savePlotly', permissionMessage('save the Plotly folder'));
                 end
             end
-            
+
             if strcmpi(overwrite,'y')
                 %move a copy of the Plotly api to matlab root directory
                 [status, msg, messid] = copyfile(plotlyFolderPath,plotlyToolboxPath);
@@ -91,13 +91,13 @@ function plotlysetup_online(username, api_key, varargin)
                     end
                 end
             end
-            
+
             %add it to the searchpath (startup.m will handle this next time!)
             addpath(genpath(plotlyToolboxPath),'-end');
-            
+
             %save plotly api searchpath to startup.m files (only do this if we actually were able to store the api in mtlroot/toolbox!)
             fprintf('Saving Plotly to MATLAB search path via startup.m ... ');
-            
+
             %check for a startup.m file in matlab rootpath (we want to add one here)
             startupFile = [];
             startupFileRootPath = fullfile(matlabroot,'toolbox','local','startup.m');
@@ -109,15 +109,15 @@ function plotlysetup_online(username, api_key, varargin)
                 end
                 startupFile = {startupFileRootPath}; %needed because MATLAB only looks for startup.m when first opened.
             end
-            
+
             %check for all startup.m file in searchpath
             startupFile = [startupFile; cell(which('startup.m','-all'))];
             %write the addpath - plotly api to the startup.m files
             [warnings] = addplotlystartup(startupFile);
-            
+
             %worked!
             fprintf(' Done\n');
-            
+
             %print any addplotlydstatup warnings;
             w = cellfun(@isempty,warnings);
             if find(~w)
@@ -125,7 +125,7 @@ function plotlysetup_online(username, api_key, varargin)
                 exception.warnings = warnings;
                 fprintf(warnings{find(~w)});
             end
-            
+
         catch exception %copying to toolbox/writing to startup.m permission problem catch...
             fprintf(['\n\n' exception.identifier exception.message '\n\n']);
         end
@@ -155,7 +155,7 @@ function plotlysetup_online(username, api_key, varargin)
                 'Your stream_ids, plotly_domain, and plotly_streaming domain were not set. \n',...
                 'Questions? Please post on https://community.plotly.com/c/api/matlab/22.']);
         end
-        
+
         for n = 1:2:numel(varargin)
             %check for correct property names
             if isempty(intersect(varargin{n},{'stream_ids','plotly_domain','plotly_streaming_domain'}))
@@ -197,7 +197,7 @@ function plotlysetup_online(username, api_key, varargin)
                 fprintf('Done\n');
             end
         end
-        
+
     catch exception %writing varargin problem catch...
         fprintf(['\n\n' exception.identifier exception.message '\n\n']);
     end
@@ -206,7 +206,7 @@ function plotlysetup_online(username, api_key, varargin)
     fprintf('\nWelcome to Plotly! If you are new to Plotly please enter: >> plotlyhelp to get started!\n\n')
 end
 
-%helper message function 
+%helper message function
 function message = permissionMessage(spec)
     message = ['\n\nShoot! We tried to ' spec ' to the MATLAB toolbox \n',...
             'directory, but were denied write permission. You''ll have to add\n',...

@@ -12,7 +12,7 @@ function line = extractPatchLine(patch_data)
     figure_data = ancestor(patch_data.Parent,'figure');
 
     %-INITIALIZE OUTPUT-%
-    line = struct(); 
+    line = struct();
 
     %---------------------------------------------------------------------%
 

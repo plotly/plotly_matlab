@@ -72,7 +72,7 @@ function marker = extractScatterMarker(plotData)
                     round(255*markerFaceColor));
         else
             switch markerFaceColor
-                case 'none'        
+                case 'none'
                     faceColor = "rgba(0,0,0,0)";
                 case 'auto'
                     if ~strcmp(axisData.Color,'none')
@@ -91,7 +91,7 @@ function marker = extractScatterMarker(plotData)
             faceAlpha = markerFaceAlpha;
         else
             switch markerFaceColor
-                case 'none'        
+                case 'none'
                     faceAlpha = 1;
                 case 'flat'
                     aLim = axisData.ALim;

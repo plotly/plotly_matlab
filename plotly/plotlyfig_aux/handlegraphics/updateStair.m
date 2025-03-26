@@ -1,6 +1,6 @@
 function obj = updateStair(obj, dataIndex)
     %-update line-%
-    updateLineseries(obj, dataIndex); 
+    updateLineseries(obj, dataIndex);
 
     %-stair shape-%
     obj.data{dataIndex}.line.shape = "hv";

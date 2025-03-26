@@ -22,7 +22,7 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     ticklength = min(obj.PlotlyDefaults.MaxTickLength,...
         max(tl*w*obj.layout.width,tl*h*obj.layout.height));
 
-    axis.ticklen = 0.1; %ticklength; 
+    axis.ticklen = 0.1; %ticklength;
 
     %---------------------------------------------------------------------%
 

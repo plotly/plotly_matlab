@@ -36,7 +36,7 @@ function formatStr = parseString(inputStr,interpreter)
     try
         istex = false;
         islatex = false;
-        
+
         %------- CONVERT CELL ARRAY TO STRING WITH LINE BREAKS -------%
         if (iscell(inputStr))
             if (size(inputStr,1)==1)
@@ -45,9 +45,9 @@ function formatStr = parseString(inputStr,interpreter)
                 inputStr = strjoin(inputStr', '<br>');
             end
         end
-        
+
         %------- PARSE TEX --------%
-        
+
         if (strcmp(interpreter,'tex'))
             %add white space after reserved TeX words
             formatStr = formatRW(inputStr);
@@ -163,7 +163,7 @@ function formatStr = parseString(inputStr,interpreter)
             end
             %created parsedStr from formatStrCell
             parsedStr = [ formatStrCell{:} ];
-            
+
             % place in inline: $...parsedStr...$ delimiters
             if (istex)
                 formatStr = ['$' parsedStr '$'];
@@ -178,7 +178,7 @@ function formatStr = parseString(inputStr,interpreter)
             ccount = 1;
             %look for existence of $$
             dsPairs = regexp(formatStr,'\$\$');
-            
+
             %iterate through formatStr
             while scount <= (length(formatStr))
                 if (strcmp(formatStr(scount),'$'))

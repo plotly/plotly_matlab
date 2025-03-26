@@ -74,7 +74,7 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.type = 'scatter3d';
         end
     else
-        obj.data{patchIndex}.type = 'scatter'; 
+        obj.data{patchIndex}.type = 'scatter';
     end
 
     %---------------------------------------------------------------------%
@@ -157,7 +157,7 @@ function obj = updatePatch(obj, patchIndex)
         fill = extractPatchFace(patch_data);
 
         if strcmp(obj.data{patchIndex}.type,'scatter')
-            obj.data{patchIndex}.fillcolor = fill.color; 
+            obj.data{patchIndex}.fillcolor = fill.color;
         else
             obj.data{patchIndex}.surfacecolor = fill.color;
         end
@@ -168,7 +168,7 @@ function obj = updatePatch(obj, patchIndex)
         if strcmp(obj.data{patchIndex}.type,'scatter3d')
             minstd = min([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)]);
             ind = find([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)] == minstd)-1;
-            obj.data{patchIndex}.surfaceaxis = ind; 
+            obj.data{patchIndex}.surfaceaxis = ind;
         end
     else
         % handle vertices
@@ -177,20 +177,20 @@ function obj = updatePatch(obj, patchIndex)
         z_data = patch_data_red.vertices(:,3);
 
         % specify how vertices connect to form the faces
-        i_data = patch_data_red.faces(:,1)-1; 
+        i_data = patch_data_red.faces(:,1)-1;
         j_data = patch_data_red.faces(:,2)-1;
         k_data = patch_data_red.faces(:,3)-1;
-        
+
         %-patch x/y/z-%
-        obj.data{patchIndex}.x = x_data; 
-        obj.data{patchIndex}.y = y_data; 
-        obj.data{patchIndex}.z = z_data; 
-        
+        obj.data{patchIndex}.x = x_data;
+        obj.data{patchIndex}.y = y_data;
+        obj.data{patchIndex}.z = z_data;
+
         %-patch i/j/k-%
-        obj.data{patchIndex}.i = i_data; 
-        obj.data{patchIndex}.j = j_data; 
+        obj.data{patchIndex}.i = i_data;
+        obj.data{patchIndex}.j = j_data;
         obj.data{patchIndex}.k = k_data;
-        
+
         %-patch fillcolor-%
         fill = extractPatchFace(patch_data);
         obj.data{patchIndex}.color = fill.color;

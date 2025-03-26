@@ -62,7 +62,7 @@ function obj = updateSpiderPlot(obj,spiderIndex)
             end
         end
 
-    end    
+    end
 end
 
 function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
@@ -123,7 +123,7 @@ function lineStruct = getLine(plotData, traceIndex)
         case '-.'
             lineStyle = 'dashdot';
     end
-    
+
     lineStruct.dash = lineStyle;
 end
 
@@ -281,7 +281,7 @@ function setAnnotation(obj, axesStruct, spiderIndex)
             if strcmp(axesDisplay, 'data')
                 tickLabel = plotData.P(t, a);
 
-            else                
+            else
                 tickLabel = linspace(axesLim(1), axesLim(2), nTicks);
                 tickLabel = tickLabel(t);
 
@@ -320,7 +320,7 @@ function setAnnotation(obj, axesStruct, spiderIndex)
                     annotations{anIndex}.yanchor = 'bottom';
                 elseif annotations{anIndex}.y < 0
                     annotations{anIndex}.yanchor = 'top';
-                end 
+                end
 
                 if abs(annotations{anIndex}.x) < 1e-3
                     annotations{anIndex}.xanchor = 'middle';
@@ -328,7 +328,7 @@ function setAnnotation(obj, axesStruct, spiderIndex)
                     annotations{anIndex}.xanchor = 'left';
                 elseif annotations{anIndex}.x < 0
                     annotations{anIndex}.xanchor = 'right';
-                end 
+                end
             end
 
             %-font properties-%
@@ -384,7 +384,7 @@ function axesStruct = setAxes(obj, spiderIndex)
         obj.data{plotIndex}.mode = 'lines';
         obj.data{plotIndex}.line.color = axesColor;
         obj.data{plotIndex}.line.width = 1.75;
-        
+
         obj.data{plotIndex}.x = [0, cos(axesAngle(a))];
         obj.data{plotIndex}.y = [0, sin(axesAngle(a))];
 
@@ -420,7 +420,7 @@ function axesStruct = setAxes(obj, spiderIndex)
         obj.data{plotIndex}.mode = 'lines';
         obj.data{plotIndex}.line.color = axesColor;
         obj.data{plotIndex}.line.width = 0.4;
-        
+
         obj.data{plotIndex}.x = tickValues(g)*xData;
         obj.data{plotIndex}.y = tickValues(g)*yData;
 
@@ -502,7 +502,7 @@ end
 
 function [strColor, numColor] = getColor(colorMatrix, traceIndex, ...
     colorOpacities)
-    
+
     colorOpacity = 1;
 
     if nargin > 2

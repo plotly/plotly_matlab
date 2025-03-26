@@ -63,11 +63,11 @@ function obj = updateImage3D(obj, imageIndex)
         if size(x,2) == 2
             x = linspace(x(1), x(2), size(cdata,2));
         end
-        
+
         if size(y,2) == 2
             y = linspace(y(1), y(2), size(cdata,1));
         end
-        
+
         [x, y] = meshgrid(x, y);
     end
 

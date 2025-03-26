@@ -4,13 +4,13 @@ function updateStackedplot(obj, plotIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
     lineData = plotData.LineProperties(end:-1:1);
-    
+
     %-get trace data-%
 
     sourceTable = plotData.SourceTable;
     displayVariables = plotData.DisplayVariables;
     nTraces = length(plotData.AxesProperties);
-    
+
     if isempty(sourceTable)
         xData = plotData.XData;
         for t = 1:nTraces
@@ -141,7 +141,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
             axisLabel{nAxis} = plotData.XLabel;
             axisDomain{nAxis} = min([axisPos(1) sum(axisPos([1,3]))], 1);
             axisAnchor{nAxis} = 'y1';
-            
+
         case {'y', 'Y'}
             nAxis = length(plotData.AxesProperties);
             yPos = linspace(axisPos(2), sum(axisPos([2,4])), nAxis+1);
@@ -176,7 +176,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         ax{a}.side = 'left';
         ax{a}.mirror = false;
         ax{a}.zeroline = false;
-    
+
         ax{a}.linecolor = axisColor;
         ax{a}.linewidth = lineWidth;
         ax{a}.exponentformat = obj.PlotlyDefaults.ExponentFormat;
@@ -362,7 +362,7 @@ function updateExponentFormat(obj, expoFormat, xySource, axName)
                 ann.yanchor = 'bottom';
                 ann.x = xaxis.domain(2);
                 ann.y = yaxis.domain(1);
-                
+
             case 'y'
                 ann.yanchor = 'bottom';
                 ann.x = xaxis.domain(1);

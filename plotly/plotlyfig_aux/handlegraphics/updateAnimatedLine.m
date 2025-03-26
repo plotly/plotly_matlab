@@ -89,10 +89,10 @@ function updateAnimatedLine(obj,plotIndex)
         if any(z)
             %-scatter z-%
             obj.data{plotIndex}.z = [z(1) z(1)];
-            
+
             %-overwrite type-%
             obj.data{plotIndex}.type = 'scatter3d';
-            
+
             %-flag to manage 3d plots-%
             obj.PlotOptions.is3d = true;
         end
@@ -188,7 +188,7 @@ function updateAnimatedLine(obj,plotIndex)
             yey = - xyar; if yey>0, yfac = -0.3; else, yfac = 0.3; end
             if zar>0, zfac = -0.1; else, zfac = 0.1; end
 
-            scene.camera.eye.x = xey + xfac*xey; 
+            scene.camera.eye.x = xey + xfac*xey;
             scene.camera.eye.y = yey + yfac*yey;
             scene.camera.eye.z = zar + zfac*zar;
         end

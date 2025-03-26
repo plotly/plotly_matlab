@@ -51,4 +51,4 @@ function obj = updateErrorbar(obj, plotIndex)
 	obj.data{plotIndex}.error_y.color = errorColor;
 	obj.data{plotIndex}.error_x.color = errorColor;
 end
-		
+

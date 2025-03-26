@@ -18,7 +18,7 @@ function orientation = histogramOrientation(hist_data)
                 && all(hist_data.YData(3,:) == hist_data.YData(4,:)) ...
                 && all(hist_data.XData(1,:) == hist_data.XData(4,:)) ...
                 && all(hist_data.XData(2,:) == hist_data.XData(3,:))
-            orientation = 'h'; 
+            orientation = 'h';
         end
     end
 end

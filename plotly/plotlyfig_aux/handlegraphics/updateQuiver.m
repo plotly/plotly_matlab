@@ -41,37 +41,37 @@ function obj = updateQuiver(obj, dataIndex)
         obj.data{dataIndex}.yaxis = sprintf('y%d', xSource);
     end
 
-    obj.data{dataIndex}.mode = 'lines'; 
+    obj.data{dataIndex}.mode = 'lines';
     obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
     obj.data{dataIndex}.name = plotData.DisplayName;
 
     %---------------------------------------------------------------------%
 
     %-quiver line color-%
-    lineColor = 255 * plotData.Color; 
+    lineColor = 255 * plotData.Color;
     obj.data{dataIndex}.line.color = getStringColor(lineColor);
 
     %-quiver line width-%
     obj.data{dataIndex}.line.width = 2.5 * plotData.LineWidth;
 
     %---------------------------------------------------------------------%
-    
+
     %-set trace data for quiver line only-%
-    m = 1; 
+    m = 1;
 
     for n = 1:numel(xData)
-        obj.data{dataIndex}.x(m) = xData(n); 
+        obj.data{dataIndex}.x(m) = xData(n);
         obj.data{dataIndex}.x(m+1) = xData(n) + uData(n);
-        obj.data{dataIndex}.x(m+2) = nan; 
+        obj.data{dataIndex}.x(m+2) = nan;
 
-        obj.data{dataIndex}.y(m) = yData(n); 
+        obj.data{dataIndex}.y(m) = yData(n);
         obj.data{dataIndex}.y(m+1) = yData(n) + vData(n);
         obj.data{dataIndex}.y(m+2) = nan;
 
         if isQuiver3D
-            obj.data{dataIndex}.z(m) = zData(n); 
+            obj.data{dataIndex}.z(m) = zData(n);
             obj.data{dataIndex}.z(m+1) = zData(n) + wData(n);
-            obj.data{dataIndex}.z(m+2) = nan; 
+            obj.data{dataIndex}.z(m+2) = nan;
         end
         m = m + 3;
     end
@@ -137,7 +137,7 @@ function updateScene(obj, dataIndex)
     cameraUpVector = axisData.CameraUpVector;
     cameraEye = cameraPosition./dataAspectRatio;
     normFac = abs(min(cameraEye));
-    
+
     try
         fac = size(axisData.Layout.TileSpan, 2);
     catch
@@ -162,7 +162,7 @@ function updateScene(obj, dataIndex)
     scene.camera.eye.z = cameraEye(3) / normFac * (1.4 + r * fac);
 
     %-camera up-%
-    scene.camera.up.x = cameraUpVector(1); 
+    scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
@@ -359,7 +359,7 @@ function outPoint = rotation3D(inPoint, phi, refAxis)
                     0, cos(phi) , sin(phi) , 0; ...
                     0, -sin(phi), cos(phi) , 0; ...
                     0, 0        , 0        , 1  ...
-                    
+
                 ]...
             );
 

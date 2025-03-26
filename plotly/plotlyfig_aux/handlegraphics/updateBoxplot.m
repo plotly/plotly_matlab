@@ -81,10 +81,10 @@ function obj = updateBoxplot(obj, boxIndex)
 
     % iterate through box plot children in reverse order
     for bp = bpnum:-1:1
-        
+
         %-CHECK FOR MULTIPLE AXES-%
         [xsource, ysource] = findSourceAxis(obj,axIndex);
-        
+
         %-AXIS DATA-%
         xaxis = obj.layout.("xaxis" + xsource);
         yaxis = obj.layout.("yaxis" + ysource);
@@ -93,22 +93,22 @@ function obj = updateBoxplot(obj, boxIndex)
         obj.data{boxIndex}.type = 'box';
         obj.data{boxIndex}.visible = strcmp(box_data.Visible,'on');
         obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
-        
+
         %-----------------------------------------------------------------%
-        
+
         %-box showlegend-%
         leg = box_data.Annotation;
         legInfo = leg.LegendInformation;
-        
+
         switch legInfo.IconDisplayStyle
             case 'on'
                 showleg = true;
             case 'off'
                 showleg = false;
         end
-        
+
         obj.data{boxIndex}.showlegend = showleg;
-        
+
         %-boxplot components-%
         Q1 = [];
         Q3 = [];
@@ -116,7 +116,7 @@ function obj = updateBoxplot(obj, boxIndex)
         outliers = [];
         uwhisker = [];
         lwhisker = [];
-        
+
         % iterate through boxplot components
         for bpc = 1:bpcompnum
             %get box child data
@@ -137,7 +137,7 @@ function obj = updateBoxplot(obj, boxIndex)
                     median =  box_child_data.YData(1);
                 case 'Upper Whisker'
                     uwhisker = box_child_data.YData(2);
-                    
+
                     %-boxplot whisker width-%
                     obj.data{boxIndex}.whiskerwidth = 1;
                 case 'Lower Whisker'
@@ -145,7 +145,7 @@ function obj = updateBoxplot(obj, boxIndex)
                 case 'Box'
                     Q1 = min(box_child_data.YData);
                     Q3 = max(box_child_data.YData);
-                    
+
                     %-boxplot line style-%
                     if isCompact
                         col = round(255*box_child_data.Color);

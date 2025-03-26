@@ -69,7 +69,7 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     % x-direction
     xmin = min(x(:));
     xmax = max(x(:));
-    xsize = (xmax - xmin) / (size(x, 2)-1); 
+    xsize = (xmax - xmin) / (size(x, 2)-1);
     obj.data{surfaceIndex}.contours.x.start = xmin;
     obj.data{surfaceIndex}.contours.x.end = xmax;
     obj.data{surfaceIndex}.contours.x.size = xsize;
@@ -104,9 +104,9 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
         zar = 0.4*max([xar, yar]);
     end
 
-    scene.aspectratio.x = xar; 
-    scene.aspectratio.y = yar; 
-    scene.aspectratio.z = zar; 
+    scene.aspectratio.x = xar;
+    scene.aspectratio.y = yar;
+    scene.aspectratio.z = zar;
 
     %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
@@ -125,7 +125,7 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     yey = - yar; if yey>0 yfac = -fac; else yfac = fac; end
     if zar>0 zfac = fac; else zfac = -fac; end
 
-    scene.camera.eye.x = xey + xfac*xey; 
+    scene.camera.eye.x = xey + xfac*xey;
     scene.camera.eye.y = yey + yfac*yey;
     scene.camera.eye.z = zar + zfac*zar;
     end

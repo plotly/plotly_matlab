@@ -31,7 +31,7 @@ function UpdateGeoAxes(obj, geoIndex)
     %-setting basemap-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.framecolor = 'rgb(120,120,120)';
-        if strcmpi(geoData.Basemap, 'streets-light')    
+        if strcmpi(geoData.Basemap, 'streets-light')
             geoaxes.oceancolor = 'rgba(215,215,220,1)';
             geoaxes.landcolor = 'rgba(220,220,220,0.4)';
         elseif strcmpi(geoData.Basemap, 'colorterrain')
@@ -64,7 +64,7 @@ function UpdateGeoAxes(obj, geoIndex)
     end
 
     %---------------------------------------------------------------------%
-    
+
     %-setting longitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         lonTick = geoData.LongitudeAxis.TickValues;
@@ -82,13 +82,13 @@ function UpdateGeoAxes(obj, geoIndex)
     end
 
     %---------------------------------------------------------------------%
-    
+
     %-set map center-%
     geoaxes.center.lat = geoData.MapCenter(1);
     geoaxes.center.lon = geoData.MapCenter(2);
 
     %---------------------------------------------------------------------%
-    
+
     %-set better resolution-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.resolution = '50';

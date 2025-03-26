@@ -23,7 +23,7 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
     if any(nonzeros(image_data.ZData))
         %-surface type-%
         obj.data{surfaceIndex}.type = 'surface';
-                
+
         %-format x an y data-%
         x = image_data.XData;
         y = image_data.YData;
@@ -31,18 +31,18 @@ function obj = updateSurfaceplot(obj, surfaceIndex)
         if isvector(x)
             [x, y] = meshgrid(x,y);
         end
-                
+
         obj.data{surfaceIndex}.x = x;
         obj.data{surfaceIndex}.y = y;
         obj.data{surfaceIndex}.z = image_data.ZData;
         obj.PlotOptions.Image3D = true;
         obj.PlotOptions.ContourProjection = true;
-        
+
         %- setting grid mesh by default -%
         % x-direction
         xmin = min(x(:));
         xmax = max(x(:));
-        xsize = (xmax - xmin) / (size(x, 2)-1); 
+        xsize = (xmax - xmin) / (size(x, 2)-1);
         obj.data{surfaceIndex}.contours.x.start = xmin;
         obj.data{surfaceIndex}.contours.x.end = xmax;
         obj.data{surfaceIndex}.contours.x.size = xsize;

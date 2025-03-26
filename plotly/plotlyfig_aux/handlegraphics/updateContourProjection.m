@@ -30,7 +30,7 @@ function obj = updateContourProjection(obj,contourIndex)
     xdata = contour_data.XData;
     ydata = contour_data.YData;
     zdata = contour_data.ZData;
-        
+
     %-contour type-%
     obj.data{contourIndex}.type = 'surface';
 
@@ -116,8 +116,8 @@ function obj = updateContourProjection(obj,contourIndex)
         xey = - xyar; if xey>0 xfac = -0.2; else xfac = 0.2; end
         yey = - xyar; if yey>0 yfac = -0.2; else yfac = 0.2; end
         if zar>0 zfac = 0.2; else zfac = -0.2; end
-        
-        obj.layout.scene.camera.eye.x = xey + xfac*xey; 
+
+        obj.layout.scene.camera.eye.x = xey + xfac*xey;
         obj.layout.scene.camera.eye.y = yey + yfac*yey;
         obj.layout.scene.camera.eye.z = zar + zfac*zar;
     end

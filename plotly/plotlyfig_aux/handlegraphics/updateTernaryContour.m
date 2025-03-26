@@ -17,7 +17,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
     %=====================================================================%
 
     if strcmpi(ternaryData.Fill, 'on')
-        fillContours(obj, ternaryIndex)        
+        fillContours(obj, ternaryIndex)
     end
 
     %=====================================================================%
@@ -73,7 +73,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
             traceIndex = obj.PlotOptions.nPlots;
         end
-        
+
         %-----------------------------------------------------------------%
 
         %-set trace-%
@@ -230,7 +230,7 @@ function fillContours(obj, ternaryIndex)
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
             traceIndex = obj.PlotOptions.nPlots;
         end
-        
+
         %-set trace-%
         obj.data{traceIndex}.type = 'scatterternary';
         obj.data{traceIndex}.mode = 'lines';
@@ -330,7 +330,7 @@ function ternaryAxes(obj, ternaryIndex)
     tick0 = str2num(axisData.Children(t0).String);
     tick1 = str2num(axisData.Children(t1).String);
     dtick = tick1 - tick0;
-    
+
     tickFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(t0).Color);
     tickFontSize = 1.0 * axisData.Children(t0).FontSize;
     tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);

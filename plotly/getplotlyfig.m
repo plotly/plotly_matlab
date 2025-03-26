@@ -10,7 +10,7 @@ function p = getplotlyfig(file_owner, file_id)
     % p - plotlyfig object
     % [EXAMPLE]:
     % url: https://plot.ly/~demos/1526
-    % fig = getplotlyfig('demos','1526'); 
+    % fig = getplotlyfig('demos','1526');
     % [ADDITIONAL RESOURCES]:
     % For full documentation and examples, see
     % https://plot.ly/matlab/get-requests/

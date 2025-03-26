@@ -35,12 +35,12 @@ function p = fig2plotly(varargin)
 
     %--FIGURE INITIALIZATION--%
     if nargin == 0
-        varargin{1} = gcf; 
+        varargin{1} = gcf;
     end
 
     %--CONSTRUCT PLOTLY FIGURE OBJECT--%
     p = plotlyfig(varargin{:});
 
     %--MAKE CALL TO PLOTLY--%
-    p.plotly; 
+    p.plotly;
 end

@@ -85,7 +85,7 @@ function updateGeobubble(obj,geoIndex)
         marker.color = getStringColor(255*colorMap(mod(g-1, nColors)+1, :));
         marker.line.color = 'rgb(255, 255, 255)';
 
-        obj.data{p}.marker = marker;   
+        obj.data{p}.marker = marker;
 
         %-----------------------------------------------------------------%
 
@@ -154,7 +154,7 @@ function updateGeobubble(obj,geoIndex)
     end
 
     %---------------------------------------------------------------------%
-    
+
     %-setting longitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.lonaxis.range = geoData.LongitudeLimits;
@@ -167,13 +167,13 @@ function updateGeobubble(obj,geoIndex)
     end
 
     %---------------------------------------------------------------------%
-    
+
     %-set map center-%
     geoaxes.center.lat = geoData.MapCenter(1);
     geoaxes.center.lon = geoData.MapCenter(2);
 
     %---------------------------------------------------------------------%
-    
+
     %-set better resolution-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geo.resolution = '50';
@@ -224,7 +224,7 @@ function updateGeobubble(obj,geoIndex)
       obj.layout.annotations{1}.font.size = 1.5*geoData.FontSize;
     end
 
-    %---------------------------------------------------------------------%    
+    %---------------------------------------------------------------------%
 
     %-setting legend-%
     if byGroups

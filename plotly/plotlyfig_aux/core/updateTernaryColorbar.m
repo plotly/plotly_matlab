@@ -282,7 +282,7 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
         else
             col = round(255*figureData.Color);
         end
-        
+
         obj.layout.plot_bgcolor = sprintf("rgb(%d,%d,%d)", col);
     end
 

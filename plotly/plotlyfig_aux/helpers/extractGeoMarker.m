@@ -43,7 +43,7 @@ function marker = extractGeoMarker(geoData, axisData)
             case {'h','hexagram'}
                 marksymbol = 'hexagram';
         end
-        
+
         marker.symbol = marksymbol;
     end
 

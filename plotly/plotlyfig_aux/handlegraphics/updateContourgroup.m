@@ -117,7 +117,7 @@ function colorScale = getColorScale(plotData, axisData)
     nColors = size(cMap, 1);
     isBackground = any(plotData.ZData(:) < plotData.TextList(1));
     nContours = length(plotData.TextList);
-    cScaleInd = linspace(0,1, nContours); 
+    cScaleInd = linspace(0,1, nContours);
     if nContours==1, cScaleInd = 0.5; end
     cMapInd = floor( (nColors-1)*cScaleInd ) + 1;
 

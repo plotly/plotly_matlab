@@ -25,7 +25,7 @@ function obj = updateIsosurface(obj, isoIndex)
 	obj.data{isoIndex}.name = plotData.DisplayName;
 	obj.data{isoIndex}.showscale = false;
 
-	%---------------------------------------------------------------------%	
+	%---------------------------------------------------------------------%
 
 	%-set mesh data-%
 	obj.data{isoIndex}.x = xData;
@@ -92,7 +92,7 @@ function updateScene(obj, isoIndex)
     scene.camera.eye.z = cameraEye(3) / normFac;
 
     %-camera up-%
-    scene.camera.up.x = cameraUpVector(1); 
+    scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
@@ -153,7 +153,7 @@ function fillColor = getFaceColor(plotData, axisData)
 	cData = plotData.CData;
 	cLim = axisData.CLim;
 	colorMap = axisData.Colormap;
-	
+
 	%-get face color depending of faceColor attribute
 	if isnumeric(faceColor)
 		numColor = round(255 * faceColor);

@@ -132,7 +132,7 @@ function updateScene(obj, dataIndex)
     scene.camera.eye.z = cameraEye(3)/normFac;
 
     %-camera up-%
-    scene.camera.up.x = cameraUpVector(1); 
+    scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
@@ -266,7 +266,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
     tickValues = tickValues(find(tickValues==0) + 1 : end);
 
     %---------------------------------------------------------------------%
-        
+
     %-SET ANGULAR AXIS-%
 
     gridColor = getStringColor(255*axisData.GridColor, axisData.GridAlpha);
@@ -299,7 +299,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
             thetaLabel.FontName);
 
     %---------------------------------------------------------------------%
-        
+
     %-SET RADIAL AXIS-%
 
     polarAxis.radialaxis.ticklen = 0;

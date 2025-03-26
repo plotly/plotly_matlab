@@ -11,24 +11,24 @@ function obj = updateData(obj, dataIndex)
     elseif ismember("ezpolar", lower(obj.PlotOptions.TreatAs))
         updateLineseries(obj, dataIndex);
     elseif ismember("polarhistogram", lower(obj.PlotOptions.TreatAs))
-        updateHistogramPolar(obj, dataIndex); 
+        updateHistogramPolar(obj, dataIndex);
     elseif ismember("coneplot", lower(obj.PlotOptions.TreatAs))
         updateConeplot(obj, dataIndex);
     elseif ismember("bar3", lower(obj.PlotOptions.TreatAs))
         updateBar3(obj, dataIndex);
     elseif ismember("bar3h", lower(obj.PlotOptions.TreatAs))
-        updateBar3h(obj, dataIndex); 
+        updateBar3h(obj, dataIndex);
     elseif ismember("fmesh", lower(obj.PlotOptions.TreatAs))
         updateFmesh(obj, dataIndex);
     elseif ismember("surfc", lower(obj.PlotOptions.TreatAs))
-        updateSurfc(obj, dataIndex); 
+        updateSurfc(obj, dataIndex);
     elseif ismember("meshc", lower(obj.PlotOptions.TreatAs))
-        updateSurfc(obj, dataIndex); 
+        updateSurfc(obj, dataIndex);
     elseif ismember("surfl", lower(obj.PlotOptions.TreatAs))
         updateSurfl(obj, dataIndex);
     else %-update plot based on plot call class-%
         switch lower(obj.State.Plot(dataIndex).Class)
-            %--SPIDER PLOT -> SPECIAL CASE--%            
+            %--SPIDER PLOT -> SPECIAL CASE--%
             case "spider_plot_class"
                 updateSpiderPlot(obj, dataIndex);
             %--GEOAXES -> SPECIAL CASE--%
@@ -41,7 +41,7 @@ function obj = updateData(obj, dataIndex)
             case "geobubble"
                 updateGeobubble(obj, dataIndex);
             case "scatterhistogram"
-                updateScatterhistogram(obj, dataIndex); 
+                updateScatterhistogram(obj, dataIndex);
             case "wordcloud"
                 updateWordcloud(obj, dataIndex);
             case "heatmap"
@@ -65,7 +65,7 @@ function obj = updateData(obj, dataIndex)
             case "constantline"
                 updateConstantLine(obj, dataIndex);
             case "categoricalhistogram"
-                updateCategoricalHistogram(obj, dataIndex); 
+                updateCategoricalHistogram(obj, dataIndex);
             case "histogram"
                 updateHistogram(obj, dataIndex);
             case "histogram2"
@@ -87,7 +87,7 @@ function obj = updateData(obj, dataIndex)
                 updateRectangle(obj,dataIndex);
             case "surface"
                 if ismember("surf", lower(obj.PlotOptions.TreatAs))
-                    updateSurf(obj, dataIndex); 
+                    updateSurf(obj, dataIndex);
                 elseif ismember("mesh", lower(obj.PlotOptions.TreatAs))
                     updateMesh(obj, dataIndex);
                 elseif ismember("slice", lower(obj.PlotOptions.TreatAs))
@@ -101,13 +101,13 @@ function obj = updateData(obj, dataIndex)
                 updateImplicitFunctionSurface(obj,dataIndex);
                 %-GROUP PLOT OBJECTS-%
             case "area"
-                updateArea(obj, dataIndex); 
+                updateArea(obj, dataIndex);
             case "areaseries"
                 updateAreaseries(obj, dataIndex);
             case "animatedline"
                 updateAnimatedLine(obj, dataIndex);
             case "bar"
-                updateBar(obj, dataIndex); 
+                updateBar(obj, dataIndex);
             case "barseries"
                 updateBarseries(obj, dataIndex);
             case "baseline"
@@ -123,13 +123,13 @@ function obj = updateData(obj, dataIndex)
             case "functioncontour"
                 updateFunctionContour(obj,dataIndex);
             case "errorbar"
-                updateErrorbar(obj,dataIndex); 
+                updateErrorbar(obj,dataIndex);
             case "errorbarseries"
                 updateErrorbarseries(obj,dataIndex);
             case "lineseries"
                 updateLineseries(obj, dataIndex);
             case "quiver"
-                updateQuiver(obj, dataIndex); 
+                updateQuiver(obj, dataIndex);
             case "quivergroup"
                 updateQuivergroup(obj, dataIndex);
             case "scatter"
@@ -138,18 +138,18 @@ function obj = updateData(obj, dataIndex)
                 elseif obj.PlotlyDefaults.isGeoaxis
                     updateGeoScatter(obj, dataIndex);
                 else
-                    updateScatter(obj, dataIndex); 
+                    updateScatter(obj, dataIndex);
                 end
             case "scattergroup"
                 updateScattergroup(obj, dataIndex);
             case "stair"
-                updateStair(obj, dataIndex); 
+                updateStair(obj, dataIndex);
             case "stairseries"
                 updateStairseries(obj, dataIndex);
             case "stackedplot"
                 updateStackedplot(obj, dataIndex);
             case "stem"
-                updateStem(obj, dataIndex); 
+                updateStem(obj, dataIndex);
             case "stemseries"
                 updateStemseries(obj, dataIndex);
             case "surfaceplot"

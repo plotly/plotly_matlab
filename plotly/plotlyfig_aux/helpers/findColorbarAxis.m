@@ -1,5 +1,5 @@
 function colorbarAxis = findColorbarAxis(obj,colorbarHandle)
-    if isHG2    
+    if isHG2
         colorbarAxisIndex = find(arrayfun(@(x) isequal( ...
                 getappdata(x.Handle,'ColorbarPeerHandle'), ...
                 colorbarHandle),obj.State.Axis));

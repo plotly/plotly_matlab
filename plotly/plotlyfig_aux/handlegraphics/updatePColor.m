@@ -39,17 +39,17 @@ function obj = updatePColor(obj, patchIndex)
     end
 
     sizes = [(size(XData, 1)-1)*2, (size(XData, 2)-1)*2];
-    xdata = zeros(sizes); 
-    ydata = zeros(sizes); 
-    zdata = zeros(sizes); 
-    cdata = zeros(sizes); 
+    xdata = zeros(sizes);
+    ydata = zeros(sizes);
+    zdata = zeros(sizes);
+    cdata = zeros(sizes);
 
     for n = 1:size(XData, 2)-1
         for m = 1:size(XData, 1)-1
-            
+
             % get indices
             n1 = 2*(n-1)+1; m1 = 2*(m-1)+1;
-            
+
             % get surface mesh
             xdata(m1:m1+1,n1:n1+1) = XData(m:m+1, n:n+1);
             ydata(m1:m1+1,n1:n1+1) = YData(m:m+1, n:n+1);
@@ -61,9 +61,9 @@ function obj = updatePColor(obj, patchIndex)
     %---------------------------------------------------------------------%
 
     %-x,y,z-data-%
-    obj.data{patchIndex}.x = xdata; 
-    obj.data{patchIndex}.y = ydata; 
-    obj.data{patchIndex}.z = zdata; 
+    obj.data{patchIndex}.x = xdata;
+    obj.data{patchIndex}.y = ydata;
+    obj.data{patchIndex}.z = zdata;
 
     %---------------------------------------------------------------------%
 
@@ -89,7 +89,7 @@ function obj = updatePColor(obj, patchIndex)
         % x-direction
         xmin = min(XData(:));
         xmax = max(XData(:));
-        xsize = (xmax - xmin) / (size(XData, 2) - 1); 
+        xsize = (xmax - xmin) / (size(XData, 2) - 1);
         obj.data{patchIndex}.contours.x.start = xmin;
         obj.data{patchIndex}.contours.x.end = xmax;
         obj.data{patchIndex}.contours.x.size = xsize;

@@ -19,14 +19,14 @@ function obj = updateBar3(obj, surfaceIndex)
 
     %-associate scene-%
     obj.data{surfaceIndex}.scene = sprintf('scene%d', xsource);
-        
+
     %---------------------------------------------------------------------%
 
     %-surface type-%
     obj.data{surfaceIndex}.type = 'mesh3d';
 
     %---------------------------------------------------------------------%
-        
+
     %-FORMAT DATA-%
     xdata = bar_data.XData;
     ydata = bar_data.YData;
@@ -48,7 +48,7 @@ function obj = updateBar3(obj, surfaceIndex)
 
     %-parse offsets-%
     offsets = zdata(1:6:end, 2)';
-        
+
     %---------------------------------------------------------------------%
 
     %-get the values to use plotly's mesh3D-%
@@ -189,7 +189,7 @@ function obj = updateBar3(obj, surfaceIndex)
         end
     else
         %-define as default-%
-        scene.camera.eye.x = xar + 7; 
+        scene.camera.eye.x = xar + 7;
         scene.camera.eye.y = yar - 2;
         scene.camera.eye.z = zar + 0.5;
     end

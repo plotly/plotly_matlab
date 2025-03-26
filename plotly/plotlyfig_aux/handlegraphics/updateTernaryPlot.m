@@ -127,7 +127,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     tick0 = str2num(axisData.Children(t0).String);
     tick1 = str2num(axisData.Children(t1).String);
     dtick = tick1 - tick0;
-    
+
     tickFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(t0).Color);
     tickFontSize = 1.0 * axisData.Children(t0).FontSize;
     tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);

@@ -78,7 +78,7 @@ function updatePolaraxes(obj, plotIndex)
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
-        
+
     %-GET DATA STRUCTURES-%
     plotData = obj.State.Plot(plotIndex).Handle;
     axisData = plotData.Parent;
@@ -97,13 +97,13 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.domain.y = min([yo yo + h], 1);
 
     %---------------------------------------------------------------------%
-        
+
     %-setting angular axis-%
     gridColor = sprintf("rgba(%d,%d,%d,%f)", ...
             [round(255*axisData.GridColor) axisData.GridAlpha]);
     gridWidth = axisData.LineWidth;
     thetaLim = thetaAxis.Limits;
-    
+
     polarAxis.angularaxis.linecolor = gridColor;
     polarAxis.angularaxis.ticklen = mean(thetaAxis.TickLength);
 
@@ -131,7 +131,7 @@ function updatePolaraxes(obj, plotIndex)
             round(255*thetaLabel.Color));
 
     %---------------------------------------------------------------------%
-        
+
     %-setting radial axis-%
     rLim = rAxis.Limits;
 
@@ -166,7 +166,7 @@ function updatePolaraxes(obj, plotIndex)
     %---------------------------------------------------------------------%
 
     %-angular tick labels settings-%
-    tickValues = axisData.ThetaTick; 
+    tickValues = axisData.ThetaTick;
     tickLabels = axisData.ThetaTickLabel;
     showTickLabels = true;
 
@@ -178,7 +178,7 @@ function updatePolaraxes(obj, plotIndex)
         tickValues = tickValues;
     end
 
-    if isempty(tickValues) 
+    if isempty(tickValues)
         showTickLabels = false;
         polarAxis.angularaxis.showticklabels = showTickLabels;
         polarAxis.angularaxis.ticks = '';
@@ -216,7 +216,7 @@ function updatePolaraxes(obj, plotIndex)
     tickLabels = axisData.RTickLabel;
     showTickLabels = true;
 
-    if isempty(tickValues) 
+    if isempty(tickValues)
         showTickLabels = false;
         polarAxis.radialaxis.showticklabels = showTickLabels;
         polarAxis.radialaxis.ticks = '';

@@ -20,18 +20,18 @@ function updateplotlyhelp
     %----------------------MATLAB SPECIFIC TWEAKS-------------------------%
 
     %-key_type changes-%
-    pr.annotation.xref.key_type = 'plot_info'; 
-    pr.annotation.yref.key_type = 'plot_info'; 
-    pr.line.shape.key_type = 'plot_info'; 
+    pr.annotation.xref.key_type = 'plot_info';
+    pr.annotation.yref.key_type = 'plot_info';
+    pr.line.shape.key_type = 'plot_info';
 
     %---------------------------------------------------------------------%
 
     % save directory
-    helpdir = fullfile(fileparts(which('updateplotlyhelp')), 'plotly_reference'); 
+    helpdir = fullfile(fileparts(which('updateplotlyhelp')), 'plotly_reference');
 
-    % pr filename 
-    prname = fullfile(helpdir); 
+    % pr filename
+    prname = fullfile(helpdir);
 
     %----save----%
-    save(prname, 'pr'); 
+    save(prname, 'pr');
 end

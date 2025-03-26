@@ -84,7 +84,7 @@ function obj = updateColorbar(obj,colorbarIndex)
     colorbar.exponentformat = obj.PlotlyDefaults.ExponentFormat;
     colorbar.thicknessmode = 'fraction';
     colorbar.lenmode = 'fraction';
-    
+
     %---------------------------------------------------------------------%
 
     %-tick setings-%
@@ -241,7 +241,7 @@ function obj = updateColorbar(obj,colorbarIndex)
         else
             bgColor = round(255*figureData.Color);
         end
-        
+
         obj.layout.plot_bgcolor = sprintf("rgb(%d,%d,%d)", bgColor);
     end
 

@@ -4,11 +4,11 @@ function saveplotlyconfig(plotly_domain,plotly_streaming_domain)
     % in ~/.plotly/.config
 
     % catch missing input arguments
-    if nargin < 1 
+    if nargin < 1
         error('plotly:saveconfig', ['Incorrect number of inputs. ' ...
                 'Please save your configuration as follows: >> ' ...
                 'saveplotlyconfig(plotly_domain,[optional]' ...
-                'plotly_streaming_domain)']); 
+                'plotly_streaming_domain)']);
     end
 
     % if the config file exists, then load it up
@@ -43,8 +43,8 @@ function saveplotlyconfig(plotly_domain,plotly_streaming_domain)
                 'Get in touch at chris@plot.ly for support.']);
     end
 
-    % get user credenitals 
-    [username, api_key] = signin; 
+    % get user credenitals
+    [username, api_key] = signin;
 
     switch nargin
         case 1

@@ -99,7 +99,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
                     end
             end
         end
-        
+
         obj.data{ternaryIndex}.fillcolor = fillColor;
         obj.data{ternaryIndex}.fill = 'toself';
         obj.data{ternaryIndex}.showlegend = false;

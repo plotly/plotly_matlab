@@ -120,14 +120,14 @@ function ax = getMainScatterAxis(plotData, axName)
     ax.zeroline = true;
     ax.showgrid = false;
     ax.mirror = 'ticks';
-    
+
     %-ticks-%
     ax.showticklabels = true;
     ax.ticks = 'inside';
     ax.tickfont.size = 1.2*plotData.FontSize;
     ax.tickcolor = axisColor;
     ax.tickfont.family = matlab2plotlyfont(plotData.FontName);
-    
+
     %-label-%
     ax.title.text = axisLabel;
     if ~isempty(axisLabel), axisLabel = parseString(axisLabel); end
@@ -309,7 +309,7 @@ function axisDomain = getXMarginalDomain(plotData, axName)
             elseif contains(plotLocation, 'North')
                 yo = 0.02; h = axisPos(2)*0.7-yo;
             end
-            axisDomain = min([yo yo+h], 1); 
+            axisDomain = min([yo yo+h], 1);
     end
 end
 
@@ -360,7 +360,7 @@ function axisDomain = getYMarginalDomain(plotData, axName)
             elseif contains(plotLocation, 'East')
                 xo = 0.02; w = axisPos(1)*0.7-xo;
             end
-            axisDomain = min([xo xo+w], 1); 
+            axisDomain = min([xo xo+w], 1);
         case 'Y'
             axisDomain = min([axisPos(2) sum(axisPos([2,4]))], 1);
     end
@@ -391,7 +391,7 @@ end
 
 function [xData, yData, groupName] = getTraceData(plotData)
     %-parcing data-%
-    xPlot = plotData.XData; 
+    xPlot = plotData.XData;
     yPlot = plotData.YData;
 
     if iscategorical(xPlot), [~, ~, xPlot] = unique(xPlot); end
@@ -438,7 +438,7 @@ function updateTitle(obj, plotIndex)
         obj.layout.annotations{1}.yref = 'paper';
         obj.layout.annotations{1}.yanchor = 'top';
         obj.layout.annotations{1}.xanchor = 'middle';
-        
+
         obj.layout.annotations{1}.font.color = 'black';
         obj.layout.annotations{1}.font.family = titleFamily;
         obj.layout.annotations{1}.font.size = 1.5*plotData.FontSize;

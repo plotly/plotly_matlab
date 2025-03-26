@@ -29,7 +29,7 @@ function updateContourOnly(obj, contourIndex)
     obj.data{contourIndex}.scene = sprintf('scene%d', xsource);
 
     %---------------------------------------------------------------------%
-        
+
     %-scatter3d type for contour projection-%
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
@@ -149,7 +149,7 @@ function updateSurfOnly(obj, surfaceIndex)
 
     %-surface type for face color-%
     obj.data{surfaceIndex}.type = 'surface';
-        
+
     %-scatter3d type for contour mesh lines-%
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
@@ -428,8 +428,8 @@ function updateSurfOnly(obj, surfaceIndex)
         xey = - xyar; if xey>0 xfac = 0.1; else xfac = -0.1; end
         yey = - xyar; if yey>0 yfac = -0.5; else yfac = 0.5; end
         if zar>0 zfac = 0.1; else zfac = -0.1; end
-        
-        scene.camera.eye.x = xey + xfac*xey; 
+
+        scene.camera.eye.x = xey + xfac*xey;
         scene.camera.eye.y = yey + yfac*yey;
         scene.camera.eye.z = zar + zfac*zar;
     end

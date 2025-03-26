@@ -7,7 +7,7 @@ function check = isExceptionStrip(grstruct, fieldname)
             'size', @(x)(length(x)>1)};
 
     for e = 1:2:length(exceptions)
-        % comparison function 
+        % comparison function
         compfun = exceptions{e+1};
         % look for fieldnames of type exceptions{e} and compare the
         % underyling data using exceptions{e+1}

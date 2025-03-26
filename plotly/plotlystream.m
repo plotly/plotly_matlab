@@ -7,13 +7,13 @@ classdef plotlystream < handle
     % class plots data to these traces, as identified with the unique
     % stream_id, in real-time. Every viewer of the graph sees
     % the same data at the same time.
-    
+
     %----CLASS PROPERTIES----%
     properties
         Response
         Specs
     end
-    
+
     properties (Access=private)
         URL
         ErrorURL
@@ -22,16 +22,16 @@ classdef plotlystream < handle
         Stream
         ErrorStream
     end
-    
+
     %----CLASS METHODS----%
     methods
-        
+
         %----CONSTRUCTOR---%
         function obj = plotlystream(request)
-            
+
             %default stream settings
             obj.Specs.Token = '';
-            
+
             %look for specified streaming domain
             try
                 config = loadplotlyconfig;
@@ -39,28 +39,28 @@ classdef plotlystream < handle
             catch
                 obj.Specs.Host = 'http://stream.plot.ly';
             end
-            
+
             %check if ssl is enabled
             if any(strfind(obj.Specs.Host,'https://') == 1)
                 obj.Specs.SSLEnabled = true;
             else
-                obj.Specs.SSLEnabled = false;                
+                obj.Specs.SSLEnabled = false;
             end
-            
+
             %add http if not present on host
             if ~obj.Specs.SSLEnabled
                 if ~any(strfind(obj.Specs.Host,'http://') == 1)
                     obj.Specs.Host = ['http://' obj.Specs.Host];
-                end 
+                end
             end
-            
+
             %specify handler
             if obj.Specs.SSLEnabled
                 obj.Specs.Handler = sun.net.www.protocol.https.Handler;
             else
                 obj.Specs.Handler = sun.net.www.protocol.http.Handler;
             end
-            
+
             %initialize connection settings
             obj.Specs.ReconnectOn = {'','200','408'};
             obj.Specs.Timeout = 500;
@@ -69,10 +69,10 @@ classdef plotlystream < handle
             obj.Specs.ConnectAttempts = 0;
             obj.Specs.ConnectDelay = 1;
             obj.Specs.MaxConnectAttempts = 5;
-            
+
             %initialize output response
             obj.Response = '';
-            
+
             %check for correct input structure
             if nargin > 0
                 if ischar(request)
@@ -110,29 +110,29 @@ classdef plotlystream < handle
                     'chuck@plot.ly']);
             end
         end
-         
+
         %-----------OPEN STREAM-----------%
         function obj = open(obj)
             try obj.connect;
                 %Connection successful!
                 fprintf('\n[Connection Successful]\n\n');
-                
+
                 %update state
                 obj.resetretries;
                 obj.Specs.Closed = false;
-                
+
             catch ME
                 error(['Oops! The following error occured when trying to write to the stream: ',...
                     ME.message '. Please check the online documentation ', ...
                     'found @ plot.ly/matlab for more information or contact chuck@plot.ly']);
             end
-            
+
         end
-        
+
         %-----------CONNECT TO STREAM-----------%
         function obj = connect(obj)
             obj.URL = java.net.URL([],obj.Specs.Host,obj.Specs.Handler);
-            
+
             % Get the proxy information using MathWorks facilities for unified proxy
             % preference settings.
             mwtcp = com.mathworks.net.transport.MWTransportClientPropertiesFactory.create();
@@ -152,7 +152,7 @@ classdef plotlystream < handle
             obj.Connection.setRequestProperty('plotly-streamtoken', obj.Specs.Token);
             obj.Stream = obj.Connection.getOutputStream; %throws an I/O exception
         end
-        
+
         %-----------WRITE STREAM-----------%
         function obj = write(obj,request)
             if nargin ~= 2
@@ -167,9 +167,9 @@ classdef plotlystream < handle
                         'Please check out the online documentation found @ plot.ly/matlab ',...
                         'for more information or contact chuck@plot.ly']);
                 end
-                
+
                 body = request;
-                
+
                 %make sure we did not close the stream
                 if (~obj.Specs.Closed)
                     try
@@ -191,7 +191,7 @@ classdef plotlystream < handle
                                     fprintf('\n[Connection Failed] Reconnecting...\n\n');
                                 end
                                 obj.reconnect;
-                                
+
                                 %add recursion call to not drop data
                                 obj.write(body);
                             else
@@ -210,7 +210,7 @@ classdef plotlystream < handle
                 end
             end
         end
-        
+
         %-----------CLOSE STREAM-----------%
         function obj = close(obj)
             try
@@ -226,18 +226,18 @@ classdef plotlystream < handle
             obj.resetretries;
             obj.Specs.Closed = true;
         end
-        
+
         %-----------RECONNECT-----------%
         function obj = reconnect(obj)
             try
                 obj.Specs.ConnectAttempts = obj.Specs.ConnectAttempts + 1;
-                
+
                 %try to connect
                 obj.connect;
-                
+
                 %Connection successful!
                 fprintf('\n[Connection Successful]\n\n');
-                
+
                 %update state
                 obj.resetretries;
                 obj.Specs.Closed = false;
@@ -255,7 +255,7 @@ classdef plotlystream < handle
                 end
             end
         end
-        
+
         %-----------GET RESPONSE-----------%
         function obj = getresponse(obj)
             try
@@ -268,7 +268,7 @@ classdef plotlystream < handle
                 end
             end
         end
-        
+
         %-----------RESET RETRIES-----------%
         function obj = resetretries(obj)
             %reset the connect counter and delay

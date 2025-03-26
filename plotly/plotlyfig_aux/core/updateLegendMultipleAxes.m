@@ -36,7 +36,7 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     [~, groupIndex] = unique(string(allNames));
 
     for traceIndex = groupIndex'
-    obj.data{traceIndex}.showlegend = allShowLegens(traceIndex); 
+    obj.data{traceIndex}.showlegend = allShowLegens(traceIndex);
     end
 
     %---------------------------------------------------------------------%
@@ -79,7 +79,7 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
 
         col = round(255*legendData.TextColor);
         obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", col);
-        
+
     end
 
     %-REVERT UNITS-%

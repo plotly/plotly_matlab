@@ -68,7 +68,7 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     %- setting grid mesh by default -%
     % x-direction
     mden = image_data.MeshDensity;
-    xsize = (x(2) - x(1)) / mden; 
+    xsize = (x(2) - x(1)) / mden;
     obj.data{surfaceIndex}.contours.x.start = x(1);
     obj.data{surfaceIndex}.contours.x.end = x(2);
     obj.data{surfaceIndex}.contours.x.size = xsize;

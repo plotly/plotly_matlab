@@ -27,15 +27,15 @@ function f = addtheme(f, theme)
     end
 
     %---------------------------------------------------------------------%
-        
+
     %-add theme to figure-%
-    
+
     fname = sprintf('%s/%s.json', themePath, theme);
     % fname = strcat('plotly/themes/', theme, '.json');
-    fid = fopen(fname); 
-    raw = fread(fid,inf); 
-    str = char(raw'); 
-    fclose(fid); 
+    fid = fopen(fname);
+    raw = fread(fid,inf);
+    str = char(raw');
+    fclose(fid);
     theme_template = jsondecode(str);
 
     f.layout.template = theme_template;
@@ -44,7 +44,7 @@ function f = addtheme(f, theme)
         disp(strcat('layout.bg_paper:::',...
             f.layout.template.layout.paper_bgcolor))
     end
-    
+
     if isfield(f.layout.template.layout, 'plot_bgcolor')
         disp(strcat('layout.plot_bgcolor:::',...
             f.layout.template.layout.plot_bgcolor))

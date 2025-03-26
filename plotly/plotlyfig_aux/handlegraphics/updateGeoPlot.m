@@ -21,7 +21,7 @@ function updateGeoPlot(obj,geoIndex)
 
     %---------------------------------------------------------------------%
 
-    %-set trace data-%    
+    %-set trace data-%
     obj.data{geoIndex}.lat = geoData.LatitudeData;
     obj.data{geoIndex}.lon = geoData.LongitudeData;
 

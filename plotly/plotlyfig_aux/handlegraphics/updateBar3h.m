@@ -24,7 +24,7 @@ function obj = updateBar3h(obj, surfaceIndex)
     obj.data{surfaceIndex}.type = 'mesh3d';
 
     %---------------------------------------------------------------------%
-        
+
     %-FORMAT DATA-%
     xdata = bar_data.XData;
     ydata = bar_data.ZData;
@@ -46,7 +46,7 @@ function obj = updateBar3h(obj, surfaceIndex)
 
     %-parse offsets-%
     offsets = zdata(1:6:end, 2)';
-        
+
     %---------------------------------------------------------------------%
 
     %-get the values to use plotly's mesh3D-%
@@ -81,11 +81,11 @@ function obj = updateBar3h(obj, surfaceIndex)
     cmap = figure_data.Colormap;
 
     if isnumeric(bar_data.FaceColor)
-        
+
         %-paper_bgcolor-%
         col = round(255*bar_data.FaceColor);
         col = sprintf("rgb(%d,%d,%d)", col);
-        
+
     else
         switch bar_data.FaceColor
             case 'none'
@@ -200,7 +200,7 @@ function obj = updateBar3h(obj, surfaceIndex)
     else
 
         %-define as default-%
-        scene.camera.eye.x = xar + 7; 
+        scene.camera.eye.x = xar + 7;
         scene.camera.eye.y = yar + 0;
         scene.camera.eye.z = zar + 0.5;
     end

@@ -10,10 +10,10 @@ function obj = updateHistogram2(obj,dataIndex)
     barGap = 0.05;
 
     %-get trace data-%
-    
+
     values = plotData.Values;
     if strcmp(plotData.ShowEmptyBins, 'on'), values = values+1; end
-    xEdges = plotData.XBinEdges; 
+    xEdges = plotData.XBinEdges;
     yEdges = plotData.YBinEdges;
 
     dx = diff(xEdges(2:end-1));
@@ -31,7 +31,7 @@ function obj = updateHistogram2(obj,dataIndex)
     if strcmp(plotData.ShowEmptyBins, 'on')
         zData = zData-1;
     end
-        
+
     cData = zeros(size(zData));
     for n = 1:2:length(zData)
         cData(n:n+1) = max(zData(n:n+1));
@@ -136,7 +136,7 @@ function updateScene(obj, dataIndex)
     scene.camera.eye.z = cameraEye(3);
 
     %-camera up-%
-    scene.camera.up.x = cameraUpVector(1); 
+    scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
 
@@ -226,7 +226,7 @@ function bar_ = barData(position3d, size_)
 end
 
 function [vertices, I, J, K] = triangulateBarFaces(positions, sizes)
-    % positions - array of shape (N, 3) that contains all positions in the plane z=0, where a histogram bar is placed 
+    % positions - array of shape (N, 3) that contains all positions in the plane z=0, where a histogram bar is placed
     % sizes -  array of shape (N,3); each row represents the sizes to scale a unit cube to get a bar
     % returns the array of unique vertices, and the lists i, j, k to be used in instantiating the go.Mesh3d class
 

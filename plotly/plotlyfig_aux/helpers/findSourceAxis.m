@@ -1,6 +1,6 @@
 function [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj, axIndex, yaxIndex)
     % initialize output
-    xsource = axIndex; 
+    xsource = axIndex;
     ysource = axIndex;
     xoverlay = false;
     yoverlay = false;
@@ -21,7 +21,7 @@ function [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj, axIndex, y
             ysource = overlapaxes(1);
         else
             yoverlay = overlapaxes(1);
-        end  
+        end
     end
 
     % works for multiple y-Axis

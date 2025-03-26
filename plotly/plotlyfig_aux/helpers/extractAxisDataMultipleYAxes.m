@@ -54,9 +54,9 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
     if isempty(tickValues)
         axis.ticks = '';
         axis.showticklabels = false;
-        axis.autorange = true; 
+        axis.autorange = true;
     else
-        axisLim = childAxisData.Limits; 
+        axisLim = childAxisData.Limits;
         switch childAxisData.TickDirection
             case 'in'
                 axis.ticks = 'inside';
@@ -76,7 +76,7 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
                     axis.range = axisLim;
                 elseif isduration(axisLim)
                    [temp,type] = convertDuration(axisLim);
-                   if (~isduration(temp))              
+                   if (~isduration(temp))
                        axis.range = temp;
                        axis.type = 'duration';
                        axis.title = type;
@@ -84,12 +84,12 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
                        nticks = length(tickValues) + 1;
                        delta = 0.1;
                        axis.range = [-delta nticks+delta];
-                       axis.type = 'duration - specified format';     
+                       axis.type = 'duration - specified format';
                    end
                 elseif isdatetime(axisLim)
                     axis.range = convertDate(axisLim);
-                    axis.type = 'date'; 
-                else 
+                    axis.type = 'date';
+                else
                     % data is a category type other then duration and datetime
                 end
                 axis.autotick = true;

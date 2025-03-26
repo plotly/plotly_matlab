@@ -6,7 +6,7 @@ function [warnings] = addplotlystartup(startupPaths)
     % outputs warning
 
     %output warnings
-    warnings = cell(size(startupPaths)); 
+    warnings = cell(size(startupPaths));
 
     for locs = 1:size(startupPaths,1);
         %addpath string for Plotly API
@@ -50,9 +50,9 @@ function [warnings] = addplotlystartup(startupPaths)
             warnings{locs} = ['\n[WARNING]: \n\nWe found an addpath ' ...
                     'specification for another version of Plotly at: ' ...
                     '\n\n' startupPaths{locs} '\n\nyou may be forcing ' ...
-                    'MATLAB to look for an older version of Plotly!\n\n']; 
+                    'MATLAB to look for an older version of Plotly!\n\n'];
         else
-            warnings{locs} = ''; 
+            warnings{locs} = '';
         end
         fclose(currentStartupID);
     end

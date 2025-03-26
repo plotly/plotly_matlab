@@ -3,7 +3,7 @@ function plotlyref = plotlyhelp(varargin)
 
     %converts graph_obj_meta.json to struct/cell array and outputs key
     plotlyref = load('plotly_reference.mat');
-    pr = plotlyref.pr; 
+    pr = plotlyref.pr;
     pr.online = 'Access the online docs!';
 
     try
@@ -18,12 +18,12 @@ function plotlyref = plotlyhelp(varargin)
                 end
             case 2
                 plotlyref = pr.(lower(varargin{1})).(lower(varargin{2}));
-            case 3 
+            case 3
                 plotlyref = pr.(lower(varargin{1})).(lower(varargin{2})).(lower(varargin{3}));
             case 4 %does the struct nesting ever go beyond 4?
                 plotlyref = pr.(lower(varargin{1})).(lower(varargin{2})).(lower(varargin{3})).(lower(varargin{4}));
         end
-        
+
     catch exception
         fprintf(['\n\nSorry! We could not find what you were looking ' ...
                 'for. Please specify a valid Plotly reference.\n\n']);

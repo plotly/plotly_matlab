@@ -1,10 +1,10 @@
 function outputStr = formatRW(inputStr)
-    %adds whitespace after \reservedwordplot(1,1); 
+    %adds whitespace after \reservedwordplot(1,1);
 
-    inputStrCell = cell(1,length(inputStr)); 
+    inputStrCell = cell(1,length(inputStr));
 
     for c = 1:length(inputStr)
-        inputStrCell{c} = inputStr(c); 
+        inputStrCell{c} = inputStr(c);
     end
 
     rW = {'\\alpha','\\upsilon','\\sim','\\angle','\\phi','\\leq',...
@@ -31,10 +31,10 @@ function outputStr = formatRW(inputStr)
     for w = 1:length(rW)
         [startInd endInd] = regexp(inputStr,rW{w});
         for ind = 1:length(endInd)
-            %add space at end of reserved words 
+            %add space at end of reserved words
             inputStrCell{endInd(ind)}  = [inputStrCell{endInd(ind)} ' '];
         end
     end
 
-    outputStr = [inputStrCell{:}]; 
+    outputStr = [inputStrCell{:}];
 end

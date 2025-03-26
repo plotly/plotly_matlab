@@ -95,7 +95,7 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
             case {'h','hexagram'}
                 marksymbol = 'hexagram';
         end
-        
+
         marker.symbol = marksymbol;
     end
 

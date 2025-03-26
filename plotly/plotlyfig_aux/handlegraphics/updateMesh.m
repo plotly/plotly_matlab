@@ -29,7 +29,7 @@ function obj = updateMesh(obj, surfaceIndex)
 
     %-surface type for face color-%
     obj.data{surfaceIndex}.type = 'surface';
-        
+
     %-scatter3d type for contour mesh lines-%
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
@@ -237,7 +237,7 @@ function obj = updateMesh(obj, surfaceIndex)
             obj.data{surfaceIndex}.cmin = axisData.CLim(1);
             obj.data{surfaceIndex}.cmax = axisData.CLim(2);
         end
-        
+
     end
 
     %-set face color-%
@@ -323,8 +323,8 @@ function obj = updateMesh(obj, surfaceIndex)
         xey = - xyar; if xey>0 xfac = -0.0; else xfac = 0.0; end
         yey = - xyar; if yey>0 yfac = -0.3; else yfac = 0.3; end
         if zar>0 zfac = -0.1; else zfac = 0.1; end
-        
-        scene.camera.eye.x = xey + xfac*xey; 
+
+        scene.camera.eye.x = xey + xfac*xey;
         scene.camera.eye.y = yey + yfac*yey;
         scene.camera.eye.z = zar + zfac*zar;
     end

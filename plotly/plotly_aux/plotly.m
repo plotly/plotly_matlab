@@ -16,7 +16,7 @@ function [response] = plotly(varargin)
     if isstruct(varargin{end})
         structargs = varargin{end};
         f = fieldnames(structargs);
-        
+
         idx = cellfun(@(x) strcmpi(x, 'offline'), f);
         if sum(idx) == 1
             offline = structargs.(f{idx});
@@ -36,14 +36,14 @@ function [response] = plotly(varargin)
         if ~any(strcmpi('fileopt',f))
             structargs.fileopt = NaN;
         end
-        
+
         idx = cellfun(@(x) strcmpi(x, 'writefile'),f);
         if sum(idx) == 1
             writeFile=structargs.(f{idx});
         end
-        
+
         args = varargin(1:(end-1));
-        
+
     else
         if offline_given
             structargs = struct('filename', 'untitled', 'fileopt', NaN);

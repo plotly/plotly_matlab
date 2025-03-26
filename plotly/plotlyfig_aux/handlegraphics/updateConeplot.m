@@ -145,7 +145,7 @@ function obj = updateConeplot(obj, coneIndex)
         yey = - yar; if yey>0 yfac = -0.2; else yfac = 0.2; end
         if zar>0 zfac = 0.2; else zfac = -0.2; end
 
-        scene.camera.eye.x = xey + xfac*xey; 
+        scene.camera.eye.x = xey + xfac*xey;
         scene.camera.eye.y = yey + yfac*yey;
         scene.camera.eye.z = zar + zfac*zar;
     end
