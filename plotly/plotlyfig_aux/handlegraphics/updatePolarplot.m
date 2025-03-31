@@ -1,4 +1,4 @@
-function updatePolarplot(obj, plotIndex)
+function data = updatePolarplot(obj, plotIndex)
 
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
@@ -10,7 +10,7 @@ function updatePolarplot(obj, plotIndex)
     xsource = findSourceAxis(obj, axIndex);
 
     %-ASSOCIATE POLAR-AXES LAYOUT-%
-    obj.data{plotIndex}.subplot = sprintf('polar%d', xsource+1);
+    data.subplot = sprintf('polar%d', xsource+1);
 
     %-parse plot data-%
     rData = plotData.RData;
@@ -20,29 +20,29 @@ function updatePolarplot(obj, plotIndex)
     rData = abs(rData);
 
     %-scatterpolar trace setting-%
-    obj.data{plotIndex}.type = 'scatterpolar';
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
-    obj.data{plotIndex}.name = plotData.DisplayName;
+    data.type = 'scatterpolar';
+    data.visible = strcmp(plotData.Visible,'on');
+    data.name = plotData.DisplayName;
 
     %-set scatterpolar data-%
-    obj.data{plotIndex}.r = rData;
-    obj.data{plotIndex}.theta = thetaData;
+    data.r = rData;
+    data.theta = thetaData;
 
     %-trace settings-%
     if ~strcmpi('none', plotData.Marker) ...
             && ~strcmpi('none', plotData.LineStyle)
-        obj.data{plotIndex}.mode = 'lines+markers';
+        data.mode = 'lines+markers';
     elseif ~strcmpi('none', plotData.Marker)
-        obj.data{plotIndex}.mode = 'markers';
+        data.mode = 'markers';
     elseif ~strcmpi('none', plotData.LineStyle)
-        obj.data{plotIndex}.mode = 'lines';
+        data.mode = 'lines';
     else
-        obj.data{plotIndex}.mode = 'none';
+        data.mode = 'none';
     end
 
-    obj.data{plotIndex}.marker = extractLineMarker(plotData);
-    obj.data{plotIndex}.line = extractLineLine(plotData);
-    obj.data{plotIndex}.line.width = 2 * obj.data{plotIndex}.line.width;
+    data.marker = extractLineMarker(plotData);
+    data.line = extractLineLine(plotData);
+    data.line.width = 2 * data.line.width;
 
     %-legend setting-%
     leg = plotData.Annotation;
@@ -50,9 +50,9 @@ function updatePolarplot(obj, plotIndex)
 
     switch legInfo.IconDisplayStyle
         case 'on'
-            obj.data{plotIndex}.showlegend = true;
+            data.showlegend = true;
         case 'off'
-            obj.data{plotIndex}.showlegend = false;
+            data.showlegend = false;
     end
 
     %-set polar axes-%
@@ -88,8 +88,8 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.domain.y = min([yo yo + h], 1);
 
     %-setting angular axis-%
-    gridColor = sprintf("rgba(%d,%d,%d,%f)", ...
-            [round(255*axisData.GridColor) axisData.GridAlpha]);
+    gridColor = getStringColor( ...
+            round(255*axisData.GridColor), axisData.GridAlpha);
     gridWidth = axisData.LineWidth;
     thetaLim = thetaAxis.Limits;
 
@@ -114,7 +114,7 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
             thetaLabel.FontName);
     polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
-    polarAxis.radialaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
+    polarAxis.radialaxis.title.font.color = getStringColor( ...
             round(255*thetaLabel.Color));
 
     %-setting radial axis-%
@@ -143,7 +143,7 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.angularaxis.title.font.family = matlab2plotlyfont(...
             rLabel.FontName);
     polarAxis.angularaxis.title.font.size = rLabel.FontSize;
-    polarAxis.angularaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
+    polarAxis.angularaxis.title.font.color = getStringColor( ...
             round(255*rLabel.Color));
 
     %-angular tick labels settings-%
@@ -162,7 +162,6 @@ function updatePolaraxes(obj, plotIndex)
 
     elseif isempty(tickLabels)
         polarAxis.angularaxis.tickvals = tickValues;
-
     else
         polarAxis.angularaxis.tickvals = tickValues;
         polarAxis.angularaxis.ticktext = tickLabels;
@@ -180,7 +179,7 @@ function updatePolaraxes(obj, plotIndex)
         polarAxis.angularaxis.tickfont.family = matlab2plotlyfont(...
                 thetaAxis.FontName);
         polarAxis.angularaxis.tickfont.size = thetaAxis.FontSize;
-        polarAxis.angularaxis.tickfont.color = sprintf("rgb(%d,%d,%d)", ...
+        polarAxis.angularaxis.tickfont.color = getStringColor( ...
                 round(255*thetaAxis.Color));
     end
 
@@ -193,10 +192,8 @@ function updatePolaraxes(obj, plotIndex)
         showTickLabels = false;
         polarAxis.radialaxis.showticklabels = showTickLabels;
         polarAxis.radialaxis.ticks = '';
-
     elseif isempty(tickLabels)
         polarAxis.radialaxis.tickvals = tickValues;
-
     else
         polarAxis.radialaxis.tickvals = tickValues;
         polarAxis.radialaxis.ticktext = tickLabels;
@@ -214,7 +211,7 @@ function updatePolaraxes(obj, plotIndex)
         polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
                 rAxis.FontName);
         polarAxis.radialaxis.tickfont.size = rAxis.FontSize;
-        polarAxis.radialaxis.tickfont.color = sprintf("rgb(%d,%d,%d)", ...
+        polarAxis.radialaxis.tickfont.color = getStringColor( ...
                 round(255*rAxis.Color));
     end
 

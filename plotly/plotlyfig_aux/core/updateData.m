@@ -56,7 +56,7 @@ function obj = updateData(obj, dataIndex)
                 if obj.PlotlyDefaults.isGeoaxis
                     updateGeoPlot(obj, dataIndex);
                 elseif obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
-                    updatePolarplot(obj, dataIndex);
+                    obj.data{dataIndex} = updatePolarplot(obj, dataIndex);
                 elseif ismember("ternplot", lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlot(obj, dataIndex);
                 else
