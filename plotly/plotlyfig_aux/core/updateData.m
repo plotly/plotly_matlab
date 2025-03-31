@@ -138,7 +138,7 @@ function obj = updateData(obj, dataIndex)
                 elseif obj.PlotlyDefaults.isGeoaxis
                     updateGeoScatter(obj, dataIndex);
                 else
-                    updateScatter(obj, dataIndex);
+                    obj.data{dataIndex} = updateScatter(obj, dataIndex);
                 end
             case "scattergroup"
                 updateScattergroup(obj, dataIndex);

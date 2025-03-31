@@ -1,4 +1,4 @@
-function updateScatter(obj,plotIndex)
+function data = updateScatter(obj,plotIndex)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj,axIndex);
@@ -9,49 +9,49 @@ function updateScatter(obj,plotIndex)
 
     %-set trace-%
     if ~isScatter3D
-        obj.data{plotIndex}.type = "scatter";
-        obj.data{plotIndex}.xaxis = "x" + xSource;
-        obj.data{plotIndex}.yaxis = "y" + ySource;
+        data.type = "scatter";
+        data.xaxis = "x" + xSource;
+        data.yaxis = "y" + ySource;
         updateCategoricalAxis(obj, plotIndex);
     else
-        obj.data{plotIndex}.type = "scatter3d";
-        obj.data{plotIndex}.scene = "scene" + xSource;
+        data.type = "scatter3d";
+        data.scene = "scene" + xSource;
 
         updateScene(obj, plotIndex);
     end
 
-    obj.data{plotIndex}.mode = "markers";
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible, "on");
-    obj.data{plotIndex}.name = plotData.DisplayName;
+    data.mode = "markers";
+    data.visible = strcmp(plotData.Visible, "on");
+    data.name = plotData.DisplayName;
 
     %-set trace data-%
     [xData, yData] = getTraceData2D(plotData);
-    obj.data{plotIndex}.x = xData;
-    obj.data{plotIndex}.y = yData;
+    data.x = xData;
+    data.y = yData;
 
-    isSingle = isscalar(obj.data{plotIndex}.x);
+    isSingle = isscalar(data.x);
     if isSingle % fix single point plots
-        obj.data{plotIndex}.x = repelem(obj.data{plotIndex}.x,1,2);
-        obj.data{plotIndex}.y = repelem(obj.data{plotIndex}.y,1,2);
+        data.x = repelem(data.x,1,2);
+        data.y = repelem(data.y,1,2);
     end
 
     if isScatter3D
-        obj.data{plotIndex}.z = plotData.ZData;
+        data.z = plotData.ZData;
         if isSingle
-            obj.data{plotIndex}.z = repelem(obj.data{plotIndex}.z,1,2);
+            data.z = repelem(data.z,1,2);
         end
     end
 
     %-set trace marker-%
-    obj.data{plotIndex}.marker = extractScatterMarker(plotData);
+    data.marker = extractScatterMarker(plotData);
 
     if isScatter3D
-        markerSize = obj.data{plotIndex}.marker.size;
-        obj.data{plotIndex}.marker.size = 2*markerSize;
+        markerSize = data.marker.size;
+        data.marker.size = 2*markerSize;
     end
 
     %-set trace legend-%
-    obj.data{plotIndex}.showlegend = getShowLegend(plotData);
+    data.showlegend = getShowLegend(plotData);
 end
 
 function updateScene(obj, dataIndex)
