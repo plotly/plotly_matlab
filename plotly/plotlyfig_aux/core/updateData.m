@@ -66,7 +66,7 @@ function obj = updateData(obj, dataIndex)
                 updateCategoricalHistogram(obj, dataIndex);
             case "histogram"
                 if obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
-                    updateHistogramPolar(obj, dataIndex);
+                    obj.data{dataIndex} = updateHistogramPolar(obj, dataIndex);
                 else
                     updateHistogram(obj, dataIndex);
                 end

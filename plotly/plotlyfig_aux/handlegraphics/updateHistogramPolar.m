@@ -1,4 +1,4 @@
-function obj = updateHistogramPolar(obj,histIndex)
+function data = updateHistogramPolar(obj,histIndex)
     % x:...[DONE]
     % y:...[DONE]
     % histnorm:...[DONE]
@@ -45,40 +45,30 @@ function obj = updateHistogramPolar(obj,histIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %-HIST DATA STRUCTURE- %
     hist_data = obj.State.Plot(histIndex).Handle;
 
-    %-barpolar type-%
-    obj.data{histIndex}.type = 'barpolar';
+    data.type = "barpolar";
 
-    %-barpolar data-%
     binedges = rad2deg(hist_data.BinEdges);
-    obj.data{histIndex}.theta = binedges(1:end-1) + 0.5*diff(binedges);
-    obj.data{histIndex}.width = diff(binedges);
-    obj.data{histIndex}.r = double(hist_data.BinCounts);
+    data.theta = binedges(1:end-1) + 0.5*diff(binedges);
+    data.width = diff(binedges);
+    data.r = double(hist_data.BinCounts);
 
-    obj.data{histIndex}.name = hist_data.DisplayName;
-    obj.layout.barmode = 'group';
-    obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
+    data.name = hist_data.DisplayName;
+    obj.layout.barmode = "group";
+    data.marker.line.width = hist_data.LineWidth;
 
-    %-hist opacity-%
     if ~ischar(hist_data.FaceAlpha)
-        obj.data{histIndex}.opacity = hist_data.FaceAlpha;
+        data.opacity = hist_data.FaceAlpha;
     end
 
-    obj.data{histIndex}.marker = extractPatchFace(hist_data);
-    obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
+    data.marker = extractPatchFace(hist_data);
+    data.visible = hist_data.Visible == "on";
 
-    %-hist showlegend-%
-    leg = hist_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch hist_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            data.showlegend = true;
+        case "off"
+            data.showlegend = false;
     end
-
-    obj.data{histIndex}.showlegend = showleg;
 end
