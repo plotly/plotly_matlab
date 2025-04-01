@@ -10,8 +10,6 @@ function obj = updateData(obj, dataIndex)
         updateContour3(obj, dataIndex);
     elseif ismember("ezpolar", lower(obj.PlotOptions.TreatAs))
         updateLineseries(obj, dataIndex);
-    elseif ismember("polarhistogram", lower(obj.PlotOptions.TreatAs))
-        updateHistogramPolar(obj, dataIndex);
     elseif ismember("coneplot", lower(obj.PlotOptions.TreatAs))
         updateConeplot(obj, dataIndex);
     elseif ismember("bar3", lower(obj.PlotOptions.TreatAs))
@@ -67,7 +65,11 @@ function obj = updateData(obj, dataIndex)
             case "categoricalhistogram"
                 updateCategoricalHistogram(obj, dataIndex);
             case "histogram"
-                updateHistogram(obj, dataIndex);
+                if obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
+                    updateHistogramPolar(obj, dataIndex);
+                else
+                    updateHistogram(obj, dataIndex);
+                end
             case "histogram2"
                 updateHistogram2(obj, dataIndex);
             case "patch"
