@@ -185,7 +185,7 @@ function obj = updateData(obj, dataIndex)
     ax = obj.State.Plot(dataIndex).AssociatedAxis;
     if ~ismember(ax.Type,specialAxisPlots())
         %-AXIS INDEX-%
-        axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
+        axIndex = obj.getAxisIndex(ax);
 
         %-CHECK FOR MULTIPLE AXES-%
         [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -204,8 +204,7 @@ function obj = updateData(obj, dataIndex)
         % check for xaxis categories
         if strcmpi(xaxis.type, "category") && ...
                 ~any(strcmp(obj.data{dataIndex}.type,["heatmap" "box"]))
-            obj.data{dataIndex}.x = ...
-                    obj.State.Plot(dataIndex).AssociatedAxis.XTickLabel;
+            obj.data{dataIndex}.x = ax.XTickLabel;
             obj.layout.("xaxis" + xsource).autotick = true;
         end
 
@@ -219,8 +218,7 @@ function obj = updateData(obj, dataIndex)
         % check for yaxis categories
         if strcmpi(yaxis.type, "category") && ...
                 ~any(strcmp(obj.data{dataIndex}.type, ["heatmap" "box"]))
-            obj.data{dataIndex}.y = ...
-                    obj.State.Plot(dataIndex).AssociatedAxis.YTickLabel;
+            obj.data{dataIndex}.y = ax.YTickLabel;
             obj.layout.("yaxis" + xsource).autotick = true;
         end
     end
