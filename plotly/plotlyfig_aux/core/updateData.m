@@ -9,7 +9,7 @@ function obj = updateData(obj, dataIndex)
     elseif ismember("contour3", lower(obj.PlotOptions.TreatAs))
         updateContour3(obj, dataIndex);
     elseif ismember("ezpolar", lower(obj.PlotOptions.TreatAs))
-        updateLineseries(obj, dataIndex);
+        obj.data{dataIndex} = updateLineseries(obj, dataIndex);
     elseif ismember("coneplot", lower(obj.PlotOptions.TreatAs))
         updateConeplot(obj, dataIndex);
     elseif ismember("bar3", lower(obj.PlotOptions.TreatAs))
@@ -58,7 +58,7 @@ function obj = updateData(obj, dataIndex)
                 elseif ismember("ternplot", lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlot(obj, dataIndex);
                 else
-                    updateLineseries(obj, dataIndex);
+                    obj.data{dataIndex} = updateLineseries(obj, dataIndex);
                 end
             case "constantline"
                 updateConstantLine(obj, dataIndex);
@@ -129,7 +129,7 @@ function obj = updateData(obj, dataIndex)
             case "errorbarseries"
                 updateErrorbarseries(obj,dataIndex);
             case "lineseries"
-                updateLineseries(obj, dataIndex);
+                obj.data{dataIndex} = updateLineseries(obj, dataIndex);
             case "quiver"
                 updateQuiver(obj, dataIndex);
             case "quivergroup"
@@ -157,7 +157,7 @@ function obj = updateData(obj, dataIndex)
             case "surfaceplot"
                 updateSurfaceplot(obj,dataIndex);
             case "implicitfunctionline"
-                updateLineseries(obj, dataIndex);
+                obj.data{dataIndex} = updateLineseries(obj, dataIndex);
                 %--Plotly supported MATLAB group plot objects--%
             case {"hggroup","group"}
                 % check for boxplot

@@ -1,6 +1,6 @@
 function obj = updateBaseline(obj, baseIndex)
     %-UPDATE LINESERIES-%
-    updateLineseries(obj, baseIndex);
+    obj.data{baseIndex} = updateLineseries(obj, baseIndex);
 
     %-baseline showlegend-%
     obj.data{baseIndex}.showlegend = obj.PlotlyDefaults.ShowBaselineLegend;

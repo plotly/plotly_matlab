@@ -1,4 +1,4 @@
-function updateLineseries(obj, plotIndex)
+function data = updateLineseries(obj, plotIndex)
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
@@ -17,14 +17,11 @@ function updateLineseries(obj, plotIndex)
         [xSource, ySource] = findSourceAxis(obj,axIndex);
     end
 
-    %-check if polar plot-%
     treatAs = lower(obj.PlotOptions.TreatAs);
     isPolar = ismember('compass', treatAs) || ismember('ezpolar', treatAs);
 
-    %-check is 3D plot-%
     isPlot3D = isfield(plotData, "ZData") && ~isempty(plotData.ZData);
 
-    %-get trace data-%
     xData = plotData.XData;
     yData = plotData.YData;
 
@@ -38,55 +35,48 @@ function updateLineseries(obj, plotIndex)
         zData = plotData.ZData;
     end
 
-    %-set trace-%
     if isPolar
-        obj.data{plotIndex}.type = "scatterpolar";
+        data.type = "scatterpolar";
         updateDefaultPolaraxes(obj, plotIndex)
-        obj.data{plotIndex}.subplot = sprintf("polar%d", xSource+1);
+        data.subplot = sprintf("polar%d", xSource+1);
     elseif ~isPlot3D
-        obj.data{plotIndex}.type = "scatter";
-        obj.data{plotIndex}.xaxis = "x" + xSource;
-        obj.data{plotIndex}.yaxis = "y" + ySource;
+        data.type = "scatter";
+        data.xaxis = "x" + xSource;
+        data.yaxis = "y" + ySource;
     else
-        obj.data{plotIndex}.type = "scatter3d";
-        obj.data{plotIndex}.scene = "scene" + xSource;
+        data.type = "scatter3d";
+        data.scene = "scene" + xSource;
         updateScene(obj, plotIndex);
     end
 
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible,"on");
-    obj.data{plotIndex}.name = plotData.DisplayName;
-    obj.data{plotIndex}.mode = getScatterMode(plotData);
+    data.visible = plotData.Visible == "on";
+    data.name = plotData.DisplayName;
+    data.mode = getScatterMode(plotData);
 
-    %-set trace data-%
     if isPolar
-        obj.data{plotIndex}.r = rData;
-        obj.data{plotIndex}.theta = thetaData;
+        data.r = rData;
+        data.theta = thetaData;
     else
-        obj.data{plotIndex}.x = xData;
-        obj.data{plotIndex}.y = yData;
+        data.x = xData;
+        data.y = yData;
 
         if isscalar(xData) % plotly has trouble plotting a single point
-            obj.data{plotIndex}.x = repmat(obj.data{plotIndex}.x,[1,2]);
-            obj.data{plotIndex}.y = repmat(obj.data{plotIndex}.y,[1,2]);
+            data.x = repmat(data.x,[1,2]);
+            data.y = repmat(data.y,[1,2]);
         end
 
         if isPlot3D
-            obj.data{plotIndex}.z = zData;
+            data.z = zData;
             obj.PlotOptions.is3d = true;
         end
     end
 
-    %-set trace line-%
-    obj.data{plotIndex}.line = extractLineLine(plotData);
+    data.line = extractLineLine(plotData);
     if isPolar
-        obj.data{plotIndex}.line.width = obj.data{plotIndex}.line.width * 1.5;
+        data.line.width = data.line.width * 1.5;
     end
-
-    %-set trace marker-%
-    obj.data{plotIndex}.marker = extractLineMarker(plotData);
-
-    %-set trace legend-%
-    obj.data{plotIndex}.showlegend = getShowLegend(plotData);
+    data.marker = extractLineMarker(plotData);
+    data.showlegend = getShowLegend(plotData);
 end
 
 function updateScene(obj, dataIndex)

@@ -7,15 +7,14 @@ function obj = updateStemseries(obj,dataIndex)
 
     %-update line-%
     obj.State.Plot(dataIndex).Handle = stem_child(1);
-    updateLineseries(obj,dataIndex);
-    stem_temp_data = obj.data{dataIndex};
+    stem_temp_data = updateLineseries(obj,dataIndex);
 
     %-scatter mode-%
     stem_temp_data.mode = 'lines+markers';
 
     %-update marker-%
     obj.State.Plot(dataIndex).Handle = stem_child(2);
-    updateLineseries(obj,dataIndex);
+    stem_temp_data = updateLineseries(obj,dataIndex);
 
     stem_temp_data.marker = obj.data{dataIndex}.marker;
 

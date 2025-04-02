@@ -11,7 +11,7 @@ function obj = updateQuivergroup(obj, quiverIndex)
     for n = 1:2;
         %-update line -%
         obj.State.Plot(quiverIndex).Handle = quiver_child(n);
-        updateLineseries(obj,quiverIndex);
+        obj.data{quiverIndex} = updateLineseries(obj,quiverIndex);
 
         %update xdata and ydata
         xdata = [xdata obj.data{quiverIndex}.x];

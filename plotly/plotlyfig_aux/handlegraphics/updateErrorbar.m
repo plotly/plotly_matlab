@@ -12,7 +12,7 @@ function obj = updateErrorbar(obj, plotIndex)
 	xNegativeDelta = plotData.XNegativeDelta;
 
 	%-set trace-%
-	updateLineseries(obj, plotIndex);
+	obj.data{plotIndex} = updateLineseries(obj, plotIndex);
 
 	obj.data{plotIndex}.error_y.visible = true;
 	obj.data{plotIndex}.error_x.visible = true;

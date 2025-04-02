@@ -21,7 +21,7 @@ function obj = updateErrorbarseries(obj, errorbarIndex)
     errorbar_line_child_data = errorbar_child(2);
 
     %-UPDATE LINESERIES-%
-    updateLineseries(obj, errorbarIndex);
+    obj.data{errorbarIndex} = updateLineseries(obj, errorbarIndex);
 
     obj.data{errorbarIndex}.error_y.visible = true;
     obj.data{errorbarIndex}.error_y.type = 'data';
