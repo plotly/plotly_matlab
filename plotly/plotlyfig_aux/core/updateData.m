@@ -123,7 +123,7 @@ function obj = updateData(obj, dataIndex)
                     updateContourgroup(obj,dataIndex);
                 end
             case "functioncontour"
-                updateFunctionContour(obj,dataIndex);
+                obj.data{dataIndex} = updateFunctionContour(obj,dataIndex);
             case "errorbar"
                 updateErrorbar(obj,dataIndex);
             case "errorbarseries"
