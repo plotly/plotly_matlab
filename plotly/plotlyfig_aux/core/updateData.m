@@ -125,7 +125,7 @@ function obj = updateData(obj, dataIndex)
             case "functioncontour"
                 obj.data{dataIndex} = updateFunctionContour(obj,dataIndex);
             case "errorbar"
-                updateErrorbar(obj,dataIndex);
+                obj.data{dataIndex} = updateErrorbar(obj,dataIndex);
             case "errorbarseries"
                 updateErrorbarseries(obj,dataIndex);
             case "lineseries"
