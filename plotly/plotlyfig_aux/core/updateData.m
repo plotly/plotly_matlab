@@ -201,6 +201,14 @@ function obj = updateData(obj, dataIndex)
             obj.data{dataIndex}.x = convertDuration(obj.data{dataIndex}.x);
         end
 
+        % Plotly requires x and y to be iterable
+        if isscalar(obj.data{dataIndex}.x)
+            obj.data{dataIndex}.x = {obj.data{dataIndex}.x};
+        end
+        if isscalar(obj.data{dataIndex}.y)
+            obj.data{dataIndex}.y = {obj.data{dataIndex}.y};
+        end
+
         % check for xaxis categories
         if strcmpi(xaxis.type, "category") && ...
                 ~any(strcmp(obj.data{dataIndex}.type,["heatmap" "box"]))

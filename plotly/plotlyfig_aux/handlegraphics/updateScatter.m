@@ -29,17 +29,8 @@ function data = updateScatter(obj,plotIndex)
     data.x = xData;
     data.y = yData;
 
-    isSingle = isscalar(data.x);
-    if isSingle % fix single point plots
-        data.x = repelem(data.x,1,2);
-        data.y = repelem(data.y,1,2);
-    end
-
     if isScatter3D
         data.z = plotData.ZData;
-        if isSingle
-            data.z = repelem(data.z,1,2);
-        end
     end
 
     %-set trace marker-%

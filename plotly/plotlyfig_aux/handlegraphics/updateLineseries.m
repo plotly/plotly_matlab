@@ -59,12 +59,6 @@ function data = updateLineseries(obj, plotIndex)
     else
         data.x = xData;
         data.y = yData;
-
-        if isscalar(xData) % plotly has trouble plotting a single point
-            data.x = repmat(data.x,[1,2]);
-            data.y = repmat(data.y,[1,2]);
-        end
-
         if isPlot3D
             data.z = zData;
             obj.PlotOptions.is3d = true;
