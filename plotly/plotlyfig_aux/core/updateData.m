@@ -109,7 +109,7 @@ function obj = updateData(obj, dataIndex)
             case "animatedline"
                 updateAnimatedLine(obj, dataIndex);
             case "bar"
-                updateBar(obj, dataIndex);
+                obj.data{dataIndex} = updateBar(obj, dataIndex);
             case "barseries"
                 updateBarseries(obj, dataIndex);
             case "baseline"
@@ -195,7 +195,7 @@ function obj = updateData(obj, dataIndex)
         yaxis = obj.layout.("yaxis" + ysource);
 
         % check for xaxis dates
-        if strcmpi(xaxis.type, "date")
+        if xaxis.type == "date"
             obj.data{dataIndex}.x = convertDate(obj.data{dataIndex}.x);
         elseif xaxis.type == "duration"
             obj.data{dataIndex}.x = convertDuration(obj.data{dataIndex}.x);
