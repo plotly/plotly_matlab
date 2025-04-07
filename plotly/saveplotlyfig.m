@@ -51,10 +51,8 @@ function p = saveplotlyfig(figure_or_data, filename, varargin)
     elseif isa(figure_or_data, 'plotlyfig')
         p = figure_or_data;
         p.PlotOptions.Strip = false;
-    elseif ishandle(figure_or_data)
-        if strcmp(handle(figure_or_data).classhandle.name,'figure')
-            p = plotlyfig(figure_or_data, 'strip', false);
-        end
+    elseif ishandle(figure_or_data) && isa(figure_or_data,"matlab.ui.Figure")
+        p = plotlyfig(figure_or_data, 'strip', false);
     else
         errkey = 'plotlySaveImage:invalidInputs';
         error(errkey,plotlymsg(errkey));
