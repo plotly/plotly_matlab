@@ -56,25 +56,15 @@ function data = updateBar(obj,barIndex)
     data.name = barData.DisplayName;
     data.visible = barData.Visible == "on";
 
-    xData = barData.XData;
-    yData = barData.YData;
-
-    if isdatetime(xData)
-        xData = datenum(xData);
-    end
-    if isdatetime(yData)
-        yData = datenum(yData);
-    end
-
     switch barData.Horizontal
         case "off"
             data.orientation = "v";
-            data.x = xData;
-            data.y = yData;
+            data.x = barData.XData;
+            data.y = barData.YData;
         case "on"
             data.orientation = "h";
-            data.x = yData;
-            data.y = xData;
+            data.x = barData.YData;
+            data.y = barData.XData;
     end
 
     data.marker = extractAreaFace(barData);
