@@ -72,9 +72,9 @@ function marker = extractScatterMarker(plotData)
                     faceColor = "rgba(0,0,0,0)";
                 case 'auto'
                     if ~strcmp(axisData.Color,'none')
-                        faceColor = 255*axisData.Color;
+                        faceColor = round(255*axisData.Color);
                     else
-                        faceColor = 255*figureData.Color;
+                        faceColor = round(255*figureData.Color);
                     end
                     faceColor = getStringColor(faceColor);
                 case 'flat'
@@ -112,9 +112,9 @@ function marker = extractScatterMarker(plotData)
                 lineColor = "rgba(0,0,0,0)";
             case 'auto'
                 if ~strcmp(axisData.Color,'none')
-                    lineColor = 255*axisData.Color;
+                    lineColor = round(255*axisData.Color);
                 else
-                    lineColor = 255*figureData.Color;
+                    lineColor = round(255*figureData.Color);
                 end
                 lineColor = getStringColor(lineColor, markerEdgeAlpha);
             case 'flat'
@@ -147,9 +147,9 @@ function flatColor = getScatterFlatColor(plotData, axisData, opacity)
 
     if cDataByIndex
         cMapInd = getcMapInd(cData, cLim, nColors);
-        numColor = 255 * colorMap(cMapInd, :);
+        numColor = round(255 * colorMap(cMapInd, :));
     else
-        numColor = 255*cData;
+        numColor = round(255*cData);
     end
 
     if size(numColor, 1) == 1

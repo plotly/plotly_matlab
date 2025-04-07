@@ -87,9 +87,9 @@ function contourLine = getContourLine(plotData)
 
     %-line color-%
     if isnumeric(lineColor)
-        lineColor = getStringColor( 255*lineColor );
+        lineColor = getStringColor(round(255*lineColor));
     else
-        lineColor = 'rgba(0,0,0,0)';
+        lineColor = "rgba(0,0,0,0)";
     end
 
     %-line dash-%
@@ -126,7 +126,7 @@ function colorScale = getColorScale(plotData, axisData)
     %-colorscale-%
     if strcmp(plotData.Fill, 'on')
         if isBackground
-            colorScale{1} = {0, getStringColor( 255*ones(1,3) )};
+            colorScale{1} = {0, getStringColor(round(255*ones(1,3)))};
             cScaleInd = linspace(1/nContours, 1, nContours);
         end
         for n = 1:nContours
@@ -134,20 +134,20 @@ function colorScale = getColorScale(plotData, axisData)
             if isBackground
                 m = n+1;
             end
-            stringColor = getStringColor( 255*cMap(cMapInd(n), :) );
+            stringColor = getStringColor(round(255*cMap(cMapInd(n), :)));
             colorScale{m} = {cScaleInd(n), stringColor};
         end
     else
         cScaleInd = rescale(1:nColors, 0, 1);
         for n = 1:nColors
-            stringColor = getStringColor( 255*cMap(n,:) );
+            stringColor = getStringColor(round(255*cMap(n,:)));
             colorScale{n} = {cScaleInd(n), stringColor};
         end
     end
 end
 
 function labelFont = getLabelFont(axisData)
-    labelColor = getStringColor(255*axisData.XAxis.Color);
+    labelColor = getStringColor(round(255*axisData.XAxis.Color));
     labelSize = axisData.XAxis.FontSize;
     labelFamily = matlab2plotlyfont(axisData.XAxis.FontName);
 

@@ -82,8 +82,8 @@ function updateGeobubble(obj,geoIndex)
         %-set trace marker-%
         marker = struct();
         marker.size = sData{g}*1.25;
-        marker.color = getStringColor(255*colorMap(mod(g-1, nColors)+1, :));
-        marker.line.color = 'rgb(255, 255, 255)';
+        marker.color = getStringColor(round(255*colorMap(mod(g-1, nColors)+1, :)));
+        marker.line.color = "rgb(255, 255, 255)";
 
         obj.data{p}.marker = marker;
 

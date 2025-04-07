@@ -193,7 +193,7 @@ function updateSurfaceEdgeColor(obj, dataIndex)
     end
 
     %-coloring-%
-    numColor = 255 * edgeColor;
+    numColor = round(255*edgeColor);
     stringColor = getStringColor(numColor);
 
     obj.data{dataIndex}.contours.x.color = stringColor;
@@ -215,7 +215,7 @@ function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
     obj.data{dataIndex}.autocolorscale = false;
 
     if isnumeric(faceColor)
-        numColor = 255 * faceColor;
+        numColor = round(255*faceColor);
         stringColor = getStringColor(numColor);
 
         colorScale{1} = {0, stringColor};
@@ -225,7 +225,7 @@ function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
         nColors = size(colorMap, 1);
 
         for c = 1:nColors
-            stringColor = getStringColor(255*colorMap(c,:));
+            stringColor = getStringColor(round(255*colorMap(c,:)));
             colorScale{c} = {(c-1)/(nColors-1), stringColor};
         end
 
@@ -235,8 +235,4 @@ function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
 
     obj.data{dataIndex}.surfacecolor = surfaceColor;
     obj.data{dataIndex}.colorscale = colorScale;
-end
-
-function stringColor = getStringColor(numColor)
-    stringColor = sprintf('rgb(%f,%f,%f)', numColor);
 end

@@ -160,7 +160,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         if strcmp(plotData.GridVisible, 'on')
             ax{a}.showgrid = true;
             ax{a}.gridwidth = lineWidth;
-            ax{a}.gridcolor = getStringColor(0.15*ones(1,3), 0.15);
+            ax{a}.gridcolor = getStringColor(round(255*0.15*ones(1,3)), 0.15);
         else
             ax{a}.showgrid = false;
         end

@@ -268,7 +268,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.angularaxis.nticks = 16;
     polarAxis.angularaxis.tickfont.size = thetaAxis.FontSize;
     polarAxis.angularaxis.tickfont.color = getStringColor(...
-            255*thetaAxis.Color);
+            round(255*thetaAxis.Color));
     polarAxis.angularaxis.tickfont.family = matlab2plotlyfont(...
             thetaAxis.FontName);
 
@@ -278,7 +278,7 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.angularaxis.title.text = thetaLabel.String;
     polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
     polarAxis.radialaxis.title.font.color = getStringColor(...
-            255*thetaLabel.Color);
+            round(255*thetaLabel.Color));
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
             thetaLabel.FontName);
 
@@ -298,14 +298,16 @@ function updateDefaultPolaraxes(obj, plotIndex)
     polarAxis.radialaxis.showticklabels = true;
     polarAxis.radialaxis.tickvals = tickValues;
     polarAxis.radialaxis.tickfont.size = rAxis.FontSize;
-    polarAxis.radialaxis.tickfont.color = getStringColor(255*rAxis.Color);
+    polarAxis.radialaxis.tickfont.color = getStringColor(round(...
+            255*rAxis.Color));
     polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
             rAxis.FontName);
 
     rLabel = rAxis.Label;
     polarAxis.radialaxis.title.text = rLabel.String;
     polarAxis.radialaxis.title.font.size = rLabel.FontSize;
-    polarAxis.radialaxis.title.font.color = getStringColor(255*rLabel.Color);
+    polarAxis.radialaxis.title.font.color = getStringColor(round(...
+            255*rLabel.Color));
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
             rLabel.FontName);
 

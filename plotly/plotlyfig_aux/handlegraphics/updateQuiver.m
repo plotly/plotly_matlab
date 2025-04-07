@@ -48,7 +48,7 @@ function obj = updateQuiver(obj, dataIndex)
     obj.data{dataIndex}.name = plotData.DisplayName;
 
     %-quiver line color-%
-    lineColor = 255 * plotData.Color;
+    lineColor = round(255*plotData.Color);
     obj.data{dataIndex}.line.color = getStringColor(lineColor);
 
     %-quiver line width-%
@@ -380,8 +380,4 @@ function scaleFactor = getScaleFactor(xData, uData, nSteps)
     uStep = max(abs(uData(:)));
 
     scaleFactor = 0.8 * xStep/uStep;
-end
-
-function stringColor = getStringColor(numColor)
-    stringColor = sprintf('rgb(%f,%f,%f)', numColor);
 end

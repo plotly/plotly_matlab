@@ -33,7 +33,7 @@ function obj = updateErrorbar(obj, plotIndex)
 	obj.data{plotIndex}.error_x.width = obj.PlotlyDefaults.ErrorbarWidth;
 
 	%-errorbar color-%
-	errorColor = getStringColor(255*plotData.Color);
+	errorColor = getStringColor(round(255*plotData.Color));
 	obj.data{plotIndex}.error_y.color = errorColor;
 	obj.data{plotIndex}.error_x.color = errorColor;
 end

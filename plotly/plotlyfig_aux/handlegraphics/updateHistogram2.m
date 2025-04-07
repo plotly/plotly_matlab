@@ -68,9 +68,9 @@ function obj = updateHistogram2(obj,dataIndex)
     faceColor = plotData.FaceColor;
 
     if isnumeric(faceColor)
-        obj.data{dataIndex}.color = getStringColor(255*faceColor);
+        obj.data{dataIndex}.color = getStringColor(round(255*faceColor));
     elseif strcmp(faceColor, 'none')
-        obj.data{dataIndex}.color = getStringColor(255*zeros(1,3), 0.1);
+        obj.data{dataIndex}.color = getStringColor(round(255*zeros(1,3), 0.1));
     elseif strcmp(faceColor, 'flat')
         obj.data{dataIndex}.intensity = cData;
         obj.data{dataIndex}.colorscale = getColorScale(colorMap);
@@ -158,7 +158,7 @@ function ax = getSceneAxis(axisData, axName)
     ax.zeroline = false;
     ax.showline = true;
     ax.showspikes = true;
-    ax.linecolor = getStringColor(255*axx.Color);
+    ax.linecolor = getStringColor(round(255*axx.Color));
     ax.range = axisData.(axName + "Lim");
 
     %-label-%
@@ -168,14 +168,14 @@ function ax = getSceneAxis(axisData, axName)
         ax.title = parseString(ax.title);
     end
     ax.titlefont.size = label.FontSize;
-    ax.titlefont.color = getStringColor(255*label.Color);
+    ax.titlefont.color = getStringColor(round(255*label.Color));
     ax.titlefont.family = matlab2plotlyfont(label.FontName);
 
     %-ticks-%
     ax.tickvals = axx.TickValues;
     ax.ticktext = axx.TickLabels;
 
-    ax.tickcolor = getStringColor(255*axx.Color);
+    ax.tickcolor = getStringColor(round(255*axx.Color));
     ax.tickfont.size = axx.FontSize;
     ax.tickfont.family = matlab2plotlyfont(axx.FontName);
 
@@ -303,6 +303,6 @@ function colorScale = getColorScale(colorMap)
     colorScale = cell(nColors, 1);
 
     for n = 1:nColors
-        colorScale{n} = {normInd(n), getStringColor(255*colorMap(n, :))};
+        colorScale{n} = {normInd(n), getStringColor(round(255*colorMap(n, :)))};
     end
 end
