@@ -127,7 +127,7 @@ function obj = updateData(obj, dataIndex)
             case "errorbar"
                 obj.data{dataIndex} = updateErrorbar(obj,dataIndex);
             case "errorbarseries"
-                updateErrorbarseries(obj,dataIndex);
+                obj.data{dataIndex} = updateErrorbarseries(obj,dataIndex);
             case "lineseries"
                 obj.data{dataIndex} = updateLineseries(obj, dataIndex);
             case "quiver"
