@@ -46,7 +46,7 @@ function obj = updateData(obj, dataIndex)
                 updateHeatmap(obj, dataIndex);
             case "image"
                 if ~obj.PlotOptions.Image3D
-                    updateImage(obj, dataIndex);
+                    obj.data{dataIndex} = updateImage(obj, dataIndex);
                 else
                     updateImage3D(obj, dataIndex);
                 end
@@ -95,7 +95,7 @@ function obj = updateData(obj, dataIndex)
                 elseif ismember("slice", lower(obj.PlotOptions.TreatAs))
                     updateSlice(obj, dataIndex);
                 else
-                    updateSurfaceplot(obj,dataIndex);
+                    obj.data{dataIndex} = updateSurfaceplot(obj,dataIndex);
                 end
             case {"functionsurface", "parameterizedfunctionsurface"}
                 updateFunctionSurface(obj,dataIndex);
@@ -155,7 +155,7 @@ function obj = updateData(obj, dataIndex)
             case "stemseries"
                 updateStemseries(obj, dataIndex);
             case "surfaceplot"
-                updateSurfaceplot(obj,dataIndex);
+                obj.data{dataIndex} = updateSurfaceplot(obj,dataIndex);
             case "implicitfunctionline"
                 obj.data{dataIndex} = updateLineseries(obj, dataIndex);
                 %--Plotly supported MATLAB group plot objects--%

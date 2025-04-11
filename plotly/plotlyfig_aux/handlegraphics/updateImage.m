@@ -1,4 +1,4 @@
-function obj = updateImage(obj, imageIndex)
+function data = updateImage(obj, imageIndex)
     % HEATMAPS
     % z: ...[DONE]
     % x: ...[DONE]
@@ -33,7 +33,7 @@ function obj = updateImage(obj, imageIndex)
     axis_data = obj.State.Plot(imageIndex).AssociatedAxis;
 
     %-AXIS INDEX-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(imageIndex).AssociatedAxis);
+    axIndex = obj.getAxisIndex(axis_data);
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
@@ -41,62 +41,52 @@ function obj = updateImage(obj, imageIndex)
     %-IMAGE DATA STRUCTURE- %
     image_data = obj.State.Plot(imageIndex).Handle;
 
-    obj.data{imageIndex}.xaxis = "x" + xsource;
-    obj.data{imageIndex}.yaxis = "y" + ysource;
-    obj.data{imageIndex}.type = 'heatmap';
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.type = 'heatmap';
 
-    %-image x-%
     x = image_data.XData;
     cdata = image_data.CData;
-
     if (size(image_data.XData,2) == 2)
-        obj.data{imageIndex}.x = linspace(x(1), x(2), size(cdata,2));
+        data.x = linspace(x(1), x(2), size(cdata,2));
     else
-        obj.data{imageIndex}.x = image_data.XData;
+        data.x = image_data.XData;
     end
 
-    %-image y-%
     y = image_data.YData;
-
     if (size(image_data.YData,2) == 2)
-        obj.data{imageIndex}.y = linspace(y(1), y(2), size(cdata,1));
+        data.y = linspace(y(1), y(2), size(cdata,1));
     else
-        obj.data{imageIndex}.y = y;
+        data.y = y;
     end
 
-    %-image z-%
     isrgbimg = (size(image_data.CData,3) > 1);
-
     if isrgbimg
         [IND,colormap] = rgb2ind(cdata, 256);
-        obj.data{imageIndex}.z = IND;
+        data.z = IND;
     else
-        obj.data{imageIndex}.z = cdata;
+        data.z = cdata;
     end
 
-    %-image name-%
     if isprop(image_data, "DisplayName")
-        obj.data{imageIndex}.name = image_data.DisplayName;
+        data.name = image_data.DisplayName;
     else
-        obj.data{imageIndex}.name = '';
+        data.name = '';
     end
 
-    obj.data{imageIndex}.opacity = image_data.AlphaData;
-    obj.data{imageIndex}.visible = strcmp(image_data.Visible, 'on');
-    obj.data{imageIndex}.showscale = false;
-    obj.data{imageIndex}.zauto = false;
-    obj.data{imageIndex}.zmin = axis_data.CLim(1);
+    data.opacity = image_data.AlphaData;
+    data.visible = image_data.Visible == "on";
+    data.showscale = false;
+    data.zauto = false;
+    data.zmin = axis_data.CLim(1);
 
-    %-image zmax-%
-    if ~strcmpi(image_data.CDataMapping, 'direct')
-        obj.data{imageIndex}.zmax = axis_data.CLim(2);
+    if lower(image_data.CDataMapping) ~= "direct"
+        data.zmax = axis_data.CLim(2);
     else
-        obj.data{imageIndex}.zmax = 255;
+        data.zmax = 255;
     end
 
     %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
-
-    %-image colorscale-%
 
     if ~isrgbimg
         colormap = figure_data.Colormap;
@@ -106,21 +96,16 @@ function obj = updateImage(obj, imageIndex)
 
     for c = 1:size(colormap, 1)
         col = round(255*(colormap(c,:)));
-        obj.data{imageIndex}.colorscale{c} = ...
-                {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
+        data.colorscale{c} = {(c-1)/len, getStringColor(col)};
     end
 
-    %-image showlegend-%
     try
-        leg = image_data.Annotation;
-        legInfo = leg.LegendInformation;
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
+        switch image_data.Annotation.LegendInformation.IconDisplayStyle
+            case "on"
+                data.showlegend = true;
+            case "off"
+                data.showlegend = false;
         end
-        obj.data{imageIndex}.showlegend = showleg;
     catch
         %TODO to future
     end
