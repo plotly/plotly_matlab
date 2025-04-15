@@ -1,4 +1,4 @@
-function updateArea(obj,areaIndex)
+function data = updateArea(obj,areaIndex)
     % x: ...[DONE]
     % y: ...[DONE]
     % r: ...[NOT SUPPORTED IN MATLAB]
@@ -75,50 +75,42 @@ function updateArea(obj,areaIndex)
         [xsource, ysource] = findSourceAxis(obj,axIndex);
     end
 
-    obj.data{areaIndex}.xaxis = "x" + xsource;
-    obj.data{areaIndex}.yaxis = "y" + ysource;
-    obj.data{areaIndex}.type = "scatter";
-    obj.data{areaIndex}.x = area_data.XData;
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.type = "scatter";
+    data.x = area_data.XData;
 
-    %-area y-%
     prevAreaIndex = find(cellfun(@(x) isfield(x,"fill") ...
-            && isequal({x.xaxis x.yaxis},{obj.data{areaIndex}.xaxis ...
-            obj.data{areaIndex}.yaxis}),obj.data(1:areaIndex-1)),1,"last");
+            && isequal({x.xaxis x.yaxis},{data.xaxis ...
+            data.yaxis}),obj.data(1:areaIndex-1)),1,"last");
     if ~isempty(prevAreaIndex)
-        obj.data{areaIndex}.y = obj.data{prevAreaIndex}.y + area_data.YData;
+        data.y = obj.data{prevAreaIndex}.y + area_data.YData;
     else
-        obj.data{areaIndex}.y = area_data.YData;
+        data.y = area_data.YData;
     end
 
-    obj.data{areaIndex}.name = area_data.DisplayName;
-    obj.data{areaIndex}.visible = strcmp(area_data.Visible, "on");
+    data.name = area_data.DisplayName;
+    data.visible = area_data.Visible == "on";
 
-    %-area fill-%
     if ~isempty(prevAreaIndex)
-        obj.data{areaIndex}.fill = "tonexty";
+        data.fill = "tonexty";
     else % first area plot
-        obj.data{areaIndex}.fill = "tozeroy";
+        data.fill = "tozeroy";
     end
 
-    %-AREA MODE-%
-    if isprop(area_data, "LineStyle") ...
-            && isequal(area_data.LineStyle, "none")
-        obj.data{areaIndex}.mode = "none";
+    if isprop(area_data, "LineStyle") && area_data.LineStyle == "none"
+        data.mode = "none";
     else
-        obj.data{areaIndex}.mode = "lines";
+        data.mode = "lines";
     end
 
-    obj.data{areaIndex}.line = extractAreaLine(area_data);
-    fill = extractAreaFace(area_data);
-    obj.data{areaIndex}.fillcolor = fill.color;
+    data.line = extractAreaLine(area_data);
+    data.fillcolor = extractAreaFace(area_data).color;
 
-    leg = area_data.Annotation;
-    legInfo = leg.LegendInformation;
-    switch legInfo.IconDisplayStyle
+    switch area_data.Annotation.LegendInformation.IconDisplayStyle
         case "on"
-            showleg = true;
+            data.showlegend = true;
         case "off"
-            showleg = false;
+            data.showlegend = false;
     end
-    obj.data{areaIndex}.showlegend = showleg;
 end

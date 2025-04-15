@@ -103,7 +103,7 @@ function obj = updateData(obj, dataIndex)
                 updateImplicitFunctionSurface(obj,dataIndex);
                 %-GROUP PLOT OBJECTS-%
             case "area"
-                updateArea(obj, dataIndex);
+                obj.data{dataIndex} = updateArea(obj, dataIndex);
             case "areaseries"
                 updateAreaseries(obj, dataIndex);
             case "animatedline"
