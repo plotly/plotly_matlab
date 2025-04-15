@@ -145,7 +145,7 @@ function obj = updateData(obj, dataIndex)
             case "scattergroup"
                 updateScattergroup(obj, dataIndex);
             case "stair"
-                updateStair(obj, dataIndex);
+                obj.data{dataIndex} = updateStair(obj, dataIndex);
             case "stairseries"
                 updateStairseries(obj, dataIndex);
             case "stackedplot"
