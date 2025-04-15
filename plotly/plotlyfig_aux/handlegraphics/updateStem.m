@@ -1,17 +1,17 @@
-function obj = updateStem(obj, dataIndex)
+function data = updateStem(obj, dataIndex)
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
 
     %-PLOT DATA STRUCTURE- %
-    data = obj.State.Plot(dataIndex).Handle;
+    stem_data = obj.State.Plot(dataIndex).Handle;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-get coordinate x,y,z data-%
-    xdata = data.XData;
-    ydata = data.YData;
-    zdata = data.ZData;
+    xdata = stem_data.XData;
+    ydata = stem_data.YData;
+    zdata = stem_data.ZData;
     npoints = length(xdata);
 
     %-check if stem-%
@@ -27,22 +27,22 @@ function obj = updateStem(obj, dataIndex)
 
     %-scatter3d scene-%
     if isstem
-        stem_data.scene = "scene" + xsource;
+        data.scene = "scene" + xsource;
     else
-        stem_data.xaxis = "x" + xsource;
-        stem_data.yaxis = "y" + xsource;
+        data.xaxis = "x" + xsource;
+        data.yaxis = "y" + xsource;
     end
 
     %-scatter3d type-%
     if isstem
-        stem_data.type = "scatter3d";
+        data.type = "scatter3d";
     else
-        stem_data.type = "scatter";
+        data.type = "scatter";
     end
 
-    stem_data.visible = strcmp(data.Visible, "on");
-    stem_data.name = data.DisplayName;
-    stem_data.mode = "lines+markers";
+    data.visible = stem_data.Visible == "on";
+    data.name = stem_data.DisplayName;
+    data.mode = "lines+markers";
 
     if isdatetime(xdata)
         xdata = datenum(xdata);
@@ -52,57 +52,47 @@ function obj = updateStem(obj, dataIndex)
     end
 
     %-allocated space for extended data-%
-    xdata_extended = zeros(3*npoints, 1);
-    ydata_extended = zeros(3*npoints, 1);
+    xdata_extended = NaN(3*npoints, 1);
+    ydata_extended = NaN(3*npoints, 1);
+
+    % Create indices for extended data
+    idx1 = 3*(1:npoints) - 2; % 3n-2 positions
+    idx2 = 3*(1:npoints) - 1; % 3n-1 positions
+    idx3 = 3*(1:npoints); % 3n positions
+
+    xdata_extended(idx1) = xdata;
+    xdata_extended(idx2) = xdata;
 
     if isstem
-        zdata_extended = zeros(3*npoints, 1);
+        ydata_extended(idx1) = ydata;
+    else
+        ydata_extended(idx1) = 0;
+    end
+    ydata_extended(idx2) = ydata;
+
+    if isstem
+        zdata_extended = NaN(3*npoints, 1);
+        zdata_extended(idx1) = 0;
+        zdata_extended(idx2) = zdata;
     end
 
-    %-format data-%
-    m = 1;
-    for n = 1:npoints
-        %-x data-%
-        xdata_extended(m) = xdata(n);
-        xdata_extended(m+1) = xdata(n);
-        xdata_extended(m+2) = nan;
 
-        %-y data-%
-        ydata_extended(m) = 0;
-        if isstem
-            ydata_extended(m) = ydata(n);
-        end
-        ydata_extended(m+1) = ydata(n);
-        ydata_extended(m+2) = nan;
-
-        %-z data-%
-        if isstem
-            zdata_extended(m) = 0;
-            zdata_extended(m+1) = zdata(n);
-            zdata_extended(m+2) = nan;
-        end
-        m = m + 3;
-    end
-
-    stem_data.line = extractLineLine(data);
-    stem_data.marker = extractLineMarker(data);
+    data.line = extractLineLine(stem_data);
+    data.marker = extractLineMarker(stem_data);
 
     if isstem
         %-fix marker symbol-%
-        symbol = stem_data.marker.symbol;
+        symbol = data.marker.symbol;
 
-        if strcmpi(symbol, "asterisk-open") ...
-                || strcmpi(symbol, "cross-thin-open")
-            stem_data.marker.symbol = "cross";
+        if contains(lower(symbol), ["asterisk-open" "cross-thin-open"])
+            data.marker.symbol = "cross";
         end
 
-        stem_data.marker.size = stem_data.marker.size * 0.6;
+        data.marker.size = data.marker.size * 0.6;
 
         %-fix dash line-%
-        dash = stem_data.line.dash;
-
-        if strcmpi(dash, "dash")
-            stem_data.line.dash = "dot";
+        if lower(data.line.dash) == "dash"
+            data.line.dash = "dot";
         end
     end
 
@@ -111,41 +101,37 @@ function obj = updateStem(obj, dataIndex)
     linecolor = cell(3*npoints,1);
     hidecolor = "rgba(0,0,0,0)";
 
-    linecolor(1:3:3*npoints) = {hidecolor};
-    markercolor(1:3:3*npoints) = {hidecolor};
+    linecolor(idx1) = {hidecolor};
+    markercolor(idx1) = {hidecolor};
 
     try
-        linecolor(2:3:3*npoints) = {stem_data.marker.line.color};
-        markercolor(2:3:3*npoints) = {stem_data.marker.color};
+        linecolor(idx2) = {data.marker.line.color};
+        markercolor(idx2) = {data.marker.color};
     catch
-        linecolor(2:3:3*npoints) = {stem_data.marker.color};
-        markercolor(2:3:3*npoints) = {hidecolor};
+        linecolor(idx2) = {data.marker.color};
+        markercolor(idx2) = {hidecolor};
     end
 
-    linecolor(3:3:3*npoints) = {hidecolor};
-    markercolor(3:3:3*npoints) = {hidecolor};
+    linecolor(idx3) = {hidecolor};
+    markercolor(idx3) = {hidecolor};
 
     %-add new marker/line colors-%
-    stem_data.marker.color = markercolor;
-    stem_data.marker.line.color = linecolor;
+    data.marker.color = markercolor;
+    data.marker.line.color = linecolor;
 
-    stem_data.marker.line.width = stem_data.marker.line.width * 2;
-    stem_data.line.width = stem_data.line.width * 2;
+    data.marker.line.width = data.marker.line.width * 2;
+    data.line.width = data.line.width * 2;
 
     %-set x y z data-%
-    stem_data.x = xdata_extended;
-    stem_data.y = ydata_extended;
+    data.x = xdata_extended;
+    data.y = ydata_extended;
 
     if isstem
-        stem_data.z = zdata_extended;
+        data.z = zdata_extended;
     end
-
-    %-set plotly data-%
-    obj.data{dataIndex} = stem_data;
 
     %-SETTING SCENE-%
     if isstem
-        %-aspect ratio-%
         asr = obj.PlotOptions.AspectRatio;
 
         if ~isempty(asr)
@@ -158,12 +144,10 @@ function obj = updateStem(obj, dataIndex)
             end
         else
             %-define as default-%
-            xar = max(xdata(:));
-            yar = max(ydata(:));
-            xyar = max([xar, yar]);
+            xyar = max([max(xdata(:)), max(ydata(:))]);
             xar = xyar;
             yar = xyar;
-            zar = 0.7*max([xar, yar]);
+            zar = 0.7*xyar;
         end
 
         scene.aspectratio.x = xar;
@@ -181,20 +165,20 @@ function obj = updateStem(obj, dataIndex)
             end
         else
             %-define as default-%
-            xey = - xar;
-            if xey>0
+            xey = -xar;
+            if xey > 0
                 xfac = 0.2;
             else
                 xfac = -0.2;
             end
-            yey = - yar;
-            if yey>0
+            yey = -yar;
+            if yey > 0
                 yfac = -0.2;
             else
                 yfac = 0.2;
             end
 
-            if zar>0
+            if zar > 0
                 zfac = 0.2;
             else
                 zfac = -0.2;
@@ -222,17 +206,17 @@ function obj = updateStem(obj, dataIndex)
         scene.yaxis.tickcolor = "rgba(0,0,0,0.8)";
         scene.zaxis.tickcolor = "rgba(0,0,0,0.8)";
 
-        scene.xaxis.range = data.Parent.XLim;
-        scene.yaxis.range = data.Parent.YLim;
-        scene.zaxis.range = data.Parent.ZLim;
+        scene.xaxis.range = stem_data.Parent.XLim;
+        scene.yaxis.range = stem_data.Parent.YLim;
+        scene.zaxis.range = stem_data.Parent.ZLim;
 
-        scene.xaxis.tickvals = data.Parent.XTick;
-        scene.yaxis.tickvals = data.Parent.YTick;
-        scene.zaxis.tickvals = data.Parent.ZTick;
+        scene.xaxis.tickvals = stem_data.Parent.XTick;
+        scene.yaxis.tickvals = stem_data.Parent.YTick;
+        scene.zaxis.tickvals = stem_data.Parent.ZTick;
 
-        scene.xaxis.title = data.Parent.XLabel.String;
-        scene.yaxis.title = data.Parent.YLabel.String;
-        scene.zaxis.title = data.Parent.ZLabel.String;
+        scene.xaxis.title = stem_data.Parent.XLabel.String;
+        scene.yaxis.title = stem_data.Parent.YLabel.String;
+        scene.zaxis.title = stem_data.Parent.ZLabel.String;
 
         obj.layout.("scene" + xsource) = scene;
     else
@@ -244,11 +228,11 @@ function obj = updateStem(obj, dataIndex)
         xaxis.tickcolor = "rgba(0,0,0,0.4)";
         yaxis.tickcolor = "rgba(0,0,0,0.4)";
 
-        xaxis.tickvals = data.Parent.XTick;
-        yaxis.tickvals = data.Parent.YTick;
+        xaxis.tickvals = stem_data.Parent.XTick;
+        yaxis.tickvals = stem_data.Parent.YTick;
 
-        xaxis.title = data.Parent.XLabel.String;
-        yaxis.title = data.Parent.YLabel.String;
+        xaxis.title = stem_data.Parent.XLabel.String;
+        yaxis.title = stem_data.Parent.YLabel.String;
 
         obj.layout.("xaxis" + xsource) = xaxis;
         obj.layout.("yaxis" + ysource) = yaxis;

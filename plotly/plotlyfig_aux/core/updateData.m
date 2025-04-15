@@ -151,7 +151,7 @@ function obj = updateData(obj, dataIndex)
             case "stackedplot"
                 updateStackedplot(obj, dataIndex);
             case "stem"
-                updateStem(obj, dataIndex);
+                obj.data{dataIndex} = updateStem(obj, dataIndex);
             case "stemseries"
                 updateStemseries(obj, dataIndex);
             case "surfaceplot"
