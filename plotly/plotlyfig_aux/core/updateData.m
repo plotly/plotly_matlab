@@ -202,10 +202,10 @@ function obj = updateData(obj, dataIndex)
         end
 
         % Plotly requires x and y to be iterable
-        if isscalar(obj.data{dataIndex}.x)
+        if isfield(obj.data{dataIndex},"x") && isscalar(obj.data{dataIndex}.x)
             obj.data{dataIndex}.x = {obj.data{dataIndex}.x};
         end
-        if isscalar(obj.data{dataIndex}.y)
+        if isfield(obj.data{dataIndex},"y") && isscalar(obj.data{dataIndex}.y)
             obj.data{dataIndex}.y = {obj.data{dataIndex}.y};
         end
 
