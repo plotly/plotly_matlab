@@ -61,7 +61,7 @@ function obj = updateData(obj, dataIndex)
                     obj.data{dataIndex} = updateLineseries(obj, dataIndex);
                 end
             case "constantline"
-                updateConstantLine(obj, dataIndex);
+                obj.data{dataIndex} = updateConstantLine(obj, dataIndex);
             case "categoricalhistogram"
                 updateCategoricalHistogram(obj, dataIndex);
             case "histogram"

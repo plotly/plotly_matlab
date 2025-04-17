@@ -1,4 +1,4 @@
-function updateConstantLine(obj,plotIndex)
+function data = updateConstantLine(obj,plotIndex)
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
 
@@ -8,21 +8,20 @@ function updateConstantLine(obj,plotIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    obj.data{plotIndex}.xaxis = "x" + xsource;
-    obj.data{plotIndex}.yaxis = "y" + ysource;
-    obj.data{plotIndex}.type = "scatter";
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible, "on");
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.type = "scatter";
+    data.visible = plotData.Visible == "on";
 
-    %-scatter-%
-    xaxis = obj.layout.("xaxis"+xsource);
-    yaxis = obj.layout.("yaxis"+ysource);
+    xaxis = obj.layout.("xaxis" + xsource);
+    yaxis = obj.layout.("yaxis" + ysource);
     value = [plotData.Value plotData.Value];
     if plotData.InterceptAxis == "y"
-        obj.data{plotIndex}.x = xaxis.range;
-        obj.data{plotIndex}.y = value;
+        data.x = xaxis.range;
+        data.y = value;
     else
-        obj.data{plotIndex}.x = value;
-        obj.data{plotIndex}.y = yaxis.range;
+        data.x = value;
+        data.y = yaxis.range;
     end
 
     if ~isempty(plotData.Label)
@@ -30,8 +29,8 @@ function updateConstantLine(obj,plotIndex)
 
         annotation.showarrow = false;
 
-        annotation.xref = "x"+xsource;
-        annotation.yref = "y"+ysource;
+        annotation.xref = "x" + xsource;
+        annotation.yref = "y" + ysource;
 
         if plotData.InterceptAxis == "x"
             annotation.textangle = -90;
@@ -62,7 +61,7 @@ function updateConstantLine(obj,plotIndex)
         end
 
         col = round(255*plotData.LabelColor);
-        annotation.font.color = sprintf("rgb(%d,%d,%d)", col);
+        annotation.font.color = getStringColor(col);
 
         annotation.font.family = matlab2plotlyfont(plotData.FontName);
         annotation.font.size = plotData.FontSize;
@@ -75,14 +74,16 @@ function updateConstantLine(obj,plotIndex)
         if plotData.LabelHorizontalAlignment == "center"
             if plotData.InterceptAxis == "x"
                 ylim = plotData.Parent.YLim;
-                textWidth = text(0,0,plotData.Label,units="normalized",rotation=90,Visible="off").Extent(4);
+                textWidth = text(0,0,plotData.Label,units="normalized", ...
+                        rotation=90,Visible="off").Extent(4);
                 textWidth = textWidth * (ylim(2) - ylim(1));
-                obj.data{plotIndex}.y(2) = obj.data{plotIndex}.y(2) - textWidth;
+                data.y(2) = data.y(2) - textWidth;
             else
                 xlim = plotData.Parent.XLim;
-                textWidth = text(0,0,plotData.Label,units="normalized",Visible="off").Extent(3);
+                textWidth = text(0,0,plotData.Label,units="normalized", ...
+                        Visible="off").Extent(3);
                 textWidth = textWidth * (xlim(2) - xlim(1));
-                obj.data{plotIndex}.x(2) = obj.data{plotIndex}.x(2) - textWidth;
+                data.x(2) = data.x(2) - textWidth;
             end
         end
 
@@ -95,54 +96,39 @@ function updateConstantLine(obj,plotIndex)
     if isfield(plotData,"ZData")
         numbset = unique(plotData.ZData);
         if any(plotData.ZData) && length(numbset)>1
-            %-scatter z-%
-            obj.data{plotIndex}.z = plotData.ZData;
-
-            %-overwrite type-%
-            obj.data{plotIndex}.type = "scatter3d";
-
+            data.z = plotData.ZData;
+            data.type = "scatter3d";
             %-flag to manage 3d plots-%
             obj.PlotOptions.is3d = true;
         end
     end
 
-    %-scatter name-%
-    obj.data{plotIndex}.name = plotData.DisplayName;
+    data.name = plotData.DisplayName;
 
-    %-scatter mode-%
     if plotData.Type ~= "constantline" ...
-            && ~strcmpi("none", plotData.Marker) ...
-            && ~strcmpi("none", plotData.LineStyle)
+            && lower(plotData.Marker) ~= "none" ...
+            && lower(plotData.LineStyle) ~= "none"
         mode = "lines+markers";
     elseif plotData.Type ~= "constantline" ...
-            && ~strcmpi("none", plotData.Marker)
+            && lower(plotData.Marker) ~= "none"
         mode = "markers";
-    elseif ~strcmpi("none", plotData.LineStyle)
+    elseif lower(plotData.LineStyle) ~= "none"
         mode = "lines";
     else
         mode = "none";
     end
 
-    obj.data{plotIndex}.mode = mode;
+    data.mode = mode;
+    data.line = extractLineLine(plotData);
 
-    %-scatter line-%
-    obj.data{plotIndex}.line = extractLineLine(plotData);
-
-    %-scatter marker-%
     if plotData.Type ~= "constantline"
-        obj.data{plotIndex}.marker = extractLineMarker(plotData);
+        data.marker = extractLineMarker(plotData);
     end
 
-    %-scatter showlegend-%
-    leg = get(plotData.Annotation);
-    legInfo = get(leg.LegendInformation);
-
-    switch legInfo.IconDisplayStyle
+    switch plotData.Annotation.LegendInformation.IconDisplayStyle
         case "on"
-            showleg = true;
+            data.showlegend = true;
         case "off"
-            showleg = false;
+            data.showlegend = false;
     end
-
-    obj.data{plotIndex}.showlegend = showleg;
 end
