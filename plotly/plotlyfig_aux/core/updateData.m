@@ -120,7 +120,7 @@ function obj = updateData(obj, dataIndex)
                 elseif ismember("terncontour", lower(obj.PlotOptions.TreatAs))
                     updateTernaryContour(obj, dataIndex);
                 else
-                    updateContourgroup(obj,dataIndex);
+                    obj.data{dataIndex} = updateContourgroup(obj,dataIndex);
                 end
             case "functioncontour"
                 obj.data{dataIndex} = updateFunctionContour(obj,dataIndex);
