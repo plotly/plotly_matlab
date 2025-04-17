@@ -34,7 +34,7 @@ function obj = updateData(obj, dataIndex)
                 UpdateGeoAxes(obj, dataIndex);
             %-EMULATE AXES -> SPECIAL CASE--%
             case "nothing"
-                updateOnlyAxes(obj, dataIndex);
+                obj.data{dataIndex} = updateOnlyAxes(obj, dataIndex);
             %--CORE PLOT OBJECTS--%
             case "geobubble"
                 updateGeobubble(obj, dataIndex);
