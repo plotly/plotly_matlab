@@ -68,14 +68,14 @@ function obj = updateData(obj, dataIndex)
                 if obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
                     obj.data{dataIndex} = updateHistogramPolar(obj, dataIndex);
                 else
-                    updateHistogram(obj, dataIndex);
+                    obj.data{dataIndex} = updateHistogram(obj, dataIndex);
                 end
             case "histogram2"
                 updateHistogram2(obj, dataIndex);
             case "patch"
                 % check for histogram
                 if isHistogram(obj,dataIndex)
-                    updateHistogram(obj,dataIndex);
+                    obj.data{dataIndex} = updateHistogram(obj,dataIndex);
                 elseif ismember("ternplotpro", lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlotPro(obj, dataIndex);
                 elseif ismember("ternpcolor", lower(obj.PlotOptions.TreatAs))

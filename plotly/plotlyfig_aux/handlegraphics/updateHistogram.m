@@ -1,4 +1,4 @@
-function obj = updateHistogram(obj,histIndex)
+function data = updateHistogram(obj,histIndex)
     % x:...[DONE]
     % y:...[DONE]
     % histnorm:...[DONE]
@@ -54,9 +54,9 @@ function obj = updateHistogram(obj,histIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    obj.data{histIndex}.xaxis = "x" + xsource;
-    obj.data{histIndex}.yaxis = "y" + ysource;
-    obj.data{histIndex}.type = "bar";
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.type = "bar";
 
     if isprop(hist_data, "Orientation")
         %-Matlab 2014+ histogram() function-%
@@ -69,10 +69,10 @@ function obj = updateHistogram(obj,histIndex)
     switch orientation
         case {"vertical", "horizontal"}
             %-hist y data-%
-            obj.data{histIndex}.x = hist_data.BinEdges(1:end-1) ...
+            data.x = hist_data.BinEdges(1:end-1) ...
                     + 0.5*diff(hist_data.BinEdges);
-            obj.data{histIndex}.width = diff(hist_data.BinEdges);
-            obj.data{histIndex}.y = double(hist_data.Values);
+            data.width = diff(hist_data.BinEdges);
+            data.y = double(hist_data.Values);
         case "v"
             %-hist x data-%
             xdata = mean(hist_data.XData(2:3,:));
@@ -81,18 +81,18 @@ function obj = updateHistogram(obj,histIndex)
             xlength = 0;
             for d = 1:length(xdata)
                 xnew = repmat(xdata(d),1,hist_data.YData(2,d));
-                obj.data{histIndex}.x(xlength+1:xlength+length(xnew)) = xnew;
-                xlength = length(obj.data{histIndex}.x);
+                data.x(xlength+1:xlength+length(xnew)) = xnew;
+                xlength = length(data.x);
             end
 
             %-hist autobinx-%
-            obj.data{histIndex}.autobinx = false;
+            data.autobinx = false;
 
             %-hist xbins-%
             xbins.start = hist_data.XData(2,1);
             xbins.end = hist_data.XData(3,end);
             xbins.size = diff(hist_data.XData(2:3,1));
-            obj.data{histIndex}.xbins = xbins;
+            data.xbins = xbins;
 
             %-layout bargap-%
             obj.layout.bargap = ...
@@ -105,18 +105,18 @@ function obj = updateHistogram(obj,histIndex)
             ylength = 0;
             for d = 1:length(ydata)
                 ynew = repmat(ydata(d),1,hist_data.XData(2,d));
-                obj.data{histIndex}.y(ylength+1:ylength+length(ynew)) = ynew;
-                ylength = length(obj.data{histIndex}.y);
+                data.y(ylength+1:ylength+length(ynew)) = ynew;
+                ylength = length(data.y);
             end
 
             %-hist autobiny-%
-            obj.data{histIndex}.autobiny = false;
+            data.autobiny = false;
 
             %-hist ybins-%
             ybins.start = hist_data.YData(2,1);
             ybins.end = hist_data.YData(3,end);
             ybins.size = diff(hist_data.YData(2:3,1));
-            obj.data{histIndex}.ybins = ybins;
+            data.ybins = ybins;
 
             %-layout bargap-%
             obj.layout.bargap = ...
@@ -124,27 +124,22 @@ function obj = updateHistogram(obj,histIndex)
                     / (hist_data.XData(3,1) - hist_data.XData(2,1));
     end
 
-    obj.data{histIndex}.name = hist_data.DisplayName;
+    data.name = hist_data.DisplayName;
     obj.layout.barmode = "overlay";
-    obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
+    data.marker.line.width = hist_data.LineWidth;
 
     %-hist opacity-%
     if ~ischar(hist_data.FaceAlpha)
-        obj.data{histIndex}.opacity = hist_data.FaceAlpha * 1.25;
+        data.opacity = hist_data.FaceAlpha * 1.25;
     end
 
-    obj.data{histIndex}.marker = extractPatchFace(hist_data);
-    obj.data{histIndex}.visible = strcmp(hist_data.Visible,"on");
+    data.marker = extractPatchFace(hist_data);
+    data.visible = hist_data.Visible == "on";
 
-    %-hist showlegend-%
-    leg = hist_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
+    switch hist_data.Annotation.LegendInformation.IconDisplayStyle
         case "on"
-            showleg = true;
+            data.showlegend = true;
         case "off"
-            showleg = false;
+            data.showlegend = false;
     end
-    obj.data{histIndex}.showlegend = showleg;
 end
