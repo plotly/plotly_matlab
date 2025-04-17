@@ -1,81 +1,71 @@
-function obj = updateHeatmap(obj,heatIndex)
+function data = updateHeatmap(obj,heatIndex)
     %-HEATMAP DATA STRUCTURE- %
     heat_data = obj.State.Plot(heatIndex).Handle;
 
-    %-heatmap type-%
-    obj.data{heatIndex}.type = 'heatmap';
+    data.type = "heatmap";
 
-    %-format data-%
-    xdata = heat_data.XDisplayData;
-    ydata = heat_data.YDisplayData(end:-1:1, :);
     cdata = heat_data.ColorDisplayData(end:-1:1, :);
 
-    obj.data{heatIndex}.x = xdata;
-    obj.data{heatIndex}.y = ydata;
-    obj.data{heatIndex}.z = cdata;
-    obj.data{heatIndex}.connectgaps = false;
-    obj.data{heatIndex}.hoverongaps = false;
+    data.x = heat_data.XDisplayData;
+    data.y = heat_data.YDisplayData(end:-1:1, :);
+    data.z = cdata;
+    data.connectgaps = false;
+    data.hoverongaps = false;
 
-    %-heatmap colorscale-%
     cmap = heat_data.Colormap;
     len = length(cmap)-1;
-
-    for c = 1: length(cmap)
-        col = round(255 * cmap(c, :));
-        obj.data{heatIndex}.colorscale{c} = ...
-                {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
+    for c = 1:length(cmap)
+        col = round(255*cmap(c, :));
+        data.colorscale{c} = {(c-1)/len, getStringColor(col)};
     end
 
-    %-setting plot-%
-    obj.data{heatIndex}.hoverinfo = 'text';
-    obj.data{heatIndex}.text = heat_data.ColorData(end:-1:1, :);
-    obj.data{heatIndex}.hoverlabel.bgcolor = 'white';
+    data.hoverinfo = "text";
+    data.text = heat_data.ColorData(end:-1:1, :);
+    data.hoverlabel.bgcolor = "white";
 
-    %-show colorbar-%
-    obj.data{heatIndex}.showscale = false;
-    if strcmpi(heat_data.ColorbarVisible, 'on')
-        obj.data{heatIndex}.showscale = true;
-        obj.data{heatIndex}.colorbar.x = 0.87;
-        obj.data{heatIndex}.colorbar.y = 0.52;
-        obj.data{heatIndex}.colorbar.ypad = 55;
-        obj.data{heatIndex}.colorbar.xpad = obj.PlotlyDefaults.MarginPad;
-        obj.data{heatIndex}.colorbar.outlinecolor = 'rgb(150,150,150)';
+    data.showscale = false;
+    if lower(heat_data.ColorbarVisible) == "on"
+        data.showscale = true;
+        data.colorbar = struct( ...
+            "x", 0.87, ...
+            "y", 0.52, ...
+            "ypad", 55, ...
+            "xpad", obj.PlotlyDefaults.MarginPad, ...
+            "outlinecolor", "rgb(150,150,150)" ...
+        );
     end
 
-    %-hist visible-%
-    obj.data{heatIndex}.visible = strcmp(heat_data.Visible,'on');
-    obj.data{heatIndex}.opacity = 0.95;
+    data.visible = heat_data.Visible == "on";
+    data.opacity = 0.95;
 
     %-setting annotation text-%
-    c = 1;
     maxcol = max(cdata(:));
-
-    for n = 1:size(cdata, 2)
-        for m = 1:size(cdata, 1)
-            %-text-%
-            ann{c}.text = num2str(round(cdata(m,n), 2));
-            ann{c}.x = n-1;
-            ann{c}.y = m-1;
-            ann{c}.showarrow = false;
-
-            %-font-%
-            ann{c}.font.size = heat_data.FontSize*1.15;
-            ann{c}.font.family = matlab2plotlyfont(heat_data.FontName);
-            if cdata(m,n) < 0.925*maxcol
+    m = size(cdata, 2);
+    n = size(cdata, 1);
+    annotations = cell(1,m*n);
+    for i = 1:m
+        for j = 1:n
+            ann.text = num2str(round(cdata(j,i), 2));
+            ann.x = i-1;
+            ann.y = j-1;
+            ann.showarrow = false;
+            ann.font.size = heat_data.FontSize*1.15;
+            ann.font.family = matlab2plotlyfont(heat_data.FontName);
+            if cdata(j,i) < 0.925*maxcol
                 col = [0,0,0];
             else
                 col = [255,255,255];
             end
-            ann{c}.font.color = sprintf("rgb(%d,%d,%d)", col);
-            c = c+1;
+            ann.font.color = getStringColor(col);
+            annotations{i*(m-1)+j} = ann;
         end
     end
 
-    obj.layout.annotations = ann;
+    obj.layout.annotations = annotations;
 
     %-set background color if any NaN in cdata-%
     if any(isnan(cdata(:)))
-        obj.layout.plot_bgcolor = 'rgb(40,40,40)';
-        obj.data{heatIndex}.opacity = 1;
+        obj.layout.plot_bgcolor = "rgb(40,40,40)";
+        data.opacity = 1;
     end
 end

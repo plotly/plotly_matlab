@@ -43,7 +43,7 @@ function obj = updateData(obj, dataIndex)
             case "wordcloud"
                 updateWordcloud(obj, dataIndex);
             case "heatmap"
-                updateHeatmap(obj, dataIndex);
+                obj.data{dataIndex} = updateHeatmap(obj, dataIndex);
             case "image"
                 if ~obj.PlotOptions.Image3D
                     obj.data{dataIndex} = updateImage(obj, dataIndex);
