@@ -1,29 +1,24 @@
 function updateStackedplot(obj, plotIndex)
-    %-INITIALIZATIONS-%
-
     plotData = obj.State.Plot(plotIndex).Handle;
     lineData = plotData.LineProperties(end:-1:1);
-
-    %-get trace data-%
 
     sourceTable = plotData.SourceTable;
     displayVariables = plotData.DisplayVariables;
     nTraces = length(plotData.AxesProperties);
 
+    yData = cell(1,nTraces);
     if isempty(sourceTable)
         xData = plotData.XData;
         for t = 1:nTraces
             n = nTraces - t + 1;
             yData{t} = plotData.YData(:, n);
         end
-
     else
         if istimetable(sourceTable)
             xData = sourceTable.Properties.RowTimes;
         else
             xData = 1:size(sourceTable, 1);
         end
-
         for t = 1:nTraces
             n = nTraces - t + 1;
             yData{t} = sourceTable.(displayVariables{n});
@@ -33,7 +28,6 @@ function updateStackedplot(obj, plotIndex)
     %-UPDATE STACKEDPLOT AXIS-%
     updateStackedplotAxis(obj, plotIndex)
 
-    %-SET TRACES-%
     traceIndex = plotIndex;
 
     for t = 1:nTraces
@@ -44,62 +38,62 @@ function updateStackedplot(obj, plotIndex)
         end
 
         %-set current trace-%
-        obj.data{traceIndex}.type = 'scatter';
-        obj.data{traceIndex}.visible = strcmp(plotData.Visible,'on');
-        obj.data{traceIndex}.name = plotData.DisplayLabels{t};
-        obj.data{traceIndex}.xaxis = sprintf('x%d', 1);
-        obj.data{traceIndex}.yaxis = sprintf('y%d', t);
+        data.type = "scatter";
+        data.visible = plotData.Visible == "on";
+        data.name = plotData.DisplayLabels{t};
+        data.xaxis = "x1";
+        data.yaxis = "y" + t;
 
         %-set current trace data-%
-        obj.data{traceIndex}.x = xData;
-        obj.data{traceIndex}.y = yData{t};
+        data.x = xData;
+        data.y = yData{t};
 
         %-set current trace marker-%
         switch lineData(t).PlotType
-            case 'scatter'
+            case "scatter"
                 markerSize = ones(size(xData)) * lineData(t).MarkerSize;
-                obj.data{traceIndex}.mode = 'markers';
-                obj.data{traceIndex}.marker = extractLineMarker(lineData(t));
-                obj.data{traceIndex}.marker.size = markerSize;
-                obj.data{traceIndex}.marker.line.width = 1;
+                data.mode = "markers";
+                data.marker = extractLineMarker(lineData(t));
+                data.marker.size = markerSize;
+                data.marker.line.width = 1;
             otherwise
-                obj.data{traceIndex}.mode = 'lines';
-                obj.data{traceIndex}.line = extractLineLine(lineData(t));
+                data.mode = "lines";
+                data.line = extractLineLine(lineData(t));
         end
+        obj.data{traceIndex} = data;
     end
 end
 
 function updateStackedplotAxis(obj, plotIndex)
-    %-INITIALIZATIONS-%
-
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    [xaxis, xExpoFormat] = getAxis(obj, plotIndex, 'X');
+    [xaxis, xExpoFormat] = getAxis(obj, plotIndex, "X");
     obj.layout.xaxis1 = xaxis{1};
 
-    [yaxis, yExpoFormat] = getAxis(obj, plotIndex, 'Y');
+    [yaxis, yExpoFormat] = getAxis(obj, plotIndex, "Y");
 
     for a = 1:length(yaxis)
-        obj.layout.(sprintf('yaxis%d', a)) = yaxis{a};
+        obj.layout.("yaxis" + a) = yaxis{a};
     end
 
-    %-SET AXES ANNOTATIONS-%
-
-    %-trace title-%
-    updateTitle(obj, plotData.Title, [1, 3]);
-
-    %-exponent for x-axis-%
-    updateExponentFormat(obj, xExpoFormat(1), [1,1], 'X');
-
-    %-exponent for y-axis-%
+    obj.layout.annotations{1} = updateTitle(obj, plotData.Title, [1, 3]);
+    if xExpoFormat(1) ~= 0
+        anIndex = obj.PlotlyDefaults.anIndex + 1;
+        obj.layout.annotations{anIndex} = ...
+                updateExponentFormat(obj, xExpoFormat(1), [1,1], "X");
+        obj.PlotlyDefaults.anIndex = anIndex;
+    end
     for a = 1:length(yExpoFormat)
-        updateExponentFormat(obj, yExpoFormat(a), [1, a], 'Y');
+        if yExpoFormat(a) ~= 0
+            anIndex = obj.PlotlyDefaults.anIndex + 1;
+            obj.layout.annotations{anIndex} = ...
+                    updateExponentFormat(obj, yExpoFormat(a), [1, a], "Y");
+            obj.PlotlyDefaults.anIndex = anIndex;
+        end
     end
 end
 
 function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
-    %-INITIALIZATIONS-%
-
     plotData = obj.State.Plot(plotIndex).Handle;
 
     axisPos = plotData.Position;
@@ -110,27 +104,30 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     tickLen = 5;
 
     %-Parse parameters according to axisName (X or Y)
-
     switch axName
-        case {'x', 'X'}
+        case {"x", "X"}
             nAxis = 1;
             nTicks = [5, 12];
             axisLim{nAxis} = plotData.XLimits;
             axisLabel{nAxis} = plotData.XLabel;
             axisDomain{nAxis} = min([axisPos(1) sum(axisPos([1,3]))], 1);
-            axisAnchor{nAxis} = 'y1';
+            axisAnchor{nAxis} = "y1";
 
-        case {'y', 'Y'}
+        case {"y", "Y"}
             nAxis = length(plotData.AxesProperties);
             yPos = linspace(axisPos(2), sum(axisPos([2,4])), nAxis+1);
             yOffset = diff(yPos)*0.1; yOffset(1) = 0;
 
+            axisLim = cell(1,nAxis);
+            axisLabel = cell(1,nAxis);
+            axisDomain = cell(1,nAxis);
+            axisAnchor = cell(1,nAxis);
             for a = 1:nAxis
                 b = nAxis-a+1;
                 axisLim{a} = plotData.AxesProperties(b).YLimits;
                 axisLabel{a} = plotData.DisplayLabels{b};
                 axisDomain{a} = min([yPos(a)+yOffset(a) yPos(a+1)], 1);
-                axisAnchor{a} = 'x1';
+                axisAnchor{a} = "x1";
             end
 
             if nAxis < 4
@@ -141,59 +138,51 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     end
 
     %-GET EACH AXIS-%
-
+    ax = cell(1,nAxis);
+    expoFormat = zeros(1,nAxis);
     for a = 1:nAxis
-        %-general-%
-        ax{a}.domain = axisDomain{a};
-        ax{a}.anchor = axisAnchor{a};
-        ax{a}.range = axisLim{a};
+        axis.domain = axisDomain{a};
+        axis.anchor = axisAnchor{a};
+        axis.range = axisLim{a};
+        axis.side = "left";
+        axis.mirror = false;
+        axis.zeroline = false;
+        axis.linecolor = axisColor;
+        axis.linewidth = lineWidth;
+        axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
-        ax{a}.side = 'left';
-        ax{a}.mirror = false;
-        ax{a}.zeroline = false;
-
-        ax{a}.linecolor = axisColor;
-        ax{a}.linewidth = lineWidth;
-        ax{a}.exponentformat = obj.PlotlyDefaults.ExponentFormat;
-
-        %-grid-%
-        if strcmp(plotData.GridVisible, 'on')
-            ax{a}.showgrid = true;
-            ax{a}.gridwidth = lineWidth;
-            ax{a}.gridcolor = getStringColor(round(255*0.15*ones(1,3)), 0.15);
+        if plotData.GridVisible == "on"
+            axis.showgrid = true;
+            axis.gridwidth = lineWidth;
+            axis.gridcolor = getStringColor(round(255*0.15*ones(1,3)), 0.15);
         else
-            ax{a}.showgrid = false;
+            axis.showgrid = false;
         end
 
-        %-ticks-%
         if isnumeric(axisLim{a})
             [tickVals, tickText, expoFormat(a)] = getNumTicks(axisLim{a}, nTicks);
-
-
         elseif isduration(axisLim{a}) || isdatetime(axisLim{a})
             [tickVals, tickText] = getDateTicks(axisLim{a}, nTicks);
             expoFormat(a) = 0;
         end
 
-        ax{a}.showticklabels = true;
-        ax{a}.ticks = 'inside';
-        ax{a}.ticklen = tickLen;
-        ax{a}.tickwidth = lineWidth;
+        axis.showticklabels = true;
+        axis.ticks = "inside";
+        axis.ticklen = tickLen;
+        axis.tickwidth = lineWidth;
+        axis.tickfont.size = fontSize;
+        axis.tickfont.family = fontFamily;
+        axis.tickfont.color = axisColor;
+        axis.tickvals = tickVals;
+        axis.ticktext = tickText;
 
-        ax{a}.tickfont.size = fontSize;
-        ax{a}.tickfont.family = fontFamily;
-        ax{a}.tickfont.color = axisColor;
-
-        ax{a}.tickvals = tickVals;
-        ax{a}.ticktext = tickText;
-
-        %-label-%
         if ~isempty(axisLabel{a})
-            ax{a}.title = parseString(axisLabel{a});
-            ax{a}.titlefont.color = axisColor;
-            ax{a}.titlefont.size = fontSize;
-            ax{a}.titlefont.family = fontFamily;
+            axis.title = parseString(axisLabel{a});
+            axis.titlefont.color = axisColor;
+            axis.titlefont.size = fontSize;
+            axis.titlefont.family = fontFamily;
         end
+        ax{a} = axis;
     end
 end
 
@@ -206,6 +195,8 @@ function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
     if isYear
         yearTick = getTickVals(yearLim, refYear, 1, nTicks);
 
+        tickVals = NaT(1,length(yearTick));
+        tickText = cell(1,length(yearTick));
         for n = 1:length(yearTick)
             tickVals(n) = datetime(yearTick(n),1,1,'Format','yy');
             tickText{n} = num2str(yearTick(n));
@@ -233,6 +224,8 @@ function [tickVals, tickText] = getDateTicks(axisLim, nTicks)
         hourTick = 24 * ( dayTick - fix(dayTick) );
         dayTick = fix(dayTick);
 
+        tickVals = NaT(1,length(dayTick));
+        tickText = cell(1,length(dayTick));
         for n = 1:length(dayTick)
             matDate = [yearLim(1),monthLim(1),dayTick(n),hourTick(n),0,0];
             tickVals(n) = datetime(matDate,'Format', 'MMM dd, HH:mm');
@@ -261,6 +254,7 @@ function [tickVals, tickText, expoFormat] = getNumTicks(axisLim, nTicks)
 
     tickVals = getTickVals(axisLim, refVals, refPot, nTicks);
 
+    tickText = cell(1,length(tickVals));
     for n = 1:length(tickVals)
         tickText{n} = num2str(tickVals(n)/10^expoFormat);
     end
@@ -294,62 +288,59 @@ function tickVals = getTickVals(axisLim, refVals, refPot, nTicks)
     end
 end
 
-function updateTitle(obj, titleText, xySource)
+function ann = updateTitle(obj, titleText, xySource)
     xaxis = obj.layout.("xaxis" + xySource(1));
     yaxis = obj.layout.("yaxis" + xySource(2));
-    anIndex = 1;
     if ~isempty(titleText)
         titleText = parseString(titleText);
     end
-
-    ann.showarrow = false;
-    ann.text = sprintf('<b>%s</b>', titleText);
-    ann.xref = 'paper';
-    ann.yref = 'paper';
-    ann.x = mean(xaxis.domain);
-    ann.y = yaxis.domain(2);
-    ann.xanchor = 'middle';
-    ann.yanchor = 'bottom';
-    ann.font.size = 1.5*xaxis.tickfont.size;
-    ann.font.color = xaxis.tickfont.color;
-    ann.font.family = xaxis.tickfont.family;
-
-    obj.layout.annotations{anIndex} = ann;
+    ann = struct( ...
+        "showarrow", false, ...
+        "text", sprintf("<b>%s</b>", titleText), ...
+        "xref", "paper", ...
+        "yref", "paper", ...
+        "x", mean(xaxis.domain), ...
+        "y", yaxis.domain(2), ...
+        "xanchor", "middle", ...
+        "yanchor", "bottom", ...
+        "font", struct( ...
+            "size", 1.5*xaxis.tickfont.size, ...
+            "color", xaxis.tickfont.color, ...
+            "family", xaxis.tickfont.family ...
+        ) ...
+    );
 end
 
-function updateExponentFormat(obj, expoFormat, xySource, axName)
+function ann = updateExponentFormat(obj, expoFormat, xySource, axName)
     axName = lower(axName);
     xaxis = obj.layout.("xaxis" + xySource(1));
     yaxis = obj.layout.("yaxis" + xySource(2));
-    anIndex = obj.PlotlyDefaults.anIndex + 1;
 
-    if expoFormat ~= 0
-        exponentText = sprintf('\\times10^%d', expoFormat);
-        exponentText = parseString(exponentText, 'tex');
-        % exponentText = ['<p>' exponentText '</p>'];
+    exponentText = sprintf("\\times10^%d", expoFormat);
+    exponentText = parseString(exponentText, "tex");
 
-        ann.showarrow = false;
-        ann.text = exponentText;
-        ann.xref = 'paper';
-        ann.yref = 'paper';
-        ann.font.size = eval(sprintf('%saxis.tickfont.size', axName));
-        ann.font.color = eval(sprintf('%saxis.tickfont.color', axName));
-        ann.font.family = eval(sprintf('%saxis.tickfont.family', axName));
-        ann.xanchor = 'left';
+    ann = struct( ...
+        "showarrow", false, ...
+        "text", exponentText, ...
+        "xref", "paper", ...
+        "yref", "paper", ...
+        "font", struct( ...
+            "size", eval(sprintf("%saxis.tickfont.size", axName)), ...
+            "color", eval(sprintf("%saxis.tickfont.color", axName)), ...
+            "family", eval(sprintf("%saxis.tickfont.family", axName)) ...
+        ), ...
+        "xanchor", "left" ...
+    );
 
-        switch axName
-            case 'x'
-                ann.yanchor = 'bottom';
-                ann.x = xaxis.domain(2);
-                ann.y = yaxis.domain(1);
+    switch axName
+        case "x"
+            ann.yanchor = "bottom";
+            ann.x = xaxis.domain(2);
+            ann.y = yaxis.domain(1);
 
-            case 'y'
-                ann.yanchor = 'bottom';
-                ann.x = xaxis.domain(1);
-                ann.y = yaxis.domain(2);
-        end
-
-        obj.layout.annotations{anIndex} = ann;
-        obj.PlotlyDefaults.anIndex = anIndex;
+        case "y"
+            ann.yanchor = "bottom";
+            ann.x = xaxis.domain(1);
+            ann.y = yaxis.domain(2);
     end
 end
