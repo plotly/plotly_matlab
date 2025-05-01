@@ -114,7 +114,7 @@ function obj = updateData(obj, dataIndex)
                 updateBaseline(obj, dataIndex);
             case {"contourgroup","contour"}
                 if obj.State.Plot(dataIndex).AssociatedAxis.ZGrid == "on"
-                    updateContour3(obj, dataIndex);
+                    obj.data{dataIndex} = updateContour3(obj, dataIndex);
                 elseif obj.PlotOptions.ContourProjection
                     updateContourProjection(obj,dataIndex);
                 elseif ismember("terncontour", lower(obj.PlotOptions.TreatAs))

@@ -1,4 +1,4 @@
-function obj = updateContour3(obj,contourIndex)
+function data = updateContour3(obj,contourIndex)
     %-FIGURE DATA STRUCTURE-%
     figure_data = obj.State.Figure.Handle;
 
@@ -11,28 +11,22 @@ function obj = updateContour3(obj,contourIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-
-    %-contour xaxis and yaxis-%
-    obj.data{contourIndex}.xaxis = "x" + xsource;
-    obj.data{contourIndex}.yaxis = "y" + ysource;
-
-    %-contour name-%
-    obj.data{contourIndex}.name = contour_data.DisplayName;
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.name = contour_data.DisplayName;
+    data.type = "surface";
 
     %-setting the plot-%
     xdata = contour_data.XData;
     ydata = contour_data.YData;
     zdata = contour_data.ZData;
 
-    obj.data{contourIndex}.type = 'surface';
-
     if isvector(xdata)
         [xdata, ydata] = meshgrid(xdata, ydata);
     end
-    obj.data{contourIndex}.x = xdata;
-    obj.data{contourIndex}.y = ydata;
-
-    obj.data{contourIndex}.z = zdata;
+    data.x = xdata;
+    data.y = ydata;
+    data.z = zdata;
 
     %-setting for contour lines z-direction-%
     if length(contour_data.LevelList) > 1
@@ -45,24 +39,23 @@ function obj = updateContour3(obj,contourIndex)
         zsize = 2e-3;
     end
 
-    obj.data{contourIndex}.contours.z.start = zstart;
-    obj.data{contourIndex}.contours.z.end = zend;
-    obj.data{contourIndex}.contours.z.size = zsize;
-    obj.data{contourIndex}.contours.z.show = true;
-    obj.data{contourIndex}.contours.z.usecolormap = true;
-    obj.data{contourIndex}.contours.z.width = 2*contour_data.LineWidth;
-    obj.data{contourIndex}.hidesurface = true;
+    data.contours.z = struct( ...
+        "start", zstart, ...
+        "end", zend, ...
+        "size", zsize, ...
+        "show", true, ...
+        "usecolormap", true, ...
+        "width", 2*contour_data.LineWidth ...
+    );
+    data.hidesurface = true;
 
-    %-colorscale-%
     colormap = figure_data.Colormap;
-
     for c = 1:size((colormap),1)
         col = round(255*(colormap(c,:)));
-        obj.data{contourIndex}.colorscale{c} = ...
-                {(c-1)/(size(colormap,1)-1), sprintf("rgb(%d,%d,%d)", col)};
+        data.colorscale{c} = ...
+                {(c-1)/(size(colormap,1)-1), getStringColor(col)};
     end
 
-    %-aspect ratio-%
     ar = obj.PlotOptions.AspectRatio;
 
     if ~isempty(ar)
@@ -84,7 +77,6 @@ function obj = updateContour3(obj,contourIndex)
     obj.layout.scene.aspectratio.y = yar;
     obj.layout.scene.aspectratio.z = zar;
 
-    %-camera eye-%
     ey = obj.PlotOptions.CameraEye;
 
     if ~isempty(ey)
@@ -123,17 +115,14 @@ function obj = updateContour3(obj,contourIndex)
     obj.layout.scene.yaxis.zeroline = false;
     obj.layout.scene.zaxis.zeroline = false;
 
-    obj.data{contourIndex}.visible = strcmp(contour_data.Visible, 'on');
-    obj.data{contourIndex}.showscale = false;
-    obj.data{contourIndex}.reversescale = false;
+    data.visible = contour_data.Visible == "on";
+    data.showscale = false;
+    data.reversescale = false;
 
-    leg = contour_data.Annotation;
-    legInfo = leg.LegendInformation;
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch contour_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            data.showlegend = true;
+        case "off"
+            data.showlegend = false;
     end
-    obj.data{contourIndex}.showlegend = showleg;
 end
