@@ -1528,7 +1528,7 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             [X,Y,Z] = peaks(25);
             contour3(X,Y,Z,20);
 
-            p = plotlyfig(fig,"visible","off","treatAs",'contour3');
+            p = plotlyfig(fig,"visible","off");
 
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(rmfield(p.data{1}, "colorscale"), struct( ...

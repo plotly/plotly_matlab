@@ -6,8 +6,6 @@ function obj = updateData(obj, dataIndex)
         updatePie3(obj, dataIndex);
     elseif ismember("pcolor", lower(obj.PlotOptions.TreatAs))
         updatePColor(obj, dataIndex);
-    elseif ismember("contour3", lower(obj.PlotOptions.TreatAs))
-        updateContour3(obj, dataIndex);
     elseif ismember("ezpolar", lower(obj.PlotOptions.TreatAs))
         obj.data{dataIndex} = updateLineseries(obj, dataIndex);
     elseif ismember("coneplot", lower(obj.PlotOptions.TreatAs))
@@ -115,7 +113,9 @@ function obj = updateData(obj, dataIndex)
             case "baseline"
                 updateBaseline(obj, dataIndex);
             case {"contourgroup","contour"}
-                if obj.PlotOptions.ContourProjection
+                if obj.State.Plot(dataIndex).AssociatedAxis.ZGrid == "on"
+                    updateContour3(obj, dataIndex);
+                elseif obj.PlotOptions.ContourProjection
                     updateContourProjection(obj,dataIndex);
                 elseif ismember("terncontour", lower(obj.PlotOptions.TreatAs))
                     updateTernaryContour(obj, dataIndex);
