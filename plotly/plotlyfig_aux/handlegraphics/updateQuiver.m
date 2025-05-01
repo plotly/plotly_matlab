@@ -103,17 +103,12 @@ function obj = updateQuiver(obj, dataIndex)
     end
 
     %-set trace legend-%
-    leg = plotData.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showLeg = true;
-        case 'off'
-            showLeg = false;
+    switch plotData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{dataIndex}.showlegend = true;
+        case "off"
+            obj.data{dataIndex}.showlegend = false;
     end
-
-    obj.data{dataIndex}.showlegend = showLeg;
 end
 
 function updateScene(obj, dataIndex)

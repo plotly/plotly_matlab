@@ -94,17 +94,12 @@ function updateAnimatedLine(obj,plotIndex)
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
     %-scatter showlegend-%
-    leg = plotData.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch plotData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{plotIndex}.showlegend = true;
+        case "off"
+            obj.data{plotIndex}.showlegend = false;
     end
-
-    obj.data{plotIndex}.showlegend = showleg;
 
     %-SCENE CONFIGURATION-% for 3D animations, like comet3
     if obj.PlotOptions.is3d

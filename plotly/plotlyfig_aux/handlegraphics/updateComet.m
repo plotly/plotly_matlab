@@ -115,15 +115,12 @@ function updateComet(obj,plotIndex)
     obj.data{plotIndex}.line = extractLineLine(plotData);
     obj.data{plotIndex}.marker = extractLineMarker(plotData);
 
-    leg = plotData.Annotation;
-    legInfo = leg.LegendInformation;
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch plotData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{plotIndex}.showlegend = true;
+        case "off"
+            obj.data{plotIndex}.showlegend = false;
     end
-    obj.data{plotIndex}.showlegend = showleg;
 
     %-SCENE CONFIGURATION-% for 3D animations, like comet3
     if obj.PlotOptions.is3d

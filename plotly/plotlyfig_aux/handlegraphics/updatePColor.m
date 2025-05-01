@@ -119,16 +119,10 @@ function obj = updatePColor(obj, patchIndex)
     obj.layout.scene.zaxis.showticklabels = false;
     obj.layout.scene.zaxis.showgrid = false;
 
-    %-patch showlegend-%
-    leg = pcolor_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch pcolor_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{patchIndex}.showlegend = true;
+        case "off"
+            obj.data{patchIndex}.showlegend = false;
     end
-
-    obj.data{patchIndex}.showlegend = showleg;
 end

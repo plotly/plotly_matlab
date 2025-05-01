@@ -52,18 +52,12 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     obj.data{ternaryIndex}.showscale = false;
     obj.data{ternaryIndex}.visible = strcmp(ternaryData.Visible,'on');
 
-    %-legend-%
-    leg = ternaryData.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch ternaryData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{ternaryIndex}.showlegend = true;
+        case "off"
+            obj.data{ternaryIndex}.showlegend = false;
     end
-
-    obj.data{ternaryIndex}.showlegend = showleg;
 
     %=====================================================================%
     %

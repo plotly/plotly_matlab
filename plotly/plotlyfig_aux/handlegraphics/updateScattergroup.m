@@ -105,16 +105,12 @@ function updateScattergroup(obj,scatterIndex)
             end
         end
 
-        %-scatter showlegend-%
-        leg = scatter_data.Annotation;
-        legInfo = leg.LegendInformation;
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
+        switch scatter_data.Annotation.LegendInformation.IconDisplayStyle
+            case "on"
+                obj.data{scatterIndex}.showlegend = true;
+            case "off"
+                obj.data{scatterIndex}.showlegend = false;
         end
-        obj.data{scatterIndex}.showlegend = showleg;
 
         %-scatter marker-%
         childmarker = extractPatchMarker(scatter_child_data(n));

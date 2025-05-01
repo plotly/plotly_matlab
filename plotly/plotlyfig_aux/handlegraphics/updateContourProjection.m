@@ -113,16 +113,10 @@ function obj = updateContourProjection(obj,contourIndex)
         obj.layout.scene.camera.eye.z = zar + zfac*zar;
     end
 
-    %-contour showlegend-%
-    leg = contour_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch contour_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{contourIndex}.showlegend = true;
+        case "off"
+            obj.data{contourIndex}.showlegend = false;
     end
-
-    obj.data{contourIndex}.showlegend = showleg;
 end

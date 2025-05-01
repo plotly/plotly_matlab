@@ -157,17 +157,12 @@ function obj = updatePatchPie3(obj, patchIndex)
     obj.data{patchIndex}.surfaceaxis = ind;
 
     %-patch showlegend-%
-    leg = patch_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch patch_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{patchIndex}.showlegend = true;
+        case "off"
+            obj.data{patchIndex}.showlegend = false;
     end
-
-    obj.data{patchIndex}.showlegend = showleg;
 end
 
 function obj = updateSurfacePie3(obj, surfaceIndex)
@@ -278,16 +273,11 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     obj.data{surfaceIndex}.showscale = false;
     obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
 
-    leg = image_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch image_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{surfaceIndex-1}.showlegend = true;
+        case "off"
+            obj.data{surfaceIndex-1}.showlegend = false;
     end
-
-    obj.data{surfaceIndex-1}.showlegend = showleg;
     obj.data{surfaceIndex}.showlegend = false;
 end

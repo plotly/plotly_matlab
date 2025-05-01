@@ -58,13 +58,10 @@ function obj = updateRectangle(obj, rectIndex)
     fill = extractPatchFace(rect_data);
     obj.data{rectIndex}.fillcolor = fill.color;
 
-    leg = rect_data.Annotation;
-    legInfo = leg.LegendInformation;
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch rect_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{rectIndex}.showlegend = true;
+        case "off"
+            obj.data{rectIndex}.showlegend = false;
     end
-    obj.data{rectIndex}.showlegend = showleg;
 end

@@ -121,17 +121,12 @@ function obj = updateBar3h(obj, surfaceIndex)
     %-surface visible-%
     obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible,'on');
 
-    leg = bar_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch bar_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{surfaceIndex}.showlegend = true;
+        case "off"
+            obj.data{surfaceIndex}.showlegend = false;
     end
-
-    obj.data{surfaceIndex}.showlegend = showleg;
 
     %-SETTING SCENE-%
 

@@ -44,14 +44,10 @@ function data = updatePolarplot(obj, plotIndex)
     data.line = extractLineLine(plotData);
     data.line.width = 2 * data.line.width;
 
-    %-legend setting-%
-    leg = plotData.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
+    switch plotData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
             data.showlegend = true;
-        case 'off'
+        case "off"
             data.showlegend = false;
     end
 

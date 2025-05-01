@@ -183,17 +183,12 @@ function obj = updatePatch(obj, patchIndex)
         obj.data{patchIndex}.color = fill.color;
     end
 
-    %-patch showlegend-%
-    leg = patch_data.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch patch_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{patchIndex}.showlegend = true;
+        case "off"
+            obj.data{patchIndex}.showlegend = false;
     end
 
-    showleg = showleg & ~isempty(obj.data{patchIndex}.name);
-    obj.data{patchIndex}.showlegend = showleg;
+    obj.data{patchIndex}.showlegend = obj.data{patchIndex}.showlegend & ~isempty(obj.data{patchIndex}.name);
 end

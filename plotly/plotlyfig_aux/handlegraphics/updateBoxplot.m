@@ -85,18 +85,13 @@ function obj = updateBoxplot(obj, boxIndex)
         obj.data{boxIndex}.type = 'box';
         obj.data{boxIndex}.visible = strcmp(box_data.Visible,'on');
         obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
-        %-box showlegend-%
-        leg = box_data.Annotation;
-        legInfo = leg.LegendInformation;
 
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
+        switch box_data.Annotation.LegendInformation.IconDisplayStyle
+            case "on"
+                obj.data{boxIndex}.showlegend = true;
+            case "off"
+                obj.data{boxIndex}.showlegend = false;
         end
-
-        obj.data{boxIndex}.showlegend = showleg;
 
         %-boxplot components-%
         Q1 = [];

@@ -118,17 +118,13 @@ function obj = updateImage3D(obj, imageIndex)
                 {(c-1)/len, getStringColor(col)};
     end
 
-    %-image showlegend-%
     try
-        leg = image_data.Annotation;
-        legInfo = leg.LegendInformation;
-        switch legInfo.IconDisplayStyle
-            case 'on'
-                showleg = true;
-            case 'off'
-                showleg = false;
+        switch image_data.Annotation.LegendInformation.IconDisplayStyle
+            case "on"
+                obj.data{imageIndex}.showlegend = true;
+            case "off"
+                obj.data{imageIndex}.showlegend = false;
         end
-        obj.data{imageIndex}.showlegend = showleg;
     catch
         %TODO to future
     end

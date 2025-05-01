@@ -93,13 +93,10 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     obj.data{surfaceIndex}.showscale = false;
     obj.data{surfaceIndex}.visible = strcmp(image_data.Visible, 'on');
 
-    leg = image_data.Annotation;
-    legInfo = leg.LegendInformation;
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch image_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{surfaceIndex}.showlegend = true;
+        case "off"
+            obj.data{surfaceIndex}.showlegend = false;
     end
-    obj.data{surfaceIndex}.showlegend = showleg;
 end

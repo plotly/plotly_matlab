@@ -464,13 +464,10 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
     obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
 
-    leg = meshData.Annotation;
-    legInfo = leg.LegendInformation;
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch meshData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{surfaceIndex}.showlegend = true;
+        case "off"
+            obj.data{surfaceIndex}.showlegend = false;
     end
-    obj.data{surfaceIndex}.showlegend = showleg;
 end
