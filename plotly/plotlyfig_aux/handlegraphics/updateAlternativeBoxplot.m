@@ -57,18 +57,12 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
     obj.data{traceIndex}.marker = extractLineMarker(plotData);
     obj.data{traceIndex}.line = extractLineLine(plotData);
 
-    %-legend-%
-    leg = plotData.Annotation;
-    legInfo = leg.LegendInformation;
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showLeg = true;
-        case 'off'
-            showLeg = false;
+    switch plotData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            obj.data{traceIndex}.showlegend = true;
+        case "off"
+            obj.data{traceIndex}.showlegend = false;
     end
-
-    obj.data{traceIndex}.showlegend = showLeg;
 
     if isempty(obj.data{traceIndex}.name)
         obj.data{traceIndex}.showlegend = false;
