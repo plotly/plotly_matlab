@@ -140,7 +140,7 @@ function updateScene(obj, isoIndex)
 	end
 
 	%-SET SCENE TO LAYOUT-%
-	obj.layout.("scene" + xsource) = scene;
+	obj.layout.("scene" + xSource) = scene;
 end
 
 function fillColor = getFaceColor(plotData, axisData)
