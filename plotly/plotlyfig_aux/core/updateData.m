@@ -79,7 +79,7 @@ function obj = updateData(obj, dataIndex)
                 elseif ismember("ternpcolor", lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlotPro(obj, dataIndex);
                 elseif ismember("isosurface", lower(obj.PlotOptions.TreatAs))
-                    updateIsosurface(obj, dataIndex);
+                    obj.data{dataIndex} = updateIsosurface(obj, dataIndex);
                 else
                     updatePatch(obj, dataIndex);
                 end
