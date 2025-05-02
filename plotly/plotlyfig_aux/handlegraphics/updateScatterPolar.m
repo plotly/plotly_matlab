@@ -33,7 +33,7 @@ function updateScatterPolar(obj, plotIndex)
 
     obj.data{plotIndex}.marker = markerStruct;
 
-    if length(markerStruct.size) == 1
+    if isscalar(markerStruct.size)
         obj.data{plotIndex}.marker.size = markerStruct.size * 0.2;
     end
 

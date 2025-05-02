@@ -135,7 +135,7 @@ function obj = updateData(obj, dataIndex)
             case "quivergroup"
                 updateQuivergroup(obj, dataIndex);
             case "scatter"
-                if ismember("scatterpolar", lower(obj.PlotOptions.TreatAs))
+                if obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
                     updateScatterPolar(obj, dataIndex);
                 elseif obj.PlotlyDefaults.isGeoaxis
                     updateGeoScatter(obj, dataIndex);

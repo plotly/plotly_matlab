@@ -10,7 +10,7 @@ function marker = extractScatterMarker(plotData)
     %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
 
     %-INITIALIZATIONS-%
-    axisData = ancestor(plotData.Parent, 'axes');
+    axisData = ancestor(plotData.Parent, ["Axes" "PolarAxes"]);
     figureData = ancestor(plotData.Parent, 'figure');
 
     marker = struct();
@@ -174,7 +174,12 @@ end
 function markerSize = getMarkerSize(plotData)
     markerSize = plotData.SizeData;
 
-    if length(markerSize) == 1
-        markerSize = markerSize * ones(size(plotData.XData));
+    if isscalar(markerSize)
+        if ~isempty(plotData.XData)
+            dataSize = size(plotData.XData);
+        else
+            dataSize = size(plotData.RData); % polar plot
+        end
+        markerSize = markerSize * ones(dataSize);
     end
 end
