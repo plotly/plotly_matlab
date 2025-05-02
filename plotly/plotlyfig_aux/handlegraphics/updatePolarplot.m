@@ -42,7 +42,9 @@ function data = updatePolarplot(obj, plotIndex)
 
     data.marker = extractLineMarker(plotData);
     data.line = extractLineLine(plotData);
-    data.line.width = 2 * data.line.width;
+    if isfield(data.line, "width")
+        data.line.width = 2 * data.line.width;
+    end
 
     switch plotData.Annotation.LegendInformation.IconDisplayStyle
         case "on"

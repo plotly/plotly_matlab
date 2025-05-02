@@ -6,24 +6,18 @@ function line = extractLineLine(line_data)
     %-INITIALIZE OUTPUT-%
     line = struct();
 
-    if (~strcmp(line_data.LineStyle, 'none'))
-        %-SCATTER LINE COLOR (STYLE)-%
-        col = round(255*line_data.Color);
-        line.color = getStringColor(col);
-
-        %-SCATTER LINE WIDTH (STYLE)-%
+    if line_data.LineStyle ~= "none"
+        line.color = getStringColor(round(255*line_data.Color));
         line.width = line_data.LineWidth;
-
-        %-SCATTER LINE DASH (STYLE)-%
         switch line_data.LineStyle
-            case '-'
-                LineStyle = 'solid';
-            case '--'
-                LineStyle = 'dash';
-            case ':'
-                LineStyle = 'dot';
-            case '-.'
-                LineStyle = 'dashdot';
+            case "-"
+                LineStyle = "solid";
+            case "--"
+                LineStyle = "dash";
+            case ":"
+                LineStyle = "dot";
+            case "-."
+                LineStyle = "dashdot";
         end
         line.dash = LineStyle;
     end
