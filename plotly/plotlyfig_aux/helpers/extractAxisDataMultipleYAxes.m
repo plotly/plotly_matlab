@@ -21,14 +21,14 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
         childAxisData.TickLength(1)*parentAxisData.Position(4)*obj.layout.height));
 
     %-y-axis coloring-%
-    axiscol = sprintf("rgb(%d,%d,%d)", round(255*childAxisData.Color));
+    axiscol = getStringColor(round(255*childAxisData.Color));
 
     axis.linecolor = axiscol;
     axis.tickcolor = axiscol;
     axis.tickfont.color = axiscol;
 
     if isprop(parentAxisData, "GridColor") && isprop(parentAxisData, "GridAlpha")
-        axis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
+        axis.gridcolor = getStringColor( ...
                 round(255*parentAxisData.GridColor), ...
                 parentAxisData.GridAlpha);
     else
@@ -134,8 +134,7 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
         axis.title = parseString(labelData.String,labelData.Interpreter);
     end
 
-    axis.titlefont.color = sprintf("rgb(%d,%d,%d)", ...
-            round(255*labelData.Color));
+    axis.titlefont.color = getStringColor(round(255*labelData.Color));
     axis.titlefont.size = labelData.FontSize;
     axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
 

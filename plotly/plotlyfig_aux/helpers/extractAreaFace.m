@@ -20,22 +20,23 @@ function face = extractAreaFace(area_data)
     % face face color
     MarkerColor = area_data.FaceColor;
     if isnumeric(MarkerColor)
-        facecolor = getStringColor(round(255*MarkerColor), ...
-                area_data.FaceAlpha);
+        col = MarkerColor;
+        alpha = area_data.FaceAlpha;
     else
         switch MarkerColor
             case "none"
-                facecolor = "rgba(0,0,0,0)";
+                col = [0 0 0];
+                alpha = 0;
             case "flat"
                 areaACData = area_data.getColorAlphaDataExtents;
                 capCD = max(min(areaACData(1,1),axis_data.CLim(2)), ...
                         axis_data.CLim(1));
                 scalefactor = (capCD - axis_data.CLim(1)) ...
                         / diff(axis_data.CLim);
-                col = round(255*(colormap(1 + floor(scalefactor ...
-                        * (length(colormap)-1)),:)));
-                facecolor = getStringColor(col, area_data.FaceAlpha);
+                col = (colormap(1 + floor(scalefactor ...
+                        * (length(colormap)-1)),:));
+                alpha = area_data.FaceAlpha;
         end
     end
-    face.color = facecolor;
+    face.color = getStringColor(round(255*col), alpha);
 end

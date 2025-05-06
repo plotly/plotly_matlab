@@ -9,7 +9,7 @@ function line = extractLineLine(line_data)
     if (~strcmp(line_data.LineStyle, 'none'))
         %-SCATTER LINE COLOR (STYLE)-%
         col = round(255*line_data.Color);
-        line.color = sprintf("rgb(%d,%d,%d)", col);
+        line.color = getStringColor(col);
 
         %-SCATTER LINE WIDTH (STYLE)-%
         line.width = line_data.LineWidth;

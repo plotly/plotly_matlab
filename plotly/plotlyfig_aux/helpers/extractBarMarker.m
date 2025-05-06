@@ -21,7 +21,7 @@ function marker = extractBarMarker(bar_data)
     if isnumeric(bar_data.FaceColor)
         %-paper_bgcolor-%
         col = round(255*bar_data.FaceColor);
-        marker.color = sprintf("rgb(%d,%d,%d)", col);
+        marker.color = getStringColor(col);
     else
         switch bar_data.FaceColor
             case 'none'
@@ -39,7 +39,7 @@ function marker = extractBarMarker(bar_data)
                         col = round(255*(colormap( ...
                                 bar_data.FaceVertexCData(1,1),:)));
                 end
-                marker.color = sprintf("rgb(%d,%d,%d)", col);
+                marker.color = getStringColor(col);
         end
     end
 
@@ -47,7 +47,7 @@ function marker = extractBarMarker(bar_data)
 
     if isnumeric(bar_data.EdgeColor)
         col = round(255*bar_data.EdgeColor);
-        marker.line.color = sprintf("rgb(%d,%d,%d)", col);
+        marker.line.color = getStringColor(col);
     else
         switch bar_data.EdgeColor
             case 'none'
@@ -65,7 +65,7 @@ function marker = extractBarMarker(bar_data)
                         col = round(255*(colormap( ...
                                 bar_data.FaceVertexCData(1,1),:)));
                 end
-                marker.line.color = sprintf("rgb(%d,%d,%d)", col);
+                marker.line.color = getStringColor(col);
         end
     end
 end

@@ -64,8 +64,7 @@ function marker = extractScatterMarker(plotData)
     if filledMarker
         %-get face color-%
         if isnumeric(markerFaceColor)
-            faceColor = sprintf("rgb(%d,%d,%d)", ...
-                    round(255*markerFaceColor));
+            faceColor = getStringColor(round(255*markerFaceColor));
         else
             switch markerFaceColor
                 case 'none'
@@ -105,7 +104,7 @@ function marker = extractScatterMarker(plotData)
     markerEdgeAlpha = plotData.MarkerEdgeAlpha;
 
     if isnumeric(markerEdgeColor)
-        lineColor = sprintf("rgb(%d,%d,%d)", round(255*markerEdgeColor));
+        lineColor = getStringColor(round(255*markerEdgeColor));
     else
         switch markerEdgeColor
             case 'none'

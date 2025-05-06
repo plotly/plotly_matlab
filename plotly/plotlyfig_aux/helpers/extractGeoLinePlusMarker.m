@@ -13,13 +13,13 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
     lineColor = geoData.Color;
 
     if isnumeric(lineColor)
-        lineColor = sprintf("rgb(%d,%d,%d)", round(255*lineColor));
+        lineColor = getStringColor(round(255*lineColor));
     else
         switch lineColor
             case 'none'
                 lineColor = "rgba(0,0,0,0)";
             case {'auto', 'manual'}
-                lineColor = sprintf("rgb(%d,%d,%d)", round(255*lineColor));
+                lineColor = getStringColor(round(255*lineColor));
             case 'flat'
                 cData = geoData.CData;
                 cMap = figureData.Colormap;
@@ -31,7 +31,7 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
                             / diff(axisData.CLim);
                     rgbColor =  ound(255 * cMap(1+floor(scaleFactor ...
                             * (ncolors-1)),:));
-                    lineColor{m} = sprintf("rgb(%d,%d,%d)", rgbColor);
+                    lineColor{m} = getStringColor(rgbColor);
                 end
         end
     end
@@ -105,7 +105,7 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
 
     if filledMarker
         if isnumeric(faceColor)
-            markerColor = sprintf("rgb(%d,%d,%d)", round(255*faceColor));
+            markerColor = getStringColor(round(255*faceColor));
         else
             switch faceColor
                 case 'none'
@@ -116,7 +116,7 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
                     else
                         col = round(255*figureData.Color);
                     end
-                    markerColor = sprintf("rgb(%d,%d,%d)", col);
+                    markerColor = getStringColor(col);
                 case 'flat'
                     cData = geoData.CData;
                     cMap = figureData.Colormap;
@@ -128,7 +128,7 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
                                 / diff(axisData.CLim);
                         rgbColor = round(255 * cMap(1+floor(scaleFactor ...
                                 * (ncolors-1)),:));
-                        markerColor{m} = sprintf("rgb(%d,%d,%d)", rgbColor);
+                        markerColor{m} = getStringColor(rgbColor);
                     end
             end
         end
@@ -141,14 +141,13 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
     edgeColor = geoData.MarkerEdgeColor;
 
     if isnumeric(edgeColor)
-        lineColor = sprintf("rgb(%d,%d,%d)", round(255*edgeColor));
+        lineColor = getStringColor(round(255*edgeColor));
     else
         switch edgeColor
             case 'none'
                 lineColor = "rgba(0,0,0,0)";
             case 'auto'
-                lineColor = sprintf("rgb(%d,%d,%d)", ...
-                        round(255*geoData.Color));
+                lineColor = getStringColor(round(255*geoData.Color));
             case 'flat'
                 cData = geoData.CData;
                 cMap = figureData.Colormap;
@@ -160,7 +159,7 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
                             / diff(axisData.CLim);
                     rgbColor =  round(255 * cMap(1+floor(scaleFactor ...
                             * (ncolors-1)),:));
-                    lineColor{m} = sprintf("rgb(%d,%d,%d)", rgbColor);
+                    lineColor{m} = getStringColor(rgbColor);
                 end
         end
     end

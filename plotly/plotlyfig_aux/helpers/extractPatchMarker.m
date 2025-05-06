@@ -71,7 +71,7 @@ function marker = extractPatchMarker(patch_data)
     if filledMarker
         if isnumeric(MarkerColor)
             col = round(255*MarkerColor);
-            markercolor = sprintf("rgb(%d,%d,%d)", col);
+            markercolor = getStringColor(col);
         else
             switch MarkerColor
                 case 'none'
@@ -82,7 +82,7 @@ function marker = extractPatchMarker(patch_data)
                     else
                         col = round(255*figure_data.Color);
                     end
-                    markercolor  = sprintf("rgb(%d,%d,%d)", col);
+                    markercolor = getStringColor(col);
                 case 'flat'
                     for n = 1:length(patch_data.FaceVertexCData)
                         switch patch_data.CDataMapping
@@ -100,7 +100,7 @@ function marker = extractPatchMarker(patch_data)
                                 col = round(255*(colormap( ...
                                         patch_data.FaceVertexCData(n,1),:)));
                         end
-                        markercolor{n} = sprintf("rgb(%d,%d,%d)", col);
+                        markercolor{n} = getStringColor(col);
                     end
             end
         end
@@ -119,7 +119,7 @@ function marker = extractPatchMarker(patch_data)
 
     if isnumeric(MarkerLineColor)
         col = round(255*MarkerLineColor);
-        markerlinecolor = sprintf("rgb(%d,%d,%d)", col);
+        markerlinecolor = getStringColor(col);
     else
         switch MarkerLineColor
             case 'none'
@@ -128,7 +128,7 @@ function marker = extractPatchMarker(patch_data)
                 EdgeColor = patch_data.EdgeColor;
                 if isnumeric(EdgeColor)
                     col = round(255*EdgeColor);
-                    markerlinecolor = sprintf("rgb(%d,%d,%d)", col);
+                    markerlinecolor = getStringColor(col);
                 else
                     switch EdgeColor
                         case 'none'
@@ -151,8 +151,7 @@ function marker = extractPatchMarker(patch_data)
                                         col = round(255*(colormap( ...
                                                 patch_data.FaceVertexCData(n,1),:)));
                                 end
-                                markerlinecolor{n} = ...
-                                        sprintf("rgb(%d,%d,%d)", col);
+                                markerlinecolor{n} = getStringColor(col);
                             end
                     end
                 end
@@ -172,7 +171,7 @@ function marker = extractPatchMarker(patch_data)
                             col = round(255*(colormap( ...
                                     patch_data.FaceVertexCData(n,1),:)));
                     end
-                    markerlinecolor{n} = sprintf("rgb(%d,%d,%d)", col);
+                    markerlinecolor{n} = getStringColor(col);
                 end
         end
     end

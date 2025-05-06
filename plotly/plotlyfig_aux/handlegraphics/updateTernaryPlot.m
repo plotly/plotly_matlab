@@ -101,7 +101,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
         n = labelIndex(l);
 
         labelText = axisData.Children(n).String;
-        labelFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(n).Color);
+        labelFontColor = getStringColor(round(255*axisData.Children(n).Color));
         labelFontSize = 1.5 * axisData.Children(n).FontSize;
         labelFontFamily = matlab2plotlyfont(axisData.Children(n).FontName);
 
@@ -117,7 +117,7 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     tick1 = str2num(axisData.Children(t1).String);
     dtick = tick1 - tick0;
 
-    tickFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(t0).Color);
+    tickFontColor = getStringColor(round(255*axisData.Children(t0).Color));
     tickFontSize = 1.0 * axisData.Children(t0).FontSize;
     tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);
 

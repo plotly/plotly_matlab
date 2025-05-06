@@ -19,7 +19,7 @@ function line = extractPatchLine(patch_data)
     if (~strcmp(patch_data.LineStyle,'none'))
         if isnumeric(patch_data.EdgeColor)
             col = round(255*patch_data.EdgeColor);
-            line.color = sprintf("rgb(%d,%d,%d)", col);
+            line.color = getStringColor(col);
         else
             switch patch_data.EdgeColor
                 case 'none'
@@ -38,7 +38,7 @@ function line = extractPatchLine(patch_data)
                             col = round(255*(colormap( ...
                                     patch_data.FaceVertexCData(1,1),:)));
                     end
-                    line.color = sprintf("rgb(%d,%d,%d)", col);
+                    line.color = getStringColor(col);
             end
         end
 

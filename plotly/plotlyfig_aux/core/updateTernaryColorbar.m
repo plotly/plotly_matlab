@@ -108,21 +108,21 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
         colorbar.titlefont.family = ...
                 matlab2plotlyfont(colorbarTitleData.FontName);
         col = round(255*colorbarTitleData.Color);
-        colorbar.titlefont.color = sprintf("rgb(%d,%d,%d)", col);
+        colorbar.titlefont.color = getStringColor(col);
         colorbar.titlefont.size = 1.20 * colorbarTitleData.FontSize;
     elseif ~isempty(colorbarXLabelData.String)
         colorbar.titleside = 'right';
         colorbar.titlefont.family = ...
                 matlab2plotlyfont(colorbarXLabelData.FontName);
         col = round(255*colorbarXLabelData.Color);
-        colorbar.titlefont.color = sprintf("rgb(%d,%d,%d)", col);
+        colorbar.titlefont.color = getStringColor(col);
         colorbar.titlefont.size = 1.20 * colorbarXLabelData.FontSize;
     elseif ~isempty(colorbarYLabelData.String)
         colorbar.titleside = 'bottom';
         colorbar.titlefont.family = ...
                 matlab2plotlyfont(colorbarYLabelData.FontName);
         col = round(255*colorbarYLabelData.Color);
-        colorbar.titlefont.color = sprintf("rgb(%d,%d,%d)", col);
+        colorbar.titlefont.color = getStringColor(col);
         colorbar.titlefont.size = 1.20 * colorbarYLabelData.FontSize;
     end
 
@@ -168,7 +168,7 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
         end
     end
 
-    colorbarColor = sprintf("rgb(%d,%d,%d)", col);
+    colorbarColor = getStringColor(col);
 
     colorbar.outlinecolor = colorbarColor;
     colorbar.tickcolor = colorbarColor;
@@ -283,7 +283,7 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
             col = round(255*figureData.Color);
         end
 
-        obj.layout.plot_bgcolor = sprintf("rgb(%d,%d,%d)", col);
+        obj.layout.plot_bgcolor = getStringColor(col);
     end
 
     %-ASSOCIATED DATA-%
@@ -301,11 +301,9 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
         for n = 1:nticks-1
             col = 1-colorData(n);
             colorscale{m} = {colorIndex(n), ...
-                    sprintf("rgb(%d,%d,%d)", ...
-                    round(255*[col, col, col]))};
+                    getStringColor(round(255*[col, col, col]))};
             colorscale{m+1} = {colorIndex(n+1), ...
-                    sprintf("rgb(%d,%d,%d)", ...
-                    round(255*[col, col, col]))};
+                    getStringColor(round(255*[col, col, col]))};
             m = 2*n+1;
         end
         obj.data{colorbarDataIndex}.marker.color = colorbarData.Ticks;

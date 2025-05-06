@@ -11,7 +11,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
     %-general axis settings-%
     axisColor = round(255 * axisData.(axisName + "Color"));
-    axisColor = sprintf("rgb(%d,%d,%d)", axisColor);
+    axisColor = getStringColor(axisColor);
     lineWidth = max(1, ...
             axisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
@@ -64,8 +64,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
     %-axis grid color-%
     if isprop(axisData, "GridColor") && isprop(axisData, "GridAlpha")
-        axis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
-                [round(255*axisData.GridColor) axisData.GridAlpha]);
+        axis.gridcolor = getStringColor( ...
+                round(255*axisData.GridColor), axisData.GridAlpha);
     else
         axis.gridcolor = axisColor;
     end
@@ -203,8 +203,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.title = parseString(labelData.String,labelData.Interpreter);
     end
 
-    axis.titlefont.color = sprintf("rgb(%d,%d,%d)", ...
-            round(255*labelData.Color));
+    axis.titlefont.color = getStringColor(round(255*labelData.Color));
     axis.titlefont.size = labelData.FontSize;
     axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
 

@@ -73,8 +73,7 @@ function data = updateFunctionContour(obj,contourIndex)
 
     if contour_data.LineStyle ~= "none"
         if isnumeric(contour_data.LineColor)
-            col = round(255*contour_data.LineColor);
-            data.line.color = getStringColor(col);
+            data.line.color = getStringColor(round(255*contour_data.LineColor));
         else
             data.line.color = "rgba(0,0,0,0)";
         end

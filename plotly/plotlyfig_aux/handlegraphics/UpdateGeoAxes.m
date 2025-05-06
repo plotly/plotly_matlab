@@ -50,8 +50,8 @@ function UpdateGeoAxes(obj, geoIndex)
         if strcmpi(geoData.Grid, 'on')
             geoaxes.lataxis.showgrid = true;
             geoaxes.lataxis.gridwidth = geoData.LineWidth;
-            geoaxes.lataxis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
-                    [round(255*geoData.GridColor) geoData.GridAlpha]);
+            geoaxes.lataxis.gridcolor = getStringColor( ...
+                    round(255*geoData.GridColor), geoData.GridAlpha);
         end
     end
 
@@ -66,8 +66,8 @@ function UpdateGeoAxes(obj, geoIndex)
         if strcmpi(geoData.Grid, 'on')
             geoaxes.lonaxis.showgrid = true;
             geoaxes.lonaxis.gridwidth = geoData.LineWidth;
-            geoaxes.lonaxis.gridcolor = sprintf("rgba(%d,%d,%d,%f)", ...
-                    [round(255*geoData.GridColor) geoData.GridAlpha]);
+            geoaxes.lonaxis.gridcolor = getStringColor( ...
+                    round(255*geoData.GridColor), geoData.GridAlpha);
         end
     end
 
@@ -103,7 +103,7 @@ function UpdateGeoAxes(obj, geoIndex)
             lons(t) = child(t).Position(2);
             sizes(t) = child(t).FontSize;
             families{t} = matlab2plotlyfont(child(t).FontName);
-            colors{t} = sprintf('rgb(%f,%f,%f)', child(t).Color);
+            colors{t} = getStringColor(round(255*child(t).Color));
 
             if strcmpi(child(t).HorizontalAlignment, 'left')
                 pos{t} = 'right';

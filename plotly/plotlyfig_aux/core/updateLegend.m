@@ -37,17 +37,17 @@ function obj = updateLegend(obj, legIndex)
         obj.layout.legend.borderwidth = legend_data.LineWidth;
 
         col = round(255*legend_data.EdgeColor);
-        obj.layout.legend.bordercolor = sprintf("rgb(%d,%d,%d)", col);
+        obj.layout.legend.bordercolor = getStringColor(col);
 
         col = round(255*legend_data.Color);
-        obj.layout.legend.bgcolor = sprintf("rgb(%d,%d,%d)", col);
+        obj.layout.legend.bgcolor = getStringColor(col);
 
         obj.layout.legend.font.size = legend_data.FontSize;
         obj.layout.legend.font.family = ...
                 matlab2plotlyfont(legend_data.FontName);
 
         col = round(255*legend_data.TextColor);
-        obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", col);
+        obj.layout.legend.font.color = getStringColor(col);
     end
 
     %-REVERT UNITS-%

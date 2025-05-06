@@ -71,7 +71,7 @@ function obj = updateBar3(obj, surfaceIndex)
     if isnumeric(bar_data.FaceColor)
         %-paper_bgcolor-%
         col = round(255*bar_data.FaceColor);
-        col = sprintf("rgb(%d,%d,%d)", col);
+        col = getStringColor(col);
     else
         switch bar_data.FaceColor
             case 'none'
@@ -88,7 +88,7 @@ function obj = updateBar3(obj, surfaceIndex)
                     case 'direct'
                         col = round(255*(cmap(cdata(1,1),:)));
                 end
-                col = sprintf("rgb(%d,%d,%d)", col);
+                col = getStringColor(col);
             case 'auto'
                 col = 'rgb(0,114,189)';
         end

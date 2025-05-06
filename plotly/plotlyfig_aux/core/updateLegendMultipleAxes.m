@@ -64,17 +64,17 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
         obj.layout.legend.borderwidth = legendData.LineWidth;
 
         col = round(255*legendData.EdgeColor);
-        obj.layout.legend.bordercolor = sprintf("rgb(%d,%d,%d)", col);
+        obj.layout.legend.bordercolor = getStringColor(col);
 
         col = round(255*legendData.Color);
-        obj.layout.legend.bgcolor = sprintf("rgb(%d,%d,%d)", col);
+        obj.layout.legend.bgcolor = getStringColor(col);
 
         obj.layout.legend.font.size = legendData.FontSize;
         obj.layout.legend.font.family = ...
                 matlab2plotlyfont(legendData.FontName);
 
         col = round(255*legendData.TextColor);
-        obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", col);
+        obj.layout.legend.font.color = getStringColor(col);
     end
 
     %-REVERT UNITS-%

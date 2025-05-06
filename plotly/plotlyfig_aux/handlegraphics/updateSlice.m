@@ -193,8 +193,7 @@ function updateSurfaceEdgeColor(obj, dataIndex)
     end
 
     %-coloring-%
-    numColor = round(255*edgeColor);
-    stringColor = getStringColor(numColor);
+    stringColor = getStringColor(round(255*edgeColor));
 
     obj.data{dataIndex}.contours.x.color = stringColor;
     obj.data{dataIndex}.contours.y.color = stringColor;

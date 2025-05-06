@@ -42,8 +42,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
 
         %-get edge color-%
         if isnumeric(ternaryData.LineColor)
-            lineColor{c} = sprintf("rgb(%d,%d,%d)", ...
-                    round(255*ternaryData.LineColor));
+            lineColor{c} = getStringColor(round(255*ternaryData.LineColor));
         elseif strcmpi(ternaryData.LineColor, "flat")
             cMap = figureData.Colormap;
             cMin = axisData.CLim(1);
@@ -54,8 +53,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
             cData = (cData - cMin)/(cMax - cMin);
             cData = 1 + floor( cData*(nColors-1) );
 
-            lineColor{c} = sprintf("rgb(%d,%d,%d)", ...
-                    round(255*cMap(cData,:)));
+            lineColor{c} = getStringColor(round(255*cMap(cData,:)));
         elseif strcmpi(ternaryData.LineColor, "none")
             lineColor{c} = "rgba(0,0,0,0)";
         end
@@ -307,7 +305,7 @@ function ternaryAxes(obj, ternaryIndex)
         n = labelIndex(l);
 
         labelText = axisData.Children(n).String;
-        labelFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(n).Color);
+        labelFontColor = getStringColor(round(255*axisData.Children(n).Color));
         labelFontSize = 1.5 * axisData.Children(n).FontSize;
         labelFontFamily = matlab2plotlyfont(axisData.Children(n).FontName);
 
@@ -323,7 +321,7 @@ function ternaryAxes(obj, ternaryIndex)
     tick1 = str2num(axisData.Children(t1).String);
     dtick = tick1 - tick0;
 
-    tickFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(t0).Color);
+    tickFontColor = getStringColor(round(255*axisData.Children(t0).Color));
     tickFontSize = 1.0 * axisData.Children(t0).FontSize;
     tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);
 
@@ -362,6 +360,5 @@ function outStruct = getContourData(B, zLevel, xData, yData, zData, cLim, cMap)
     colorIndex = (colorIndex - cLim(1))/(cLim(2) - cLim(1));
     colorIndex = 1 + floor( colorIndex*(nColors-1) );
 
-    outStruct.lineColor = sprintf("rgb(%d,%d,%d)", ...
-            round(255*cMap(colorIndex,:)));
+    outStruct.lineColor = getStringColor(round(255*cMap(colorIndex,:)));
 end

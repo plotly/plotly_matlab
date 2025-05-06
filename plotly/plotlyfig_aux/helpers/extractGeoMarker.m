@@ -57,18 +57,18 @@ function marker = extractGeoMarker(geoData, axisData)
 
     if filledMarker
         if isnumeric(faceColor)
-            markerColor = sprintf("rgb(%d,%d,%d)", round(255*faceColor));
+            markerColor = getStringColor(round(255*faceColor));
         else
             switch faceColor
                 case 'none'
                     markerColor = "rgba(0,0,0,0)";
                 case 'auto'
                     if ~strcmp(axisData.Color, 'none')
-                        col = round(255*axisData.Color);
+                        col = axisData.Color;
                     else
-                        col = round(255*figureData.Color);
+                        col = figureData.Color;
                     end
-                    markerColor = sprintf("rgb(%d,%d,%d)", col);
+                    markerColor = getStringColor(round(255*col));
                 case 'flat'
                     cData = geoData.CData;
                     cMap = figureData.Colormap;
@@ -80,7 +80,7 @@ function marker = extractGeoMarker(geoData, axisData)
                                 / diff(axisData.CLim);
                         rgbColor = round(255 * cMap(1+floor(scaleFactor ...
                                 * (ncolors-1)),:));
-                        markerColor{m} = sprintf("rgb(%d,%d,%d)", rgbColor);
+                        markerColor{m} = getStringColor(rgbColor);
                     end
             end
         end
@@ -93,7 +93,7 @@ function marker = extractGeoMarker(geoData, axisData)
     edgeColor = geoData.MarkerEdgeColor;
 
     if isnumeric(edgeColor)
-        lineColor = sprintf("rgb(%d,%d,%d)", round(255*edgeColor));
+        lineColor = getStringColor(round(255*edgeColor));
     else
         switch edgeColor
             case 'none'
@@ -111,7 +111,7 @@ function marker = extractGeoMarker(geoData, axisData)
                             / diff(axisData.CLim);
                     rgbColor = round(255 * cMap(1+floor(scaleFactor ...
                             * (ncolors-1)),:));
-                    lineColor{m} = sprintf("rgb(%d,%d,%d)", rgbColor);
+                    lineColor{m} = getStringColor(rgbColor);
                 end
         end
     end

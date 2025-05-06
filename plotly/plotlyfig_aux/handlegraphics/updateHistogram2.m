@@ -70,7 +70,7 @@ function obj = updateHistogram2(obj,dataIndex)
     if isnumeric(faceColor)
         obj.data{dataIndex}.color = getStringColor(round(255*faceColor));
     elseif strcmp(faceColor, 'none')
-        obj.data{dataIndex}.color = getStringColor(round(255*zeros(1,3), 0.1));
+        obj.data{dataIndex}.color = getStringColor(round(255*zeros(1,3)), 0.1);
     elseif strcmp(faceColor, 'flat')
         obj.data{dataIndex}.intensity = cData;
         obj.data{dataIndex}.colorscale = getColorScale(colorMap);

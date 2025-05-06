@@ -71,15 +71,11 @@ function obj = updateFmesh(obj, surfaceIndex)
     colorScale = {};
 
     for c = 1: length(cMap)
-        colorScale{c} = { ...
-            (c-1)*fac, ...
-            sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :))), ...
-        };
+        colorScale{c} = {(c-1)*fac, getStringColor(round(255*cMap(c, :)))};
     end
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
-        cDataContour = sprintf("rgb(%d,%d,%d)", ...
-                round(255*meshData.EdgeColor));
+        cDataContour = getStringColor(round(255*meshData.EdgeColor));
     elseif strcmpi(meshData.EdgeColor, "interp")
         cDataContour = zDataContour(:);
         obj.data{contourIndex}.line.colorscale = colorScale;
@@ -101,7 +97,7 @@ function obj = updateFmesh(obj, surfaceIndex)
         [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
 
         for c = 1: size(cMapSurface, 1)
-            colorScale{c} = { (c-1)*fac , sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
+            colorScale{c} = { (c-1)*fac , getStringColor(round(255*cMapSurface(c, :)), 1)};
         end
 
         obj.data{surfaceIndex}.cmin = 0;

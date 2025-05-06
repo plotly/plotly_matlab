@@ -77,7 +77,7 @@ function obj = updateMesh(obj, surfaceIndex)
     yData = yData(:, 1);
     obj.data{surfaceIndex}.contours.y.start = yData(1);
     obj.data{surfaceIndex}.contours.y.end = yData(end);
-    obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));;
+    obj.data{surfaceIndex}.contours.y.size = mean(diff(yData));
     obj.data{surfaceIndex}.contours.y.show = true;
 
     %-set data on scatter3d-%
@@ -94,13 +94,12 @@ function obj = updateMesh(obj, surfaceIndex)
 
     for c = 1: length(cMap)
         colorScale{c} = {(c-1)*fac, ...
-                sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
+                getStringColor(round(255*cMap(c, :)))};
     end
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
-        cDataContour = sprintf("rgb(%d,%d,%d)", ...
-                round(255*meshData.EdgeColor));
+        cDataContour = getStringColor(round(255*meshData.EdgeColor));
 
     elseif strcmpi(meshData.EdgeColor, "interp")
         cDataContour = zDataContour(:);
@@ -122,7 +121,7 @@ function obj = updateMesh(obj, surfaceIndex)
 
             for c = 1: length(cMap)
                 edgeColorScale{c} = {(c-1)*fac, ...
-                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
+                        getStringColor(round(255*cMap(c, :)))};
             end
 
             obj.data{surfaceIndex}.line.cmin = 0;
@@ -172,7 +171,7 @@ function obj = updateMesh(obj, surfaceIndex)
 
         for c = 1: size(cMapSurface, 1)
             colorScale{c} = {(c-1)*fac, ...
-                    sprintf("rgba(%f,%f,%f, 1)", cMapSurface(c, :))};
+                    getStringColor(round(255*cMapSurface(c, :)), 1)};
         end
 
         obj.data{surfaceIndex}.cmin = axisData.CLim(1);
@@ -210,7 +209,7 @@ function obj = updateMesh(obj, surfaceIndex)
 
             for c = 1: length(cMap)
                 colorScale{c} = {(c-1)*fac, ...
-                        sprintf("rgb(%d,%d,%d)", round(255*cMap(c, :)))};
+                        getStringColor(round(255*cMap(c, :)))};
             end
         else
             cDataSurface = cData;

@@ -66,27 +66,27 @@ function marker = extractScatterhistogramMarker(patch_data, t)
 
     if filledMarker && strcmp(patch_data.MarkerFilled, 'on')
         if isnumeric(MarkerColor)
-            markercolor = sprintf("rgb(%d,%d,%d)", round(255*MarkerColor));
+            markercolor = getStringColor(round(255*MarkerColor));
         else
             switch MarkerColor
                 case 'none'
                     markercolor = "rgba(0,0,0,0)";
                 case 'auto'
                     if ~strcmp(axis_data.Color,'none')
-                        col = round(255*axis_data.Color);
+                        col = axis_data.Color;
                     else
-                        col = round(255*figure_data.Color);
+                        col = figure_data.Color;
                     end
-                    markercolor = sprintf("rgb(%d,%d,%d)", col);
+                    markercolor = getStringColor(round(255*col));
                 case 'flat'
                     for n = 1:length(patch_data.CData)
                         capCD = max(min(patch_data.CData(n), ...
                                 axis_data.CLim(2)), axis_data.CLim(1));
                         scalefactor = (capCD - axis_data.CLim(1)) ...
                                 /diff(axis_data.CLim);
-                        col = round(255*(colormap(1 + floor(scalefactor ...
-                                * (length(colormap)-1)),:)));
-                        markercolor{n} = sprintf("rgb(%d,%d,%d)", col);
+                        col = colormap(1 + floor(scalefactor ...
+                                * (length(colormap)-1)),:);
+                        markercolor{n} = getStringColor(round(255*col));
                     end
             end
         end

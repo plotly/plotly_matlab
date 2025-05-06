@@ -71,7 +71,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
         end
         [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
         for c = 1: size(cMapSurface, 1)
-            colorScale{c} = { (c-1)*fac , sprintf('rgba(%f,%f,%f, 1)', cMapSurface(c, :))};
+            colorScale{c} = { (c-1)*fac , getStringColor(round(255*cMapSurface(c, :)), 1)};
         end
         surfaceData.cmin = 0;
         surfaceData.cmax = 255;

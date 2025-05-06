@@ -85,8 +85,7 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.domain.y = min([yo yo + h], 1);
 
     %-setting angular axis-%
-    gridColor = sprintf("rgba(%d,%d,%d,%f)", ...
-            [round(255*axisData.GridColor) axisData.GridAlpha]);
+    gridColor = getStringColor(round(255*axisData.GridColor), axisData.GridAlpha);
     gridWidth = axisData.LineWidth;
     thetaLim = thetaAxis.Limits;
 
@@ -111,7 +110,7 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.radialaxis.title.font.family = matlab2plotlyfont(...
             thetaLabel.FontName);
     polarAxis.radialaxis.title.font.size = thetaLabel.FontSize;
-    polarAxis.radialaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
+    polarAxis.radialaxis.title.font.color = getStringColor( ...
             round(255*thetaLabel.Color));
 
     %-setting radial axis-%
@@ -140,7 +139,7 @@ function updatePolaraxes(obj, plotIndex)
     polarAxis.angularaxis.title.font.family = matlab2plotlyfont(...
             rLabel.FontName);
     polarAxis.angularaxis.title.font.size = rLabel.FontSize;
-    polarAxis.angularaxis.title.font.color = sprintf("rgb(%d,%d,%d)", ...
+    polarAxis.angularaxis.title.font.color = getStringColor( ...
             round(255*rLabel.Color));
 
     %-angular tick labels settings-%
@@ -177,8 +176,7 @@ function updatePolaraxes(obj, plotIndex)
         polarAxis.angularaxis.tickfont.family = matlab2plotlyfont(...
                 thetaAxis.FontName);
         polarAxis.angularaxis.tickfont.size = thetaAxis.FontSize;
-        polarAxis.angularaxis.tickfont.color = sprintf("rgb(%d,%d,%d)", ...
-                round(255*thetaAxis.Color));
+        polarAxis.angularaxis.tickfont.color = getStringColor(round(255*thetaAxis.Color));
     end
 
 
@@ -212,8 +210,7 @@ function updatePolaraxes(obj, plotIndex)
         polarAxis.radialaxis.tickfont.family = matlab2plotlyfont(...
                 rAxis.FontName);
         polarAxis.radialaxis.tickfont.size = rAxis.FontSize;
-        polarAxis.radialaxis.tickfont.color = sprintf("rgb(%d,%d,%d)", ...
-                round(255*rAxis.Color));
+        polarAxis.radialaxis.tickfont.color = getStringColor(round(255*rAxis.Color));
     end
 
     obj.layout.(sprintf('polar%d', xsource+1)) = polarAxis;

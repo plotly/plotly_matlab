@@ -59,7 +59,7 @@ function obj = updatePColor(obj, patchIndex)
     for c = 1:length(cmap)
         col = round(255 * cmap(c, :));
         obj.data{patchIndex}.colorscale{c} = ...
-                {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
+                {(c-1)/len, getStringColor(col)};
     end
 
     obj.data{patchIndex}.surfacecolor = cdata;

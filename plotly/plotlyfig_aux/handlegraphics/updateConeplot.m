@@ -70,9 +70,9 @@ function obj = updateConeplot(obj, coneIndex)
 
     %-set cone color-%
     obj.data{coneIndex}.colorscale{1} = ...
-            {0, sprintf("rgb(%f,%f,%f)", cone_data.EdgeColor)};
+            {0, getStringColor(round(255*cone_data.EdgeColor))};
     obj.data{coneIndex}.colorscale{2} = ...
-            {1, sprintf("rgb(%f,%f,%f)", cone_data.EdgeColor)};
+            {1, getStringColor(round(255*cone_data.EdgeColor))};
 
     %-plot setting-%
     obj.data{coneIndex}.showscale = false;

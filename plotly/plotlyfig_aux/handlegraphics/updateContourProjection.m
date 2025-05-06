@@ -52,7 +52,7 @@ function obj = updateContourProjection(obj,contourIndex)
     for c = 1:size((colormap),1)
         col = round(255*(colormap(c,:)));
         obj.data{contourIndex}.colorscale{c} = ...
-                {(c-1)/(size(colormap,1)-1), sprintf("rgb(%d,%d,%d)", col)};
+                {(c-1)/(size(colormap,1)-1), getStringColor(col)};
     end
 
     %-contour reverse scale-%

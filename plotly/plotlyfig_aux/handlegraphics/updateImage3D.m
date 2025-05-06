@@ -115,7 +115,7 @@ function obj = updateImage3D(obj, imageIndex)
     for c = 1:size(colormap, 1)
         col = round(255*(colormap(c,:)));
         obj.data{imageIndex}.colorscale{c} = ...
-                {(c-1)/len, sprintf("rgb(%d,%d,%d)", col)};
+                {(c-1)/len, getStringColor(col)};
     end
 
     %-image showlegend-%

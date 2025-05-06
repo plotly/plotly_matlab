@@ -108,7 +108,7 @@ function annotation = updateAnnotation(obj,anIndex)
     end
 
     col = round(255*text_data.Color);
-    annotation.font.color = sprintf("rgb(%d,%d,%d)", col);
+    annotation.font.color = getStringColor(col);
 
     annotation.font.family = matlab2plotlyfont(text_data.FontName);
 
@@ -132,7 +132,7 @@ function annotation = updateAnnotation(obj,anIndex)
 
     if ~ischar(text_data.EdgeColor)
         col = round(255*text_data.EdgeColora);
-        annotation.bordercolor = sprintf("rgb(%d,%d,%d)", col);
+        annotation.bordercolor = getStringColor(col);
     else
         %-none-%
         annotation.bordercolor = "rgba(0,0,0,0)";

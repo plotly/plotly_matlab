@@ -138,8 +138,7 @@ function obj = updateBoxplot(obj, boxIndex)
                     %-boxplot line style-%
                     if isCompact
                         col = round(255*box_child_data.Color);
-                        obj.data{boxIndex}.fillcolor = ...
-                                sprintf("rgb(%d,%d,%d)", col);
+                        obj.data{boxIndex}.fillcolor = getStringColor(col);
                     else
                         obj.data{boxIndex}.line = ...
                                 extractLineLine(box_child_data);

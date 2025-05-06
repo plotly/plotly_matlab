@@ -262,7 +262,7 @@ function setAnnotation(obj, axesStruct, spiderIndex)
     for t = 1:nTicks
         indexColor = mod(t-1, nAxesFontColor) + 1;
         axesColor = round(255*axesFontColor(indexColor, :));
-        axesColor = sprintf("rgb(%d,%d,%d)", axesColor);
+        axesColor = getStringColor(axesColor);
         for a = 1:nAxes
             %-create annotation-%
             annotations{anIndex}.showarrow = false;
@@ -371,7 +371,7 @@ function axesStruct = setAxes(obj, spiderIndex)
     angleStep = 2*pi/nAxes;
     axesAngle = [pi/2];
     plotIndex = spiderIndex;
-    axesColor = sprintf("rgb(%d,%d,%d)", round(255*plotData.AxesColor));
+    axesColor = getStringColor(round(255*plotData.AxesColor));
 
     for a = 1:nAxes
         %-get plotIndex-%
@@ -493,11 +493,11 @@ function setLegeng(obj, spiderIndex)
 
         obj.layout.legend.traceorder = 'normal';
         obj.layout.legend.borderwidth = legData.LineWidth;
-        obj.layout.legend.bordercolor = sprintf("rgb(%d,%d,%d)", edgeColor);
-        obj.layout.legend.bgcolor = sprintf("rgb(%d,%d,%d)", bgColor);
+        obj.layout.legend.bordercolor = getStringColor(edgeColor);
+        obj.layout.legend.bgcolor = getStringColor(bgColor);
         obj.layout.legend.font.size = legData.FontSize;
         obj.layout.legend.font.family = matlab2plotlyfont(legData.FontName);
-        obj.layout.legend.font.color = sprintf("rgb(%d,%d,%d)", textColor);
+        obj.layout.legend.font.color = getStringColor(textColor);
     end
 end
 
@@ -513,12 +513,12 @@ function [strColor, numColor] = getColor(colorMatrix, traceIndex, ...
     nColors = size(colorMatrix, 1);
     colorIndex = mod(traceIndex-1, nColors) + 1;
     numColor = round(255*colorMatrix(colorIndex, :));
-    strColor = sprintf("rgba(%d,%d,%d,%f)", numColor, colorOpacity);
+    strColor = getStringColor(numColor, colorOpacity);
 end
 
 function edgeColor = getLabelEdgeColor(axesLabelsEdge)
     if isnumeric(axesLabelsEdge)
-        edgeColor = sprintf("rgb(%d,%d,%d)", round(255*axesLabelsEdge));
+        edgeColor = getStringColor(round(255*axesLabelsEdge));
     elseif strcmp(axesLabelsEdge, "none")
         edgeColor = "rgba(0,0,0,0)";
     else

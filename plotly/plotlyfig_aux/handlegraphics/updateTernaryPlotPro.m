@@ -69,7 +69,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         faceColor = ternaryData.FaceColor;
 
         if isnumeric(faceColor)
-            fillColor = sprintf("rgb(%d,%d,%d)", round(255*faceColor));
+            fillColor = getStringColor(round(255*faceColor));
         else
             cMap = figureData.Colormap;
             nColors = size(cMap,1);
@@ -89,11 +89,9 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
                             cData = max(min(cData, cMax), cMin);
                             cData = (cData - cMin)/diff(axisData.CLim);
                             cData = 1 + floor( cData*(nColors-1) );
-                            fillColor = sprintf("rgb(%d,%d,%d)", ...
-                                    round(255*cMap(cData,:)));
+                            fillColor = getStringColor(round(255*cMap(cData,:)));
                         case 'direct'
-                            fillColor = sprintf("rgb(%d,%d,%d)", ...
-                                    round(255*cMap(ternary(1,t),:)));
+                            fillColor = getStringColor(round(255*cMap(ternary(1,t),:)));
                     end
             end
         end
@@ -140,7 +138,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
         n = labelIndex(l);
 
         labelText = axisData.Children(n).String;
-        labelFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(n).Color);
+        labelFontColor = getStringColor(round(255*axisData.Children(n).Color));
         labelFontSize = 1.5 * axisData.Children(n).FontSize;
         labelFontFamily = matlab2plotlyfont(axisData.Children(n).FontName);
 
@@ -156,7 +154,7 @@ function obj = updateTernaryPlotPro(obj, ternaryIndex)
     tick1 = str2num(axisData.Children(t1).String);
     dtick = tick1 - tick0;
 
-    tickFontColor = sprintf('rgb(%f,%f,%f)', axisData.Children(t0).Color);
+    tickFontColor = getStringColor(round(255*axisData.Children(t0).Color));
     tickFontSize = 1.0 * axisData.Children(t0).FontSize;
     tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);
 

@@ -56,7 +56,7 @@ function obj = updateColorbar(obj,colorbarIndex)
         end
     end
 
-    outlineColor = sprintf("rgb(%d,%d,%d)", outlineColor);
+    outlineColor = getStringColor(outlineColor);
     lineWidth = colorbarData.LineWidth ...
             * obj.PlotlyDefaults.AxisLineIncreaseFactor;
     tickLength = min(obj.PlotlyDefaults.MaxTickLength, ...
@@ -135,8 +135,7 @@ function obj = updateColorbar(obj,colorbarIndex)
         end
 
         titleFontSize = 1.20 * colorbarTitleData.FontSize;
-        titleFontColor = sprintf("rgb(%d,%d,%d)", ...
-                round(255*colorbarTitleData.Color));
+        titleFontColor = getStringColor(round(255*colorbarTitleData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarTitleData.FontName);
     elseif ~isempty(colorbarXLabelData.String)
         titleString = colorbarXLabelData.String;
@@ -144,8 +143,7 @@ function obj = updateColorbar(obj,colorbarIndex)
 
         titleSide = 'right';
         titleFontSize = 1.20 * colorbarXLabelData.FontSize;
-        titleFontColor = sprintf("rgb(%d,%d,%d)", ...
-                round(255*colorbarXLabelData.Color));
+        titleFontColor = getStringColor(round(255*colorbarXLabelData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarXLabelData.FontName);
     elseif ~isempty(colorbarYLabelData.String)
         titleString = colorbarYLabelData.String;
@@ -153,8 +151,7 @@ function obj = updateColorbar(obj,colorbarIndex)
 
         titleSide = 'bottom';
         titleFontSize = 1.20 * colorbarYLabelData.FontSize;
-        titleFontColor = sprintf("rgb(%d,%d,%d)", ...
-                round(255*colorbarYLabelData.Color));
+        titleFontColor = getStringColor(round(255*colorbarYLabelData.Color));
         titleFontFamily = matlab2plotlyfont(colorbarYLabelData.FontName);
     else
         isTitle = false;
@@ -223,7 +220,7 @@ function obj = updateColorbar(obj,colorbarIndex)
             bgColor = round(255*figureData.Color);
         end
 
-        obj.layout.plot_bgcolor = sprintf("rgb(%d,%d,%d)", bgColor);
+        obj.layout.plot_bgcolor = getStringColor(bgColor);
     end
 
     %-ASSOCIATED DATA-%

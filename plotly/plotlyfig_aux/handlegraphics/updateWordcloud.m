@@ -82,17 +82,14 @@ function updateWordcloud(obj,scatterIndex)
     if ~is_colormap
         for w=1:nwords
             if B(4) > sizedata(w)
-                col{w} = sprintf("rgb(%d,%d,%d)", ...
-                        round(255*scatter_data.Color));
+                col{w} = getStringColor(round(255*scatter_data.Color));
             else
-                col{w} = sprintf("rgb(%d,%d,%d)", ...
-                        round(255*scatter_data.HighlightColor));
+                col{w} = getStringColor(round(255*scatter_data.HighlightColor));
             end
         end
     else
         for w=1:nwords
-            col{w} = sprintf("rgb(%d,%d,%d)", ...
-                    round(255*scatter_data.Color(inds(w), :)));
+            col{w} = getStringColor(round(255*scatter_data.Color(inds(w), :)));
         end
     end
 
