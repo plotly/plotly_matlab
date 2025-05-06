@@ -164,6 +164,9 @@ function obj = updateData(obj, dataIndex)
                 if isBoxplot(obj, dataIndex)
                     updateBoxplot(obj, dataIndex);
                 end
+            case {"uimenu","uicontextmenu"}
+                % Do nothing
+                return
             otherwise
                 error("Non-supported plot: %s", ...
                         lower(obj.State.Plot(dataIndex).Class));

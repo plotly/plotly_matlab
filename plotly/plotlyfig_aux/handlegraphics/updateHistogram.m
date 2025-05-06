@@ -45,13 +45,9 @@ function data = updateHistogram(obj,histIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %-AXIS INDEX-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
-
-    %-HIST DATA STRUCTURE- %
+    axisData = obj.State.Plot(histIndex).AssociatedAxis;
+    axIndex = obj.getAxisIndex(axisData);
     hist_data = obj.State.Plot(histIndex).Handle;
-
-    %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     data.xaxis = "x" + xsource;
@@ -122,6 +118,14 @@ function data = updateHistogram(obj,histIndex)
             obj.layout.bargap = ...
                     (hist_data.XData(3,1) - hist_data.XData(2,2)) ...
                     / (hist_data.XData(3,1) - hist_data.XData(2,1));
+    end
+
+    if axisData.Tag == "yhist"
+        % scatterhist() function
+        data.orientation = "h";
+        temp = data.x;
+        data.x = flip(data.y);
+        data.y = temp;
     end
 
     data.name = hist_data.DisplayName;

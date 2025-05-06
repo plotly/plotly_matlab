@@ -607,7 +607,8 @@ classdef plotlyfig < handle
 
             % update axes
             for n = 1:obj.State.Figure.NumAxes
-                if ismember(ax(n).Type,specialAxisPlots())
+                nrev = length(ax) - n + 1;
+                if ismember(ax(nrev).Type,specialAxisPlots())
                     continue
                 end
                 if ~obj.PlotlyDefaults.isMultipleYAxes(n)
