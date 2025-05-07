@@ -164,7 +164,7 @@ function obj = updateData(obj, dataIndex)
                 if isBoxplot(obj, dataIndex)
                     updateBoxplot(obj, dataIndex);
                 end
-            case {"uimenu","uicontextmenu"}
+            case {"uimenu","uicontextmenu","legend"}
                 % Do nothing
                 return
             otherwise

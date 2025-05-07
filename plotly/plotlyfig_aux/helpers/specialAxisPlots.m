@@ -1,3 +1,3 @@
 function out = specialAxisPlots()
-    out = ["polaraxes" "stackedplot" "uicontextmenu"];
+    out = ["polaraxes" "stackedplot" "uicontextmenu" "legend"];
 end
