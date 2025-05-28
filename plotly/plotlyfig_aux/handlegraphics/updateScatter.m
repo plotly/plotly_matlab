@@ -1,13 +1,15 @@
 function data = updateScatter(obj,plotIndex)
-    %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj,axIndex);
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    %-check is 3D scatter-%
-    isScatter3D = isprop(plotData,"ZData") && ~isempty(plotData.ZData);
+    data.mode = "markers";
+    data.visible = plotData.Visible == "on";
+    data.name = plotData.DisplayName;
+    data.marker = extractScatterMarker(plotData);
+    [data.x, data.y] = getTraceData2D(plotData);
 
-    %-set trace-%
+    isScatter3D = isprop(plotData,"ZData") && ~isempty(plotData.ZData);
     if ~isScatter3D
         data.type = "scatter";
         data.xaxis = "x" + xSource;
@@ -16,37 +18,23 @@ function data = updateScatter(obj,plotIndex)
     else
         data.type = "scatter3d";
         data.scene = "scene" + xSource;
-
         updateScene(obj, plotIndex);
-    end
-
-    data.mode = "markers";
-    data.visible = strcmp(plotData.Visible, "on");
-    data.name = plotData.DisplayName;
-
-    %-set trace data-%
-    [xData, yData] = getTraceData2D(plotData);
-    data.x = xData;
-    data.y = yData;
-
-    if isScatter3D
         data.z = plotData.ZData;
+        data.marker.size = 2*data.marker.size;
     end
 
-    %-set trace marker-%
-    data.marker = extractScatterMarker(plotData);
-
-    if isScatter3D
-        markerSize = data.marker.size;
-        data.marker.size = 2*markerSize;
+    dataTipRows = plotData.DataTipTemplate.DataTipRows;
+    dataTipRows = dataTipRows(~ismember({dataTipRows.Label},["Size" "Color" "X" "Y" "Z"]));
+    if numel(dataTipRows) > 0
+        customLabel = join(string({dataTipRows.Label}) + ": " + string({dataTipRows.Value}), "<br>");
+        data.hovertext = "X: " + data.x + "<br>" + "Y: " + data.y + "<br>" + customLabel;
+        data.hoverinfo = "text";
     end
 
-    %-set trace legend-%
     data.showlegend = getShowLegend(plotData);
 end
 
 function updateScene(obj, dataIndex)
-    %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = plotData.Parent;
@@ -114,7 +102,6 @@ function updateScene(obj, dataIndex)
     if isduration(xTick) || isdatetime(xTick)
         xTickChar = char(xTick);
         xTickLabel = axisData.XTickLabel;
-
         for n = 1:length(xTickLabel)
             for m = 1:size(xTickChar, 1)
                 if ~isempty(strfind(string(xTickChar(m, :)), xTickLabel{n}))
@@ -129,7 +116,6 @@ function updateScene(obj, dataIndex)
     if isduration(yTick) || isdatetime(yTick)
         yTickChar = char(yTick);
         yTickLabel = axisData.YTickLabel;
-
         for n = 1:length(yTickLabel)
             for m = 1:size(yTickChar, 1)
                 if ~isempty(strfind(string(yTickChar(m, :)), yTickLabel{n}))
@@ -259,10 +245,8 @@ end
 
 function jitWeight = getJitWeight(jitData, refData)
     jitUnique = sort(unique(jitData), "ascend");
-
     for n = 1:length(jitUnique)
         jitInd = find(jitData == jitUnique(n));
-
         if length(jitInd) > 1
             refDataN = refData(jitInd);
             stdData(n) = std(refDataN(~isnan(refDataN)));
@@ -278,7 +262,6 @@ function jitData = getJitData(refData, jitWeight, jitType)
         refPoints = linspace(min(refData), max(refData), 2*length(refData));
         [densityData, refPoints] = ksdensity(refData, refPoints);
         densityData = jitWeight * rescale(densityData, 0, 1);
-
         for n = 1:length(refData)
             [~, refInd] = min(abs(refPoints - refData(n)));
             jitData(n) = jitData(n) * densityData(refInd);
