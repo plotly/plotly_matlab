@@ -181,5 +181,8 @@ function markerSize = getMarkerSize(plotData)
             dataSize = size(plotData.RData); % polar plot
         end
         markerSize = markerSize * ones(dataSize);
+        if isscalar(markerSize)
+            markerSize = {markerSize};
+        end
     end
 end
