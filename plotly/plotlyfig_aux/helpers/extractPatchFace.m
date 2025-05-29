@@ -2,23 +2,13 @@ function marker = extractPatchFace(patch_data)
     % EXTRACTS THE FACE STYLE USED FOR MATLAB OBJECTS
     % OF TYPE "PATCH". THESE OBJECTS ARE USED BOXPLOTS.
 
-    %-AXIS STRUCTURE-%
-    axis_data = ancestor(patch_data.Parent,"axes");
+    cLim = ancestor(patch_data.Parent, ["axes" "polaraxes"]).CLim;
+    colormap = ancestor(patch_data.Parent, "figure").Colormap;
 
-    %-FIGURE STRUCTURE-%
-    figure_data = ancestor(patch_data.Parent,"figure");
-
-    %-INITIALIZE OUTPUT-%
     marker = struct();
-
-    %-PATCH EDGE WIDTH-%
     marker.line.width = patch_data.LineWidth;
 
-    %-PATCH FACE COLOR-%
-    colormap = figure_data.Colormap;
-
     if isnumeric(patch_data.FaceColor)
-        %-paper_bgcolor-%
         col = patch_data.FaceColor;
         alpha = patch_data.FaceAlpha;
     else
@@ -27,19 +17,18 @@ function marker = extractPatchFace(patch_data)
                 col = [0 0 0];
                 alpha = 0;
             case {"flat","interp"}
+                faceVertexCData = patch_data.FaceVertexCData(1,1);
                 switch patch_data.CDataMapping
                     case "scaled"
-                        capCD = max(min(patch_data.FaceVertexCData(1,1), ...
-                                axis_data.CLim(2)), axis_data.CLim(1));
-                        scalefactor = (capCD - axis_data.CLim(1)) ...
-                                / diff(axis_data.CLim);
+                        capCD = max(min(faceVertexCData, cLim(2)), cLim(1));
+                        scalefactor = (capCD - cLim(1)) / diff(cLim);
                         col = colormap(1 + floor(scalefactor ...
                                 * (length(colormap)-1)),:);
                     case "direct"
-                        col = colormap(patch_data.FaceVertexCData(1,1),:);
+                        col = colormap(faceVertexCData,:);
                 end
                 alpha = patch_data.FaceAlpha;
-            case 'auto'
+            case "auto"
                 cIndex = find(flipud(arrayfun(@(x) isequaln(x,patch_data), ...
                         patch_data.Parent.Children))); % far from pretty
                 col = patch_data.Parent.ColorOrder(cIndex,:);
@@ -48,7 +37,6 @@ function marker = extractPatchFace(patch_data)
     end
     marker.color = getStringColor(round(255*col), alpha);
 
-    %-PATCH EDGE COLOR-%
     if isnumeric(patch_data.EdgeColor)
         col = patch_data.EdgeColor;
         alpha = patch_data.EdgeAlpha;
@@ -58,16 +46,15 @@ function marker = extractPatchFace(patch_data)
                 col = [0 0 0];
                 alpha = 0;
             case "flat"
+                faceVertexCData = patch_data.FaceVertexCData(1,1);
                 switch patch_data.CDataMapping
                     case "scaled"
-                        capCD = max(min(patch_data.FaceVertexCData(1,1), ...
-                                axis_data.CLim(2)), axis_data.CLim(1));
-                        scalefactor = (capCD - axis_data.CLim(1)) ...
-                                / diff(axis_data.CLim);
+                        capCD = max(min(faceVertexCData, cLim(2)), cLim(1));
+                        scalefactor = (capCD - cLim(1)) / diff(cLim);
                         col = colormap(1 + floor(scalefactor ...
                                 * (length(colormap)-1)),:);
                     case "direct"
-                        col = colormap(patch_data.FaceVertexCData(1,1),:);
+                        col = colormap(faceVertexCData,:);
                 end
                 alpha = patch_data.EdgeAlpha;
         end

@@ -4,20 +4,9 @@ function face = extractAreaFace(area_data)
     % BARSERIES, CONTOURGROUP, SCATTERGROUP.
 
     %-AXIS STRUCTURE-%
-    axis_data = ancestor(area_data,"axes");
+    cLim = ancestor(area_data,"axes").CLim;
+    colormap = ancestor(area_data, "figure").Colormap;
 
-    %-FIGURE STRUCTURE-%
-    figure_data = ancestor(area_data,"figure");
-
-    %-INITIALIZE OUTPUT-%
-    face = struct();
-
-    %--FACE FILL COLOR--%
-
-    %-figure colormap-%
-    colormap = figure_data.Colormap;
-
-    % face face color
     MarkerColor = area_data.FaceColor;
     if isnumeric(MarkerColor)
         col = MarkerColor;
@@ -29,14 +18,14 @@ function face = extractAreaFace(area_data)
                 alpha = 0;
             case "flat"
                 areaACData = area_data.getColorAlphaDataExtents;
-                capCD = max(min(areaACData(1,1),axis_data.CLim(2)), ...
-                        axis_data.CLim(1));
-                scalefactor = (capCD - axis_data.CLim(1)) ...
-                        / diff(axis_data.CLim);
-                col = (colormap(1 + floor(scalefactor ...
-                        * (length(colormap)-1)),:));
+                capCD = max(min(areaACData(1,1),cLim(2)), cLim(1));
+                scalefactor = (capCD - cLim(1)) / diff(cLim);
+                col = colormap(1 + floor(scalefactor ...
+                        * (length(colormap)-1)),:);
                 alpha = area_data.FaceAlpha;
         end
     end
-    face.color = getStringColor(round(255*col), alpha);
+    face = struct(...
+        "color", getStringColor(round(255*col), alpha) ...
+    );
 end
