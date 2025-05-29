@@ -8,14 +8,12 @@ function marker = extractScatterMarker(plotData)
     % SCATTERGROUP.                                                       %
     %                                                                     %
     %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-
-    %-INITIALIZATIONS-%
     axisData = ancestor(plotData.Parent, ["Axes" "PolarAxes"]);
-    figureData = ancestor(plotData.Parent, 'figure');
+    figureData = ancestor(plotData.Parent, "figure");
 
     marker = struct();
     marker.sizeref = 1;
-    marker.sizemode = 'area';
+    marker.sizemode = "area";
     marker.size = getMarkerSize(plotData);
     marker.line.width = 1.5*plotData.LineWidth;
 
@@ -23,83 +21,77 @@ function marker = extractScatterMarker(plotData)
             '<', '>', 'hexagram', 'pentagram'};
     filledMarker = ismember(plotData.Marker, filledMarkerSet);
 
-    %-get marker symbol-%
-    if ~strcmp(plotData.Marker,'none')
+    if plotData.Marker ~= "none"
         switch plotData.Marker
-            case '.'
-                markerSymbol = 'circle';
+            case "."
+                markerSymbol = "circle";
                 marker.size = 0.1*marker.size;
-            case 'o'
-                markerSymbol = 'circle';
-            case 'x'
-                markerSymbol = 'x-thin-open';
-            case '+'
-                markerSymbol = 'cross-thin-open';
-            case '*'
-                markerSymbol = 'asterisk-open';
-            case {'s','square'}
-                markerSymbol = 'square';
-            case {'d','diamond'}
-                markerSymbol = 'diamond';
-            case 'v'
-                markerSymbol = 'triangle-down';
-            case '^'
-                markerSymbol = 'triangle-up';
-            case '<'
-                markerSymbol = 'triangle-left';
-            case '>'
-                markerSymbol = 'triangle-right';
-            case {'p','pentagram'}
-                markerSymbol = 'star';
-            case {'h','hexagram'}
-                markerSymbol = 'hexagram';
+            case "o"
+                markerSymbol = "circle";
+            case "x"
+                markerSymbol = "x-thin-open";
+            case "+"
+                markerSymbol = "cross-thin-open";
+            case "*"
+                markerSymbol = "asterisk-open";
+            case {"s","square"}
+                markerSymbol = "square";
+            case {"d","diamond"}
+                markerSymbol = "diamond";
+            case "v"
+                markerSymbol = "triangle-down";
+            case "^"
+                markerSymbol = "triangle-up";
+            case "<"
+                markerSymbol = "triangle-left";
+            case ">"
+                markerSymbol = "triangle-right";
+            case {"p","pentagram"}
+                markerSymbol = "star";
+            case {"h","hexagram"}
+                markerSymbol = "hexagram";
         end
         marker.symbol = markerSymbol;
     end
 
-    %-marker fill-%
     markerFaceColor = plotData.MarkerFaceColor;
     markerFaceAlpha = plotData.MarkerFaceAlpha;
 
     if filledMarker
-        %-get face color-%
         if isnumeric(markerFaceColor)
             faceColor = getStringColor(round(255*markerFaceColor));
         else
             switch markerFaceColor
-                case 'none'
+                case "none"
                     faceColor = "rgba(0,0,0,0)";
-                case 'auto'
-                    if ~strcmp(axisData.Color,'none')
-                        faceColor = round(255*axisData.Color);
+                case "auto"
+                    if axisData.Color ~= "none"
+                        faceColor = axisData.Color;
                     else
-                        faceColor = round(255*figureData.Color);
+                        faceColor = figureData.Color;
                     end
-                    faceColor = getStringColor(faceColor);
-                case 'flat'
+                    faceColor = getStringColor(round(255*faceColor));
+                case "flat"
                     faceColor = getScatterFlatColor(plotData, axisData);
             end
         end
 
-        %-get face alpha-%
         if isnumeric(markerFaceAlpha)
             faceAlpha = markerFaceAlpha;
         else
             switch markerFaceColor
-                case 'none'
+                case "none"
                     faceAlpha = 1;
-                case 'flat'
+                case "flat"
                     aLim = axisData.ALim;
                     faceAlpha = plotData.AlphaData;
                     faceAlpha = rescaleData(faceAlpha, aLim);
             end
         end
-        %-set marker fill-%
         marker.color = faceColor;
         marker.opacity = faceAlpha;
     end
 
-    %-marker line-%
     markerEdgeColor = plotData.MarkerEdgeColor;
     markerEdgeAlpha = plotData.MarkerEdgeAlpha;
 
@@ -107,16 +99,16 @@ function marker = extractScatterMarker(plotData)
         lineColor = getStringColor(round(255*markerEdgeColor));
     else
         switch markerEdgeColor
-            case 'none'
+            case "none"
                 lineColor = "rgba(0,0,0,0)";
-            case 'auto'
-                if ~strcmp(axisData.Color,'none')
-                    lineColor = round(255*axisData.Color);
+            case "auto"
+                if axisData.Color ~= "none"
+                    lineColor = axisData.Color;
                 else
-                    lineColor = round(255*figureData.Color);
+                    lineColor = figureData.Color;
                 end
-                lineColor = getStringColor(lineColor, markerEdgeAlpha);
-            case 'flat'
+                lineColor = getStringColor(round(255*lineColor), markerEdgeAlpha);
+            case "flat"
                 lineColor = getScatterFlatColor(plotData, axisData);
         end
     end
@@ -125,13 +117,13 @@ function marker = extractScatterMarker(plotData)
         marker.line.color = lineColor;
     else
         marker.color = lineColor;
-        if strcmp(plotData.Marker, '.')
+        if plotData.Marker == "."
             marker.line.color = lineColor;
         end
     end
 end
 
-function flatColor = getScatterFlatColor(plotData, axisData, opacity)
+function flatColor = getScatterFlatColor(plotData, axisData)
     cData = plotData.CData;
     colorMap = axisData.Colormap;
     cLim = axisData.CLim;
@@ -153,8 +145,8 @@ function flatColor = getScatterFlatColor(plotData, axisData, opacity)
 
     if size(numColor, 1) == 1
         flatColor = getStringColor(numColor);
-
     else
+        flatColor = cell(1, size(numColor, 1));
         for n = 1:size(numColor, 1)
             flatColor{n} = getStringColor(numColor(n, :));
         end
