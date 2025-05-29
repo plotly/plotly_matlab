@@ -38,16 +38,16 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     try
         colorbarData = obj.State.Colorbar(colorbarIndex).Handle;
     catch
-        disp('could not extract ColorBar data');
+        disp("could not extract ColorBar data");
     end
 
     %-STANDARDIZE UNITS-%
     colorbarunits = colorbarData.Units;
-    obj.State.Colorbar(colorbarIndex).Handle.Units = 'normalized';
+    obj.State.Colorbar(colorbarIndex).Handle.Units = "normalized";
 
     %-colorbar position-%
-    colorbar.xanchor = 'left';
-    colorbar.yanchor = 'bottom';
+    colorbar.xanchor = "left";
+    colorbar.yanchor = "bottom";
     colorbar.x = colorbarData.Position(1)*1.025;
     colorbar.y = colorbarData.Position(2);
 
@@ -86,44 +86,32 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     titleFontUnits = colorbarTitleData.FontUnits;
     yLabelUnits = colorbarYLabelData.Units;
     yLabelFontUnits = colorbarYLabelData.FontUnits;
-    colorbarTitle.Units = 'data';
-    colorbarYLabel.Units = 'data';
-    colorbarYLabel.FontUnits = 'points';
+    colorbarTitle.Units = "data";
+    colorbarYLabel.Units = "data";
+    colorbarYLabel.FontUnits = "points";
 
     if ~isHG2
         xLabelUnits = colorbarXLabelData.Units;
         xLabelFontUnits = colorbarXLabelData.FontUnits;
-        colorbarTitle.FontUnits = 'points';
-        colorbarXLabel.Units = 'data';
-        colorbarXLabel.FontUnits = 'points';
+        colorbarTitle.FontUnits = "points";
+        colorbarXLabel.Units = "data";
+        colorbarXLabel.FontUnits = "points";
     end
 
     if ~isempty(colorbarTitleData.String)
         if colorbarTitleData.Rotation == 90
-            colorbar.titleside = 'right';
+            colorbar.titleside = "right";
         else
-            colorbar.titleside = 'top';
+            colorbar.titleside = "top";
         end
 
-        colorbar.titlefont.family = ...
-                matlab2plotlyfont(colorbarTitleData.FontName);
-        col = round(255*colorbarTitleData.Color);
-        colorbar.titlefont.color = getStringColor(col);
-        colorbar.titlefont.size = 1.20 * colorbarTitleData.FontSize;
+        colorbar.titlefont = getFont(colorbarTitleData);
     elseif ~isempty(colorbarXLabelData.String)
-        colorbar.titleside = 'right';
-        colorbar.titlefont.family = ...
-                matlab2plotlyfont(colorbarXLabelData.FontName);
-        col = round(255*colorbarXLabelData.Color);
-        colorbar.titlefont.color = getStringColor(col);
-        colorbar.titlefont.size = 1.20 * colorbarXLabelData.FontSize;
+        colorbar.titleside = "right";
+        colorbar.titlefont = getFont(colorbarXLabelData);
     elseif ~isempty(colorbarYLabelData.String)
-        colorbar.titleside = 'bottom';
-        colorbar.titlefont.family = ...
-                matlab2plotlyfont(colorbarYLabelData.FontName);
-        col = round(255*colorbarYLabelData.Color);
-        colorbar.titlefont.color = getStringColor(col);
-        colorbar.titlefont.size = 1.20 * colorbarYLabelData.FontSize;
+        colorbar.titleside = "bottom";
+        colorbar.titlefont = getFont(colorbarYLabelData);
     end
 
     %-REVERT UNITS-%
@@ -145,12 +133,12 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
         * obj.layout.width, colorbarData.TickLength(1) ...
         * colorbarData.Position(4) * obj.layout.height));
 
-    colorbar.thicknessmode = 'fraction';
+    colorbar.thicknessmode = "fraction";
     colorbar.thickness = colorbarData.Position(3);
     colorbar.tickwidth = lineWidth;
     colorbar.ticklen = tickLength;
 
-    colorbar.lenmode = 'fraction';
+    colorbar.lenmode = "fraction";
     colorbar.len = colorbarData.Position(4)*1.025;
     colorbar.outlinewidth = lineWidth;
 
@@ -159,16 +147,16 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
 
     %-coloration-%
     if isHG2
-        col = round(255*colorbarData.Color);
+        col = colorbarData.Color;
     else
         if orientVert
-            col = round(255*colorbarData.YColor);
+            col = colorbarData.YColor;
         else
-            col = round(255*colorbarData.XColor);
+            col = colorbarData.XColor;
         end
     end
 
-    colorbarColor = getStringColor(col);
+    colorbarColor = getStringColor(round(255*col));
 
     colorbar.outlinecolor = colorbarColor;
     colorbar.tickcolor = colorbarColor;
@@ -183,23 +171,21 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
 
     if isHG2
         if isempty(colorbarData.Ticks)
-            %-hide tick labels-%
-            colorbar.ticks = '';
+            colorbar.ticks = "";
             colorbar.showticklabels = false;
         else
             %-tick direction-%
             switch colorbarData.TickDirection
-                case 'in'
-                    colorbar.ticks = 'inside';
-                case 'out'
-                    colorbar.ticks = 'outside';
+                case "in"
+                    colorbar.ticks = "inside";
+                case "out"
+                    colorbar.ticks = "outside";
             end
-            if strcmp(colorbarData.TickLabelsMode,'auto')
+            if strcmp(colorbarData.TickLabelsMode,"auto")
                 colorbar.autotick = true;
                 % nticks = max ticks (so + 1)
                 colorbar.nticks = length(colorbarData.Ticks) + 1;
             else
-                %-show tick labels-%
                 if isempty(colorbarData.TickLabels)
                     colorbar.showticklabels = false;
                 else
@@ -211,65 +197,37 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
         end
     else
         if orientVert
-            if isempty(colorbarData.YTick)
-                %-show tick labels-%
-                colorbar.ticks = '';
-                colorbar.showticklabels = false;
-            else
-                %-tick direction-%
-                switch colorbarData.TickDir
-                    case 'in'
-                        colorbar.ticks = 'inside';
-                    case 'out'
-                        colorbar.ticks = 'outside';
-                end
-                if strcmp(colorbarData.YTickLabelMode, 'auto')
-                    colorbar.autotick = true;
-                    %-numticks-%
-                    % nticks = max ticks (so + 1)
-                    colorbar.nticks = length(colorbarData.YTick) + 1;
-                else
-                    %-show tick labels-%
-                    if isempty(colorbarData.YTickLabel)
-                        colorbar.showticklabels = false;
-                    else
-                        colorbar.autotick = false;
-                        colorbar.tick0 = ...
-                                str2double(colorbarData.YTickLabel(1,:));
-                        colorbar.dtick = ...
-                                str2double(colorbarData.YTickLabel(2,:)) ...
-                                - str2double(colorbarData.YTickLabel(1,:));
-                    end
-                end
-            end
+            tick = colorbarData.YTick;
+            tickLabel = colorbarData.YTickLabel;
+            tickLabelMode = colorbarData.YTickLabelMode;
         else
-            if isempty(colorbarData.XTick)
-                %-show tick labels-%
-                colorbar.ticks = '';
-                colorbar.showticklabels = false;
+            tick = colorbarData.XTick;
+            tickLabel = colorbarData.XTickLabel;
+            tickLabelMode = colorbarData.XTickLabelMode;
+        end
+
+        if isempty(tick)
+            colorbar.ticks = "";
+            colorbar.showticklabels = false;
+        else
+            %-tick direction-%
+            switch colorbarData.TickDir
+                case "in"
+                    colorbar.ticks = "inside";
+                case "out"
+                    colorbar.ticks = "outside";
+            end
+            if strcmp(tickLabelMode, "auto")
+                colorbar.autotick = true;
+                colorbar.nticks = length(tick) + 1;
             else
-                %-tick direction-%
-                switch colorbarData.TickDir
-                    case 'in'
-                        colorbar.ticks = 'inside';
-                    case 'out'
-                        colorbar.ticks = 'outside';
-                end
-                if strcmp(colorbarData.XTickLabelMode,'auto')
-                    colorbar.autotick = true;
-                    colorbar.nticks = length(colorbarData.XTick) + 1;
+                if isempty(tickLabel)
+                    colorbar.showticklabels = false;
                 else
-                    %-show tick labels-%
-                    if isempty(colorbarData.XTickLabel)
-                        colorbar.showticklabels = false;
-                    else
-                        colorbar.autotick = false;
-                        colorbar.tick0 = ...
-                                str2double(colorbarData.XTickLabel(1,:));
-                        colorbar.dtick = ...
-                                str2double(colorbarData.XTickLabel(2,:)) ...
-                                - str2double(colorbarData.XTickLabel(1,:));
-                    end
+                    colorbar.autotick = false;
+                    colorbar.tick0 = str2double(tickLabel(1,:));
+                    colorbar.dtick = str2double(tickLabel(2,:)) ...
+                                        - str2double(tickLabel(1,:));
                 end
             end
         end
@@ -278,16 +236,16 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     %-colorbar bg-color-%
     if ~isHG2
         if ~ischar(colorbarData.Color)
-            col = round(255*colorbarData.Color);
+            col = colorbarData.Color;
         else
-            col = round(255*figureData.Color);
+            col = figureData.Color;
         end
 
-        obj.layout.plot_bgcolor = getStringColor(col);
+        obj.layout.plot_bgcolor = getStringColor(round(255*col));
     end
 
     %-ASSOCIATED DATA-%
-    if isfield(colorbarData.UserData,'dataref')
+    if isfield(colorbarData.UserData,"dataref")
         colorbarDataIndex = colorbarData.UserData.dataref;
     else
         colorbarDataIndex = findColorbarData(obj,colorbarIndex);
@@ -296,19 +254,18 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     if (nticks ~= 0)
         colorIndex = linspace(0, 1, nticks);
         colorData = linspace(0, 1, nticks-1);
-        m = 1;
 
+        colorscale = cell(1:2*(nticks-1));
         for n = 1:nticks-1
             col = 1-colorData(n);
-            colorscale{m} = {colorIndex(n), ...
+            colorscale{2*n-1} = {colorIndex(n), ...
                     getStringColor(round(255*[col, col, col]))};
-            colorscale{m+1} = {colorIndex(n+1), ...
+            colorscale{2*n} = {colorIndex(n+1), ...
                     getStringColor(round(255*[col, col, col]))};
-            m = 2*n+1;
         end
         obj.data{colorbarDataIndex}.marker.color = colorbarData.Ticks;
     else
-        colorscale = {{0, 'rgb(255,255,255)'}, {1, 'rgb(0,0,0)'}};
+        colorscale = {{0, "rgb(255,255,255)"}, {1, "rgb(0,0,0)"}};
     end
 
     obj.data{colorbarDataIndex}.marker.colorscale = colorscale;
@@ -317,4 +274,12 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
 
     %-REVERT UNITS-%
     obj.State.Colorbar(colorbarIndex).Handle.Units = colorbarunits;
+end
+
+function out = getFont(labelData)
+    out = struct( ...
+        "family", matlab2plotlyfont(labelData.FontName), ...
+        "color", getStringColor(round(255*labelData.Color)), ...
+        "size", 1.20 * labelData.FontSize ...
+    );
 end
