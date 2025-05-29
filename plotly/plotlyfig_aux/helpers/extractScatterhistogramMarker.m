@@ -4,10 +4,10 @@ function marker = extractScatterhistogramMarker(patch_data, t)
     % BARSERIES, CONTOURGROUP, SCATTERGROUP.
 
     %-AXIS STRUCTURE-%
-    axis_data = ancestor(patch_data.Parent, 'axes');
+    axis_data = ancestor(patch_data.Parent, "axes");
 
     %-FIGURE STRUCTURE-%
-    figure_data = ancestor(patch_data.Parent, 'figure');
+    figure_data = ancestor(patch_data.Parent, "figure");
 
     %-INITIALIZE OUTPUT-%
     marker = struct();
@@ -16,36 +16,8 @@ function marker = extractScatterhistogramMarker(patch_data, t)
     marker.size = patch_data.MarkerSize(t)*0.20;
 
     %-MARKER SYMBOL (STYLE)-%
-    if ~strcmp(patch_data.MarkerStyle(t), 'none')
-        switch patch_data.MarkerStyle(t)
-            case '.'
-                marksymbol = 'circle';
-            case 'o'
-                marksymbol = 'circle';
-            case 'x'
-                marksymbol = 'x-thin-open';
-            case '+'
-                marksymbol = 'cross-thin-open';
-            case '*'
-                marksymbol = 'asterisk-open';
-            case {'s','square'}
-                marksymbol = 'square';
-            case {'d','diamond'}
-                marksymbol = 'diamond';
-            case 'v'
-                marksymbol = 'triangle-down';
-            case '^'
-                marksymbol = 'triangle-up';
-            case '<'
-                marksymbol = 'triangle-left';
-            case '>'
-                marksymbol = 'triangle-right';
-            case {'p','pentagram'}
-                marksymbol = 'star';
-            case {'h','hexagram'}
-                marksymbol = 'hexagram';
-        end
-        marker.symbol = marksymbol;
+    if ~strcmp(patch_data.MarkerStyle(t), "none")
+        marker.symbol = getMarkerSymbol(patch_data.MarkerStyle(t));
     end
 
     %-MARKER LINE WIDTH (STYLE)-%
@@ -64,21 +36,22 @@ function marker = extractScatterhistogramMarker(patch_data, t)
 
     filledMarker = ismember(patch_data.MarkerStyle(t), filledMarkerSet);
 
-    if filledMarker && strcmp(patch_data.MarkerFilled, 'on')
+    if filledMarker && strcmp(patch_data.MarkerFilled, "on")
         if isnumeric(MarkerColor)
             markercolor = getStringColor(round(255*MarkerColor));
         else
             switch MarkerColor
-                case 'none'
+                case "none"
                     markercolor = "rgba(0,0,0,0)";
-                case 'auto'
-                    if ~strcmp(axis_data.Color,'none')
+                case "auto"
+                    if ~strcmp(axis_data.Color,"none")
                         col = axis_data.Color;
                     else
                         col = figure_data.Color;
                     end
                     markercolor = getStringColor(round(255*col));
-                case 'flat'
+                case "flat"
+                    markercolor = cell(1, length(patch_data.CData));
                     for n = 1:length(patch_data.CData)
                         capCD = max(min(patch_data.CData(n), ...
                                 axis_data.CLim(2)), axis_data.CLim(1));

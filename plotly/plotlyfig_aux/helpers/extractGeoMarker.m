@@ -10,37 +10,8 @@ function marker = extractGeoMarker(geoData, axisData)
     marker.size = geoData.SizeData;
 
     %-MARKER SYMBOL (STYLE)-%
-    if ~strcmp(geoData.Marker, 'none')
-        switch geoData.Marker
-            case '.'
-                marksymbol = 'circle';
-            case 'o'
-                marksymbol = 'circle';
-            case 'x'
-                marksymbol = 'x-thin-open';
-            case '+'
-                marksymbol = 'cross-thin-open';
-            case '*'
-                marksymbol = 'asterisk-open';
-            case {'s','square'}
-                marksymbol = 'square';
-            case {'d','diamond'}
-                marksymbol = 'diamond';
-            case 'v'
-                marksymbol = 'triangle-down';
-            case '^'
-                marksymbol = 'star-triangle-up';
-            case '<'
-                marksymbol = 'triangle-left';
-            case '>'
-                marksymbol = 'triangle-right';
-            case {'p','pentagram'}
-                marksymbol = 'star';
-            case {'h','hexagram'}
-                marksymbol = 'hexagram';
-        end
-
-        marker.symbol = marksymbol;
+    if ~strcmp(geoData.Marker, "none")
+        marker.symbol = getMarkerSymbol(geoData.Marker);
     end
 
     %-MARKER LINE WIDTH (STYLE)-%

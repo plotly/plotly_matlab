@@ -17,35 +17,7 @@ function marker = extractLineMarker(line_data)
 
     %-MARKER SYMBOL-%
     if ~strcmp(line_data.Marker, "none")
-        switch line_data.Marker
-            case "."
-                marksymbol = "circle";
-            case "o"
-                marksymbol = "circle";
-            case "x"
-                marksymbol = "x-thin-open";
-            case "+"
-                marksymbol = "cross-thin-open";
-            case "*"
-                marksymbol = "asterisk-open";
-            case {"s","square"}
-                marksymbol = "square";
-            case {"d","diamond"}
-                marksymbol = "diamond";
-            case "v"
-                marksymbol = "triangle-down";
-            case "^"
-                marksymbol = "triangle-up";
-            case "<"
-                marksymbol = "triangle-left";
-            case ">"
-                marksymbol = "triangle-right";
-            case {"p","pentagram"}
-                marksymbol = "star";
-            case {"h","hexagram"}
-                marksymbol = "hexagram";
-        end
-        marker.symbol = marksymbol;
+        marker.symbol = getMarkerSymbol(line_data.Marker);
         if isfield(line_data, "MarkerIndices")
             marker.maxdisplayed=length(line_data.MarkerIndices)+1;
         end

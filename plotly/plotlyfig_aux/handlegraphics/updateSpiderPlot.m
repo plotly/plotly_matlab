@@ -111,50 +111,16 @@ function lineStruct = getLine(plotData, traceIndex)
 end
 
 function markerStruct = getMarker(plotData, traceIndex)
-    %-INITIALIZATIONS-%
     markerStruct = struct();
 
-    %-marker color-%
     [markerColor, ~] = getColor(plotData.Color, traceIndex, ...
         plotData.MarkerTransparency);
     markerStruct.color = markerColor;
     markerStruct.line.color = markerColor;
-
-    %-marker size-%
     markerStruct.size = plotData.MarkerSize(traceIndex, 1) * 0.2;
 
-    %-marker symbol-%
-    if ~strcmp(plotData.Marker{traceIndex, 1}, 'none')
-        switch plotData.Marker{traceIndex, 1}
-            case '.'
-                mSymbol = 'circle';
-            case 'o'
-                mSymbol = 'circle';
-            case 'x'
-                mSymbol = 'x-thin-open';
-            case '+'
-                mSymbol = 'cross-thin-open';
-            case '*'
-                mSymbol = 'asterisk-open';
-            case {'s','square'}
-                mSymbol = 'square';
-            case {'d','diamond'}
-                mSymbol = 'diamond';
-            case 'v'
-                mSymbol = 'triangle-down';
-            case '^'
-                mSymbol = 'triangle-up';
-            case '<'
-                mSymbol = 'triangle-left';
-            case '>'
-                mSymbol = 'triangle-right';
-            case {'p','pentagram'}
-                mSymbol = 'star';
-            case {'h','hexagram'}
-                mSymbol = 'hexagram';
-        end
-
-        markerStruct.symbol = mSymbol;
+    if ~strcmp(plotData.Marker{traceIndex, 1}, "none")
+        markerStruct.symbol = getMarkerSymbol(plotData.Marker{traceIndex, 1});
     end
 end
 

@@ -22,36 +22,10 @@ function marker = extractScatterMarker(plotData)
     filledMarker = ismember(plotData.Marker, filledMarkerSet);
 
     if plotData.Marker ~= "none"
-        switch plotData.Marker
-            case "."
-                markerSymbol = "circle";
-                marker.size = 0.1*marker.size;
-            case "o"
-                markerSymbol = "circle";
-            case "x"
-                markerSymbol = "x-thin-open";
-            case "+"
-                markerSymbol = "cross-thin-open";
-            case "*"
-                markerSymbol = "asterisk-open";
-            case {"s","square"}
-                markerSymbol = "square";
-            case {"d","diamond"}
-                markerSymbol = "diamond";
-            case "v"
-                markerSymbol = "triangle-down";
-            case "^"
-                markerSymbol = "triangle-up";
-            case "<"
-                markerSymbol = "triangle-left";
-            case ">"
-                markerSymbol = "triangle-right";
-            case {"p","pentagram"}
-                markerSymbol = "star";
-            case {"h","hexagram"}
-                markerSymbol = "hexagram";
+        if plotData.Marker == "."
+            marker.size = 0.1*marker.size;
         end
-        marker.symbol = markerSymbol;
+        marker.symbol = getMarkerSymbol(plotData.Marker);
     end
 
     markerFaceColor = plotData.MarkerFaceColor;
