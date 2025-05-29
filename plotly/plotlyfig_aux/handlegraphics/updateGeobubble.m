@@ -57,8 +57,6 @@ function updateGeobubble(obj,geoIndex)
             p = obj.PlotOptions.nPlots;
         end
 
-        %-----------------------------------------------------------------%
-
         %-set current trace-%
         if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
             obj.data{p}.type = 'scattergeo';
@@ -71,13 +69,9 @@ function updateGeobubble(obj,geoIndex)
 
         obj.data{p}.mode = 'markers';
 
-        %-----------------------------------------------------------------%
-
         %-set current trace data-%
         obj.data{p}.lat = lat{g};
         obj.data{p}.lon = lon{g};
-
-        %-----------------------------------------------------------------%
 
         %-set trace marker-%
         marker = struct();
@@ -86,8 +80,6 @@ function updateGeobubble(obj,geoIndex)
         marker.line.color = "rgb(255, 255, 255)";
 
         obj.data{p}.marker = marker;
-
-        %-----------------------------------------------------------------%
 
         %-legend-%
         if byGroups
@@ -203,8 +195,6 @@ function updateGeobubble(obj,geoIndex)
       obj.layout.annotations{1}.font.family = matlab2plotlyfont(geoData.FontName);
       obj.layout.annotations{1}.font.size = 1.5*geoData.FontSize;
     end
-
-    %---------------------------------------------------------------------%
 
     %-setting legend-%
     if byGroups

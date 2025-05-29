@@ -15,7 +15,7 @@ function line = extractPatchLine(patch_data)
 
     line.color = extractColor(patch_data.EdgeColor, cDataMapping, colormap, cLim, faceVertexCData);
     line.width = patch_data.LineWidth;
-    line.dash = extractLineStyle(patch_data.LineStyle);
+    line.dash = getLineDash(patch_data.LineStyle);
 end
 
 function out = extractColor(color, cDataMapping, colormap, cLim, faceVertexCData)
@@ -37,18 +37,5 @@ function out = extractColor(color, cDataMapping, colormap, cLim, faceVertexCData
                 end
                 out = getStringColor(round(255*col));
         end
-    end
-end
-
-function out = extractLineStyle(lineStyle)
-    switch lineStyle
-        case "-"
-            out = "solid";
-        case "--"
-            out = "dash";
-        case ":"
-            out = "dot";
-        case "-."
-            out = "dashdot";
     end
 end

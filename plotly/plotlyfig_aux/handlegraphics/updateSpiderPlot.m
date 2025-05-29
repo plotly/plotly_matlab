@@ -100,30 +100,14 @@ function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
 end
 
 function lineStruct = getLine(plotData, traceIndex)
-    %-INITIALIZATIONS-%
-    lineStruct = struct();
-
-    %-line color-%
     [lineColor, ~] = getColor(plotData.Color, traceIndex, ...
         plotData.LineTransparency);
-    lineStruct.color = lineColor;
 
-    %-line width-%
-    lineStruct.width = plotData.LineWidth(traceIndex);
-
-    %-line style-%
-    switch plotData.LineStyle{traceIndex, 1}
-        case '-'
-            lineStyle = 'solid';
-        case '--'
-            lineStyle = 'dash';
-        case ':'
-            lineStyle = 'dot';
-        case '-.'
-            lineStyle = 'dashdot';
-    end
-
-    lineStruct.dash = lineStyle;
+    lineStruct = struct( ...
+        "color", lineColor, ...
+        "width", plotData.LineWidth(traceIndex), ...
+        "dash", getLineDash(plotData.LineStyle{traceIndex, 1}) ...
+    );
 end
 
 function markerStruct = getMarker(plotData, traceIndex)

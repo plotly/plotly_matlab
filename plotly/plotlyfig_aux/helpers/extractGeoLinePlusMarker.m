@@ -38,20 +38,7 @@ function [marker, linee] = extractGeoLinePlusMarker(geoData, axisData)
 
     linee.color = lineColor;
     linee.width = 2*geoData.LineWidth;
-    lineStyle = geoData.LineStyle;
-
-    switch lineStyle
-        case '-'
-            lineStyle = 'solid';
-        case '--'
-            lineStyle = 'dash';
-        case ':'
-            lineStyle = 'dot';
-        case '.-'
-            lineStyle = 'dash-dot';
-    end
-
-    linee.dash = lineStyle;
+    linee.dash = getLineDash(geoData.LineStyle);
 
     marker.sizeref = 1;
     marker.sizemode = 'area';

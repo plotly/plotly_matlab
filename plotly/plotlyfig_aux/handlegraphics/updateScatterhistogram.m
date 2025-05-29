@@ -367,19 +367,6 @@ function axisDomain = getYMarginalDomain(plotData, axName)
     end
 end
 
-function lineDash = getLineDash(lineStyle)
-    switch lineStyle
-        case '-'
-            lineDash = 'solid';
-        case '--'
-            lineDash = 'dash';
-        case ':'
-            lineDash = 'dot';
-        case '-.'
-            lineDash = 'dashdot';
-    end
-end
-
 function axisLim = getAxisLim(plotData, axName)
     axisLim = plotData.(axName + "Limits");
     axisPlot = plotData.(axName + "Data");

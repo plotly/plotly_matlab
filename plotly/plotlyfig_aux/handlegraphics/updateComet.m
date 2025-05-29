@@ -145,8 +145,6 @@ function updateComet(obj,plotIndex)
         scene.aspectratio.y = 1.0*xyar;
         scene.aspectratio.z = zar;
 
-        %-----------------------------------------------------------------%
-
         %-camera eye-%
         ey = obj.PlotOptions.CameraEye;
 
@@ -180,8 +178,6 @@ function updateComet(obj,plotIndex)
             scene.camera.eye.y = yey + yfac*yey;
             scene.camera.eye.z = zar + zfac*zar;
         end
-
-        %-----------------------------------------------------------------%
 
         %-scene axis configuration-%
 
@@ -229,8 +225,6 @@ function updateComet(obj,plotIndex)
         scene.xaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
         scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
         scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-
-        %-----------------------------------------------------------------%
 
         %-SET SCENE TO LAYOUT-%
         obj.layout.("scene" + xsource) = scene;

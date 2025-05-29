@@ -182,8 +182,6 @@ function obj = updateBoxplot(obj, boxIndex)
         ydata = obj.data{boxIndex}.y;
     end
 
-    %----------------------------!AXIS UPDATE!----------------------------%
-
     % take first text object as prototype for axis tick style/layout
     text_child = findobj(obj.State.Plot(boxIndex).Handle, 'Type', 'text');
 

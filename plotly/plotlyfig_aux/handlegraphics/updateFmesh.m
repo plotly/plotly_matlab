@@ -70,7 +70,7 @@ function obj = updateFmesh(obj, surfaceIndex)
     fac = 1/(length(cMap)-1);
     colorScale = {};
 
-    for c = 1: length(cMap)
+    for c = 1:length(cMap)
         colorScale{c} = {(c-1)*fac, getStringColor(round(255*cMap(c, :)))};
     end
     %-get edge color-%
@@ -96,8 +96,8 @@ function obj = updateFmesh(obj, surfaceIndex)
 
         [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
 
-        for c = 1: size(cMapSurface, 1)
-            colorScale{c} = { (c-1)*fac , getStringColor(round(255*cMapSurface(c, :)), 1)};
+        for c = 1:size(cMapSurface, 1)
+            colorScale{c} = {(c-1)*fac, getStringColor(round(255*cMapSurface(c, :)), 1)};
         end
 
         obj.data{surfaceIndex}.cmin = 0;
@@ -121,18 +121,12 @@ function obj = updateFmesh(obj, surfaceIndex)
         end
     end
 
-    %-set face color-%
     obj.data{surfaceIndex}.colorscale = colorScale;
     obj.data{surfaceIndex}.surfacecolor = cDataSurface;
-
-    %-lighting settings-%
 
     if isnumeric(meshData.FaceColor) && all(meshData.FaceColor == [1, 1, 1])
         obj.data{surfaceIndex}.lighting.diffuse = 0.5;
         obj.data{surfaceIndex}.lighting.ambient = 0.725;
-    else
-        % obj.data{surfaceIndex}.lighting.diffuse = 1.0;
-        % obj.data{surfaceIndex}.lighting.ambient = 0.9;
     end
 
     if meshData.FaceAlpha ~= 1
@@ -145,25 +139,11 @@ function obj = updateFmesh(obj, surfaceIndex)
         obj.data{surfaceIndex}.lighting.ambient = 0.3;
     end
 
-    %-opacity-%
     obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
 
-    %-line style-%
-
     obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
+    obj.data{contourIndex}.line.dash = getLineDash(meshData.LineStyle);
 
-    switch meshData.LineStyle
-        case '-'
-            obj.data{contourIndex}.line.dash = 'solid';
-        case '--'
-            obj.data{contourIndex}.line.dash = 'dash';
-        case '-.'
-            obj.data{contourIndex}.line.dash = 'dashdot';
-        case ':'
-            obj.data{contourIndex}.line.dash = 'dot';
-    end
-
-    %-show contours-%
 
     if strcmpi(meshData.ShowContours, 'on')
         obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
@@ -188,8 +168,6 @@ function obj = updateFmesh(obj, surfaceIndex)
     end
 
     %-SCENE CONFIGURATION-%
-
-    %-aspect ratio-%
     asr = obj.PlotOptions.AspectRatio;
 
     if ~isempty(asr)

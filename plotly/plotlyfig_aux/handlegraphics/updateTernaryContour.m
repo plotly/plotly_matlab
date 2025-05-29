@@ -88,17 +88,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         %-line settings-%
         obj.data{traceIndex}.line.width = 1.0*ternaryData.LineWidth;
         obj.data{traceIndex}.line.color = lineColor{c};
-
-        switch ternaryData.LineStyle
-            case '-'
-                obj.data{traceIndex}.line.dash = 'solid';
-            case '--'
-                obj.data{traceIndex}.line.dash = 'dash';
-            case '-.'
-                obj.data{traceIndex}.line.dash = 'dashdot';
-            case ':'
-                obj.data{traceIndex}.line.dash = 'dot';
-        end
+        obj.data{traceIndex}.line.dash = getLineDash(ternaryData.LineStyle);
 
         %-some trace settings-%
         obj.data{traceIndex}.name = ternaryData.DisplayName;
@@ -239,17 +229,7 @@ function fillContours(obj, ternaryIndex)
         obj.data{traceIndex}.line.shape = 'spline';
         obj.data{traceIndex}.line.smoothing = 1.3;
         obj.data{traceIndex}.line.width = 1.0*ternaryData.LineWidth;
-
-        switch ternaryData.LineStyle
-            case '-'
-                obj.data{traceIndex}.line.dash = 'solid';
-            case '--'
-                obj.data{traceIndex}.line.dash = 'dash';
-            case '-.'
-                obj.data{traceIndex}.line.dash = 'dashdot';
-            case ':'
-                obj.data{traceIndex}.line.dash = 'dot';
-        end
+        obj.data{traceIndex}.line.dash = getLineDash(ternaryData.LineStyle);
 
         %-fill settings-%
         obj.data{traceIndex}.fill = 'toself';

@@ -61,9 +61,6 @@ function updateContourOnly(obj, contourIndex)
         yData = [yData, contourMatrix(2, n+1:n+m), NaN];
         zData = [zData, zmin * ones(1, m), NaN];
 
-        %-----------------------------------------------------------------%
-
-        %-get edge color-%
         if isnumeric(contourData.LineColor)
             cData = getStringColor(round(255*contourData.LineColor));
         elseif strcmpi(contourData.LineColor, 'interp')
@@ -82,24 +79,13 @@ function updateContourOnly(obj, contourIndex)
         n = n + m + 1;
     end
 
-    %-set data on scatter3d-%
     obj.data{contourIndex}.x = xData;
     obj.data{contourIndex}.y = yData;
     obj.data{contourIndex}.z = zData;
 
     obj.data{contourIndex}.line.color = cData;
     obj.data{contourIndex}.line.width = 2*contourData.LineWidth;
-
-    switch contourData.LineStyle
-        case '-'
-            obj.data{contourIndex}.line.dash = 'solid';
-        case '--'
-            obj.data{contourIndex}.line.dash = 'dash';
-        case '-.'
-            obj.data{contourIndex}.line.dash = 'dashdot';
-        case ':'
-            obj.data{contourIndex}.line.dash = 'dot';
-    end
+    obj.data{contourIndex}.line.dash = getLineDash(contourData.LineStyle);
 
     obj.data{contourIndex}.name = contourData.DisplayName;
     obj.data{contourIndex}.showscale = false;

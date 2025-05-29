@@ -109,17 +109,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
 
     surfaceData.opacity = meshData.FaceAlpha;
     contourData.line.width = 3*meshData.LineWidth;
-
-    switch meshData.LineStyle
-        case "-"
-            contourData.line.dash = "solid";
-        case "--"
-            contourData.line.dash = "dash";
-        case "-."
-            contourData.line.dash = "dashdot";
-        case ":"
-            contourData.line.dash = "dot";
-    end
+    contourData.line.dash = getLineDash(meshData.LineStyle);
 
     switch meshData.Annotation.LegendInformation.IconDisplayStyle
         case "on"

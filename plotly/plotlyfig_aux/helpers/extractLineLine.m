@@ -9,16 +9,6 @@ function line = extractLineLine(line_data)
     if line_data.LineStyle ~= "none"
         line.color = getStringColor(round(255*line_data.Color));
         line.width = line_data.LineWidth;
-        switch line_data.LineStyle
-            case "-"
-                LineStyle = "solid";
-            case "--"
-                LineStyle = "dash";
-            case ":"
-                LineStyle = "dot";
-            case "-."
-                LineStyle = "dashdot";
-        end
-        line.dash = LineStyle;
+        line.dash = getLineDash(line_data.LineStyle);
     end
 end

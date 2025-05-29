@@ -51,8 +51,6 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     axis.autotick = false;
     axis.tickson = 'boundaries';
 
-    %-------------------------------LABELS--------------------------------%
-
     label = axis_data.(axisName + "Label");
     axis.title = label;
     axis.titlefont.color = 'black';

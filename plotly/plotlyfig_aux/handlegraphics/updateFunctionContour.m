@@ -79,18 +79,7 @@ function data = updateFunctionContour(obj,contourIndex)
         end
 
         data.line.width = contour_data.LineWidth;
-
-        switch contour_data.LineStyle
-            case "-"
-                LineStyle = "solid";
-            case "--"
-                LineStyle = "dash";
-            case ":"
-                LineStyle = "dot";
-            case "-."
-                LineStyle = "dashdot";
-        end
-        data.line.dash = LineStyle;
+        data.line.dash = getLineDash(contour_data.LineStyle);
         data.line.smoothing = 0;
     else
         data.contours.showlines = false;

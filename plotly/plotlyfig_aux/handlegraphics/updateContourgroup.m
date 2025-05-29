@@ -82,20 +82,9 @@ function contourLine = getContourLine(plotData)
         lineColor = "rgba(0,0,0,0)";
     end
 
-    switch plotData.LineStyle
-        case "-"
-            lineStyle = "solid";
-        case "--"
-            lineStyle = "dash";
-        case ":"
-            lineStyle = "dot";
-        case "-."
-            lineStyle = "dashdot";
-    end
-
     contourLine = struct( ...
         "width", 1.5*plotData.LineWidth, ...
-        "dash", lineStyle, ...
+        "dash", getLineDash(plotData.LineStyle), ...
         "color", lineColor, ...
         "smoothing", 0 ...
     );

@@ -82,8 +82,6 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.x = xnew;
         end
 
-        %-----------------------------------------------------------------%
-
         %-patch y-%
         ydata = patch_data.YData;
         if isvector(ydata)
@@ -95,8 +93,6 @@ function obj = updatePatch(obj, patchIndex)
             end
             obj.data{patchIndex}.y = ynew;
         end
-
-        %-----------------------------------------------------------------%
 
         %-patch z-%
         if any(nonzeros(patch_data.ZData))
@@ -112,12 +108,8 @@ function obj = updatePatch(obj, patchIndex)
             end
         end
 
-        %-----------------------------------------------------------------%
-
         obj.data{patchIndex}.name = patch_data.DisplayName;
         obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
-
-        %-----------------------------------------------------------------%
 
         %-patch fill-%
         obj.data{patchIndex}.fill = 'tozeroy';
@@ -138,8 +130,6 @@ function obj = updatePatch(obj, patchIndex)
         obj.data{patchIndex}.marker = extractPatchMarker(patch_data);
         obj.data{patchIndex}.line = extractPatchLine(patch_data);
 
-        %-----------------------------------------------------------------%
-
         %-patch fillcolor-%
         fill = extractPatchFace(patch_data);
 
@@ -148,8 +138,6 @@ function obj = updatePatch(obj, patchIndex)
         else
             obj.data{patchIndex}.surfacecolor = fill.color;
         end
-
-        %-----------------------------------------------------------------%
 
         %-surfaceaxis-%
         if strcmp(obj.data{patchIndex}.type,'scatter3d')
