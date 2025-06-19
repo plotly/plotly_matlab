@@ -1741,7 +1741,7 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
                 yaxis = "y2", ...
                 type = "bar", ...
                 name = '', ...
-                x = [0.8 1.2], ...
+                x = [1.2 0.8], ...
                 width = [0.5 0.5], ...
                 y = [0.25 0.75], ...
                 orientation = "h", ...
@@ -1775,6 +1775,45 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
                 visible = true, ...
                 showlegend = true ...
             ), AbsTol=1e-15);
+        end
+
+        function testScatterHistPlotLayout(tc)
+            fig = figure(Visible="off");
+            x = [0.15 0.19 0.04 0.64 0.28 0.54 0.70 0.50 0.54 0.45];
+            y = [0.12 0.49 0.85 0.87 0.27 0.21 0.56 0.64 0.42 0.21];
+            scatterhist(x,y);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyEqual(p.layout.xaxis1.range, [-0.0549, 0.9549], AbsTol=1e-15);
+            tc.verifyEqual(p.layout.xaxis1.domain, ...
+                    [fig.Children(4).Position(1), sum(fig.Children(4).Position([1 3]))]);
+            tc.verifyEqual(p.layout.xaxis1.anchor, "y1");
+
+            tc.verifyEqual(p.layout.yaxis1.range, [-0.061, 1.061], AbsTol=1e-15);
+            tc.verifyEqual(p.layout.yaxis1.domain, ...
+                    [fig.Children(4).Position(2), sum(fig.Children(4).Position([2 4]))]);
+            tc.verifyEqual(p.layout.yaxis1.anchor, "x1");
+
+            tc.verifyEqual(p.layout.xaxis2.range, [-0.012, 1.212]);
+            tc.verifyEqual(p.layout.xaxis2.domain, ...
+                    [fig.Children(3).Position(1), sum(fig.Children(3).Position([1 3]))]);
+            tc.verifyEqual(p.layout.xaxis2.anchor, "y2");
+
+            tc.verifyEqual(p.layout.yaxis2.range, [-0.061, 1.061], AbsTol=1e-15);
+            tc.verifyEqual(p.layout.yaxis2.domain, ...
+                    [fig.Children(3).Position(2), sum(fig.Children(3).Position([2 4]))]);
+            tc.verifyEqual(p.layout.yaxis2.anchor, "x2");
+
+            tc.verifyEqual(p.layout.xaxis3.range, [-0.0549, 0.9549], AbsTol=1e-15);
+            tc.verifyEqual(p.layout.xaxis3.domain, ...
+                    [fig.Children(2).Position(1), sum(fig.Children(2).Position([1 3]))]);
+            tc.verifyEqual(p.layout.xaxis3.anchor, "y3");
+
+            tc.verifyEqual(p.layout.yaxis3.range, [-0.013333333333333332, 1.3466666666666667]);
+            tc.verifyEqual(p.layout.yaxis3.domain, ...
+                    [fig.Children(2).Position(2), sum(fig.Children(2).Position([2 4]))]);
+            tc.verifyEqual(p.layout.yaxis3.anchor, "x3");
         end
 
         function testGroupedKernelScatterHistPlotData(tc)

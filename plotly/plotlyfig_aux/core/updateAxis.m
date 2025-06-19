@@ -79,6 +79,13 @@ function obj = updateAxis(obj,axIndex)
         axisPos(3:4) = min(axisPos(3:4));
     end
 
+    if (ischar(axisData.Tag) || isstring(axisData.Tag)) && axisData.Tag == "yhist"
+        % scatterhist() function
+        [xaxis, yaxis] = deal(yaxis,xaxis);
+        [xaxis.side, yaxis.side] = deal(yaxis.side,xaxis.side);
+        xaxis.range = flip(xaxis.range);
+    end
+
     xaxis.domain = min([axisPos(1) sum(axisPos([1,3]))], 1);
     scene.domain.x = xaxis.domain;
     yaxis.domain = min([axisPos(2) sum(axisPos([2,4]))], 1);

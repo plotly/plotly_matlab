@@ -123,9 +123,7 @@ function data = updateHistogram(obj,histIndex)
     if axisData.Tag == "yhist"
         % scatterhist() function
         data.orientation = "h";
-        temp = data.x;
-        data.x = flip(data.y);
-        data.y = temp;
+        [data.x, data.y] = deal(data.y, data.x);
     end
 
     data.name = hist_data.DisplayName;
