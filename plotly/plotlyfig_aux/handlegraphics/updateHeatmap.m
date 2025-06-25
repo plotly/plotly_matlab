@@ -1,6 +1,11 @@
 function data = updateHeatmap(obj,heatIndex)
     %-HEATMAP DATA STRUCTURE- %
     heat_data = obj.State.Plot(heatIndex).Handle;
+    axIndex = obj.getAxisIndex(obj.State.Plot(heatIndex).AssociatedAxis);
+    [xSource, ySource] = findSourceAxis(obj,axIndex);
+
+    data.xaxis = "x" + xSource;
+    data.yaxis = "y" + ySource;
 
     data.type = "heatmap";
 

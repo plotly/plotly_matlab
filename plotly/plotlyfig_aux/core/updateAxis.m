@@ -52,7 +52,7 @@ function obj = updateAxis(obj,axIndex)
         axisData.FontUnits = 'points';
     end
 
-    %-check if headmap axis-%
+    %-check if heatmap axis-%
     isHeatmapAxis = axisData.Type == "heatmap";
     obj.PlotOptions.is_headmap_axis = isHeatmapAxis;
 
@@ -64,13 +64,10 @@ function obj = updateAxis(obj,axIndex)
     if isHeatmapAxis
         xaxis = extractHeatmapAxisData(obj,axisData, 'X');
         xExponentFormat = 0;
-    else
-        [xaxis, xExponentFormat] = extractAxisData(obj,axisData, 'X');
-    end
-    if isHeatmapAxis
         yaxis = extractHeatmapAxisData(obj,axisData, 'Y');
         yExponentFormat = 0;
     else
+        [xaxis, xExponentFormat] = extractAxisData(obj,axisData, 'X');
         [yaxis, yExponentFormat] = extractAxisData(obj,axisData, 'Y');
     end
 
