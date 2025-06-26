@@ -14,6 +14,8 @@ function data = updateHeatmap(obj,heatIndex)
     data.x = heat_data.XDisplayData;
     data.y = heat_data.YDisplayData(end:-1:1, :);
     data.z = cdata;
+    data.zmin = heat_data.ColorLimits(1);
+    data.zmax = heat_data.ColorLimits(2);
     data.connectgaps = false;
     data.hoverongaps = false;
 
