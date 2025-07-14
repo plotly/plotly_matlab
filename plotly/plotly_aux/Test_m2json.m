@@ -101,6 +101,13 @@ classdef Test_m2json < matlab.unittest.TestCase
             tc.verifyEqual(m2json(values), expected);
         end
 
+        function testStructArray(tc)
+            values = struct("a", 1, "b", "text");
+            values = [values values];
+            expected = "[{""a"" : 1, ""b"" : ""text""}, {""a"" : 1, ""b"" : ""text""}]";
+            tc.verifyEqual(m2json(values), expected);
+        end
+
         function testDatetime(tc)
             value = datetime("2023-05-01 12:30:45");
             expected = """2023-05-01 12:30:45""";
