@@ -58,14 +58,19 @@ function data = updateHeatmap(obj,heatIndex)
     m = size(cdata, 2);
     n = size(cdata, 1);
     annotations = cell(1,m*n);
+
+    % Set font properties once for all annotations
+    obj.layout.font = struct( ...
+        size = heat_data.FontSize*1.15, ...
+        family = matlab2plotlyfont(heat_data.FontName) ...
+    );
+
     for i = 1:m
         for j = 1:n
             ann.text = num2str(round(cdata(j,i), 2));
             ann.x = i-1;
             ann.y = j-1;
             ann.showarrow = false;
-            ann.font.size = heat_data.FontSize*1.15;
-            ann.font.family = matlab2plotlyfont(heat_data.FontName);
             if cdata(j,i) < 0.925*maxcol
                 col = [0,0,0];
             else
