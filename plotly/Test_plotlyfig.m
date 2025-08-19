@@ -2613,6 +2613,38 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             end
         end
 
+        function testHeatmapMixedColorCells(tc)
+            fig = figure("visible","off");
+            data = [ ...
+                4.316 3.895 3.176 2.850 2.667 2.429 2.173 1.920;
+                4.226 3.847 3.179 2.863 2.688 2.455 2.203 1.954;
+                3.951 3.650 3.113 2.824 2.666 2.458 2.224 1.998;
+                3.820 3.556 3.091 2.828 2.684 2.495 2.271 2.060;
+                3.701 3.459 3.036 2.787 2.650 2.475 2.260 2.062;
+                3.490 3.289 2.937 2.706 2.580 2.421 2.227 2.048;
+                3.292 3.128 2.820 2.608 2.493 2.353 2.186 2.031;
+                3.073 2.939 2.675 2.481 2.377 2.259 2.121 1.992;
+            ];
+            h = heatmap(data);
+            nColors = 256;
+            zeroPos = round(0.5 * (nColors-1)) + 1;
+            redToWhite = [linspace(1,1,zeroPos)', linspace(0,1,zeroPos)', linspace(0,1,zeroPos)'];
+            whiteToGreen = [linspace(1,0,nColors-zeroPos+1)', ...
+                            linspace(1,1,nColors-zeroPos+1)', ...
+                            linspace(1,0,nColors-zeroPos+1)'];
+            customMap = [redToWhite; whiteToGreen(2:end,:)];
+            colormap(h, customMap);
+            caxis([min(data(:)) max(data(:))]);
+
+            p = plotlyfig(fig,"visible","off");
+
+            isWhite = cellfun(@(ann) ann.font.color == "rgb(255,255,255)", p.layout.annotations);
+            positions = cellfun(@(ann) ann.x + "," + ann.y, p.layout.annotations);
+            actual = positions(isWhite);
+            expected = ["5,0" "6,0" "6,1" "6,2" "6,3" "6,4" "6,5" "6,6" "6,7" "7,0" "7,1" "7,2" "7,3" "7,4" "7,5" "7,6" "7,7"];
+            tc.verifyEqual(actual, expected);
+        end
+
         function testHeatmapCellTextAnnotations(tc)
             fig = figure("Visible","off");
             data = [1 2; 3 4; 5 6];

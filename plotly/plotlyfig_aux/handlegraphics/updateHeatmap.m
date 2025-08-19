@@ -54,7 +54,6 @@ function data = updateHeatmap(obj,heatIndex)
     data.opacity = 0.95;
 
     %-setting annotation text-%
-    maxcol = max(cdata(:));
     m = size(cdata, 2);
     n = size(cdata, 1);
     annotations = cell(1,m*n);
@@ -65,17 +64,17 @@ function data = updateHeatmap(obj,heatIndex)
         family = matlab2plotlyfont(heat_data.FontName) ...
     );
 
-    values = heat_data.ColorDisplayData';
     for i = 1:m
         for j = 1:n
             ann.text = string(num2str(round(cdata(j,i), 2)));
             ann.x = i-1;
             ann.y = j-1;
             ann.showarrow = false;
-            indices = find(values(:) == cdata(j,i));
-            colorIndex = indices(1);
+            ratio = (cdata(j,i) - data.zmin) / (data.zmax - data.zmin);
+            colorIndex = 1 + clip(round(ratio*len), 0, len);
             c = 255*cmap(colorIndex,:);
-            if 442*c(1) + 867*c(2) + 170*c(3) - 189006 > 0
+            luminance = [0.299 0.587 0.114] * c'; % ITU-R BT.601 luminance standard
+            if luminance > 128
                 col = [0,0,0];
             else
                 col = [255,255,255];
