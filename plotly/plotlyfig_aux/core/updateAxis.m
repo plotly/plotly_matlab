@@ -54,7 +54,7 @@ function obj = updateAxis(obj,axIndex)
 
     %-check if heatmap axis-%
     isHeatmapAxis = axisData.Type == "heatmap";
-    obj.PlotOptions.is_headmap_axis = isHeatmapAxis;
+    obj.PlotOptions.is_heatmap_axis = isHeatmapAxis;
 
     %-check if geo-axis-%
     isGeoaxis = isfield(axisData, 'Type') ...
