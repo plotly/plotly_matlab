@@ -2615,7 +2615,7 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
 
         function testHeatmapCellTextAnnotations(tc)
             fig = figure("Visible","off");
-            data = [1 2; 3 4];
+            data = [1 2; 3 4; 5 6];
             heatmap(data);
 
             p = plotlyfig(fig,"visible","off");
