@@ -2580,5 +2580,37 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
                 showlegend = true ...
             ));
         end
+
+        function testHeatmapTextColorBrightCells(tc)
+            fig = figure("Visible","off");
+            data = [1 2; 3 4];
+            h = heatmap(data);
+            h.Colormap = repmat([0.9 0.9 0.9], 64, 1); % Light gray colormap
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.layout.annotations, numel(data)+1);
+            % All cells should have black text due to bright background
+            for i = 2:numel(p.layout.annotations)-1
+                ann = p.layout.annotations{i};
+                tc.verifyEqual(ann.font.color, "rgb(0,0,0)"); % Black text
+            end
+        end
+
+        function testHeatmapTextColorDarkCells(tc)
+            fig = figure("Visible","off");
+            data = [1 2; 3 4];
+            h = heatmap(data);
+            h.Colormap = repmat([0.1 0.1 0.1], 64, 1); % Dark gray colormap
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.layout.annotations, numel(data)+1);
+            % All cells should have white text due to dark background
+            for i = 2:numel(p.layout.annotations)-1
+                ann = p.layout.annotations{i};
+                tc.verifyEqual(ann.font.color, "rgb(255,255,255)"); % White text
+            end
+        end
     end
 end

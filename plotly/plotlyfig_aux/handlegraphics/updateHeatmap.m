@@ -65,13 +65,17 @@ function data = updateHeatmap(obj,heatIndex)
         family = matlab2plotlyfont(heat_data.FontName) ...
     );
 
+    values = heat_data.ColorDisplayData';
     for i = 1:m
         for j = 1:n
             ann.text = num2str(round(cdata(j,i), 2));
             ann.x = i-1;
             ann.y = j-1;
             ann.showarrow = false;
-            if cdata(j,i) < 0.925*maxcol
+            indices = find(values(:) == cdata(j,i));
+            colorIndex = indices(1);
+            c = 255*cmap(colorIndex,:);
+            if 442*c(1) + 867*c(2) + 170*c(3) - 189006 > 0
                 col = [0,0,0];
             else
                 col = [255,255,255];
