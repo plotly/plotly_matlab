@@ -629,7 +629,11 @@ classdef plotlyfig < handle
             for n = 1:obj.State.Figure.NumTexts
                 try
                     if obj.PlotOptions.is_headmap_axis
-                        updateHeatmapAnnotation(obj,n);
+                        if ~isempty(obj.State.Text(n).Handle)
+                            nanns = length(obj.layout.annotations);
+                            axIndex = nanns + obj.getAxisIndex(obj.State.Text(n).AssociatedAxis);
+                            obj.layout.annotations{axIndex} = getHeatmapTitleAnnotation(obj,n);
+                        end
                         obj.PlotOptions.CleanFeedTitle = false;
                     elseif obj.PlotlyDefaults.isGeoaxis
                         % TODO

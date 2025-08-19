@@ -2589,9 +2589,9 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
 
             p = plotlyfig(fig,"visible","off");
 
-            tc.verifyNumElements(p.layout.annotations, numel(data)+1);
+            tc.verifyNumElements(p.layout.annotations, numel(data));
             % All cells should have black text due to bright background
-            for i = 2:numel(p.layout.annotations)-1
+            for i = 1:numel(p.layout.annotations)
                 ann = p.layout.annotations{i};
                 tc.verifyEqual(ann.font.color, "rgb(0,0,0)"); % Black text
             end
@@ -2605,12 +2605,39 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
 
             p = plotlyfig(fig,"visible","off");
 
-            tc.verifyNumElements(p.layout.annotations, numel(data)+1);
+            tc.verifyNumElements(p.layout.annotations, numel(data));
             % All cells should have white text due to dark background
-            for i = 2:numel(p.layout.annotations)-1
+            for i = 1:numel(p.layout.annotations)
                 ann = p.layout.annotations{i};
                 tc.verifyEqual(ann.font.color, "rgb(255,255,255)"); % White text
             end
+        end
+
+        function testHeatmapCellTextAnnotations(tc)
+            fig = figure("Visible","off");
+            data = [1 2; 3 4];
+            heatmap(data);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.layout.annotations, numel(data));
+            actualStrings = cellfun(@(ann) ann.text, p.layout.annotations);
+            expectedStrings = arrayfun(@(v) string(v), data(:));
+            tc.verifyEqual(sort(actualStrings(:)), sort(expectedStrings(:)));
+        end
+
+        function testHeatmapTitleAnnotation(tc)
+            fig = figure("Visible","off");
+            data = [1 2; 3 4];
+            titleString = "title";
+            heatmap(data);
+            title(titleString);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.layout.annotations, numel(data)+1);
+            actualStrings = cellfun(@(ann) ann.text, p.layout.annotations);
+            tc.verifyNotEmpty(actualStrings(contains(actualStrings, titleString)));
         end
     end
 end

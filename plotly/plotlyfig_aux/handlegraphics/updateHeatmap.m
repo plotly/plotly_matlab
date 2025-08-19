@@ -68,7 +68,7 @@ function data = updateHeatmap(obj,heatIndex)
     values = heat_data.ColorDisplayData';
     for i = 1:m
         for j = 1:n
-            ann.text = num2str(round(cdata(j,i), 2));
+            ann.text = string(num2str(round(cdata(j,i), 2)));
             ann.x = i-1;
             ann.y = j-1;
             ann.showarrow = false;
@@ -81,7 +81,7 @@ function data = updateHeatmap(obj,heatIndex)
                 col = [255,255,255];
             end
             ann.font.color = getStringColor(col);
-            annotations{i*(m-1)+j} = ann;
+            annotations{(i-1)*n+j} = ann;
         end
     end
 

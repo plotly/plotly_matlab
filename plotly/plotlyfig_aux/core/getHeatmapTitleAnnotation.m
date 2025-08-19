@@ -1,4 +1,4 @@
-function obj = updateHeatmapAnnotation(obj,anIndex)
+function ann = getHeatmapTitleAnnotation(obj,anIndex)
     %-------X/YLABEL FIELDS--------%
     % title...[DONE]
     % titlefont.size...[DONE]
@@ -29,42 +29,35 @@ function obj = updateHeatmapAnnotation(obj,anIndex)
     % bgcolor: ...[DONE]
     % opacity: ...[NOT SUPPORTED IN MATLAB]
 
-    %-AXIS INDEX-%
-    nanns = length(obj.layout.annotations);
-    axIndex = nanns + obj.getAxisIndex(obj.State.Text(anIndex).AssociatedAxis);
-
-    %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,anIndex);
 
-    %-get heatmap title name-%
     title_name = obj.State.Text(anIndex).Handle;
-
-    obj.layout.annotations{axIndex}.showarrow = false;
+    ann.showarrow = false;
 
     %-anchor title to paper-%
     if obj.State.Text(anIndex).Title
-        obj.layout.annotations{axIndex}.xref = "paper";
-        obj.layout.annotations{axIndex}.yref = "paper";
+        ann.xref = "paper";
+        ann.yref = "paper";
     else
-        obj.layout.annotations{axIndex}.xref = "x" + xsource;
-        obj.layout.annotations{axIndex}.yref = "y" + ysource;
+        ann.xref = "x" + xsource;
+        ann.yref = "y" + ysource;
     end
 
-    obj.layout.annotations{axIndex}.xanchor = "middle";
-    obj.layout.annotations{axIndex}.align = "middle";
-    obj.layout.annotations{axIndex}.yanchor = "top";
-    obj.layout.annotations{axIndex}.text = sprintf("<b>%s</b>", title_name);
-    obj.layout.annotations{axIndex}.font.size = 14;
+    ann.xanchor = "middle";
+    ann.align = "middle";
+    ann.yanchor = "top";
+    ann.text = sprintf("<b>%s</b>", title_name);
+    ann.font.size = 14;
 
     if obj.State.Text(anIndex).Title
         %-AXIS DATA-%
         xaxis = obj.layout.("xaxis" + xsource);
         yaxis = obj.layout.("yaxis" + ysource);
 
-        obj.layout.annotations{axIndex}.x = mean(xaxis.domain);
-        obj.layout.annotations{axIndex}.y = (yaxis.domain(2) + 0.04);
+        ann.x = mean(xaxis.domain);
+        ann.y = (yaxis.domain(2) + 0.04);
     else
-        obj.layout.annotations{axIndex}.x = text_data.Position(1);
-        obj.layout.annotations{axIndex}.y = text_data.Position(2);
+        ann.x = text_data.Position(1);
+        ann.y = text_data.Position(2);
     end
 end
