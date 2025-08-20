@@ -2671,5 +2671,20 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             actualStrings = cellfun(@(ann) ann.text, p.layout.annotations);
             tc.verifyNotEmpty(actualStrings(contains(actualStrings, titleString)));
         end
+
+        function testHeatmapAxisLabels(tc)
+            fig = figure("Visible","off");
+            data = [1 2; 3 4];
+            xLabelText = "X Axis Label";
+            yLabelText = "Y Axis Label";
+            heatmap(data);
+            xlabel(xLabelText);
+            ylabel(yLabelText);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyEqual(p.layout.xaxis1.title.text, xLabelText);
+            tc.verifyEqual(p.layout.yaxis1.title.text, yLabelText);
+        end
     end
 end
