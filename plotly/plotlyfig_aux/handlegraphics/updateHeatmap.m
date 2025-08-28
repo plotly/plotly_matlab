@@ -70,14 +70,15 @@ function data = updateHeatmap(obj,heatIndex)
             ann.x = i-1;
             ann.y = j-1;
             ann.showarrow = false;
-            ratio = (cdata(j,i) - data.zmin) / (data.zmax - data.zmin);
-            colorIndex = 1 + clip(round(ratio*len), 0, len);
-            c = 255*cmap(colorIndex,:);
-            luminance = [0.299 0.587 0.114] * c'; % ITU-R BT.601 luminance standard
-            if luminance > 128
-                col = [0,0,0];
-            else
-                col = [255,255,255];
+            col = [255 255 255];
+            if isfinite(cdata(j,i))
+                ratio = (cdata(j,i) - data.zmin) / (data.zmax - data.zmin);
+                colorIndex = 1 + clip(round(ratio*len), 0, len);
+                c = 255*cmap(colorIndex,:);
+                luminance = [0.299 0.587 0.114] * c'; % ITU-R BT.601 luminance standard
+                if luminance > 128
+                    col = [0 0 0];
+                end
             end
             ann.font.color = getStringColor(col);
             annotations{(i-1)*n+j} = ann;

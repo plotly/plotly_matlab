@@ -2686,5 +2686,31 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             tc.verifyEqual(p.layout.xaxis1.title.text, xLabelText);
             tc.verifyEqual(p.layout.yaxis1.title.text, yLabelText);
         end
+
+        function testHeatmapWithNaNValues(tc)
+            fig = figure("Visible","off");
+            data = [1 2 NaN; 4 NaN 6; 7 8 9];
+            heatmap(data);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            heatmapData = p.data{1};
+            tc.verifyEqual(heatmapData.z, flip(data));
+        end
+
+        function testHeatmapAllNaNValues(tc)
+            fig = figure("Visible","off");
+            data = [NaN NaN; NaN NaN];
+            heatmap(data);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            heatmapData = p.data{1};
+            tc.verifyEqual(heatmapData.z, flip(data));
+            tc.verifyTrue(all(isnan(heatmapData.z(:))));
+            tc.verifyTrue(all(isnan(heatmapData.text(:))));
+        end
     end
 end
