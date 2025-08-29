@@ -29,7 +29,7 @@ function formatStr = parseString(inputStr,interpreter)
     formatStr = inputStr;
 
     if isempty(inputStr)
-        formatStr = 'untitled';
+        formatStr = "untitled";
         return
     end
 
@@ -229,4 +229,5 @@ function formatStr = parseString(inputStr,interpreter)
             end
         end
     end
+    formatStr = string(formatStr);
 end

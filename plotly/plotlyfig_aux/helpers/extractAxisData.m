@@ -161,7 +161,9 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     label.FontUnits = "points";
 
     if ~isempty(labelData.String)
-        axis.title = parseString(labelData.String,labelData.Interpreter);
+        axis.title = struct( ...
+            "text", parseString(labelData.String,labelData.Interpreter) ...
+        );
     end
 
     axis.titlefont.color = getStringColor(round(255*labelData.Color));
