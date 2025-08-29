@@ -3,15 +3,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %   axisData is the data extracted from the figure, axisName take the
     %   values "x" "y" or "z"
 
-    %=====================================================================%
-    %
-    % AXIS INITIALIZATION
-    %
-    %=====================================================================%
-
-    %-general axis settings-%
-    axisColor = round(255 * axisData.(axisName + "Color"));
-    axisColor = getStringColor(axisColor);
+    axisColor = getStringColor(round(255 * axisData.(axisName + "Color")));
     lineWidth = max(1, ...
             axisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
@@ -22,27 +14,28 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         exponentFormat = 0;
     end
 
-    axis.side = axisData.(axisName + "AxisLocation");
-    axis.zeroline = false;
-    axis.autorange = false;
-    axis.linecolor = axisColor;
-    axis.linewidth = lineWidth;
-    axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
-
-    %-general tick settings-%
-    tickRotation = axisData.(axisName + "TickLabelRotation");
-    tickLength = min(obj.PlotlyDefaults.MaxTickLength,...
-        max(axisData.TickLength(1)*axisData.Position(3)*obj.layout.width,...
+    tickLength = min(obj.PlotlyDefaults.MaxTickLength, ...
+        max(axisData.TickLength(1)*axisData.Position(3)*obj.layout.width, ...
         axisData.TickLength(1)*axisData.Position(4)*obj.layout.height));
 
-    axis.tickfont.size = axisData.FontSize;
-    axis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-    axis.tickfont.color = axisColor;
-
-    axis.ticklen = tickLength;
-    axis.tickcolor = axisColor;
-    axis.tickwidth = lineWidth;
-    axis.tickangle = -tickRotation;
+    axis = struct(...
+        "side", axisData.(axisName + "AxisLocation"), ...
+        "zeroline", false, ...
+        "autorange", false, ...
+        "linecolor", axisColor, ...
+        "linewidth", lineWidth, ...
+        "exponentformat", obj.PlotlyDefaults.ExponentFormat, ...
+        "tickfont", struct( ...
+            "size", axisData.FontSize, ...
+            "family", matlab2plotlyfont(axisData.FontName), ...
+            "color", axisColor ...
+        ), ...
+        "ticklen", tickLength, ...
+        "tickcolor", axisColor, ...
+        "tickwidth", lineWidth, ...
+        "tickangle", -axisData.(axisName + "TickLabelRotation"), ...
+        "type", axisData.(axisName + "Scale") ...
+    );
 
     switch axisData.TickDir
         case "in"
@@ -51,10 +44,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             axis.ticks = "outside";
     end
 
-    %-set axis grid-%
     isGrid = axisData.(axisName + "Grid");
     isMinorGrid = axisData.(axisName + "MinorGrid");
-
     if strcmp(isGrid, "on") || strcmp(isMinorGrid, "on")
         axis.showgrid = true;
         axis.gridwidth = lineWidth;
@@ -62,7 +53,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.showgrid = false;
     end
 
-    %-axis grid color-%
     if isprop(axisData, "GridColor") && isprop(axisData, "GridAlpha")
         axis.gridcolor = getStringColor( ...
                 round(255*axisData.GridColor), axisData.GridAlpha);
@@ -70,16 +60,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.gridcolor = axisColor;
     end
 
-    %-axis type-%
-    axis.type = axisData.(axisName + "Scale");
-
-    %=====================================================================%
-    %
-    % SET TICK LABELS
-    %
-    %=====================================================================%
-
-    %-get tick label data-%
     tickLabels = axisData.(axisName + "TickLabel");
     tickValues = axisData.(axisName + "Tick");
 
@@ -96,8 +76,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     end
     assert(isequal(numel(tickLabels),numel(tickValues)));
 
-    %-there is not tick label case-%
-    if isempty(tickValues)
+    if isempty(tickValues) % There are no tick labels
         axis.ticks = "";
         axis.showticklabels = false;
         axis.autorange = true;
@@ -108,8 +87,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             case "off"
                 axis.mirror = false;
         end
-    else %-there is tick labels case-%
-        %-set tick values-%
+    else % There are tick labels
         axis.showticklabels = true;
         axis.tickmode = "array";
 
@@ -146,14 +124,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             axis.type = "date";
             if isprop(axisData, "XTickLabelMode") ...
                     && isequal(axisData.XTickLabelMode, "auto")
-                % default matlab xticks are unreliable for datetime. eg.
-                % fig = figure(visible="off");
-                % dt  = datetime(2013,3,2):datetime(2020,1,1);
-                % plot(dt,randi([-10 10],numel(dt),1)');
-                % isequal(numel(fig.Children.XTick),numel(fig.Children.XTickLabel)) % returns false
                 axis.autotick = true;
                 tickLabels = {};
-                tickValues = []; %#ok<NASGU>
             end
 
         elseif iscategorical(axisLim)
@@ -163,7 +135,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             axis.autorange = true;
         end
 
-        %-box setting-%
         switch axisData.Box
             case "on"
                 axis.mirror = "ticks";
@@ -171,26 +142,17 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 axis.mirror = false;
         end
 
-        %-set tick labels by using tick texts-%
         if ~isempty(tickLabels)
             axis.ticktext = tickLabels;
         end
     end
 
-    %-axis direction-%
     axisDirection = axisData.(axisName + "Dir");
 
     if strcmp(axisDirection, "reverse")
         axis.range = [axis.range(2) axis.range(1)];
     end
 
-    %=====================================================================%
-    %
-    % SET AXIS LABEL
-    %
-    %=====================================================================%
-
-    %-get label data-%
     label = axisData.(axisName + "Label");
     labelData = label;
 
@@ -198,7 +160,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     fontunits = label.FontUnits;
     label.FontUnits = "points";
 
-    %-title label settings-%
     if ~isempty(labelData.String)
         axis.title = parseString(labelData.String,labelData.Interpreter);
     end
@@ -210,7 +171,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %-REVERT UNITS-%
     label.FontUnits = fontunits;
 
-    %-set visibility conditions-%
     if strcmp(axisData.Visible, "on")
         axis.showline = true;
     else
