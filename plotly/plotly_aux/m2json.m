@@ -18,13 +18,13 @@ function valstr = m2json(val)
         if sum(sz>1)>1 % 2D or higher array
             valsubstr = strings(1, sz(1));
             for i = 1:sz(1)
-                formattedRowVal = arrayfun(@(x) sprintf(fmt, x), val(i,:));
+                formattedRowVal = compose(fmt, val(i,:));
                 valsubstr(i) = strjoin(formattedRowVal, ",");
                 valsubstr(i) = "[" + valsubstr(i) + "]";
             end
             valstr = strjoin(valsubstr, ",");
         else
-            valstr = arrayfun(@(x) sprintf(fmt, x), val);
+            valstr = compose(fmt, val);
             valstr = strjoin(valstr, ",");
         end
         if length(val)>1
