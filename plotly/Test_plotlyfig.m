@@ -2645,7 +2645,8 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             isWhite = cellfun(@(ann) ann.font.color == "rgb(255,255,255)", p.layout.annotations);
             positions = cellfun(@(ann) ann.x + "," + ann.y, p.layout.annotations);
             actual = positions(isWhite);
-            expected = ["5,0" "6,0" "6,1" "6,2" "6,3" "6,4" "6,5" "6,6" "6,7" "7,0" "7,1" "7,2" "7,3" "7,4" "7,5" "7,6" "7,7"];
+            expected = ["5,0" "6,0" "6,1" "6,2" "6,3" "6,4" "6,5" "6,6" "6,7" ...
+                    "7,0" "7,1" "7,2" "7,3" "7,4" "7,5" "7,6" "7,7"];
             tc.verifyEqual(actual, expected);
         end
 
@@ -2715,6 +2716,66 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
             tc.verifyEqual(heatmapData.z, flip(data));
             tc.verifyTrue(all(isnan(heatmapData.z(:))));
             tc.verifyTrue(all(isnan(heatmapData.text(:))));
+        end
+
+        function testPlotWithCustomDataTip(tc)
+            fig = figure("Visible","off");
+            x = 1:5;
+            y = [2 4 6 8 10];
+            h = plot(x, y);
+            customData = ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"];
+            h.DataTipTemplate.DataTipRows(end+1) = dataTipTextRow("Label", customData);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyTrue(isfield(p.data{1}, "hovertext"));
+            tc.verifyTrue(isfield(p.data{1}, "hoverinfo"));
+            tc.verifyEqual(p.data{1}.hoverinfo, "text");
+
+            expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
+                    + string(y(:)) + "<br>" + "Label: " + customData(:) + "<br>";
+            tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
+        end
+
+        function testPlotWithMultipleCustomDataTips(tc)
+            fig = figure("Visible","off");
+            x = 1:3;
+            y = [10 20 30];
+            h = plot(x, y);
+            names = ["A", "B", "C"];
+            values = [100, 200, 300];
+            h.DataTipTemplate.DataTipRows(end+1) = dataTipTextRow("Name", names);
+            h.DataTipTemplate.DataTipRows(end+1) = dataTipTextRow("Value", values);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyTrue(isfield(p.data{1}, "hovertext"));
+            tc.verifyEqual(p.data{1}.hoverinfo, "text");
+
+            expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " + string(y(:)) + "<br>" + ...
+                "Name: " + names(:) + "<br>" + "Value: " + string(values(:)) + "<br>";
+            tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
+        end
+
+        function testScatterWithCustomDataTip(tc)
+            fig = figure("Visible","off");
+            x = [1 2 3];
+            y = [4 5 6];
+            h = scatter(x, y);
+            labels = ["Point1", "Point2", "Point3"];
+            h.DataTipTemplate.DataTipRows(end+1) = dataTipTextRow("ID", labels);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyTrue(isfield(p.data{1}, "hovertext"));
+            tc.verifyEqual(p.data{1}.hoverinfo, "text");
+
+            expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
+                    + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
+            tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
         end
     end
 end

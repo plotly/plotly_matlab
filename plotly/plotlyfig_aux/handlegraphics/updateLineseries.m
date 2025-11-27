@@ -65,6 +65,33 @@ function data = updateLineseries(obj, plotIndex)
         end
     end
 
+    % Handle custom datatip rows
+    hasDataTipRows = isprop(plotData, "DataTipTemplate") && isprop(plotData.DataTipTemplate, "DataTipRows");
+    if hasDataTipRows
+        dataTipRows = plotData.DataTipTemplate.DataTipRows;
+        exclude = ["Size" "Color" "X" "Y" "Z" "Y Delta"];
+        dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, exclude));
+        if numel(dataTipRows) > 0
+            customLabel = "";
+            for i = 1:numel(dataTipRows)
+                dataTipRow = dataTipRows(i);
+                customLabel = customLabel + arrayfun(@(value) string(dataTipRow.Label) ...
+                        + ": " + string(value) + "<br>", dataTipRow.Value);
+            end
+            if isPolar
+                data.hovertext = "R: " + data.r(:) + "<br>" + "Theta: " + ...
+                        data.theta(:) + "<br>" + customLabel(:);
+            elseif isPlot3D
+                data.hovertext = "X: " + data.x(:) + "<br>" + "Y: " + data.y(:) ...
+                        + "<br>" + "Z: " + data.z(:) + "<br>" + customLabel(:);
+            else
+                data.hovertext = "X: " + data.x(:) + "<br>" + "Y: " + data.y(:) ...
+                        + "<br>" + customLabel(:);
+            end
+            data.hoverinfo = "text";
+        end
+    end
+
     data.line = extractLineLine(plotData);
     if isPolar
         data.line.width = data.line.width * 1.5;
