@@ -2777,5 +2777,24 @@ classdef Test_plotlyfig < matlab.unittest.TestCase
                     + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
         end
+
+        function testScatterWithCustomDataTipTransposed(tc)
+            fig = figure("Visible","off");
+            x = [1 2 3];
+            y = [4 5 6];
+            h = scatter(x, y);
+            labels = ["Point1", "Point2", "Point3"]';
+            h.DataTipTemplate.DataTipRows(end+1) = dataTipTextRow("ID", labels);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyTrue(isfield(p.data{1}, "hovertext"));
+            tc.verifyEqual(p.data{1}.hoverinfo, "text");
+
+            expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
+                    + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
+            tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
+        end
     end
 end

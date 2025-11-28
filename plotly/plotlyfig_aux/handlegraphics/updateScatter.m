@@ -31,7 +31,7 @@ function data = updateScatter(obj,plotIndex)
             dataTipRow = dataTipRows(i);
             customLabel = customLabel + arrayfun(@(value) string(dataTipRow.Label) + ": " + string(value) + "<br>", dataTipRow.Value);
         end
-        data.hovertext = "X: " + data.x + "<br>" + "Y: " + data.y + "<br>" + customLabel;
+        data.hovertext = "X: " + data.x(:) + "<br>" + "Y: " + data.y(:) + "<br>" + customLabel(:);
         data.hoverinfo = "text";
     end
 
