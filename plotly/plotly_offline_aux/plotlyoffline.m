@@ -83,7 +83,7 @@ function response = plotlyoffline(plotlyfig)
             htmlFilename);
     fileID = fopen(plotlyOfflineFile, 'w');
     fprintf(fileID, '%s', offlineScript);
-    fclose(fileID); 
+    fclose(fileID);
 
     % remove any whitespace from the plotlyOfflineFile path
     plotlyOfflineFile = strrep(plotlyOfflineFile, ' ', '%20');
