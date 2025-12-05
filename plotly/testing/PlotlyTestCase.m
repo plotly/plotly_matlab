@@ -50,8 +50,21 @@ classdef PlotlyTestCase < matlab.unittest.TestCase
             % Recursive helper for struct comparison
             % extraArgs is a cell array of additional arguments to forward
 
-            % Handle Any wildcard - if either side is Any, pass
-            if isa(expected, 'PlotlyTestCaseAny') || isa(actual, 'PlotlyTestCaseAny')
+            % Handle Any wildcard - use match() method
+            if isa(expected, 'PlotlyTestCaseAny')
+                matchResult = expected.match(actual);
+                if ~matchResult.passed
+                    diagnostic = sprintf('Path to failure: %s\n%s', path, matchResult.diagnostic);
+                    testCase.verifyTrue(false, diagnostic);
+                end
+                return;
+            end
+            if isa(actual, 'PlotlyTestCaseAny')
+                matchResult = actual.match(expected);
+                if ~matchResult.passed
+                    diagnostic = sprintf('Path to failure: %s\n%s', path, matchResult.diagnostic);
+                    testCase.verifyTrue(false, diagnostic);
+                end
                 return;
             end
 
@@ -133,6 +146,71 @@ classdef PlotlyTestCase < matlab.unittest.TestCase
             %   testCase.verifyEqualStructs(actual, expected);
 
             obj = PlotlyTestCaseAny();
+        end
+
+        function obj = AnyColorString()
+            % AnyColorString Create a color string matcher
+            %
+            % Syntax:
+            %   obj = PlotlyTestCase.AnyColorString()
+            %
+            % Description:
+            %   Returns a matcher that validates RGB/RGBA color strings.
+            %   Accepts formats:
+            %     - "rgb(r,g,b)" where r,g,b are integers 0-255
+            %     - "rgba(r,g,b,a)" where r,g,b are 0-255 and a is 0-1
+            %
+            % Example:
+            %   expected.color = PlotlyTestCase.AnyColorString();
+            %   testCase.verifyEqualStructs(actual, expected);
+
+            obj = PlotlyTestCaseAnyColorString();
+        end
+
+        function obj = AnyInteger(positiveOnly)
+            % AnyInteger Create an integer matcher
+            %
+            % Syntax:
+            %   obj = PlotlyTestCase.AnyInteger()
+            %   obj = PlotlyTestCase.AnyInteger(positiveOnly)
+            %
+            % Description:
+            %   Returns a matcher that validates integer values.
+            %
+            % Input:
+            %   positiveOnly - (Optional) If true, only accept positive integers
+            %
+            % Example:
+            %   expected.width = PlotlyTestCase.AnyInteger(true);  % Positive only
+            %   testCase.verifyEqualStructs(actual, expected);
+
+            if nargin < 1
+                positiveOnly = false;
+            end
+            obj = PlotlyTestCaseAnyInteger(positiveOnly);
+        end
+
+        function obj = AnyNumber(positiveOnly)
+            % AnyNumber Create a numeric matcher
+            %
+            % Syntax:
+            %   obj = PlotlyTestCase.AnyNumber()
+            %   obj = PlotlyTestCase.AnyNumber(positiveOnly)
+            %
+            % Description:
+            %   Returns a matcher that validates numeric values.
+            %
+            % Input:
+            %   positiveOnly - (Optional) If true, only accept positive numbers
+            %
+            % Example:
+            %   expected.ticklen = PlotlyTestCase.AnyNumber(true);  % Positive only
+            %   testCase.verifyEqualStructs(actual, expected);
+
+            if nargin < 1
+                positiveOnly = false;
+            end
+            obj = PlotlyTestCaseAnyNumber(positiveOnly);
         end
     end
 end
