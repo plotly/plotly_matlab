@@ -14,7 +14,7 @@ Version: 3.0.0
 
 ## Install
 
-The latest version of the wrapper can be downloaded [here](https://github.com/plotly/MATLAB-Online/archive/master.zip).
+The latest version of the wrapper can be downloaded from [github](https://github.com/plotly/MATLAB-Online/archive/master.zip).
 
 Once downloaded, run `plotlysetup_offline()` to get started.
 If you have a plotly bundle url of the form '<http://cdn.plot.ly/plotly-latest.min.js>', then run instead
