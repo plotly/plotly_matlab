@@ -2748,6 +2748,41 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
         end
 
+        function testPlotTableDataTip(tc)
+            tb = table();
+            tb.time = (2:2:12)';
+            tb.Saved = rand(6,1);
+            tb.Sim1 = rand(6,1);
+            tb.Sim2 = rand(6,1);
+            names = ["Saved" "Sim1" "Sim2"];
+            fig = figure("Visible","off");
+            plot(tb,"time",names);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 3);
+            tc.verifyTrue(isfield(p.data{1}, "hovertext"));
+            tc.verifyTrue(isfield(p.data{1}, "hoverinfo"));
+            tc.verifyEqual(p.data{1}.hoverinfo, "text");
+            expectedHovertext = "time: " + string(tb.time) + "<br>" + ...
+                                "Saved: " + string(tb.Saved) + "<br>";
+            tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
+
+            tc.verifyTrue(isfield(p.data{2}, "hovertext"));
+            tc.verifyTrue(isfield(p.data{2}, "hoverinfo"));
+            tc.verifyEqual(p.data{2}.hoverinfo, "text");
+            expectedHovertext = "time: " + string(tb.time) + "<br>" + ...
+                                "Sim1: " + string(tb.Sim1) + "<br>";
+            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
+
+            tc.verifyTrue(isfield(p.data{3}, "hovertext"));
+            tc.verifyTrue(isfield(p.data{3}, "hoverinfo"));
+            tc.verifyEqual(p.data{3}.hoverinfo, "text");
+            expectedHovertext = "time: " + string(tb.time) + "<br>" + ...
+                                "Sim2: " + string(tb.Sim2) + "<br>";
+            tc.verifyEqual(p.data{3}.hovertext, expectedHovertext);
+        end
+
         function testPlotWithMultipleCustomDataTips(tc)
             fig = figure("Visible","off");
             x = 1:3;

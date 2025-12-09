@@ -73,8 +73,18 @@ function data = updateLineseries(obj, plotIndex)
         dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, exclude));
         if numel(dataTipRows) > 0
             customLabel = "";
+            xDataLabel = "X";
+            yDataLabel = "Y";
             for i = 1:numel(dataTipRows)
                 dataTipRow = dataTipRows(i);
+                if isequal(dataTipRow.Value, "XData")
+                    xDataLabel = string(dataTipRow.Label);
+                    continue
+                end
+                if isequal(dataTipRow.Value, "YData")
+                    yDataLabel = string(dataTipRow.Label);
+                    continue
+                end
                 customLabel = customLabel + arrayfun(@(value) string(dataTipRow.Label) ...
                         + ": " + string(value) + "<br>", dataTipRow.Value);
             end
@@ -82,11 +92,13 @@ function data = updateLineseries(obj, plotIndex)
                 data.hovertext = "R: " + data.r(:) + "<br>" + "Theta: " + ...
                         data.theta(:) + "<br>" + customLabel(:);
             elseif isPlot3D
-                data.hovertext = "X: " + data.x(:) + "<br>" + "Y: " + data.y(:) ...
-                        + "<br>" + "Z: " + data.z(:) + "<br>" + customLabel(:);
+                data.hovertext = xDataLabel + ": " + data.x(:) + "<br>" ...
+                               + yDataLabel + ": " + data.y(:) + "<br>" ...
+                               + "Z: " + data.z(:) + "<br>" + customLabel(:);
             else
-                data.hovertext = "X: " + data.x(:) + "<br>" + "Y: " + data.y(:) ...
-                        + "<br>" + customLabel(:);
+                data.hovertext = xDataLabel + ": " + data.x(:) + "<br>" ...
+                               + yDataLabel + ": " + data.y(:) + "<br>" ...
+                               + customLabel(:);
             end
             data.hoverinfo = "text";
         end
