@@ -34,6 +34,18 @@ classdef Test_plotlyfig < PlotlyTestCase
             ), AbsTol=1e-15);
         end
 
+        function testLinePlotDatetimeXaxis(tc)
+            fig = figure("Visible","off");
+            y = [0.0301 0.4411 0.7007 0.7030 0.5102 0.6122 0.7464 0.8014 0.3367 0.5641];
+            x = datetime(2025,1:10,1);
+            plot(x,y);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqualStructs(p.data{1}.x, string(x));
+        end
+
         function testLinePlotLayout(tc)
             fig = figure("Visible","off");
             y = [0.0301 0.4411 0.7007 0.7030 0.5102 0.6122 0.7464 0.8014 0.3367 0.5641];
