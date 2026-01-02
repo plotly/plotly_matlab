@@ -1,42 +1,51 @@
 function obj = updateHistogram2(obj,dataIndex)
-
-    %--------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    [xSource, ~] = findSourceAxis(obj, axIndex);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
+    xSource = findSourceAxis(obj, axIndex);
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
 
     colorMap = axisData.Colormap;
     barGap = 0.05;
 
     %-get trace data-%
-    
+
     values = plotData.Values;
-    if strcmp(plotData.ShowEmptyBins, 'on'), values = values+1; end
-    xEdges = plotData.XBinEdges; 
+    if strcmp(plotData.ShowEmptyBins, 'on')
+        values = values+1;
+    end
+    xEdges = plotData.XBinEdges;
     yEdges = plotData.YBinEdges;
 
     dx = diff(xEdges(2:end-1));
     dy = diff(yEdges(2:end-1));
 
-    if isinf(xEdges(1)) xEdges(1) = xEdges(2) - dx(1); end
-    if isinf(yEdges(1)) yEdges(1) = yEdges(2) - dy(1); end
+    if isinf(xEdges(1))
+        xEdges(1) = xEdges(2) - dx(1);
+    end
+    if isinf(yEdges(1))
+        yEdges(1) = yEdges(2) - dy(1);
+    end
 
-    if isinf(xEdges(end)) xEdges(end) = xEdges(end-1) + dx(1); end
-    if isinf(yEdges(end)) yEdges(end) = yEdges(end-1) + dy(1); end
+    if isinf(xEdges(end))
+        xEdges(end) = xEdges(end-1) + dx(1);
+    end
+    if isinf(yEdges(end))
+        yEdges(end) = yEdges(end-1) + dy(1);
+    end
 
     [xData, yData, zData, iData, jData, kData] = ...
-        getPlotlyMesh3d( xEdges, yEdges, values, barGap );
+            getPlotlyMesh3d( xEdges, yEdges, values, barGap );
 
-    if strcmp(plotData.ShowEmptyBins, 'on'), zData = zData-1; end
-        
+    if strcmp(plotData.ShowEmptyBins, 'on')
+        zData = zData-1;
+    end
+
     cData = zeros(size(zData));
-    for n = 1:2:length(zData), cData(n:n+1) = max(zData(n:n+1)); end
-
-    %--------------------------------------------------------------------------%
+    for n = 1:2:length(zData)
+        cData(n:n+1) = max(zData(n:n+1));
+    end
 
     %-set trace-%
     updateScene(obj, dataIndex);
@@ -47,8 +56,6 @@ function obj = updateHistogram2(obj,dataIndex)
     obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
     obj.layout.bargap = barGap;
 
-    %--------------------------------------------------------------------------%
-
     %-set trace data-%
     obj.data{dataIndex}.x = xData;
     obj.data{dataIndex}.y = yData;
@@ -57,15 +64,13 @@ function obj = updateHistogram2(obj,dataIndex)
     obj.data{dataIndex}.j = int16(jData - 1);
     obj.data{dataIndex}.k = int16(kData - 1);
 
-    %--------------------------------------------------------------------------%
-
     %-set trace coloring-%
     faceColor = plotData.FaceColor;
 
     if isnumeric(faceColor)
-        obj.data{dataIndex}.color = getStringColor(255*faceColor);
+        obj.data{dataIndex}.color = getStringColor(round(255*faceColor));
     elseif strcmp(faceColor, 'none')
-        obj.data{dataIndex}.color = getStringColor(255*zeros(1,3), 0.1);
+        obj.data{dataIndex}.color = getStringColor(round(255*zeros(1,3)), 0.1);
     elseif strcmp(faceColor, 'flat')
         obj.data{dataIndex}.intensity = cData;
         obj.data{dataIndex}.colorscale = getColorScale(colorMap);
@@ -87,31 +92,26 @@ function obj = updateHistogram2(obj,dataIndex)
         obj.data{dataIndex}.lighting.diffuse = 0.92;
         obj.data{dataIndex}.lighting.ambient = 0.92;
     end
-
-    %--------------------------------------------------------------------------%
 end
 
 function updateScene(obj, dataIndex)
 
-    %-------------------------------------------------------------------------%
-
     %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = get(obj.State.Plot(dataIndex).Handle);
-    axisData = get(plotData.Parent);
-    [xSource, ~] = findSourceAxis(obj, axIndex);
-    scene = eval( sprintf('obj.layout.scene%d', xSource) );
+    plotData = obj.State.Plot(dataIndex).Handle;
+    axisData = plotData.Parent;
+    xSource = findSourceAxis(obj, axIndex);
+    scene = obj.layout.("scene" + xSource);
 
     aspectRatio = axisData.PlotBoxAspectRatio;
     cameraPosition = axisData.CameraPosition;
-    dataAspectRatio = axisData.DataAspectRatio;
     cameraUpVector = axisData.CameraUpVector;
     cameraEye = cameraPosition;
 
-    rangeXLim = range(axisData.XLim);
-    rangeYLim = range(axisData.YLim);
-    rangeZLim = range(axisData.ZLim);
+    rangeXLim = rangeLength(axisData.XLim);
+    rangeYLim = rangeLength(axisData.YLim);
+    rangeZLim = rangeLength(axisData.ZLim);
     cameraEye = cameraEye./[rangeXLim, rangeYLim rangeZLim];
     eyeNorm = max(abs(cameraEye)) - 1.4;
 
@@ -124,8 +124,6 @@ function updateScene(obj, dataIndex)
 
     cameraEye = cameraEye / eyeNorm;
 
-    %-------------------------------------------------------------------------%
-
     %-aspect ratio-%
     scene.aspectratio.x = aspectRatio(1);
     scene.aspectratio.y = aspectRatio(2);
@@ -137,11 +135,9 @@ function updateScene(obj, dataIndex)
     scene.camera.eye.z = cameraEye(3);
 
     %-camera up-%
-    scene.camera.up.x = cameraUpVector(1); 
+    scene.camera.up.x = cameraUpVector(1);
     scene.camera.up.y = cameraUpVector(2);
     scene.camera.up.z = cameraUpVector(3);
-
-    %-------------------------------------------------------------------------%
 
     %-get each scene axis-%
     scene.xaxis = getSceneAxis(axisData, 'X');
@@ -152,37 +148,34 @@ function updateScene(obj, dataIndex)
         scene.zaxis.visible = false;
     end
 
-    %-------------------------------------------------------------------------%
-
     %-SET SCENE TO LAYOUT-%
-    obj.layout = setfield(obj.layout, sprintf('scene%d', xSource), scene);
-
-    %-------------------------------------------------------------------------%
+    obj.layout.("scene" + xsource) = scene;
 end
 
 function ax = getSceneAxis(axisData, axName)
-
     %-initializations-%
-    axx = eval(sprintf('axisData.%sAxis', axName));
+    axx = axisData.(axName + "Axis");
     ax.zeroline = false;
     ax.showline = true;
     ax.showspikes = true;
-    ax.linecolor = getStringColor(255*axx.Color);
-    ax.range = eval(sprintf('date2NumData(axisData.%sLim)', axName));
+    ax.linecolor = getStringColor(round(255*axx.Color));
+    ax.range = axisData.(axName + "Lim");
 
     %-label-%
-    label = eval(sprintf('axisData.%sLabel', axName));
+    label = axisData.(axName + "Label");
     ax.title = label.String;
-    if ~isempty(ax.title), ax.title = parseString(ax.title); end
+    if ~isempty(ax.title)
+        ax.title = parseString(ax.title);
+    end
     ax.titlefont.size = label.FontSize;
-    ax.titlefont.color = getStringColor(255*label.Color);
+    ax.titlefont.color = getStringColor(round(255*label.Color));
     ax.titlefont.family = matlab2plotlyfont(label.FontName);
 
     %-ticks-%
     ax.tickvals = axx.TickValues;
     ax.ticktext = axx.TickLabels;
 
-    ax.tickcolor = getStringColor(255*axx.Color);
+    ax.tickcolor = getStringColor(round(255*axx.Color));
     ax.tickfont.size = axx.FontSize;
     ax.tickfont.family = matlab2plotlyfont(axx.FontName);
 
@@ -194,11 +187,15 @@ function ax = getSceneAxis(axisData, axName)
     end
 
     %-grid-%
-    axGrid = eval(sprintf('axisData.%sGrid', axName));
-    if strcmp(axGrid, 'off'), ax.showgrid = false; end
+    axGrid = axisData.(axName + "Grid");
+    if strcmp(axGrid, 'off')
+        ax.showgrid = false;
+    end
 
     %-box-%
-    if strcmp(axisData.Box, 'on'), ax.mirror = true; end
+    if strcmp(axisData.Box, 'on')
+        ax.mirror = true;
+    end
 end
 
 function bar_ = barData(position3d, size_)
@@ -230,7 +227,7 @@ function bar_ = barData(position3d, size_)
 end
 
 function [vertices, I, J, K] = triangulateBarFaces(positions, sizes)
-    % positions - array of shape (N, 3) that contains all positions in the plane z=0, where a histogram bar is placed 
+    % positions - array of shape (N, 3) that contains all positions in the plane z=0, where a histogram bar is placed
     % sizes -  array of shape (N,3); each row represents the sizes to scale a unit cube to get a bar
     % returns the array of unique vertices, and the lists i, j, k to be used in instantiating the go.Mesh3d class
 
@@ -257,7 +254,7 @@ function [vertices, I, J, K] = triangulateBarFaces(positions, sizes)
     all_bars = reshape(all_bars, [r, p*q])';
     [vertices, ~, ixr] = unique(all_bars, 'rows');
 
-    %for each bar, derive the sublists of indices i, j, k assocated to its chosen  triangulation
+    %for each bar, derive the sublists of indices i, j, k associated to its chosen  triangulation
     I = [];
     J = [];
     K = [];
@@ -273,7 +270,7 @@ function [vertices, I, J, K] = triangulateBarFaces(positions, sizes)
 end
 
 function [X, Y, Z, I, J, K] = getPlotlyMesh3d(xedges, yedges, values, bargap)
-    % x, y- array-like of shape (n,), defining the x, and y-ccordinates of data set for which we plot a 3d hist
+    % x, y- array-like of shape (n,), defining the x, and y-coordinates of data set for which we plot a 3d hist
 
     xsize = xedges(2)-xedges(1)-bargap;
     ysize = yedges(2)-yedges(1)-bargap;
@@ -306,6 +303,6 @@ function colorScale = getColorScale(colorMap)
     colorScale = cell(nColors, 1);
 
     for n = 1:nColors
-        colorScale{n} = {normInd(n), getStringColor(255*colorMap(n, :))};
+        colorScale{n} = {normInd(n), getStringColor(round(255*colorMap(n, :)))};
     end
 end

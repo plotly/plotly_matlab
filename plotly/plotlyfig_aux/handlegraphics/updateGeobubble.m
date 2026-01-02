@@ -1,12 +1,9 @@
 function updateGeobubble(obj,geoIndex)
-
-    %-----------------------------------------------------------------------------%
-
-    %-INTIALIZATIONS-%
+    %-INITIALIZATIONS-%
 
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
-    geoData = get(obj.State.Plot(geoIndex).Handle);
-    [xSource, ~] = findSourceAxis(obj,axIndex);
+    geoData = obj.State.Plot(geoIndex).Handle;
+    xSource = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
     bubbleRange = geoData.BubbleWidthRange;
@@ -18,13 +15,12 @@ function updateGeobubble(obj,geoIndex)
 
     if ~isempty(geoData.ColorData)
         allNames = geoData.ColorData;
-        
+
         [groupNames, ~, allNamesIdx] = unique(allNames);
         nGroups = length(groupNames);
         byGroups = true;
 
         for g=1:nGroups
-
             idx = g == allNamesIdx;
 
             group{g} = char(groupNames(g));
@@ -37,9 +33,7 @@ function updateGeobubble(obj,geoIndex)
                 lon{g} = [allLons(idx); NaN; NaN];
                 sData{g} = [allSizes(idx); NaN; NaN];
             end
-
         end
-
     else
         lat{1} = allLats;
         lon{1} = allLons;
@@ -48,18 +42,13 @@ function updateGeobubble(obj,geoIndex)
         byGroups = false;
     end
 
-    %-----------------------------------------------------------------------------%
-
-    %=============================================================================%
+    %=====================================================================%
     %
     %-SET TRACES-%
     %
-    %=============================================================================%
+    %=====================================================================%
 
     for g = 1:nGroups
-
-        %-------------------------------------------------------------------------%
-
         %-get current trace index-%
         p = geoIndex;
 
@@ -67,8 +56,6 @@ function updateGeobubble(obj,geoIndex)
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
             p = obj.PlotOptions.nPlots;
         end
-
-        %-------------------------------------------------------------------------%
 
         %-set current trace-%
         if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -82,23 +69,17 @@ function updateGeobubble(obj,geoIndex)
 
         obj.data{p}.mode = 'markers';
 
-        %-------------------------------------------------------------------------%
-
         %-set current trace data-%
         obj.data{p}.lat = lat{g};
         obj.data{p}.lon = lon{g};
 
-        %-------------------------------------------------------------------------%
-
         %-set trace marker-%
         marker = struct();
         marker.size = sData{g}*1.25;
-        marker.color = getStringColor(255*colorMap(mod(g-1, nColors)+1, :));
-        marker.line.color = 'rgb(255, 255, 255)';
+        marker.color = getStringColor(round(255*colorMap(mod(g-1, nColors)+1, :)));
+        marker.line.color = "rgb(255, 255, 255)";
 
-        obj.data{p}.marker = marker;   
-
-        %-------------------------------------------------------------------------%
+        obj.data{p}.marker = marker;
 
         %-legend-%
         if byGroups
@@ -106,16 +87,13 @@ function updateGeobubble(obj,geoIndex)
             obj.data{p}.legendgroup = obj.data{p}.name;
             obj.data{p}.showlegend = true;
         end
-
-        %-------------------------------------------------------------------------%
-
     end
 
-    %=============================================================================%
+    %=====================================================================%
     %
     %-UPDATE GEO AXES-%
     %
-    %=============================================================================%
+    %=====================================================================%
 
     %-set domain plot-%
     xo = geoData.Position(1);
@@ -126,14 +104,10 @@ function updateGeobubble(obj,geoIndex)
     geoaxes.domain.x = min([xo xo + w],1);
     geoaxes.domain.y = min([yo yo + h],1);
 
-    %-----------------------------------------------------------------------------%
-
     %-setting projection-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.projection.type = 'mercator';
     end
-
-    %-----------------------------------------------------------------------------%
 
     %-setting basemap-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -154,8 +128,6 @@ function updateGeobubble(obj,geoIndex)
         geoaxes.showland = true;
     end
 
-    %-----------------------------------------------------------------------------%
-
     %-setting latitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.lataxis.range = geoData.LatitudeLimits;
@@ -167,8 +139,6 @@ function updateGeobubble(obj,geoIndex)
         end
     end
 
-    %-----------------------------------------------------------------------------%
-    
     %-setting longitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.lonaxis.range = geoData.LongitudeLimits;
@@ -180,20 +150,14 @@ function updateGeobubble(obj,geoIndex)
         end
     end
 
-    %-----------------------------------------------------------------------------%
-    
     %-set map center-%
     geoaxes.center.lat = geoData.MapCenter(1);
     geoaxes.center.lon = geoData.MapCenter(2);
 
-    %-----------------------------------------------------------------------------%
-    
     %-set better resolution-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geo.resolution = '50';
     end
-
-    %-----------------------------------------------------------------------------%
 
     %-set mapbox style-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
@@ -206,23 +170,17 @@ function updateGeobubble(obj,geoIndex)
         end
     end
 
-    %-----------------------------------------------------------------------------%
-
     %-set geo geoaxes to layout-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        obj.layout = setfield(obj.layout, sprintf('geo%d', xSource+1), geoaxes);
+        obj.layout.(sprintf('geo%d', xSource+1)) = geoaxes;
     elseif strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
-        obj.layout = setfield(obj.layout, sprintf('mapbox%d', xSource+1), geoaxes);
+        obj.layout.(sprintf('mapbox%d', xSource+1)) = geoaxes;
     end
-
-    %-----------------------------------------------------------------------------%
 
     %-remove any annotation text-%
     istitle = length(geoData.Title) > 0;
     obj.layout.annotations{1}.text = ' ';
     obj.layout.annotations{1}.showarrow = false;
-
-    %-----------------------------------------------------------------------------%
 
     %-layout title-%
     if istitle
@@ -237,8 +195,6 @@ function updateGeobubble(obj,geoIndex)
       obj.layout.annotations{1}.font.family = matlab2plotlyfont(geoData.FontName);
       obj.layout.annotations{1}.font.size = 1.5*geoData.FontSize;
     end
-
-    %-----------------------------------------------------------------------------%    
 
     %-setting legend-%
     if byGroups
@@ -272,6 +228,4 @@ function updateGeobubble(obj,geoIndex)
         obj.layout.legend.traceorder = 'normal';
         obj.layout.legend.valign = 'middle';
     end
-
-    %-----------------------------------------------------------------------------%
 end

@@ -1,167 +1,116 @@
-function updateArea(obj,areaIndex)
+function data = updateArea(obj,areaIndex)
+    % x: ...[DONE]
+    % y: ...[DONE]
+    % r: ...[NOT SUPPORTED IN MATLAB]
+    % t: ...[NOT SUPPORTED IN MATLAB]
+    % mode: ...[DONE]
+    % name: ...[DONE]
+    % text: ...[NOT SUPPORTED IN MATLAB]
+    % error_y: ...[HANDLED BY ERRORBAR]
+    % error_x: ...[HANDLED BY ERRORBAR]
 
-% x: ...[DONE]
-% y: ...[DONE]
-% r: ...[NOT SUPPORTED IN MATLAB]
-% t: ...[NOT SUPPORTED IN MATLAB]
-% mode: ...[DONE]
-% name: ...[DONE]
-% text: ...[NOT SUPPORTED IN MATLAB]
-% error_y: ...[HANDLED BY ERRORBAR]
-% error_x: ...[HANDLED BY ERRORBAR]
+    %----marker----%
+    % color: ...[NA]
+    % size: ...[NA]
+    % symbol: ...[NA]
+    % opacity: ...[NA]
+    % sizeref: ...[NA]
+    % sizemode: ...[NA]
+    % colorscale: ...[NA]
+    % cauto: ...[NA]
+    % cmin: ...[NA]
+    % cmax: ...[NA]
+    % outliercolor: ...[NA]
+    % maxdisplayed: ...[NA]
 
-%----marker----%
+    %----marker line----%
+    % color: ...[NA]
+    % width: ...[NA]
+    % dash: ...[NA]
+    % opacity: ...[NA]
+    % shape: ...[NA]
+    % smoothing: ...[NA]
+    % outliercolor: ...[NA]
+    % outlierwidth: ...[NA]
 
-% color: ...[NA]
-% size: ...[NA]
-% symbol: ...[NA]
-% opacity: ...[NA]
-% sizeref: ...[NA]
-% sizemode: ...[NA]
-% colorscale: ...[NA]
-% cauto: ...[NA]
-% cmin: ...[NA]
-% cmax: ...[NA]
-% outliercolor: ...[NA]
-% maxdisplayed: ...[NA]
+    %----line----%
+    % color: .........[TODO]
+    % width: .........[TODO]
+    % dash: .........[TODO]
+    % opacity: .........[TODO]
+    % shape: ...[NA]
+    % smoothing: ...[NA]
+    % outliercolor: ...[NA]
+    % outlierwidth: ...[NA]
 
-%----marker line----%
+    % textposition: ...[NOT SUPPORTED IN MATLAB]
+    % textfont: ...[NOT SUPPORTED IN MATLAB]
+    % connectgaps: ...[NOT SUPPORTED IN MATLAB]
+    % fill: ...[DONE]
+    % fillcolor: ..........[TODO]
+    % opacity: ..........[TODO]
+    % xaxis: ...[DONE]
+    % yaxis: ....[DONE]
+    % showlegend: ...[DONE]
+    % stream: ...[HANDLED BY PLOTLYSTREAM]
+    % visible: ...[DONE]
+    % type: ...[DONE]
 
-% color: ...[NA]
-% width: ...[NA]
-% dash: ...[NA]
-% opacity: ...[NA]
-% shape: ...[NA]
-% smoothing: ...[NA]
-% outliercolor: ...[NA]
-% outlierwidth: ...[NA]
+    %-store original area handle-%
+    area_data = obj.State.Plot(areaIndex).Handle;
 
-%----line----%
-% color: .........[TODO]
-% width: .........[TODO]
-% dash: .........[TODO]
-% opacity: .........[TODO]
-% shape: ...[NA]
-% smoothing: ...[NA]
-% outliercolor: ...[NA]
-% outlierwidth: ...[NA]
+    %-AXIS INDEX-%
+    axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
 
-% textposition: ...[NOT SUPPORTED IN MATLAB]
-% textfont: ...[NOT SUPPORTED IN MATLAB]
-% connectgaps: ...[NOT SUPPORTED IN MATLAB]
-% fill: ...[DONE]
-% fillcolor: ..........[TODO]
-% opacity: ..........[TODO]
-% xaxis: ...[DONE]
-% yaxis: ....[DONE]
-% showlegend: ...[DONE]
-% stream: ...[HANDLED BY PLOTLYSTREAM]
-% visible: ...[DONE]
-% type: ...[DONE]
+    %-check for multiple axes-%
+    if numel(area_data.Parent.YAxis) > 1
+        yaxMatch = zeros(1,2);
+        for yax = 1:2
+            yAxisColor = area_data.Parent.YAxis(yax).Color;
+            yaxMatch(yax) = sum(yAxisColor == area_data.FaceColor);
+        end
+        [~, yaxIndex] = max(yaxMatch);
+        [xsource, ysource] = findSourceAxis(obj, axIndex, yaxIndex);
+    else
+        [xsource, ysource] = findSourceAxis(obj,axIndex);
+    end
 
-%-------------------------------------------------------------------------%
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.type = "scatter";
+    data.x = area_data.XData;
 
-%-store original area handle-%
-area_data = obj.State.Plot(areaIndex).Handle; 
+    prevAreaIndex = find(cellfun(@(x) isfield(x,"fill") ...
+            && isequal({x.xaxis x.yaxis},{data.xaxis ...
+            data.yaxis}),obj.data(1:areaIndex-1)),1,"last");
+    if ~isempty(prevAreaIndex)
+        data.y = obj.data{prevAreaIndex}.y + area_data.YData;
+    else
+        data.y = area_data.YData;
+    end
 
-%------------------------------------------------------------------------%
+    data.name = area_data.DisplayName;
+    data.visible = area_data.Visible == "on";
 
-%-get "children" using new HG2 approach-%
-area_child = get(area_data.java.firstDown); 
+    if ~isempty(prevAreaIndex)
+        data.fill = "tonexty";
+    else % first area plot
+        data.fill = "tozeroy";
+    end
 
-%------------------------------------------------------------------------%
+    if isprop(area_data, "LineStyle") && area_data.LineStyle == "none"
+        data.mode = "none";
+    else
+        data.mode = "lines";
+    end
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
+    data.line = extractAreaLine(area_data);
+    data.fillcolor = extractAreaFace(area_data).color;
 
-%-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
-
-%-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
-
-%-------------------------------------------------------------------------%
-
-%-area xaxis-%
-obj.data{areaIndex}.xaxis = ['x' num2str(xsource)];
-
-%-------------------------------------------------------------------------%
-
-%-area yaxis-%
-obj.data{areaIndex}.yaxis = ['y' num2str(ysource)];
-
-%-------------------------------------------------------------------------%
-
-%-area type-%
-obj.data{areaIndex}.type = 'scatter';
-
-%-------------------------------------------------------------------------%
-
-%-area x-%
-obj.data{areaIndex}.x = area_data.XData;
-
-%-------------------------------------------------------------------------%
-
-%-area y-%
-if areaIndex>1
-    obj.data{areaIndex}.y = obj.data{areaIndex-1}.y + area_data.YData;
-else
-    obj.data{areaIndex}.y = area_data.YData;
+    switch area_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            data.showlegend = true;
+        case "off"
+            data.showlegend = false;
+    end
 end
-
-%-------------------------------------------------------------------------%
-
-%-area name-%
-if ~isempty(area_data.DisplayName);
-    obj.data{areaIndex}.name = area_data.DisplayName;
-else
-    obj.data{areaIndex}.name = area_data.DisplayName;
-end
-
-%-------------------------------------------------------------------------%
-
-%-area visible-%
-obj.data{areaIndex}.visible = strcmp(area_data.Visible,'on');
-
-%-------------------------------------------------------------------------%
-
-%-area fill-%
-obj.data{areaIndex}.fill = 'tonexty';
-
-%-------------------------------------------------------------------------%
-
-%-AREA MODE-%
-obj.data{areaIndex}.mode = 'lines';
-
-%-------------------------------------------------------------------------%
-
-%-area line-%
-obj.data{areaIndex}.line = extractAreaLine(area_data);
-
-%-------------------------------------------------------------------------%
-
-%-area fillcolor-%
-fill = extractAreaFace(area_data);
-obj.data{areaIndex}.fillcolor = fill.color;
-
-%-------------------------------------------------------------------------%
-
-%-area showlegend-%
-leg = get(area_data.Annotation);
-legInfo = get(leg.LegendInformation);
-
-switch legInfo.IconDisplayStyle
-    case 'on'
-        showleg = true;
-    case 'off'
-        showleg = false;
-end
-
-obj.data{areaIndex}.showlegend = showleg;
-
-%-------------------------------------------------------------------------%
-
-end
-
-

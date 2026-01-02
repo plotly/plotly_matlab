@@ -3,42 +3,62 @@ function valstr = m2json(val)
         valstr = struct2json(val);
     elseif iscell(val)
         valstr = cell2json(val);
-    elseif isa(val, 'numeric')
+    elseif isa(val, "numeric")
+        if isempty(val)
+            valstr = "[]";
+            return;
+        end
         sz = size(val);
-        if length(find(sz>1))>1 % 2D or higher array
-            valstr = '';
-            for i = 1:sz(1)
-                valsubstr = [sprintf('%.15g, ', val(i,:))];
-                valsubstr = valsubstr(1:(end-2));
-                valstr = [valstr ', [' valsubstr ']'];
-            end
-            valstr = valstr(3:end); % trail leading commas
+        if isa(val,"single")
+            numDigits = 7;
         else
-            valstr = [sprintf('%.15g, ', val)];
-            valstr = valstr(1:(end-2));
+            numDigits = 15;
+        end
+        fmt = sprintf("%%.%ig", numDigits);
+        if sum(sz>1)>1 % 2D or higher array
+            valsubstr = strings(1, sz(1));
+            for i = 1:sz(1)
+                formattedRowVal = arrayfun(@(x) sprintf(fmt, x), val(i,:));
+                valsubstr(i) = strjoin(formattedRowVal, ",");
+                valsubstr(i) = "[" + valsubstr(i) + "]";
+            end
+            valstr = strjoin(valsubstr, ",");
+        else
+            valstr = arrayfun(@(x) sprintf(fmt, x), val);
+            valstr = strjoin(valstr, ",");
         end
         if length(val)>1
-            valstr = ['[' valstr ']'];
-        elseif length(val) == 0
-            valstr = '[]';
+            valstr = "[" + valstr + "]";
         end
-        valstr = strrep(valstr, 'Inf', 'null');
-        valstr = strrep(valstr, 'NaN', 'null');
+        valstr = strrep(valstr,"-Inf", "null");
+        valstr = strrep(valstr, "Inf", "null");
+        valstr = strrep(valstr, "NaN", "null");
     elseif ischar(val)
          [r, ~] = size(val);
          % We can't use checkescape() if we have ['abc'; 'xyz']
          if r > 1
              valstr = cell2json(cellstr(val));
          else
-             val = checkescape(val); %add escape characters
-             valstr = ['"' val '"'];
+             val = checkescape(val); % add escape characters
+             valstr = sprintf("""%s""", val);
          end
     elseif islogical(val)
         if val
-            valstr = 'true';
+            valstr = "true";
         else
-            valstr = 'false';
+            valstr = "false";
         end
+    elseif isdatetime(val)
+        valstr = m2json(convertDate(val));
+    elseif isstring(val)
+        if isscalar(val)
+            fh = @char;
+        else
+            fh = @cellstr;
+        end
+        valstr = m2json(fh(val));
     else
-        valstr = ''; % wtf is it?
+        valstr = "";
+        warning("Failed to m2json encode class of type: %s", class(val));
     end
+end

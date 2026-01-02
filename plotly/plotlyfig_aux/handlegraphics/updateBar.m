@@ -1,5 +1,4 @@
-function obj = updateBar(obj,barIndex)
-
+function data = updateBar(obj,barIndex)
     % x: ...[DONE]
     % y: ...[DONE]
     % name: ...[DONE]
@@ -42,8 +41,6 @@ function obj = updateBar(obj,barIndex)
     % outliercolor: ...[NA]
     % outlierwidth: ...[NA]
 
-    %-------------------------------------------------------------------------%
-
     %-AXIS INDEX-%
     axIndex = obj.getAxisIndex(obj.State.Plot(barIndex).AssociatedAxis);
 
@@ -53,82 +50,48 @@ function obj = updateBar(obj,barIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
-    %-------------------------------------------------------------------------%
-
-    %-associate axis-%
-    obj.data{barIndex}.xaxis = sprintf('x%d', xSource);
-    obj.data{barIndex}.yaxis = sprintf('y%d', ySource);
-
-    %-------------------------------------------------------------------------%
-
-    %-set trace-%
-    obj.data{barIndex}.type = 'bar';
-    obj.data{barIndex}.name = barData.DisplayName;
-    obj.data{barIndex}.visible = strcmp(barData.Visible,'on');
-
-    %-------------------------------------------------------------------------%
-
-    %-set plot data-%
-    xData = barData.XData;
-    yData = barData.YData;
-
-    if isduration(xData) || isdatetime(xData), xData = datenum(xData); end
-    if isduration(yData) || isdatetime(yData), yData = datenum(yData); end
+    data.xaxis = "x" + xSource;
+    data.yaxis = "y" + ySource;
+    data.type = "bar";
+    data.name = barData.DisplayName;
+    data.visible = barData.Visible == "on";
 
     switch barData.Horizontal
-        case 'off'
-            obj.data{barIndex}.orientation = 'v';
-            obj.data{barIndex}.x = xData;
-            obj.data{barIndex}.y = yData;
-            
-        case 'on'
-            obj.data{barIndex}.orientation = 'h';
-            obj.data{barIndex}.x = yData;
-            obj.data{barIndex}.y = xData;
+        case "off"
+            data.orientation = "v";
+            data.x = barData.XData;
+            data.y = barData.YData;
+        case "on"
+            data.orientation = "h";
+            data.x = barData.YData;
+            data.y = barData.XData;
     end
 
-    %-------------------------------------------------------------------------%
+    data.marker = extractAreaFace(barData);
+    data.marker.line = extractAreaLine(barData);
 
-    %-trace settings-%
-    markerline = extractAreaLine(barData); 
-
-    obj.data{barIndex}.marker = extractAreaFace(barData);
-    obj.data{barIndex}.marker.line = markerline; 
-
-    %-------------------------------------------------------------------------%
-
-    %-layout settings-%
     obj.layout.bargroupgap = 1-barData.BarWidth;
 
-    try
-        obj.layout.bargap = obj.layout.bargap + 0.0625;
-    catch
-        obj.layout.bargap = 0.0625;
+    bars = findobj(obj.State.Plot(barIndex).AssociatedAxis.Children, ...
+            "Type", "Bar");
+    nBar = sum({bars.BarLayout}=="grouped");
+    if nBar > 1
+        obj.layout.bargap = 0.2;
+    else
+        obj.layout.bargap = 0;
     end
 
     switch barData.BarLayout
-        case 'grouped'
-            obj.layout.barmode = 'group';
-        case 'stacked'
-            obj.layout.barmode = 'relative';
+        case "grouped"
+            obj.layout.barmode = "group";
+        case "stacked"
+            obj.layout.barmode = "relative";
     end
 
-    %-------------------------------------------------------------------------%
-
-    %-bar showlegend-%
-    leg = get(barData.Annotation);
-    legInfo = get(leg.LegendInformation);
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    switch barData.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            data.showlegend = true;
+        case "off"
+            data.showlegend = false;
     end
-
-    obj.data{barIndex}.showlegend = showleg;
-
-    %-------------------------------------------------------------------------%
 end
-
-

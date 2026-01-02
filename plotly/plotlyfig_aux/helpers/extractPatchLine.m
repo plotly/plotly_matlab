@@ -1,79 +1,41 @@
 function line = extractPatchLine(patch_data)
+    % EXTRACTS THE LINE STYLE USED FOR MATLAB OBJECTS
+    % OF TYPE "LINE". THESE OBJECTS ARE USED IN LINESERIES,
+    % STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
 
-% EXTRACTS THE LINE STYLE USED FOR MATLAB OBJECTS
-% OF TYPE "LINE". THESE OBJECTS ARE USED IN LINESERIES,
-% STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
+    line = struct();
+    if patch_data.LineStyle == "none"
+        return
+    end
 
-%-------------------------------------------------------------------------%
+    cLim = ancestor(patch_data.Parent, "axes").CLim;
+    colormap = ancestor(patch_data.Parent, "figure").Colormap;
+    faceVertexCData = patch_data.FaceVertexCData(1,1);
+    cDataMapping = patch_data.CDataMapping;
 
-%-AXIS STRUCTURE-%
-axis_data = get(ancestor(patch_data.Parent,'axes'));
+    line.color = extractColor(patch_data.EdgeColor, cDataMapping, colormap, cLim, faceVertexCData);
+    line.width = patch_data.LineWidth;
+    line.dash = getLineDash(patch_data.LineStyle);
+end
 
-%-FIGURE STRUCTURE-%
-figure_data = get(ancestor(patch_data.Parent,'figure'));
-
-%-INITIALIZE OUTPUT-%
-line = struct(); 
-
-%-------------------------------------------------------------------------%
-
-%-PATCH LINE COLOR-%
-
-colormap = figure_data.Colormap;
-
-if(~strcmp(patch_data.LineStyle,'none'))
-    
-    if isnumeric(patch_data.EdgeColor)
-        
-        col = 255*patch_data.EdgeColor;
-        line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
-        
+function out = extractColor(color, cDataMapping, colormap, cLim, faceVertexCData)
+    if isnumeric(color)
+        out = getStringColor(round(255*color));
     else
-        switch patch_data.EdgeColor
-            
-            case 'none'
-                line.color = 'rgba(0,0,0,0,)';
-                
-            case 'flat'
-                
-                switch patch_data.CDataMapping
-                    
-                    case 'scaled'
-                        capCD = max(min(patch_data.FaceVertexCData(1,1),axis_data.CLim(2)),axis_data.CLim(1));
-                        scalefactor = (capCD -axis_data.CLim(1))/diff(axis_data.CLim);
-                        col =  255*(colormap(1+floor(scalefactor*(length(colormap)-1)),:));
-                        
-                    case 'direct'
-                        col =  255*(colormap(patch_data.FaceVertexCData(1,1),:));
-                        
+        switch color
+            case "none"
+                out = "rgba(0,0,0,0)";
+            case "flat"
+                switch cDataMapping
+                    case "scaled"
+                        capCD = max(min(faceVertexCData, cLim(2)), cLim(1));
+                        scalefactor = (capCD - cLim(1)) / diff(cLim);
+                        col = colormap(1+floor(scalefactor ...
+                                * (length(colormap)-1)),:);
+                    case "direct"
+                        col = colormap(faceVertexCData,:);
                 end
-                
-                line.color = ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')'];
+                out = getStringColor(round(255*col));
         end
     end
-    
-    %---------------------------------------------------------------------%
-    
-    %-PATCH LINE WIDTH (STYLE)-%
-    line.width = patch_data.LineWidth;
-    
-    %---------------------------------------------------------------------%
-    
-    %-PATCH LINE DASH (STYLE)-%
-    switch patch_data.LineStyle
-        case '-'
-            LineStyle = 'solid';
-        case '--'
-            LineStyle = 'dash';
-        case ':'
-            LineStyle = 'dot';
-        case '-.'
-            LineStyle = 'dashdot';
-    end
-    
-    line.dash = LineStyle;
-    
-    %---------------------------------------------------------------------%
-    
-end
 end

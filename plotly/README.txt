@@ -3,24 +3,24 @@ Plotly - Create publication quality graphs, all in your web browser!
 
 Plotly (https://plot.ly) is a browser-based data analysis and visualization tool that creates interactive, customizable, publication quality figures.
 
-This API allows MATLAB users to generate Plotly graphs from their desktop MATLAB environment. 
+This API allows MATLAB users to generate Plotly graphs from their desktop MATLAB environment.
 
 All graphs can be styled and shared through Plotly's interactive web application.
 To use, simply:
 
-0. sign-up (either online or using signup.m) 
+0. sign-up (either online or using signup.m)
 1. run plotlysetup('username','api_key') (both username and api_key can be found online!)
 3. call: >> fig2plotly to convert your MATLAB figure!
 4. View, style and share your plot in your browser at Plotly (https://plot.ly)
 
-See full documentation and examples at https://plot.ly/matlab 
+See full documentation and examples at https://plot.ly/matlab
 
 New Features
 ------------
-- plotlyupdate: automatically update the Plotly API Matlab libraries in your MATLAB search path to match the latest release! 
-- getplotlyfig('username','figure_id'): grab the data and layout information from any publicly available graph online! 
+- plotlyupdate: automatically update the Plotly API Matlab libraries in your MATLAB search path to match the latest release!
+- getplotlyfig('username','figure_id'): grab the data and layout information from any publicly available graph online!
 - saveplotlyfig(figure,'image_name','ext'): convert your plotly figure into a high-quality static (png,pdf,svg,jpef) image for your publications!
-- plotlystream: stream your data directly from MATLAB to your plotly account in real-time! 
+- plotlystream: stream your data directly from MATLAB to your plotly account in real-time!
 
 Example Graphs
 --------------

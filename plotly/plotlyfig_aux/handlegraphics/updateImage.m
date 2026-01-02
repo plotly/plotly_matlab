@@ -1,181 +1,112 @@
-function obj = updateImage(obj, imageIndex)
+function data = updateImage(obj, imageIndex)
+    % HEATMAPS
+    % z: ...[DONE]
+    % x: ...[DONE]
+    % y: ...[DONE]
+    % name: ...[DONE]
+    % zauto: ...[DONE]
+    % zmin: ...[DONE]
+    % zmax: ...[DONE]
+    % colorscale: ...[DONE]
+    % reversescale: ...[DONE]
+    % showscale: ...[DONE]
+    % colorbar: ...[HANDLED BY COLORBAR]
+    % zsmooth: ...[NOT SUPPORTED BY MATLAB]
+    % opacity: ---[TODO]
+    % xaxis: ...[DONE]
+    % yaxis: ...[DONE]
+    % showlegend: ...[DONE]
+    % stream: ...[HANDLED BY PLOTLYSTREAM]
+    % visible: ...[DONE]
+    % x0: ...[NOT SUPPORTED IN MATLAB]
+    % dx: ...[NOT SUPPORTED IN MATLAB]
+    % y0: ...[NOT SUPPORTED IN MATLAB]
+    % dy: ...[NOT SUPPORTED IN MATLAB]
+    % xtype: ...[NOT SUPPORTED IN MATLAB]
+    % ytype: ...[NOT SUPPORTED IN MATLAB]
+    % type: ...[DONE]
 
-% HEATMAPS
-% z: ...[DONE]
-% x: ...[DONE]
-% y: ...[DONE]
-% name: ...[DONE]
-% zauto: ...[DONE]
-% zmin: ...[DONE]
-% zmax: ...[DONE]
-% colorscale: ...[DONE]
-% reversescale: ...[DONE]
-% showscale: ...[DONE]
-% colorbar: ...[HANDLED BY COLORBAR]
-% zsmooth: ...[NOT SUPPORTED BY MATLAB]
-% opacity: ---[TODO]
-% xaxis: ...[DONE]
-% yaxis: ...[DONE]
-% showlegend: ...[DONE]
-% stream: ...[HANDLED BY PLOTLYSTREAM]
-% visible: ...[DONE]
-% x0: ...[NOT SUPPORTED IN MATLAB]
-% dx: ...[NOT SUPPORTED IN MATLAB]
-% y0: ...[NOT SUPPORTED IN MATLAB]
-% dy: ...[NOT SUPPORTED IN MATLAB]
-% xtype: ...[NOT SUPPORTED IN MATLAB]
-% ytype: ...[NOT SUPPORTED IN MATLAB]
-% type: ...[DONE]
+    %-FIGURE STRUCTURE-%
+    figure_data = obj.State.Figure.Handle;
 
-%-FIGURE STRUCTURE-%
-figure_data = get(obj.State.Figure.Handle);
+    %-AXIS STRUCTURE-%
+    axis_data = obj.State.Plot(imageIndex).AssociatedAxis;
 
-%-AXIS STRUCTURE-%
-axis_data = get(obj.State.Plot(imageIndex).AssociatedAxis);
+    %-AXIS INDEX-%
+    axIndex = obj.getAxisIndex(axis_data);
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(imageIndex).AssociatedAxis);
+    %-CHECK FOR MULTIPLE AXES-%
+    [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-%-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
+    %-IMAGE DATA STRUCTURE- %
+    image_data = obj.State.Plot(imageIndex).Handle;
 
-%-IMAGE DATA STRUCTURE- %
-image_data = get(obj.State.Plot(imageIndex).Handle);
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.type = 'heatmap';
 
-%-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
-
-%-------------------------------------------------------------------------%
-
-%-image xaxis-%
-obj.data{imageIndex}.xaxis = ['x' num2str(xsource)];
-
-%-------------------------------------------------------------------------%
-
-%-image yaxis-%
-obj.data{imageIndex}.yaxis = ['y' num2str(ysource)];
-
-%-------------------------------------------------------------------------%
-
-%-image type-%
-obj.data{imageIndex}.type = 'heatmap';
-
-%-------------------------------------------------------------------------%
-
-%-image x-%
-x = image_data.XData;
-cdata = image_data.CData;
-
-if (size(image_data.XData,2) == 2)
-    obj.data{imageIndex}.x = linspace(x(1), x(2), size(cdata,2));
-else
-    obj.data{imageIndex}.x = image_data.XData;
-end
-
-%-------------------------------------------------------------------------%
-
-%-image y-%
-y = image_data.YData;
-
-if (size(image_data.YData,2) == 2)
-    obj.data{imageIndex}.y = linspace(y(1), y(2), size(cdata,1));
-else
-    obj.data{imageIndex}.y = y;
-end
-
-%-------------------------------------------------------------------------%
-
-%-image z-%
-isrgbimg = (size(image_data.CData,3) > 1);
-
-if isrgbimg
-    [IND,colormap] = rgb2ind(cdata, 256);
-    obj.data{imageIndex}.z = IND;
-else
-    obj.data{imageIndex}.z = cdata;
-end
-
-%-------------------------------------------------------------------------%
-
-%-image name-%
-try
-    obj.data{imageIndex}.name = image_data.DisplayName;
-catch
-    obj.data{imageIndex}.name = '';
-end
-
-%-------------------------------------------------------------------------%
-
-%-set the opacity-%
-obj.data{imageIndex}.opacity = image_data.AlphaData;
-
-%-------------------------------------------------------------------------%
-
-%-image visible-%
-obj.data{imageIndex}.visible = strcmp(image_data.Visible,'on');
-
-%-------------------------------------------------------------------------%
-
-%-image showscale-%
-obj.data{imageIndex}.showscale = false;
-
-%-------------------------------------------------------------------------%
-
-%-image zauto-%
-obj.data{imageIndex}.zauto = false;
-
-%-------------------------------------------------------------------------%
-
-%-image zmin-%
-obj.data{imageIndex}.zmin = axis_data.CLim(1);
-
-%-------------------------------------------------------------------------%
-
-%-image zmax-%
-if ~strcmpi(image_data.CDataMapping, 'direct')
-    obj.data{imageIndex}.zmax = axis_data.CLim(2);
-else
-    obj.data{imageIndex}.zmax = 255;
-end
-
-%-------------------------------------------------------------------------%
-
-%-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
-
-%-image colorscale-%
-
-if ~isrgbimg
-    colormap = figure_data.Colormap;
-end
-
-len = length(colormap) - 1;
-
-for c = 1:size(colormap, 1)
-    col =  255*(colormap(c,:));
-    obj.data{imageIndex}.colorscale{c} = {(c-1)/len, ['rgb(' num2str(col(1)) ',' num2str(col(2)) ',' num2str(col(3)) ')']};
-end
-
-%-------------------------------------------------------------------------%
-
-%-image showlegend-%
-try
-    leg = get(image_data.Annotation);
-    legInfo = get(leg.LegendInformation);
-
-    switch legInfo.IconDisplayStyle
-        case 'on'
-            showleg = true;
-        case 'off'
-            showleg = false;
+    x = image_data.XData;
+    cdata = image_data.CData;
+    if (size(image_data.XData,2) == 2)
+        data.x = linspace(x(1), x(2), size(cdata,2));
+    else
+        data.x = image_data.XData;
     end
 
-    obj.data{imageIndex}.showlegend = showleg;
-catch
-    %TODO to future
+    y = image_data.YData;
+    if (size(image_data.YData,2) == 2)
+        data.y = linspace(y(1), y(2), size(cdata,1));
+    else
+        data.y = y;
+    end
+
+    isrgbimg = (size(image_data.CData,3) > 1);
+    if isrgbimg
+        [IND,colormap] = rgb2ind(cdata, 256);
+        data.z = IND;
+    else
+        data.z = cdata;
+    end
+
+    if isprop(image_data, "DisplayName")
+        data.name = image_data.DisplayName;
+    else
+        data.name = '';
+    end
+
+    data.opacity = image_data.AlphaData;
+    data.visible = image_data.Visible == "on";
+    data.showscale = false;
+    data.zauto = false;
+    data.zmin = axis_data.CLim(1);
+
+    if lower(image_data.CDataMapping) ~= "direct"
+        data.zmax = axis_data.CLim(2);
+    else
+        data.zmax = 255;
+    end
+
+    %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
+
+    if ~isrgbimg
+        colormap = figure_data.Colormap;
+    end
+
+    len = length(colormap) - 1;
+
+    for c = 1:size(colormap, 1)
+        col = round(255*(colormap(c,:)));
+        data.colorscale{c} = {(c-1)/len, getStringColor(col)};
+    end
+
+    try
+        switch image_data.Annotation.LegendInformation.IconDisplayStyle
+            case "on"
+                data.showlegend = true;
+            case "off"
+                data.showlegend = false;
+        end
+    catch
+        %TODO to future
+    end
 end
-
-%-------------------------------------------------------------------------%
-
-end
-

@@ -1,11 +1,14 @@
 function str = struct2json(s)
-    f = fieldnames(s);
-    str = '';
-    for i = 1:length(fieldnames(s))
-        val = s.(f{i});
-        valstr = m2json(val);
-        str = [str '"' f{i} '"' ': ' valstr ', ' ];
+    if isscalar(s)
+        str = oneStruct2json(s);
+    else
+        str = arrayfun(@oneStruct2json,s);
+        str = sprintf("[%s]",strjoin(str,", "));
     end
-    str = str(1:(end-2)); % trim trailing comma
-    str = ['{' str '}']; 
+end
+
+function str = oneStruct2json(s)
+    f = fieldnames(s);
+    strList = cellfun(@(x) sprintf('"%s" : %s', x, m2json(s.(x))), f, 'un', 0);
+    str = sprintf("{%s}", strjoin(strList, ", "));
 end

@@ -1,35 +1,22 @@
-%----UPDATE AXIS DATA/LAYOUT----%
-
 function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
-
-    %-STANDARDIZE UNITS-%
-    axisUnits = get(obj.State.Axis(axIndex).Handle,'Units');
-    set(obj.State.Axis(axIndex).Handle,'Units','normalized')
-
-    try
-        fontUnits = get(obj.State.Axis(axIndex).Handle,'FontUnits');
-        set(obj.State.Axis(axIndex).Handle,'FontUnits','points')
-    catch
-        % TODO
-    end
+    %----UPDATE AXIS DATA/LAYOUT----%
 
     %-AXIS DATA STRUCTURE-%
-    axisData = get(obj.State.Axis(axIndex).Handle);
+    axisData = obj.State.Axis(axIndex).Handle;
 
-    %-------------------------------------------------------------------------%
+    %-STANDARDIZE UNITS-%
+    axisUnits = axisData.Units;
+    axisData.Units = 'normalized';
 
-    %-xaxis-%
+    if isprop(axisData, "FontUnits")
+        fontUnits = axisData.FontUnits;
+        axisData.FontUnits = 'points';
+    end
+
     xaxis = extractAxisData(obj,axisData, 'X');
+    yaxis = extractAxisDataMultipleYAxes(obj, axisData, yaxIndex);
 
-    %-------------------------------------------------------------------------%
-
-    %-yaxis-%
-    [yaxis, yAxisLim] = extractAxisDataMultipleYAxes(obj, axisData, yaxIndex);
-
-    %-------------------------------------------------------------------------%
-
-    %-getting and setting postion data-%
-
+    %-getting and setting position data-%
     xo = axisData.Position(1);
     yo = axisData.Position(2);
     w = axisData.Position(3);
@@ -41,78 +28,41 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
         h = wh;
     end
 
-    %-------------------------------------------------------------------------%
-
-    %-xaxis domain-%
     xaxis.domain = min([xo xo + w],1);
-    scene.domain.x = min([xo xo + w],1);
-
-    %-------------------------------------------------------------------------%
-
-    %-yaxis domain-%
     yaxis.domain = min([yo yo + h],1);
-    scene.domain.y = min([yo yo + h],1);
-
-    %-------------------------------------------------------------------------%
 
     [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj, axIndex, yaxIndex);
 
-    %-------------------------------------------------------------------------%
+    xaxis.anchor = "y" + ysource;
+    yaxis.anchor = "x" + xsource;
 
-    %-xaxis anchor-%
-    xaxis.anchor = ['y' num2str(ysource)];
-
-    %-------------------------------------------------------------------------%
-
-    %-yaxis anchor-%
-    yaxis.anchor = ['x' num2str(xsource)];
-
-    %-------------------------------------------------------------------------%
-
-    %-xaxis overlaying-%
     if xoverlay
-        xaxis.overlaying = ['x' num2str(xoverlay)];
+        xaxis.overlaying = "x" + xoverlay;
     end
-
-    %-------------------------------------------------------------------------%
-
-    %-yaxis overlaying-%
     if yoverlay
-        yaxis.overlaying = ['y' num2str(yoverlay)];
+        yaxis.overlaying = "y" + yoverlay;
     end
-
-    %-------------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
-        obj.layout = setfield(obj.layout,['xaxis' num2str(xsource)],xaxis);
+        obj.layout.("xaxis" + xsource) = xaxis;
     end
-
-    %-------------------------------------------------------------------------%
 
     % update the layout field (do not overwrite source)
-    obj.layout = setfield(obj.layout,['yaxis' num2str(ysource)],yaxis);
-
-    %-------------------------------------------------------------------------%
+    obj.layout.("yaxis" + ysource) = yaxis;
 
     %-REVERT UNITS-%
-    set(obj.State.Axis(axIndex).Handle,'Units',axisUnits);
+    axisData.Units = axisUnits;
 
-    try
-        set(obj.State.Axis(axIndex).Handle,'FontUnits',fontUnits);
-    catch
-        % TODO
+    if isprop(axisData, "FontUnits")
+        axisData.FontUnits = fontUnits;
     end
 
-    %-------------------------------------------------------------------------%
-
-    %-do y-axes visibles-%
+    %-do y-axes visible-%
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
     plotIndex = obj.PlotOptions.nPlots;
 
     obj.data{plotIndex}.type = 'scatter';
-    obj.data{plotIndex}.xaxis = ['x' num2str(xsource)];
-    obj.data{plotIndex}.yaxis = ['y' num2str(ysource)];
-
-    %-------------------------------------------------------------------------%    
+    obj.data{plotIndex}.xaxis = "x" + xsource;
+    obj.data{plotIndex}.yaxis = "y" + ysource;
 end

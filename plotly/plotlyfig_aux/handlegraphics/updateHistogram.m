@@ -1,226 +1,147 @@
-function obj = updateHistogram(obj,histIndex)
+function data = updateHistogram(obj,histIndex)
+    % x:...[DONE]
+    % y:...[DONE]
+    % histnorm:...[DONE]
+    % name:...[DONE]
+    % autobinx:...[DONE]
+    % nbinsx:...[DONE]
+    % xbins:...[DONE]
+    % autobiny:...[DONE]
+    % nbinsy:...[DONE]
+    % ybins:...[DONE]
+    % text:...[NOT SUPPORTED IN MATLAB]
+    % error_y:...[HANDLED BY ERRORBARSERIES]
+    % error_x:...[HANDLED BY ERRORBARSERIES]
+    % opacity: --- [TODO]
+    % xaxis:...[DONE]
+    % yaxis:...[DONE]
+    % showlegend:...[DONE]
+    % stream:...[HANDLED BY PLOTLYSTREAM]
+    % visible:...[DONE]
+    % type:...[DONE]
+    % orientation:...[DONE]
 
-% x:...[DONE]
-% y:...[DONE]
-% histnorm:...[DONE]
-% name:...[DONE]
-% autobinx:...[DONE]
-% nbinsx:...[DONE]
-% xbins:...[DONE]
-% autobiny:...[DONE]
-% nbinsy:...[DONE]
-% ybins:...[DONE]
-% text:...[NOT SUPPORTED IN MATLAB]
-% error_y:...[HANDLED BY ERRORBARSERIES]
-% error_x:...[HANDLED BY ERRORBARSERIES]
-% opacity: --- [TODO]
-% xaxis:...[DONE]
-% yaxis:...[DONE]
-% showlegend:...[DONE]
-% stream:...[HANDLED BY PLOTLYSTREAM]
-% visible:...[DONE]
-% type:...[DONE]
-% orientation:...[DONE]
+    % MARKER:
+    % color: ...[DONE]
+    % size: ...[NA]
+    % symbol: ...[NA]
+    % opacity: ...[TODO]
+    % sizeref: ...[NA]
+    % sizemode: ...[NA]
+    % colorscale: ...[NA]
+    % cauto: ...[NA]
+    % cmin: ...[NA]
+    % cmax: ...[NA]
+    % outliercolor: ...[NA]
+    % maxdisplayed: ...[NA]
 
-% MARKER:
-% color: ...[DONE]
-% size: ...[NA]
-% symbol: ...[NA]
-% opacity: ...[TODO]
-% sizeref: ...[NA]
-% sizemode: ...[NA]
-% colorscale: ...[NA]
-% cauto: ...[NA]
-% cmin: ...[NA]
-% cmax: ...[NA]
-% outliercolor: ...[NA]
-% maxdisplayed: ...[NA]
+    % MARKER LINE:
+    % color: ...[DONE]
+    % width: ...[DONE]
+    % dash: ...[NA]
+    % opacity: ...[TODO]
+    % shape: ...[NA]
+    % smoothing: ...[NA]
+    % outliercolor: ...[NA]
+    % outlierwidth: ...[NA]
 
-% MARKER LINE:
-% color: ...[DONE]
-% width: ...[DONE]
-% dash: ...[NA]
-% opacity: ...[TODO]
-% shape: ...[NA]
-% smoothing: ...[NA]
-% outliercolor: ...[NA]
-% outlierwidth: ...[NA]
+    axisData = obj.State.Plot(histIndex).AssociatedAxis;
+    axIndex = obj.getAxisIndex(axisData);
+    hist_data = obj.State.Plot(histIndex).Handle;
+    [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-%-------------------------------------------------------------------------%
+    data.xaxis = "x" + xsource;
+    data.yaxis = "y" + ysource;
+    data.type = "bar";
 
-%-AXIS INDEX-%
-axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
+    if isprop(hist_data, "Orientation")
+        %-Matlab 2014+ histogram() function-%
+        orientation = hist_data.Orientation;
+    else
+        %-Matlab <2014 hist() function-%
+        orientation = histogramOrientation(hist_data);
+    end
 
-%-HIST DATA STRUCTURE- %
-hist_data = get(obj.State.Plot(histIndex).Handle);
+    switch orientation
+        case {"vertical", "horizontal"}
+            %-hist y data-%
+            data.x = hist_data.BinEdges(1:end-1) ...
+                    + 0.5*diff(hist_data.BinEdges);
+            data.width = diff(hist_data.BinEdges);
+            data.y = double(hist_data.Values);
+        case "v"
+            %-hist x data-%
+            xdata = mean(hist_data.XData(2:3,:));
 
-%-CHECK FOR MULTIPLE AXES-%
-[xsource, ysource] = findSourceAxis(obj,axIndex);
+            %-hist y data-%
+            xlength = 0;
+            for d = 1:length(xdata)
+                xnew = repmat(xdata(d),1,hist_data.YData(2,d));
+                data.x(xlength+1:xlength+length(xnew)) = xnew;
+                xlength = length(data.x);
+            end
 
-%-AXIS DATA-%
-eval(['xaxis = obj.layout.xaxis' num2str(xsource) ';']);
-eval(['yaxis = obj.layout.yaxis' num2str(ysource) ';']);
+            %-hist autobinx-%
+            data.autobinx = false;
 
-%-------------------------------------------------------------------------%
+            %-hist xbins-%
+            xbins.start = hist_data.XData(2,1);
+            xbins.end = hist_data.XData(3,end);
+            xbins.size = diff(hist_data.XData(2:3,1));
+            data.xbins = xbins;
 
-%-hist xaxis-%
-obj.data{histIndex}.xaxis = ['x' num2str(xsource)];
+            %-layout bargap-%
+            obj.layout.bargap = ...
+                    (hist_data.XData(3,1) - hist_data.XData(2,2)) ...
+                    / (hist_data.XData(3,1) - hist_data.XData(2,1));
+        case "h"
+            %-hist y data-%
+            ydata = mean(hist_data.YData(2:3,:));
 
-%-------------------------------------------------------------------------%
+            ylength = 0;
+            for d = 1:length(ydata)
+                ynew = repmat(ydata(d),1,hist_data.XData(2,d));
+                data.y(ylength+1:ylength+length(ynew)) = ynew;
+                ylength = length(data.y);
+            end
 
-%-hist yaxis-%
-obj.data{histIndex}.yaxis = ['y' num2str(ysource)];
+            %-hist autobiny-%
+            data.autobiny = false;
 
-%-------------------------------------------------------------------------%
+            %-hist ybins-%
+            ybins.start = hist_data.YData(2,1);
+            ybins.end = hist_data.YData(3,end);
+            ybins.size = diff(hist_data.YData(2:3,1));
+            data.ybins = ybins;
 
-%-bar type-%
-obj.data{histIndex}.type = 'bar';
+            %-layout bargap-%
+            obj.layout.bargap = ...
+                    (hist_data.XData(3,1) - hist_data.XData(2,2)) ...
+                    / (hist_data.XData(3,1) - hist_data.XData(2,1));
+    end
 
-%-------------------------------------------------------------------------%
+    if axisData.Tag == "yhist"
+        % scatterhist() function
+        data.orientation = "h";
+        [data.x, data.y] = deal(data.y, data.x);
+    end
 
-if isfield(hist_data, 'Orientation')
-  %-Matlab 2014+ histogram() function-%
-  orientation = hist_data.Orientation;
-else
-  %-Matlab <2014 hist() function-%
-  orientation = histogramOrientation(hist_data);
-end
+    data.name = hist_data.DisplayName;
+    obj.layout.barmode = "overlay";
+    data.marker.line.width = hist_data.LineWidth;
 
-switch orientation
-    case {'vertical', 'horizontal'}
+    %-hist opacity-%
+    if ~ischar(hist_data.FaceAlpha)
+        data.opacity = hist_data.FaceAlpha * 1.25;
+    end
 
-        %-------------------------------------------------------------------------%
-        %-hist y data-%
-        
-        obj.data{histIndex}.x = hist_data.BinEdges(1:end-1) + 0.5*diff(hist_data.BinEdges);
-        obj.data{histIndex}.width = diff(hist_data.BinEdges);%[hist_data.BinEdges(2:end), hist_data.Data(end)];
-        obj.data{histIndex}.y = double(hist_data.Values);
-        
-        %-------------------------------------------------------------------------%
+    data.marker = extractPatchFace(hist_data);
+    data.visible = hist_data.Visible == "on";
 
-    case 'v'
-        %-hist x data-%
-        xdata = mean(hist_data.XData(2:3,:));
-        
-        %-------------------------------------------------------------------------%
-        
-        %-hist y data-%
-        xlength = 0;
-        for d = 1:length(xdata)
-            obj.data{histIndex}.x(xlength + 1: xlength + hist_data.YData(2,d)) = repmat(xdata(d),1,hist_data.YData(2,d));
-            xlength = length(obj.data{histIndex}.x);
-        end
-        
-        %-------------------------------------------------------------------------%
-        
-        %-hist autobinx-%
-        obj.data{histIndex}.autobinx = false;
-        
-        %-------------------------------------------------------------------------%
-        
-        %-hist xbins-%
-        xbins.start = hist_data.XData(2,1);
-        xbins.end = hist_data.XData(3,end);
-        xbins.size = diff(hist_data.XData(2:3,1));
-        obj.data{histIndex}.xbins = xbins; 
-       
-        %-------------------------------------------------------------------------%
-        
-        %-layout bargap-%
-        obj.layout.bargap = (hist_data.XData(3,1)-hist_data.XData(2,2))/(hist_data.XData(3,1)-hist_data.XData(2,1));
-        
-        %-------------------------------------------------------------------------%
-        
-        
-    case 'h'
-        
-        %-hist y data-%
-        ydata = mean(hist_data.YData(2:3,:));
-        
-        %-------------------------------------------------------------------------%
-
-        ylength = 0;
-        for d = 1:length(ydata)
-            obj.data{histIndex}.y(ylength + 1: ylength + hist_data.XData(2,d)) = repmat(ydata(d),1,hist_data.XData(2,d));
-            ylength = length(obj.data{histIndex}.y);
-        end
-        
-        %-------------------------------------------------------------------------%
-        
-        %-hist autobiny-%
-        obj.data{histIndex}.autobiny = false;
-        
-        %-------------------------------------------------------------------------%
-        
-        %-hist ybins-%
-        ybins.start = hist_data.YData(2,1);
-        ybins.end = hist_data.YData(3,end);
-        ybins.size = diff(hist_data.YData(2:3,1));
-        obj.data{histIndex}.ybins = ybins; 
-       
-        %-------------------------------------------------------------------------%
-        
-        %-layout bargap-%
-        obj.layout.bargap = (hist_data.XData(3,1)-hist_data.XData(2,2))/(hist_data.XData(3,1)-hist_data.XData(2,1));
-        
-        %-------------------------------------------------------------------------%
-             
-end
-
-%-------------------------------------------------------------------------%
-
-%-hist name-%
-obj.data{histIndex}.name = hist_data.DisplayName;
-
-%-------------------------------------------------------------------------%
-
-%-layout barmode-%
-obj.layout.barmode = 'group';
-
-%-------------------------------------------------------------------------%
-
-%-hist line width-%
-obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
-
-%-------------------------------------------------------------------------%
-
-%-hist opacity-%
-if ~ischar(hist_data.FaceAlpha)
-    obj.data{histIndex}.opacity = hist_data.FaceAlpha * 1.25;
-end
-
-%-------------------------------------------------------------------------%
-
-%-marker data-%
-obj.data{histIndex}.marker = extractPatchFace(hist_data);
-
-%-------------------------------------------------------------------------%
-
-%-change color when multiple histograms same axes-%
-if min([xsource, ysource]) == 1
-    obj.data{histIndex}.marker = rmfield(obj.data{histIndex}.marker, 'color');
-end
-
-%-------------------------------------------------------------------------%
-
-%-hist visible-%
-obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
-
-%-------------------------------------------------------------------------%
-
-%-hist showlegend-%
-leg = get(hist_data.Annotation);
-legInfo = get(leg.LegendInformation);
-
-switch legInfo.IconDisplayStyle
-    case 'on'
-        showleg = true;
-    case 'off'
-        showleg = false;
-end
-
-obj.data{histIndex}.showlegend = showleg;
-
-%-------------------------------------------------------------------------%
-
+    switch hist_data.Annotation.LegendInformation.IconDisplayStyle
+        case "on"
+            data.showlegend = true;
+        case "off"
+            data.showlegend = false;
+    end
 end

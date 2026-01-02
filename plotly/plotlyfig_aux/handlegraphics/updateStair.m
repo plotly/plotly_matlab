@@ -1,14 +1,4 @@
-function obj = updateStair(obj, dataIndex)
-
-%------------------------------------------------------------------------%
-
-%-update line-%
-updateLineseries(obj,dataIndex); 
-
-%------------------------------------------------------------------------%
-
-%-stair shape-%
-obj.data{dataIndex}.line.shape = 'hvh'; 
-
-%------------------------------------------------------------------------%
+function data = updateStair(obj, dataIndex)
+    data = updateLineseries(obj, dataIndex);
+    data.line.shape = "hv";
 end
