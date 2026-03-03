@@ -30,7 +30,9 @@ function obj = updateQuiver(obj, dataIndex)
 
     %-update axis-%
     if isQuiver3D
-        updateScene(obj, dataIndex);
+        updateScene(obj, dataIndex, ...
+            useQuiverCamera=true, setTitleFont=false, ...
+            handleDatetimeTicks=false);
     end
 
     %-set trace-%
@@ -109,114 +111,6 @@ function obj = updateQuiver(obj, dataIndex)
         case "off"
             obj.data{dataIndex}.showlegend = false;
     end
-end
-
-function updateScene(obj, dataIndex)
-    %-INITIALIZATIONS-%
-    axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
-    plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = plotData.Parent;
-    xSource = findSourceAxis(obj, axIndex);
-    scene = obj.layout.("scene" + xSource);
-
-    aspectRatio = axisData.PlotBoxAspectRatio;
-    cameraPosition = axisData.CameraPosition;
-    dataAspectRatio = axisData.DataAspectRatio;
-    cameraUpVector = axisData.CameraUpVector;
-    cameraEye = cameraPosition./dataAspectRatio;
-    normFac = abs(min(cameraEye));
-
-    if isprop(axisData, "Layout") && isprop(axisData.Layout, "TileSpan")
-        fac = size(axisData.Layout.TileSpan, 2);
-    else
-        fac = 1;
-    end
-
-    r1 = rangeLength([ 1, prod(aspectRatio([1,2])) ]);
-    r2 = rangeLength([ 1, prod(aspectRatio([1,3])) ]);
-    r3 = rangeLength([ 1, prod(aspectRatio([2,3])) ]);
-    r = max([r1, r2, r3]);
-
-    %-aspect ratio-%
-    scene.aspectratio.x = 1.0*aspectRatio(1);
-    scene.aspectratio.y = 1.0*aspectRatio(2);
-    scene.aspectratio.z = 1.0*aspectRatio(3);
-
-    %-camera eye-%
-    scene.camera.eye.x = cameraEye(1) / normFac * (1.4 + r * fac);
-    scene.camera.eye.y = cameraEye(2) / normFac * (1.4 + r * fac);
-    scene.camera.eye.z = cameraEye(3) / normFac * (1.4 + r * fac);
-
-    %-camera up-%
-    scene.camera.up.x = cameraUpVector(1);
-    scene.camera.up.y = cameraUpVector(2);
-    scene.camera.up.z = cameraUpVector(3);
-
-    %-camera projection-%
-    % scene.camera.projection.type = axisData.Projection;
-
-    %-scene axis configuration-%
-    rangeFac = 0.0;
-
-    xRange = rangeLength(axisData.XLim);
-    scene.xaxis.range(1) = axisData.XLim(1) - rangeFac * xRange;
-    scene.xaxis.range(2) = axisData.XLim(2) + rangeFac * xRange;
-
-    yRange = rangeLength(axisData.YLim);
-    scene.yaxis.range(1) = axisData.YLim(1) - rangeFac * yRange;
-    scene.yaxis.range(2) = axisData.YLim(2) + rangeFac * yRange;
-
-    zRange = rangeLength(axisData.ZLim);
-    scene.zaxis.range(1) = axisData.ZLim(1) - rangeFac * zRange;
-    scene.zaxis.range(2) = axisData.ZLim(2) + rangeFac * zRange;
-
-    scene.xaxis.zeroline = false;
-    scene.yaxis.zeroline = false;
-    scene.zaxis.zeroline = false;
-
-    scene.xaxis.showline = true;
-    scene.yaxis.showline = true;
-    scene.zaxis.showline = true;
-
-    scene.xaxis.ticklabelposition = 'outside';
-    scene.yaxis.ticklabelposition = 'outside';
-    scene.zaxis.ticklabelposition = 'outside';
-
-    scene.xaxis.title = axisData.XLabel.String;
-    scene.yaxis.title = axisData.YLabel.String;
-    scene.zaxis.title = axisData.ZLabel.String;
-
-    %-tick labels-%
-    scene.xaxis.tickvals = axisData.XTick;
-    scene.xaxis.ticktext = axisData.XTickLabel;
-    scene.yaxis.tickvals = axisData.YTick;
-    scene.yaxis.ticktext = axisData.YTickLabel;
-    scene.zaxis.tickvals = axisData.ZTick;
-    scene.zaxis.ticktext = axisData.ZTickLabel;
-
-    scene.xaxis.tickcolor = 'rgba(0,0,0,1)';
-    scene.yaxis.tickcolor = 'rgba(0,0,0,1)';
-    scene.zaxis.tickcolor = 'rgba(0,0,0,1)';
-    scene.xaxis.tickfont.size = axisData.FontSize;
-    scene.yaxis.tickfont.size = axisData.FontSize;
-    scene.zaxis.tickfont.size = axisData.FontSize;
-    scene.xaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-    scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-    scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-
-    %-grid-%
-    if strcmp(axisData.XGrid, 'off')
-        scene.xaxis.showgrid = false;
-    end
-    if strcmp(axisData.YGrid, 'off')
-        scene.yaxis.showgrid = false;
-    end
-    if strcmp(axisData.ZGrid, 'off')
-        scene.zaxis.showgrid = false;
-    end
-
-    %-SET SCENE TO LAYOUT-%
-    obj.layout.("scene" + xsource) = scene;
 end
 
 function quiverBarb = getQuiverBarb2D(...
