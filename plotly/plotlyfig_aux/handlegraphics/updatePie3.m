@@ -86,11 +86,8 @@ function obj = updatePatchPie3(obj, patchIndex)
     if isvector(xdata)
         obj.data{patchIndex}.x = [xdata' xdata(1)];
     else
-        xnew = [];
-        for n = 1:size(xdata,2)
-            xnew = [xnew ; xdata(:,n) ; xdata(1,n); NaN];
-        end
-        obj.data{patchIndex}.x = xnew;
+        obj.data{patchIndex}.x = reshape([xdata; xdata(1,:); ...
+                NaN(1,size(xdata,2))], [], 1);
     end
 
     %-patch y-%
@@ -98,11 +95,8 @@ function obj = updatePatchPie3(obj, patchIndex)
     if isvector(ydata)
         obj.data{patchIndex}.y = [ydata' ydata(1)];
     else
-        ynew = [];
-        for n = 1:size(ydata,2)
-            ynew = [ynew ; ydata(:,n) ; ydata(1,n); NaN];
-        end
-        obj.data{patchIndex}.y = ynew;
+        obj.data{patchIndex}.y = reshape([ydata; ydata(1,:); ...
+                NaN(1,size(ydata,2))], [], 1);
     end
 
     %-patch z-%
@@ -111,11 +105,8 @@ function obj = updatePatchPie3(obj, patchIndex)
     if isvector(ydata)
         obj.data{patchIndex}.z = [zdata' zdata(1)];
     else
-        znew = [];
-        for n = 1:size(zdata,2)
-            znew = [znew ; zdata(:,n) ; zdata(1,n); NaN];
-        end
-        obj.data{patchIndex}.z = znew;
+        obj.data{patchIndex}.z = reshape([zdata; zdata(1,:); ...
+                NaN(1,size(zdata,2))], [], 1);
     end
 
     obj.data{patchIndex}.name = patch_data.DisplayName;
