@@ -89,13 +89,7 @@ function obj = updateSurf(obj, surfaceIndex)
 
     %-get colormap-%
     cMap = axisData.Colormap;
-    fac = 1/(length(cMap)-1);
-    colorScale = {};
-
-    for c = 1: length(cMap)
-        colorScale{c} = {(c-1)*fac, ...
-                getStringColor(round(255*cMap(c, :)))};
-    end
+    colorScale = getColorScale(cMap);
 
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
@@ -116,13 +110,7 @@ function obj = updateSurf(obj, surfaceIndex)
                 [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
             cData = rgb2ind(cData, cMap);
 
-            edgeColorScale = {};
-            fac = 1/(length(cMap)-1);
-
-            for c = 1: length(cMap)
-                edgeColorScale{c} = {(c-1)*fac , ...
-                        getStringColor(round(255*cMap(c, :)))};
-            end
+            edgeColorScale = getColorScale(cMap);
 
             obj.data{surfaceIndex}.line.cmin = 0;
             obj.data{surfaceIndex}.line.cmax = 255;
@@ -201,13 +189,7 @@ function obj = updateSurf(obj, surfaceIndex)
                 [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
             cDataSurface = rgb2ind(cData, cMap);
 
-            colorScale = {};
-            fac = 1/(length(cMap)-1);
-
-            for c = 1: length(cMap)
-                colorScale{c} = {(c-1)*fac, ...
-                        getStringColor(round(255*cMap(c, :)))};
-            end
+            colorScale = getColorScale(cMap);
         else
             cDataSurface = cData;
             obj.data{surfaceIndex}.cmin = axisData.CLim(1);

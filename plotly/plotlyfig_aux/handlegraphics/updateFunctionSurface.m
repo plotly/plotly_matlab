@@ -45,12 +45,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
 
     %-get colormap-%
     cMap = figureData.Colormap;
-    fac = 1/(length(cMap)-1);
-    colorScale = cell(1,length(cMap));
-
-    for c = 1:length(cMap)
-        colorScale{c} = {(c-1)*fac, getStringColor(round(255*cMap(c, :)))};
-    end
+    colorScale = getColorScale(cMap);
     %-get edge color-%
     if isnumeric(meshData.EdgeColor)
         cDataContour = getStringColor(round(255*meshData.EdgeColor));
