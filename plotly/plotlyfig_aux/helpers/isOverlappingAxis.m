@@ -1,10 +1,6 @@
 function [overlapping, overlapaxes] = isOverlappingAxis(obj, axIndex)
-    %-STANDARDIZE UNITS-%
-    axis_units = cell(1,axIndex);
-    for a = 1:axIndex
-        axis_units{a} = obj.State.Axis(a).Handle.Units;
-        obj.State.Axis(a).Handle.Units = "normalized";
-    end
+    % NOTE: This function assumes all axis Units have already been set to
+    % "normalized" by the caller (the update cycle in plotlyfig.update).
 
     % check axis overlap
     if axIndex == 1 % redundant to check this case
@@ -17,9 +13,4 @@ function [overlapping, overlapaxes] = isOverlappingAxis(obj, axIndex)
     % greater than 1 because obj.State.Axis(axIndex) will always be an
     % overlapping axis
     overlapping = length(overlapaxes) > 1;
-
-    %-REVERT UNITS-%
-    for a = 1:axIndex
-        obj.State.Axis(a).Handle.Units = axis_units{a};
-    end
 end

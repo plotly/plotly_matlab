@@ -596,6 +596,17 @@ classdef plotlyfig < handle
 
             %--------------------UPDATE PLOTLY FIGURE---------------------%
 
+            % Normalize axis units once for the entire update cycle.
+            axisUnitsOrig = cell(1, obj.State.Figure.NumAxes);
+            for a = 1:obj.State.Figure.NumAxes
+                if isprop(obj.State.Axis(a).Handle, 'Units')
+                    axisUnitsOrig{a} = obj.State.Axis(a).Handle.Units;
+                    obj.State.Axis(a).Handle.Units = "normalized";
+                end
+            end
+            restoreUnits = onCleanup(@() restoreAxisUnits( ...
+                obj.State.Axis, axisUnitsOrig, obj.State.Figure.NumAxes));
+
             obj.data = {};
             obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
             obj.PlotlyDefaults.anIndex = obj.State.Figure.NumTexts;
@@ -1051,6 +1062,14 @@ classdef plotlyfig < handle
                         end
                     end
             end
+        end
+    end
+end
+
+function restoreAxisUnits(stateAxis, origUnits, numAxes)
+    for a = 1:numAxes
+        if ~isempty(origUnits{a})
+            stateAxis(a).Handle.Units = origUnits{a};
         end
     end
 end
