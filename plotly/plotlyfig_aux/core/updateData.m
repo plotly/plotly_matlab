@@ -2,25 +2,26 @@ function obj = updateData(obj, dataIndex)
     %----UPDATE PLOT DATA/STYLE----%
 
     %-update plot based on TreatAs PlotOpts-%
-    if ismember("pie3", lower(obj.PlotOptions.TreatAs))
+    treatAs = lower(obj.PlotOptions.TreatAs);
+    if ismember("pie3", treatAs)
         updatePie3(obj, dataIndex);
-    elseif ismember("pcolor", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("pcolor", treatAs)
         updatePColor(obj, dataIndex);
-    elseif ismember("ezpolar", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("ezpolar", treatAs)
         obj.data{dataIndex} = updateLineseries(obj, dataIndex);
-    elseif ismember("coneplot", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("coneplot", treatAs)
         updateConeplot(obj, dataIndex);
-    elseif ismember("bar3", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("bar3", treatAs)
         updateBar3(obj, dataIndex);
-    elseif ismember("bar3h", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("bar3h", treatAs)
         updateBar3h(obj, dataIndex);
-    elseif ismember("fmesh", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("fmesh", treatAs)
         updateFmesh(obj, dataIndex);
-    elseif ismember("surfc", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("surfc", treatAs)
         updateSurfc(obj, dataIndex);
-    elseif ismember("meshc", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("meshc", treatAs)
         updateSurfc(obj, dataIndex);
-    elseif ismember("surfl", lower(obj.PlotOptions.TreatAs))
+    elseif ismember("surfl", treatAs)
         updateSurfl(obj, dataIndex);
     else %-update plot based on plot call class-%
         switch lower(obj.State.Plot(dataIndex).Class)
