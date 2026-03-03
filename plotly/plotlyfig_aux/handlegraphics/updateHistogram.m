@@ -74,12 +74,8 @@ function data = updateHistogram(obj,histIndex)
             xdata = mean(hist_data.XData(2:3,:));
 
             %-hist y data-%
-            xlength = 0;
-            for d = 1:length(xdata)
-                xnew = repmat(xdata(d),1,hist_data.YData(2,d));
-                data.x(xlength+1:xlength+length(xnew)) = xnew;
-                xlength = length(data.x);
-            end
+            counts = hist_data.YData(2,:);
+            data.x = repelem(xdata, counts);
 
             %-hist autobinx-%
             data.autobinx = false;
@@ -98,12 +94,8 @@ function data = updateHistogram(obj,histIndex)
             %-hist y data-%
             ydata = mean(hist_data.YData(2:3,:));
 
-            ylength = 0;
-            for d = 1:length(ydata)
-                ynew = repmat(ydata(d),1,hist_data.XData(2,d));
-                data.y(ylength+1:ylength+length(ynew)) = ynew;
-                ylength = length(data.y);
-            end
+            counts = hist_data.XData(2,:);
+            data.y = repelem(ydata, counts);
 
             %-hist autobiny-%
             data.autobiny = false;
