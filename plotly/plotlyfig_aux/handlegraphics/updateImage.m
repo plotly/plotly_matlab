@@ -99,14 +99,5 @@ function data = updateImage(obj, imageIndex)
         data.colorscale{c} = {(c-1)/len, getStringColor(col)};
     end
 
-    try
-        switch image_data.Annotation.LegendInformation.IconDisplayStyle
-            case "on"
-                data.showlegend = true;
-            case "off"
-                data.showlegend = false;
-        end
-    catch
-        %TODO to future
-    end
+    data.showlegend = getShowLegend(image_data);
 end

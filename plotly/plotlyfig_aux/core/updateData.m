@@ -174,8 +174,12 @@ function obj = updateData(obj, dataIndex)
     end
 
     if ~isfield(obj.data{dataIndex},"showlegend")
-        obj.data{dataIndex}.showlegend = getShowLegend( ...
-                obj.State.Plot(dataIndex).Handle);
+        plotHandle = obj.State.Plot(dataIndex).Handle;
+        showLeg = getShowLegend(plotHandle);
+        if showLeg && isprop(plotHandle, 'DisplayName')
+            showLeg = ~isempty(plotHandle.DisplayName);
+        end
+        obj.data{dataIndex}.showlegend = showLeg;
     end
     if ~isfield(obj.data{dataIndex},"name")
         obj.data{dataIndex}.name = "";

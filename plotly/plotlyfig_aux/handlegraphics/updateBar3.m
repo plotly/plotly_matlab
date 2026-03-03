@@ -118,12 +118,7 @@ function obj = updateBar3(obj, surfaceIndex)
     obj.data{surfaceIndex}.name = bar_data.DisplayName;
     obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible, 'on');
 
-    switch bar_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            obj.data{surfaceIndex}.showlegend = true;
-        case "off"
-            obj.data{surfaceIndex}.showlegend = false;
-    end
+    obj.data{surfaceIndex}.showlegend = getShowLegend(bar_data);
 
     %-SETTING SCENE-%
 

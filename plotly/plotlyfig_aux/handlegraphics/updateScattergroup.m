@@ -105,12 +105,7 @@ function updateScattergroup(obj,scatterIndex)
             end
         end
 
-        switch scatter_data.Annotation.LegendInformation.IconDisplayStyle
-            case "on"
-                obj.data{scatterIndex}.showlegend = true;
-            case "off"
-                obj.data{scatterIndex}.showlegend = false;
-        end
+        obj.data{scatterIndex}.showlegend = getShowLegend(scatter_data);
 
         %-scatter marker-%
         childmarker = extractPatchMarker(scatter_child_data(n));

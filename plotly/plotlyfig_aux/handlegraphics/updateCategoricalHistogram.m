@@ -80,10 +80,5 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     obj.data{histIndex}.marker = extractPatchFace(hist_data);
     obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
 
-    switch hist_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            obj.data{histIndex}.showlegend = true;
-        case "off"
-            obj.data{histIndex}.showlegend = false;
-    end
+    obj.data{histIndex}.showlegend = getShowLegend(hist_data);
 end

@@ -138,10 +138,5 @@ function data = updateHistogram(obj,histIndex)
     data.marker = extractPatchFace(hist_data);
     data.visible = hist_data.Visible == "on";
 
-    switch hist_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(hist_data);
 end

@@ -66,10 +66,5 @@ function data = updateSurfaceplot(obj, surfaceIndex)
     data.showscale = false;
     data.visible = image_data.Visible == "on";
 
-    switch image_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(image_data);
 end

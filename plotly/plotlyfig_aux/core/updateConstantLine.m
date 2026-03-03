@@ -125,10 +125,5 @@ function data = updateConstantLine(obj,plotIndex)
         data.marker = extractLineMarker(plotData);
     end
 
-    switch plotData.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(plotData);
 end

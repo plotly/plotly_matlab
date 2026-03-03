@@ -105,12 +105,7 @@ function obj = updateQuiver(obj, dataIndex)
     end
 
     %-set trace legend-%
-    switch plotData.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            obj.data{dataIndex}.showlegend = true;
-        case "off"
-            obj.data{dataIndex}.showlegend = false;
-    end
+    obj.data{dataIndex}.showlegend = getShowLegend(plotData);
 end
 
 function quiverBarb = getQuiverBarb2D(...

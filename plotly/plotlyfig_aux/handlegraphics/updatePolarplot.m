@@ -46,12 +46,7 @@ function data = updatePolarplot(obj, plotIndex)
         data.line.width = 2 * data.line.width;
     end
 
-    switch plotData.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(plotData);
 
     %-set polar axes-%
     updatePolaraxes(obj, plotIndex)

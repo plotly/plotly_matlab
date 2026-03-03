@@ -88,10 +88,5 @@ function data = updateBar(obj,barIndex)
             obj.layout.barmode = "relative";
     end
 
-    switch barData.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(barData);
 end

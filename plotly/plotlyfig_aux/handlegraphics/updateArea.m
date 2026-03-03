@@ -107,10 +107,5 @@ function data = updateArea(obj,areaIndex)
     data.line = extractAreaLine(area_data);
     data.fillcolor = extractAreaFace(area_data).color;
 
-    switch area_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(area_data);
 end

@@ -35,7 +35,7 @@ function data = updateScatter(obj,plotIndex)
         data.hoverinfo = "text";
     end
 
-    data.showlegend = getShowLegend(plotData);
+    data.showlegend = getShowLegend(plotData) & ~isempty(plotData.DisplayName);
 end
 
 function updateCategoricalAxis(obj, plotIndex)

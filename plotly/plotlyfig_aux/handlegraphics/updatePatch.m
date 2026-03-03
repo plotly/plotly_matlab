@@ -171,12 +171,7 @@ function obj = updatePatch(obj, patchIndex)
         obj.data{patchIndex}.color = fill.color;
     end
 
-    switch patch_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            obj.data{patchIndex}.showlegend = true;
-        case "off"
-            obj.data{patchIndex}.showlegend = false;
-    end
+    obj.data{patchIndex}.showlegend = getShowLegend(patch_data);
 
     obj.data{patchIndex}.showlegend = obj.data{patchIndex}.showlegend & ~isempty(obj.data{patchIndex}.name);
 end

@@ -109,7 +109,7 @@ function data = updateLineseries(obj, plotIndex)
         data.line.width = data.line.width * 1.5;
     end
     data.marker = extractLineMarker(plotData);
-    data.showlegend = getShowLegend(plotData);
+    data.showlegend = getShowLegend(plotData) & ~isempty(plotData.DisplayName);
 end
 
 function polarAxis = updateDefaultPolarAxes(obj, plotIndex)

@@ -296,4 +296,3 @@ function [X, Y, Z, I, J, K] = getPlotlyMesh3d(xedges, yedges, values, bargap)
     Y = vertices(:,2);
     Z = vertices(:,3);
 end
-

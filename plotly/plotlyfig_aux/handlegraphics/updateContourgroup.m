@@ -72,7 +72,7 @@ function data = updateContourgroup(obj,plotIndex)
     end
 
     %-set trace legend-%
-    data.showlegend = getShowLegend(plotData);
+    data.showlegend = getShowLegend(plotData) & ~isempty(plotData.DisplayName);
 end
 
 function contourLine = getContourLine(plotData)

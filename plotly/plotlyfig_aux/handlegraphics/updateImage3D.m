@@ -118,14 +118,5 @@ function obj = updateImage3D(obj, imageIndex)
                 {(c-1)/len, getStringColor(col)};
     end
 
-    try
-        switch image_data.Annotation.LegendInformation.IconDisplayStyle
-            case "on"
-                obj.data{imageIndex}.showlegend = true;
-            case "off"
-                obj.data{imageIndex}.showlegend = false;
-        end
-    catch
-        %TODO to future
-    end
+    obj.data{imageIndex}.showlegend = getShowLegend(image_data);
 end

@@ -42,12 +42,7 @@ function updateScatterPolar(obj, plotIndex)
     end
 
     %-legend setting-%
-    switch plotData.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            obj.data{plotIndex}.showlegend = true;
-        case "off"
-            obj.data{plotIndex}.showlegend = false;
-    end
+    obj.data{plotIndex}.showlegend = getShowLegend(plotData);
 
     %-set polar axes-%
     updatePolaraxes(obj, plotIndex);

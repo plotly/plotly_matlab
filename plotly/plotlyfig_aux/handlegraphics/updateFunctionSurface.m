@@ -106,12 +106,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     contourData.line.width = 3*meshData.LineWidth;
     contourData.line.dash = getLineDash(meshData.LineStyle);
 
-    switch meshData.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            surfaceData.showlegend = true;
-        case "off"
-            surfaceData.showlegend = false;
-    end
+    surfaceData.showlegend = getShowLegend(meshData);
 
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
     contourIndex = obj.PlotOptions.nPlots;

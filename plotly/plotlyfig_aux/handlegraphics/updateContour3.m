@@ -119,10 +119,5 @@ function data = updateContour3(obj,contourIndex)
     data.showscale = false;
     data.reversescale = false;
 
-    switch contour_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(contour_data);
 end

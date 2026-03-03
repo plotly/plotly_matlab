@@ -90,12 +90,7 @@ function obj = updateBarseries(obj,barIndex)
             obj.data{barIndex}.y = bar_data.XData;
     end
 
-    switch bar_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            obj.data{barIndex}.showlegend = true;
-        case "off"
-            obj.data{barIndex}.showlegend = false;
-    end
+    obj.data{barIndex}.showlegend = getShowLegend(bar_data);
 
     %-bar opacity-%
     if ~ischar(bar_child_data.FaceAlpha)

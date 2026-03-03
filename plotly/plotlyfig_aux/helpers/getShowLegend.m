@@ -6,7 +6,6 @@ function showLegend = getShowLegend(plotData)
 			case "off"
 				showLegend = false;
 		end
-		showLegend = showLegend & ~isempty(plotData.DisplayName);
 	catch
 		showLegend = false;
 	end

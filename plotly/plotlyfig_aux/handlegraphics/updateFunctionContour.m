@@ -85,12 +85,7 @@ function data = updateFunctionContour(obj,contourIndex)
         data.contours.showlines = false;
     end
 
-    switch contour_data.Annotation.LegendInformation.IconDisplayStyle
-        case "on"
-            data.showlegend = true;
-        case "off"
-            data.showlegend = false;
-    end
+    data.showlegend = getShowLegend(contour_data);
 
     t = "linear";
     obj.layout.("xaxis" + xsource).type = t;
