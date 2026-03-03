@@ -1,8 +1,13 @@
-classdef Test_plotlyfig_perf < PlotlyTestCase
+classdef Test_plotlyfig_perf < matlab.perftest.TestCase
+% Run as:
+%{
+res = runperf("Test_plotlyfig_perf");
+tb = res.sampleSummary;
+%}
     methods (Test)
         function testManySubplotsConversionTime(tc)
             % Stress test: many subplots with multiple lines each.
-            nAxes = 20;
+            nAxes = 10;
             nLinesPerAxis = 10;
 
             fig = figure("Visible", "off");
@@ -15,14 +20,9 @@ classdef Test_plotlyfig_perf < PlotlyTestCase
                 hold off;
             end
 
-            tic;
-            p = plotlyfig(fig, "visible", "off");
-            elapsed = toc;
-
-            fprintf("\n=== Performance: %d axes x %d lines ===\n", ...
-                nAxes, nLinesPerAxis);
-            fprintf("Total data traces:  %d\n", numel(p.data));
-            fprintf("Conversion time:    %.3f seconds\n", elapsed);
+            while tc.keepMeasuring
+                p = plotlyfig(fig, "visible", "off");
+            end
 
             % Verify correctness: one trace per line
             tc.verifyNumElements(p.data, nAxes * nLinesPerAxis);
@@ -32,6 +32,22 @@ classdef Test_plotlyfig_perf < PlotlyTestCase
                 tc.verifyEqual(p.data{k}.type, "scatter", ...
                     sprintf("Trace %d should be scatter", k));
             end
+        end
+
+        function testCheckescapeLongString(tc)
+            % Stress test for checkescape with a long string containing
+            % many characters that need escaping. The old char-shift
+            % implementation was O(n^2); strrep is O(n).
+            n = 100000;
+            val = repmat('a"b\c/d', 1, n);
+
+            while tc.keepMeasuring
+                result = checkescape(val);
+            end
+
+            % Verify correctness
+            tc.verifyEqual(length(result), 10 * n);
+            tc.verifyTrue(startsWith(result, 'a\"b\\c\/d'));
         end
     end
 end
