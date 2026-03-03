@@ -509,13 +509,14 @@ classdef plotlyfig < handle
                     nprev = length(plots) - np + 1;
 
                     % update the plot fields
-                    plotClass = lower(getGraphClass(plots(nprev)));
+                    graphClass = getGraphClass(plots(nprev));
+                    plotClass = lower(graphClass);
 
                     if ~ismember(plotClass, {'light', 'polaraxes'})
                         obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
                         obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
                         obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
-                        obj.State.Plot(obj.State.Figure.NumPlots).Class = getGraphClass(plots(nprev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).Class = graphClass;
                     else
                         obj.PlotlyDefaults.IsLight = true;
                     end
