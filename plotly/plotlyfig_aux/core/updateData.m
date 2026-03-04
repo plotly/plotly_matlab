@@ -204,6 +204,13 @@ function obj = updateData(obj, dataIndex)
             obj.data{dataIndex}.x = convertDuration(obj.data{dataIndex}.x);
         end
 
+        % check for yaxis dates
+        if strcmpi(yaxis.type, "date")
+            obj.data{dataIndex}.y = convertDate(obj.data{dataIndex}.y);
+        elseif yaxis.type == "duration"
+            obj.data{dataIndex}.y = convertDuration(obj.data{dataIndex}.y);
+        end
+
         % Plotly requires x and y to be iterable
         if isfield(obj.data{dataIndex},"x") && isscalar(obj.data{dataIndex}.x)
             obj.data{dataIndex}.x = {obj.data{dataIndex}.x};
@@ -217,13 +224,6 @@ function obj = updateData(obj, dataIndex)
                 ~any(strcmp(obj.data{dataIndex}.type,["heatmap" "box"]))
             obj.data{dataIndex}.x = ax.XTickLabel;
             obj.layout.("xaxis" + xsource).autotick = true;
-        end
-
-        % check for yaxis dates
-        if strcmpi(yaxis.type, "date")
-            obj.data{dataIndex}.y = convertDate(obj.data{dataIndex}.y);
-        elseif yaxis.type == "duration"
-            obj.data{dataIndex}.y = convertDuration(obj.data{dataIndex}.y);
         end
 
         % check for yaxis categories

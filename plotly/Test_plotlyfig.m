@@ -264,6 +264,18 @@ classdef Test_plotlyfig < PlotlyTestCase
             ));
         end
 
+        function testSingleDatetimeScatterPlotData(tc)
+            fig = figure("Visible","off");
+            x = 1;
+            y = datetime("today");
+            scatter(x,y);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqual(p.data{1}.y, {y});
+        end
+
         function testScatter3DPlotData(tc)
             fig = figure("Visible","off");
             [X,Y,Z] = sphere(16);
