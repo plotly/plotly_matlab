@@ -178,6 +178,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     else
         axis.showticklabels = false;
         axis.showline = false;
+        axis.showgrid = false;
         axis.ticks = "";
     end
 end

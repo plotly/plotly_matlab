@@ -47,6 +47,7 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
     else
         axis.showline = false;
         axis.showticklabels = false;
+        axis.showgrid = false;
         axis.ticks = "";
     end
 end

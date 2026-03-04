@@ -146,9 +146,7 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
     else
         axis.showline = false;
         axis.showticklabels = false;
-        axis.ticks = '';
-        axis.showline = false;
-        axis.showticklabels = false;
+        axis.showgrid = false;
         axis.ticks = '';
     end
 end
