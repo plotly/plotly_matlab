@@ -2865,5 +2865,37 @@ classdef Test_plotlyfig < PlotlyTestCase
                     + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
         end
+
+        function testMultiGroupBarWidths(tc)
+            n = 10;
+            mainBars = 0.4*randn(n, 1);
+            subBars = 0.4*randn(n, 2);
+            iLabel = 1:length(mainBars);
+
+            fig = figure("Visible", "off");
+            hold on;
+            bar(iLabel', mainBars, 0.95, "facecolor", [0.35 0.35 0.35]);
+            bar(iLabel', subBars, 1);
+
+            p = plotlyfig(fig, "visible", "off");
+
+            % 3 traces: 1 wide bar + 2 narrow bars
+            tc.verifyNumElements(p.data, 3);
+
+            widths = cellfun(@(d) d.width, p.data);
+            wideWidth = max(widths);
+            narrowWidth = min(widths);
+
+            % Wide bar (single series, BarWidth=0.95) should be wider
+            % than narrow bars (2 series, BarWidth=1.0)
+            tc.verifyGreaterThan(wideWidth, 2 * narrowWidth);
+
+            % Both narrow bars should have the same width
+            narrowWidths = widths(widths < wideWidth);
+            tc.verifyEqual(narrowWidths(1), narrowWidths(2));
+
+            % All traces should use overlay mode
+            tc.verifyEqual(p.layout.barmode, "overlay");
+        end
     end
 end

@@ -56,37 +56,87 @@ function data = updateBar(obj,barIndex)
     data.name = barData.DisplayName;
     data.visible = barData.Visible == "on";
 
-    switch barData.Horizontal
-        case "off"
-            data.orientation = "v";
-            data.x = barData.XData;
-            data.y = barData.YData;
-        case "on"
-            data.orientation = "h";
-            data.x = barData.YData;
-            data.y = barData.XData;
+    %-find all grouped bars on the same axis-%
+    parentAxis = obj.State.Plot(barIndex).AssociatedAxis;
+    bars = findobj(parentAxis.Children, "Type", "Bar");
+
+    %-check for multiple bar groups (cheap: just compare BarWidth values)-%
+    barWidths = arrayfun(@(b) b.BarWidth, bars);
+    hasMultipleGroups = numel(unique(barWidths)) > 1 ...
+            && barData.BarLayout == "grouped";
+
+    if hasMultipleGroups
+        %-MULTI-GROUP: use overlay mode with explicit positions/widths-%
+        barWidth = getRenderedBarWidth(obj, barData);
+
+        switch barData.Horizontal
+            case "off"
+                data.orientation = "v";
+                data.x = barData.XEndPoints;
+                data.y = barData.YData;
+            case "on"
+                data.orientation = "h";
+                data.x = barData.YData;
+                data.y = barData.XEndPoints;
+        end
+
+        data.width = barWidth;
+        obj.layout.barmode = "overlay";
+        obj.layout.bargap = 0;
+    else
+        %-SINGLE GROUP: use plotly's built-in grouping-%
+        switch barData.Horizontal
+            case "off"
+                data.orientation = "v";
+                data.x = barData.XData;
+                data.y = barData.YData;
+            case "on"
+                data.orientation = "h";
+                data.x = barData.YData;
+                data.y = barData.XData;
+        end
+
+        obj.layout.bargroupgap = 1-barData.BarWidth;
+
+        nBar = sum({bars.BarLayout}=="grouped");
+        if nBar > 1
+            obj.layout.bargap = 0.2;
+        else
+            obj.layout.bargap = 0;
+        end
+
+        switch barData.BarLayout
+            case "grouped"
+                obj.layout.barmode = "group";
+            case "stacked"
+                obj.layout.barmode = "relative";
+        end
     end
 
     data.marker = extractAreaFace(barData);
     data.marker.line = extractAreaLine(barData);
 
-    obj.layout.bargroupgap = 1-barData.BarWidth;
-
-    bars = findobj(obj.State.Plot(barIndex).AssociatedAxis.Children, ...
-            "Type", "Bar");
-    nBar = sum({bars.BarLayout}=="grouped");
-    if nBar > 1
-        obj.layout.bargap = 0.2;
-    else
-        obj.layout.bargap = 0;
-    end
-
-    switch barData.BarLayout
-        case "grouped"
-            obj.layout.barmode = "group";
-        case "stacked"
-            obj.layout.barmode = "relative";
-    end
-
     data.showlegend = getShowLegend(barData);
+end
+
+function w = getRenderedBarWidth(obj, barData)
+    % Extract actual bar width from MATLAB's rendered face vertex data.
+    % Calls drawnow at most once per figure to populate vertex data.
+    persistent lastFigure
+    figHandle = obj.State.Figure.Handle;
+    if isempty(lastFigure) || lastFigure ~= figHandle
+        drawnow;
+        lastFigure = figHandle;
+    end
+
+    w = barData.BarWidth;
+    try
+        vd = double(barData.Face.VertexData);
+        if size(vd, 2) >= 4
+            xVerts = vd(1, 1:4);
+            w = max(xVerts) - min(xVerts);
+        end
+    catch
+        % vertex data unavailable, fall back to BarWidth
+    end
 end
