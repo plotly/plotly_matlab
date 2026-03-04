@@ -486,6 +486,12 @@ classdef plotlyfig < handle
                 % find plots of figure
                 plots = findobj(ax(axrev),'-not','Type','Text','-not','Type','axes','-depth',1);
 
+                % include GraphPlot objects (HandleVisibility='off' by default)
+                graphPlots = findall(ax(axrev), 'Type', 'graphplot', '-depth', 1);
+                if ~isempty(graphPlots)
+                    plots = [plots; graphPlots];
+                end
+
                 % get number of nbars for pie3
                 if lower(obj.PlotOptions.TreatAs) == "pie3"
                     obj.PlotOptions.nbars{a} = 0;

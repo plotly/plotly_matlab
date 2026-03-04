@@ -138,10 +138,16 @@ function annotation = updateAnnotation(obj,anIndex)
         annotation.bordercolor = "rgba(0,0,0,0)";
     end
 
-    annotation.textangle = text_data.Rotation;
-    if text_data.Rotation > 180
-        annotation.textangle = text_data.Rotation - 360;
+    %-text rotation (plotly CW positive, MATLAB CCW positive)-%
+    rotation = text_data.Rotation;
+    if rotation > 180
+        rotation = rotation - 360;
     end
+    parentAxis = obj.State.Text(anIndex).AssociatedAxis;
+    if ~isempty(findall(parentAxis, "Type", "graphplot", "-depth", 1))
+        rotation = -rotation;
+    end
+    annotation.textangle = rotation;
 
     annotation.borderwidth = text_data.LineWidth;
     annotation.borderpad = text_data.Margin;

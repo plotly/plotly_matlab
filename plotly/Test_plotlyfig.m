@@ -2897,5 +2897,45 @@ classdef Test_plotlyfig < PlotlyTestCase
             % All traces should use overlay mode
             tc.verifyEqual(p.layout.barmode, "overlay");
         end
+
+        function testPlotDigraph(tc)
+            d = digraph(["Root" "Root" "Child1"], ...
+                    ["Child1" "Child2" "Grandchild"]);
+            fig = figure("Visible", "off");
+            lbl = d.Nodes.Name;
+            pt = plot(d, "Layout", "layered", "AssignLayers", "asap", ...
+                "EdgeAlpha", 0.4, "ArrowSize", 0, "MarkerSize", 8, ...
+                "NodeFontSize", 0.1, "Interpreter", "none");
+            text(pt.XData, pt.YData, lbl, "rotation", -22.5, ...
+                "FontSize", 12, "Interpreter", "none");
+            title("Minimal DAG example");
+
+            p = plotlyfig(fig, "visible", "off");
+
+            % GraphPlot should produce 2 traces: edges + nodes
+            tc.verifyGreaterThanOrEqual(numel(p.data), 2);
+
+            % Find the node trace (markers)
+            isMarkers = cellfun(@(d) isfield(d, "mode") ...
+                    && d.mode == "markers", p.data);
+            tc.verifyTrue(any(isMarkers), ...
+                "Should have a markers trace for nodes");
+            nodeTrace = p.data{find(isMarkers, 1)};
+            tc.verifyEqual(numel(nodeTrace.x), numnodes(d));
+
+            % Find the edge trace (lines)
+            isLines = cellfun(@(d) isfield(d, "mode") ...
+                    && d.mode == "lines", p.data);
+            tc.verifyTrue(any(isLines), ...
+                "Should have a lines trace for edges");
+
+            % Text annotations should have negated rotation
+            textAnns = p.layout.annotations( ...
+                    cellfun(@(a) a.textangle ~= 0, p.layout.annotations));
+            for k = 1:numel(textAnns)
+                tc.verifyEqual(textAnns{k}.textangle, 22.5, ...
+                    "Rotation should be negated for graph plot axes");
+            end
+        end
     end
 end

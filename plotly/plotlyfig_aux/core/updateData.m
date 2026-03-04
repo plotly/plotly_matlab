@@ -159,6 +159,8 @@ function obj = updateData(obj, dataIndex)
                 obj.data{dataIndex} = updateSurfaceplot(obj,dataIndex);
             case "implicitfunctionline"
                 obj.data{dataIndex} = updateLineseries(obj, dataIndex);
+            case "graphplot"
+                updateGraphPlot(obj, dataIndex);
                 %--Plotly supported MATLAB group plot objects--%
             case {"hggroup","group"}
                 % check for boxplot
