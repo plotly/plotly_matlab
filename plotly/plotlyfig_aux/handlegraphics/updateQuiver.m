@@ -31,8 +31,8 @@ function obj = updateQuiver(obj, dataIndex)
     %-update axis-%
     if isQuiver3D
         updateScene(obj, dataIndex, ...
-            useQuiverCamera=true, setTitleFont=false, ...
-            handleDatetimeTicks=false);
+            "useQuiverCamera", true, "setTitleFont", false, ...
+            "handleDatetimeTicks", false);
     end
 
     %-set trace-%

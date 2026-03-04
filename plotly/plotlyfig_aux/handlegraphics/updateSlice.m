@@ -7,8 +7,8 @@ function obj = updateSlice(obj, dataIndex)
 
     %-update scene-%
     updateScene(obj, dataIndex, ...
-        normFacScale=0.625, aspectMultiplier=[1.15 1.0 0.9], ...
-        setTitleFont=false, handleDatetimeTicks=false)
+        "normFacScale", 0.625, "aspectMultiplier", [1.15 1.0 0.9], ...
+        "setTitleFont", false, "handleDatetimeTicks", false)
 
     %-get trace data-%
     xData = plotData.XData;
