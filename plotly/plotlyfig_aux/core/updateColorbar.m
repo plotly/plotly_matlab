@@ -31,9 +31,6 @@ function updateColorbar(obj,colorbarIndex)
     % xpad: ...[DONE]
     % ypad: ...[DONE]
 
-    %-FIGURE STRUCTURE-%
-    figureData = obj.State.Figure.Handle;
-
     %-PLOT DATA STRUCTURE- %
     try
         colorbarData = obj.State.Colorbar(colorbarIndex).Handle;
@@ -46,15 +43,7 @@ function updateColorbar(obj,colorbarIndex)
     obj.State.Colorbar(colorbarIndex).Handle.Units = "normalized";
 
     %-variable initialization-%
-    if isHG2
-        outlineColor = [0 0 0];
-    else
-        if colorbarData.Position(4) > colorbarData.Position(3)
-            outlineColor = round(255*colorbarData.YColor);
-        else
-            outlineColor = round(255*colorbarData.XColor);
-        end
-    end
+    outlineColor = [0 0 0];
 
     outlineColor = getStringColor(outlineColor);
     lineWidth = colorbarData.LineWidth ...
@@ -92,18 +81,10 @@ function updateColorbar(obj,colorbarIndex)
     %-get colorbar title and labels-%
     colorbarTitle = colorbarData.Label;
 
-    if isHG2
-        colorbarTitleData = colorbarTitle;
-        colorbarYLabel = colorbarTitle;
-        colorbarYLabelData = colorbarTitle;
-        colorbarXLabelData.String = [];
-    else
-        colorbarTitleData = colorbarTitle;
-        colorbarXLabel = colorbarData.XLabel;
-        colorbarXLabelData = colorbarXLabel;
-        colorbarYLabel = colorbarData.YLabel;
-        colorbarYLabelData = colorbarYLabel;
-    end
+    colorbarTitleData = colorbarTitle;
+    colorbarYLabel = colorbarTitle;
+    colorbarYLabelData = colorbarTitle;
+    colorbarXLabelData.String = [];
 
     %-STANDARDIZE UNITS FOR TITLE-%
     titleunits = colorbarTitleData.Units;
@@ -113,13 +94,6 @@ function updateColorbar(obj,colorbarIndex)
     colorbarTitle.Units = "data";
     colorbarYLabel.Units = "data";
     colorbarYLabel.FontUnits = "points";
-    if ~isHG2
-        xlabelunits = colorbarXLabelData.Units;
-        xlabelfontunits = colorbarXLabelData.FontUnits;
-        colorbarTitle.FontUnits = "points";
-        colorbarXLabel.Units = "data";
-        colorbarXLabel.FontUnits = "points";
-    end
 
     %-colorbar title settings-%
     isTitle = true;
@@ -171,53 +145,33 @@ function updateColorbar(obj,colorbarIndex)
     colorbarYLabel.Units = ylabelunits;
     colorbarYLabel.FontUnits = ylabelfontunits;
 
-    if ~isHG2
-        colorbarXLabel.Units = xlabelunits;
-        colorbarXLabel.FontUnits = xlabelfontunits;
-    end
-
     tickValues = colorbarData.Ticks;
     tickLabels = colorbarData.TickLabels;
     showTickLabels = true;
 
-    if isHG2
-        if isempty(tickValues)
-            showTickLabels = false;
-            colorbar.ticks = "";
-        elseif isempty(tickLabels)
-            colorbar.tickvals = tickValues;
-        else
-            colorbar.tickvals = tickValues;
-            colorbar.ticktext = tickLabels;
-        end
-        if showTickLabels
-            colorbar.showticklabels = showTickLabels;
-            switch colorbarData.AxisLocation
-                case "in"
-                    colorbar.ticklabelposition = "inside";
-                case "out"
-                    colorbar.ticklabelposition = "outside";
-            end
-            switch colorbarData.TickDirection
-                case "in"
-                    colorbar.ticks = "inside";
-                case "out"
-                    colorbar.ticks = "outside";
-            end
-        end
+    if isempty(tickValues)
+        showTickLabels = false;
+        colorbar.ticks = "";
+    elseif isempty(tickLabels)
+        colorbar.tickvals = tickValues;
     else
-        colorbar = setTicksNotHG2(colorbar, colorbarData);
+        colorbar.tickvals = tickValues;
+        colorbar.ticktext = tickLabels;
     end
-
-    %-colorbar bg-color-%
-    if ~isHG2
-        if ~ischar(colorbarData.Color)
-            bgColor = colorbarData.Color;
-        else
-            bgColor = figureData.Color;
+    if showTickLabels
+        colorbar.showticklabels = showTickLabels;
+        switch colorbarData.AxisLocation
+            case "in"
+                colorbar.ticklabelposition = "inside";
+            case "out"
+                colorbar.ticklabelposition = "outside";
         end
-
-        obj.layout.plot_bgcolor = getStringColor(round(255*bgColor));
+        switch colorbarData.TickDirection
+            case "in"
+                colorbar.ticks = "inside";
+            case "out"
+                colorbar.ticks = "outside";
+        end
     end
 
     %-ASSOCIATED DATA-%
@@ -233,43 +187,4 @@ function updateColorbar(obj,colorbarIndex)
 
     %-REVERT UNITS-%
     obj.State.Colorbar(colorbarIndex).Handle.Units = colorbarUnits;
-end
-
-function colorbar = setTicksNotHG2(colorbar, colorbarData)
-    verticalOrientation = colorbar.len > colorbar.thickness;
-
-    if verticalOrientation
-        tick = colorbarData.YTick;
-        tickLabel = colorbarData.YTickLabel;
-        tickLabelMode = colorbarData.YTickLabelMode;
-    else
-        tick = colorbarData.XTick;
-        tickLabel = colorbarData.XTickLabel;
-        tickLabelMode = colorbarData.XTickLabelMode;
-    end
-
-    if isempty(tick)
-        colorbar.ticks = "";
-        colorbar.showticklabels = false;
-    else
-        switch colorbarData.TickDir
-            case "in"
-                colorbar.ticks = "inside";
-            case "out"
-                colorbar.ticks = "outside";
-        end
-        if strcmp(tickLabelMode, "auto")
-            colorbar.autotick = true;
-            colorbar.nticks = length(tick) + 1;
-        else
-            if isempty(tickLabel)
-                colorbar.showticklabels = false;
-            else
-                colorbar.autotick = false;
-                colorbar.tick0 = str2double(tickLabel(1,:));
-                colorbar.dtick = str2double(tickLabel(2,:)) ...
-                                 - str2double(tickLabel(1,:));
-            end
-        end
-    end
 end

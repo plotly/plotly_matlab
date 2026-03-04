@@ -31,9 +31,6 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     % xpad: ...[DONE]
     % ypad: ...[DONE]
 
-    %-FIGURE STRUCTURE-%
-    figureData = obj.State.Figure.Handle;
-
     %-PLOT DATA STRUCTURE- %
     try
         colorbarData = obj.State.Colorbar(colorbarIndex).Handle;
@@ -56,18 +53,10 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     % get colorbar title and labels
     colorbarTitle = colorbarData.Label;
 
-    if isHG2
-        colorbarTitleData = colorbarTitle;
-        colorbarYLabel = colorbarTitle;
-        colorbarYLabelData = colorbarTitle;
-        colorbarXLabelData.String = [];
-    else
-        colorbarTitleData = colorbarTitle;
-        colorbarXLabel = colorbarData.XLabel;
-        colorbarXLabelData = colorbarXLabel;
-        colorbarYLabel = colorbarData.YLabel;
-        colorbarYLabelData = colorbarYLabel;
-    end
+    colorbarTitleData = colorbarTitle;
+    colorbarYLabel = colorbarTitle;
+    colorbarYLabelData = colorbarTitle;
+    colorbarXLabelData.String = [];
 
     %-colorbar title-%
     if ~isempty(colorbarTitleData.String)
@@ -90,13 +79,6 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     colorbarYLabel.Units = "data";
     colorbarYLabel.FontUnits = "points";
 
-    if ~isHG2
-        xLabelUnits = colorbarXLabelData.Units;
-        xLabelFontUnits = colorbarXLabelData.FontUnits;
-        colorbarTitle.FontUnits = "points";
-        colorbarXLabel.Units = "data";
-        colorbarXLabel.FontUnits = "points";
-    end
 
     if ~isempty(colorbarTitleData.String)
         if colorbarTitleData.Rotation == 90
@@ -120,10 +102,6 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     colorbarYLabel.Units = yLabelUnits;
     colorbarYLabel.FontUnits = yLabelFontUnits;
 
-    if ~isHG2
-        colorbarXLabel.Units = xLabelUnits;
-        colorbarXLabel.FontUnits = xLabelFontUnits;
-    end
 
     %-some colorbar settings-%
     lineWidth = colorbarData.LineWidth ...
@@ -142,19 +120,8 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     colorbar.len = colorbarData.Position(4)*1.025;
     colorbar.outlinewidth = lineWidth;
 
-    % orientation vertical check
-    orientVert = colorbar.len > colorbar.thickness;
-
     %-coloration-%
-    if isHG2
-        col = colorbarData.Color;
-    else
-        if orientVert
-            col = colorbarData.YColor;
-        else
-            col = colorbarData.XColor;
-        end
-    end
+    col = colorbarData.Color;
 
     colorbarColor = getStringColor(round(255*col));
 
@@ -169,79 +136,30 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     %-set ticklabels-%
     nticks = length(colorbarData.Ticks);
 
-    if isHG2
-        if isempty(colorbarData.Ticks)
-            colorbar.ticks = "";
-            colorbar.showticklabels = false;
-        else
-            %-tick direction-%
-            switch colorbarData.TickDirection
-                case "in"
-                    colorbar.ticks = "inside";
-                case "out"
-                    colorbar.ticks = "outside";
-            end
-            if strcmp(colorbarData.TickLabelsMode,"auto")
-                colorbar.autotick = true;
-                % nticks = max ticks (so + 1)
-                colorbar.nticks = length(colorbarData.Ticks) + 1;
-            else
-                if isempty(colorbarData.TickLabels)
-                    colorbar.showticklabels = false;
-                else
-                    colorbar.autotick = false;
-                    colorbar.tickvals = colorbarData.Ticks;
-                    colorbar.ticktext = colorbarData.TickLabels;
-                end
-            end
-        end
+    if isempty(colorbarData.Ticks)
+        colorbar.ticks = "";
+        colorbar.showticklabels = false;
     else
-        if orientVert
-            tick = colorbarData.YTick;
-            tickLabel = colorbarData.YTickLabel;
-            tickLabelMode = colorbarData.YTickLabelMode;
-        else
-            tick = colorbarData.XTick;
-            tickLabel = colorbarData.XTickLabel;
-            tickLabelMode = colorbarData.XTickLabelMode;
+        %-tick direction-%
+        switch colorbarData.TickDirection
+            case "in"
+                colorbar.ticks = "inside";
+            case "out"
+                colorbar.ticks = "outside";
         end
-
-        if isempty(tick)
-            colorbar.ticks = "";
-            colorbar.showticklabels = false;
+        if strcmp(colorbarData.TickLabelsMode,"auto")
+            colorbar.autotick = true;
+            % nticks = max ticks (so + 1)
+            colorbar.nticks = length(colorbarData.Ticks) + 1;
         else
-            %-tick direction-%
-            switch colorbarData.TickDir
-                case "in"
-                    colorbar.ticks = "inside";
-                case "out"
-                    colorbar.ticks = "outside";
-            end
-            if strcmp(tickLabelMode, "auto")
-                colorbar.autotick = true;
-                colorbar.nticks = length(tick) + 1;
+            if isempty(colorbarData.TickLabels)
+                colorbar.showticklabels = false;
             else
-                if isempty(tickLabel)
-                    colorbar.showticklabels = false;
-                else
-                    colorbar.autotick = false;
-                    colorbar.tick0 = str2double(tickLabel(1,:));
-                    colorbar.dtick = str2double(tickLabel(2,:)) ...
-                                        - str2double(tickLabel(1,:));
-                end
+                colorbar.autotick = false;
+                colorbar.tickvals = colorbarData.Ticks;
+                colorbar.ticktext = colorbarData.TickLabels;
             end
         end
-    end
-
-    %-colorbar bg-color-%
-    if ~isHG2
-        if ~ischar(colorbarData.Color)
-            col = colorbarData.Color;
-        else
-            col = figureData.Color;
-        end
-
-        obj.layout.plot_bgcolor = getStringColor(round(255*col));
     end
 
     %-ASSOCIATED DATA-%

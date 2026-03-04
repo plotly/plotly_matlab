@@ -77,7 +77,7 @@ function obj = updateQuiver(obj, dataIndex)
     end
 
     %-set trace data for quiver barb-%
-    if isHG2() && strcmp(plotData.ShowArrowHead, 'on')
+    if strcmp(plotData.ShowArrowHead, 'on')
         maxHeadSize = plotData.MaxHeadSize * 1.5;
         headWidth = 20;
         for n = 1:numel(xData)
