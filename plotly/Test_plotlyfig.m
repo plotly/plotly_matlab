@@ -2937,5 +2937,33 @@ classdef Test_plotlyfig < PlotlyTestCase
                     "Rotation should be negated for graph plot axes");
             end
         end
+
+        function testDigraphTreeJsonPayloadSize(tc)
+            % Build a 1000-node tree digraph and verify the converted
+            % Plotly JSON payload stays within a reasonable size limit.
+            nNodes = 1000;
+            sources = strings(1, nNodes - 1);
+            targets = strings(1, nNodes - 1);
+            nodeNames = "N" + (1:nNodes);
+            for k = 2:nNodes
+                sources(k-1) = nodeNames(floor((k-1)/2) + 1);
+                targets(k-1) = nodeNames(k);
+            end
+            d = digraph(sources, targets);
+
+            fig = figure("Visible", "off");
+            plot(d, "Layout", "layered");
+            axis off;
+
+            p = plotlyfig(fig, "visible", "off");
+
+            jsonPayload = m2json(p.data) + m2json(p.layout);
+            payloadBytes = strlength(jsonPayload);
+
+            maxBytes = 40 * 1024; % 40 KB
+            tc.verifyLessThan(payloadBytes, maxBytes, ...
+                sprintf("JSON payload is %d bytes, exceeds %d byte limit", ...
+                    payloadBytes, maxBytes));
+        end
     end
 end

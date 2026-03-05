@@ -489,7 +489,7 @@ classdef plotlyfig < handle
                 % include GraphPlot objects (HandleVisibility='off' by default)
                 graphPlots = findall(ax(axrev), 'Type', 'graphplot', '-depth', 1);
                 if ~isempty(graphPlots)
-                    plots = [plots; graphPlots];
+                    plots = [plots; graphPlots(~ismember(graphPlots, plots))];
                 end
 
                 % get number of nbars for pie3
