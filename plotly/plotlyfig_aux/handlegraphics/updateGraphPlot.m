@@ -52,7 +52,12 @@ function updateGraphPlot(obj, dataIndex)
     end
 
     obj.data{nodeIndex}.marker.size = plotData.MarkerSize;
-    obj.data{nodeIndex}.marker.symbol = extractGraphMarker(plotData.Marker);
+    if isscalar(plotData.Marker)
+        symbol = extractGraphMarker(plotData.Marker);
+    else
+        symbol = cellfun(@extractGraphMarker, plotData.Marker);
+    end
+    obj.data{nodeIndex}.marker.symbol = symbol;
     obj.data{nodeIndex}.marker.line.width = plotData.LineWidth;
 end
 
@@ -93,27 +98,27 @@ end
 
 function symbol = extractGraphMarker(matlabMarker)
     switch matlabMarker
-        case 'o'
+        case "o"
             symbol = "circle";
-        case 's'
+        case {"s", "square"}
             symbol = "square";
-        case 'd'
+        case {"d", "diamond"}
             symbol = "diamond";
-        case '^'
+        case "^"
             symbol = "triangle-up";
-        case 'v'
+        case "v"
             symbol = "triangle-down";
-        case '>'
+        case ">"
             symbol = "triangle-right";
-        case '<'
+        case "<"
             symbol = "triangle-left";
-        case 'p'
+        case {"p", "pentagram"}
             symbol = "star";
-        case 'h'
+        case "h"
             symbol = "hexagon";
-        case '+'
+        case "+"
             symbol = "cross";
-        case 'x'
+        case "x"
             symbol = "x";
         otherwise
             symbol = "circle";

@@ -2938,6 +2938,28 @@ classdef Test_plotlyfig < PlotlyTestCase
             end
         end
 
+        function testPlotDigraphWithMultipleMarkers(tc)
+            d = digraph(["Root" "Root" "Child1"], ...
+                    ["Child1" "Child2" "Grandchild"]);
+            fig = figure("Visible", "off");
+            pt = plot(d, "Layout", "layered", "AssignLayers", "asap", ...
+                "EdgeAlpha", 0.4, "ArrowSize", 0, "MarkerSize", 8, ...
+                "NodeFontSize", 0.1, "Interpreter", "none");
+            markers = ["o" "square" "diamond" "p"];
+            for i = 1:numel(markers)
+                highlight(pt, i, Marker=markers(i));
+            end
+            text(pt.XData, pt.YData, d.Nodes.Name, "rotation", -22.5, ...
+                "FontSize", 12, "Interpreter", "none");
+
+            p = plotlyfig(fig, "visible", "off");
+
+            isMarkers = cellfun(@(d) isfield(d, "mode") ...
+                    && d.mode == "markers", p.data);
+            expectedMarkers = ["circle" "square" "diamond" "star"];
+            tc.verifyEqual(p.data{isMarkers}.marker.symbol, expectedMarkers);
+        end
+
         function testDigraphTreeJsonPayloadSize(tc)
             % Build a 1000-node tree digraph and verify the converted
             % Plotly JSON payload stays within a reasonable size limit.
