@@ -21,33 +21,26 @@ function obj = updateLegend(obj, legIndex)
     legend_data = obj.State.Legend(legIndex).Handle;
 
     % only displays last legend as global Plotly legend
-    obj.layout.legend = struct();
+    legend = struct();
 
     obj.layout.showlegend = strcmpi(legend_data.Visible,'on');
-    obj.layout.legend.x = legend_data.Position(1);
-    obj.layout.legend.xref = 'paper';
-    obj.layout.legend.xanchor = 'left';
-    obj.layout.legend.y = legend_data.Position(2);
-    obj.layout.legend.yref = 'paper';
-    obj.layout.legend.yanchor = 'bottom';
-    obj.layout.legend.traceorder = 'normal';
+    legend.x = legend_data.Position(1);
+    legend.xref = 'paper';
+    legend.xanchor = 'left';
+    legend.y = legend_data.Position(2);
+    legend.yref = 'paper';
+    legend.yanchor = 'bottom';
+    legend.traceorder = 'normal';
 
     if (strcmp(legend_data.Box, 'on') && strcmp(legend_data.Visible, 'on'))
-        obj.layout.legend.borderwidth = legend_data.LineWidth;
-
-        col = round(255*legend_data.EdgeColor);
-        obj.layout.legend.bordercolor = getStringColor(col);
-
-        col = round(255*legend_data.Color);
-        obj.layout.legend.bgcolor = getStringColor(col);
-
-        obj.layout.legend.font.size = legend_data.FontSize;
-        obj.layout.legend.font.family = ...
-                matlab2plotlyfont(legend_data.FontName);
-
-        col = round(255*legend_data.TextColor);
-        obj.layout.legend.font.color = getStringColor(col);
+        legend.borderwidth = legend_data.LineWidth;
+        legend.bordercolor = getStringColor(round(255*legend_data.EdgeColor));
+        legend.bgcolor = getStringColor(round(255*legend_data.Color));
+        legend.font.size = legend_data.FontSize;
+        legend.font.family = matlab2plotlyfont(legend_data.FontName);
+        legend.font.color = getStringColor(round(255*legend_data.TextColor));
     end
+    obj.layout.legend = legend;
 
     %-ASSIGN LEGENDRANK TO MATCH CUSTOM LEGEND ORDER-%
     % MATLAB's legend.PlotChildren stores plot handles in the order
