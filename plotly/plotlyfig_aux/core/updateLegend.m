@@ -23,16 +23,16 @@ function obj = updateLegend(obj, legIndex)
     % only displays last legend as global Plotly legend
     legend = struct();
 
-    obj.layout.showlegend = strcmpi(legend_data.Visible,'on');
+    obj.layout.showlegend = strcmpi(legend_data.Visible, "on");
     legend.x = legend_data.Position(1);
-    legend.xref = 'paper';
-    legend.xanchor = 'left';
+    legend.xref = "paper";
+    legend.xanchor = "left";
     legend.y = legend_data.Position(2);
-    legend.yref = 'paper';
-    legend.yanchor = 'bottom';
-    legend.traceorder = 'normal';
+    legend.yref = "paper";
+    legend.yanchor = "bottom";
+    legend.traceorder = "normal";
 
-    if (strcmp(legend_data.Box, 'on') && strcmp(legend_data.Visible, 'on'))
+    if (strcmp(legend_data.Box, "on") && strcmp(legend_data.Visible, "on"))
         legend.borderwidth = legend_data.LineWidth;
         legend.bordercolor = getStringColor(round(255*legend_data.EdgeColor));
         legend.bgcolor = getStringColor(round(255*legend_data.Color));
@@ -56,7 +56,7 @@ function obj = updateLegend(obj, legIndex)
 end
 
 function assignLegendRank(obj, legendHandle)
-    if ~isprop(legendHandle, 'PlotChildren')
+    if ~isprop(legendHandle, "PlotChildren")
         return
     end
 
@@ -64,10 +64,10 @@ function assignLegendRank(obj, legendHandle)
     nTraces = numel(obj.data);
 
     % Build a map from MATLAB plot handle to Plotly trace index.
-    handleToTrace = containers.Map('KeyType','double','ValueType','double');
+    handleToTrace = containers.Map("KeyType", "double", "ValueType", "double");
     for k = 1:nTraces
         h = obj.State.Plot(k).Handle;
-        if isa(h,'handle') || (isscalar(h) && isgraphics(h))
+        if isa(h, "handle") || (isscalar(h) && isgraphics(h))
             handleToTrace(double(h)) = k;
         end
     end
