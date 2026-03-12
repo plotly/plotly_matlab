@@ -74,7 +74,7 @@ function assignLegendRank(obj, legendHandle)
     handleToTrace = containers.Map('KeyType','double','ValueType','double');
     for k = 1:nTraces
         h = obj.State.Plot(k).Handle;
-        if isa(h,'handle') || isgraphics(h)
+        if isa(h,'handle') || (isscalar(h) && isgraphics(h))
             handleToTrace(double(h)) = k;
         end
     end
