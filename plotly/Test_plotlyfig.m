@@ -3034,5 +3034,15 @@ classdef Test_plotlyfig < PlotlyTestCase
             % traceorder must be 'normal' so Plotly honours legendrank.
             tc.verifyEqual(string(p.layout.legend.traceorder),"normal");
         end
+
+        function testAreaEmptyLegend(tc)
+            fig = figure("Visible","off");
+            area((1:2)', zeros(2,0));
+            legend(strings(0,1));
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyFalse(p.data{1}.showlegend);
+        end
     end
 end
