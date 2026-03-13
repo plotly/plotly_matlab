@@ -1329,6 +1329,27 @@ classdef Test_plotlyfig < PlotlyTestCase
             ), AbsTol=1e-15);
         end
 
+        function testDoubleYAxisLineLegend(tc)
+            fig = figure("Visible","off");
+            t = (1:10)';
+            y1 = randn(10,1);
+            y2 = randn(10,1);
+            yyaxis left;
+            plot(t,y1);
+            yyaxis right
+            plot(t,y2)
+            legend(["y1_legend" "y2_legend"])
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyEqual(p.data{1}.name, 'y1_legend');
+            tc.verifyEqual(p.data{1}.showlegend, true);
+            tc.verifyEqual(p.data{1}.legendrank, 1);
+            tc.verifyEqual(p.data{2}.name, 'y2_legend');
+            tc.verifyEqual(p.data{2}.showlegend, true);
+            tc.verifyEqual(p.data{2}.legendrank, 2);
+        end
+
         function testVerticalConstantLinePlotData(tc)
             fig = figure("Visible","off");
             xline(1);

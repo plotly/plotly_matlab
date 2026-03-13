@@ -61,11 +61,14 @@ function assignLegendRank(obj, legendHandle)
     end
 
     legendPlots = legendHandle.PlotChildren;
-    nTraces = numel(obj.data);
+    nPlots = obj.State.Figure.NumPlots;
 
     % Build a map from MATLAB plot handle to Plotly trace index.
+    % NOTE: obj.data may contain more entries than obj.State.Plot (e.g.
+    % phantom scatter traces added by updateAxisMultipleYAxes for yyaxis
+    % visibility), so iterate over the real plot count, not numel(obj.data).
     handleToTrace = containers.Map("KeyType", "double", "ValueType", "double");
-    for k = 1:nTraces
+    for k = 1:nPlots
         h = obj.State.Plot(k).Handle;
         if isa(h, "handle") || (isscalar(h) && isgraphics(h))
             handleToTrace(double(h)) = k;
