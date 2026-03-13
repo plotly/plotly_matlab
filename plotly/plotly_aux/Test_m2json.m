@@ -143,5 +143,26 @@ classdef Test_m2json < matlab.unittest.TestCase
             expected = """World""";
             tc.verifyEqual(m2json(value), expected);
         end
+
+        function testNestedCellAs2dArray(tc)
+            % Nested cell arrays serialize as 2D JSON arrays.
+            value = {{1, 2}, {3, 4}};
+            expected = "[[1, 2], [3, 4]]";
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testNestedCell1x1As2dArray(tc)
+            % A 1x1 nested cell serializes as [[val]], not val.
+            value = {{42}};
+            expected = "[[42]]";
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testNestedCell1RowAs2dArray(tc)
+            % A single-row nested cell serializes as [[v1,v2,...]], not [v1,v2,...].
+            value = {{1, 2, 3}};
+            expected = "[[1, 2, 3]]";
+            tc.verifyEqual(m2json(value), expected);
+        end
     end
 end

@@ -13,7 +13,7 @@ function data = updateHeatmap(obj,heatIndex)
 
     data.x = heat_data.XDisplayData;
     data.y = heat_data.YDisplayData(end:-1:1, :);
-    data.z = cdata;
+    data.z = mat2nestCell(cdata);
     data.zmin = heat_data.ColorLimits(1);
     data.zmax = heat_data.ColorLimits(2);
     data.connectgaps = false;
@@ -27,7 +27,7 @@ function data = updateHeatmap(obj,heatIndex)
     end
 
     data.hoverinfo = "text";
-    data.text = heat_data.ColorData(end:-1:1, :);
+    data.text = mat2nestCell(heat_data.ColorData(end:-1:1, :));
     data.hoverlabel.bgcolor = "white";
 
     data.showscale = false;
@@ -91,5 +91,17 @@ function data = updateHeatmap(obj,heatIndex)
     if any(isnan(cdata(:)))
         obj.layout.plot_bgcolor = "rgb(40,40,40)";
         data.opacity = 1;
+    end
+end
+
+function out = mat2nestCell(mat)
+    % Convert a numeric matrix to a nested cell array (one cell per row)
+    % so that m2json serializes it as a 2D JSON array regardless of size.
+    %   mat2nestCell([1 2; 3 4]) => {{1,2}, {3,4}} => [[1,2],[3,4]]
+    %   mat2nestCell([5])         => {{5}}          => [[5]]
+    nRows = size(mat,1);
+    out = cell(1,nRows);
+    for r = 1:nRows
+        out{r} = num2cell(mat(r,:));
     end
 end

@@ -1185,6 +1185,9 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            flipped = flip(data);
+            nestZ = cellfun(@num2cell,num2cell(flipped,2),un=0)';
+
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(rmfield(p.data{1}, "colorscale"), struct( ...
                 xaxis = "x1", ...
@@ -1192,13 +1195,13 @@ classdef Test_plotlyfig < PlotlyTestCase
                 type = "heatmap", ...
                 x = {num2cell(num2str((1:5)'))}, ...
                 y = {num2cell(num2str(flip(1:5)'))}, ...
-                z = flip(data), ...
+                z = {nestZ}, ...
                 zmin = min(data,[],"all"), ...
                 zmax = max(data,[],"all"), ...
                 connectgaps = false, ...
                 hoverongaps = false, ...
                 hoverinfo = "text", ...
-                text = flip(data), ...
+                text = {nestZ}, ...
                 hoverlabel = struct( ...
                     bgcolor = "white" ...
                 ), ...
@@ -1221,6 +1224,66 @@ classdef Test_plotlyfig < PlotlyTestCase
                 showlegend = false, ...
                 name = "" ...
             ), AbsTol=1e-15);
+        end
+
+        function testHeatmap1x1Data(tc)
+            fig = figure(Visible="off");
+            heatmap(42);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data,1);
+            d = p.data{1};
+            tc.verifyEqual(d.type,"heatmap");
+
+            % z and text must be nested cell arrays so they serialize
+            % as 2D JSON arrays ([[42]]), not bare scalars (42).
+            tc.verifyEqual(d.z,{{42}});
+            tc.verifyEqual(d.text,{{42}});
+
+            % x and y must be cell arrays so they serialize as JSON
+            % arrays, not bare values.
+            tc.verifyEqual(d.x,{{'1'}});
+            tc.verifyEqual(d.y,{{'1'}});
+        end
+
+        function testHeatmap1x2Data(tc)
+            fig = figure(Visible="off");
+            heatmap(["x1" "x2"], "y1", [1.5 3.7], ...
+                GridVisible=true, ColorbarVisible=true, ...
+                CellLabelFormat="%.2f");
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data,1);
+            d = p.data{1};
+
+            % z and text must be nested cell arrays so they serialize
+            % as 2D JSON arrays ([[1.5, 3.7]])
+            tc.verifyEqual(d.z,{{1.5, 3.7}});
+            tc.verifyEqual(d.text,{{1.5, 3.7}});
+
+            tc.verifyEqual(d.x,{'x1'; 'x2'});
+            tc.verifyEqual(d.y,{{'y1'}});
+        end
+
+        function testHeatmap2x1Data(tc)
+            fig = figure(Visible="off");
+            heatmap("x1", ["y1"; "y2"], [1.5; -0.8], ...
+                GridVisible=false, ColorbarVisible=false);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data,1);
+            d = p.data{1};
+
+            % z and text must be nested cell arrays so they serialize
+            % as 2D JSON arrays ([[1.5]; [-0.8]])
+            tc.verifyEqual(d.z,{{-0.8}, {1.5}});
+            tc.verifyEqual(d.text,{{-0.8}, {1.5}});
+
+            tc.verifyEqual(d.x,{{'x1'}});
+            tc.verifyEqual(d.y,{'y2'; 'y1'});
         end
 
         function testHeatmapDataColorLimitsOverride(tc)
@@ -2564,6 +2627,9 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            flipped = flip(data);
+            nestZ = cellfun(@num2cell,num2cell(flipped,2),un=0)';
+
             tc.verifyNumElements(p.data, 4);
             tc.verifyEqual(rmfield(p.data{1}, ["colorscale" "colorbar"]), struct( ...
                 xaxis = "x1", ...
@@ -2571,13 +2637,13 @@ classdef Test_plotlyfig < PlotlyTestCase
                 type = "heatmap", ...
                 x = {num2cell(num2str((1:2)'))}, ...
                 y = {num2cell(num2str(flip(1:2)'))}, ...
-                z = flip(data), ...
+                z = {nestZ}, ...
                 zmin = min(data,[],"all"), ...
                 zmax = max(data,[],"all"), ...
                 connectgaps = false, ...
                 hoverongaps = false, ...
                 hoverinfo = "text", ...
-                text = flip(data), ...
+                text = {nestZ}, ...
                 hoverlabel = struct( ...
                     bgcolor = "white" ...
                 ), ...
@@ -2781,9 +2847,12 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            flipped = flip(data);
+            nestZ = cellfun(@num2cell,num2cell(flipped,2),un=0)';
+
             tc.verifyNumElements(p.data, 1);
             heatmapData = p.data{1};
-            tc.verifyEqual(heatmapData.z, flip(data));
+            tc.verifyEqual(heatmapData.z, nestZ);
         end
 
         function testHeatmapAllNaNValues(tc)
@@ -2793,11 +2862,14 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            flipped = flip(data);
+            nestZ = cellfun(@num2cell,num2cell(flipped,2),un=0)';
+
             tc.verifyNumElements(p.data, 1);
             heatmapData = p.data{1};
-            tc.verifyEqual(heatmapData.z, flip(data));
-            tc.verifyTrue(all(isnan(heatmapData.z(:))));
-            tc.verifyTrue(all(isnan(heatmapData.text(:))));
+            tc.verifyEqual(heatmapData.z, nestZ);
+            tc.verifyTrue(all(cellfun(@(row) all(cellfun(@isnan,row)), heatmapData.z)));
+            tc.verifyTrue(all(cellfun(@(row) all(cellfun(@isnan,row)), heatmapData.text)));
         end
 
         function testPlotWithCustomDataTip(tc)
