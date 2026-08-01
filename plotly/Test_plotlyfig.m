@@ -353,6 +353,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPolarScatterData(tc)
+            if is_octave()
+                return % The `polarscatter` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             t = pi/4:pi/4:2*pi;
             r = [19 6 12 18 16 11 15 15];
@@ -448,6 +451,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHistogramPlotData(tc)
+            if is_octave()
+                return % The `histogram` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             values = [0.6297 0.9559 0.7551 0.5261 0.8501 0.8160 0.1321 0.7607 0.6172 0.3976];
             histogram(values);
@@ -477,6 +483,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHistogramStairsPlotData(tc)
+            if is_octave()
+                return % The `histogram` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             values = [0.6297 0.9559 0.7551 0.5261 0.8501 0.8160 0.1321 0.7607 0.6172 0.3976];
             histogram(values,4,DisplayStyle="stairs");
@@ -501,6 +510,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPolarHistogramPlotData(tc)
+            if is_octave()
+                return % The `polarhistogram` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             values = [0.6297 0.9559 0.7551 0.5261 0.8501 0.8160 0.1321 0.7607 0.6172 0.3976];
             polarhistogram(values);
@@ -528,6 +540,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testEasyToUsePolarPlotData(tc)
+            if is_octave()
+                return % The `polarplot` function is not yet implemented in Octave. Consider using `polar`.
+            end
             fig = figure("Visible","off");
             ezpolar("1+cos(theta)")
 
@@ -1036,6 +1051,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testFunctionContourPlotData(tc)
+            if is_octave()
+                return % The `fcontour` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             fcontour(@(x,y) sin(3*x).*cos(x+y),[0 3 0 3],Fill="on",LineColor="k");
             chartTitle = "f(x,y) = sin(3*x)*cos(x+y)";
@@ -1179,6 +1197,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapData(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure(Visible="off");
             data = magic(5);
             heatmap(data);
@@ -1227,6 +1248,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmap1x1Data(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure(Visible="off");
             heatmap(42);
 
@@ -1248,6 +1272,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmap1x2Data(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure(Visible="off");
             heatmap(["x1" "x2"], "y1", [1.5 3.7], ...
                 "GridVisible", true, ColorbarVisible=true, ...
@@ -1268,6 +1295,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmap2x1Data(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure(Visible="off");
             heatmap("x1", ["y1"; "y2"], [1.5; -0.8], ...
                 GridVisible=false, ColorbarVisible=false);
@@ -1287,6 +1317,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapDataColorLimitsOverride(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = magic(5);
             zmin = -5;
@@ -1355,6 +1388,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testDoubleYAxisLinePlotData(tc)
+            if is_octave()
+                return % The `yyaxis` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = linspace(0,10);
             y = sin(3*x);
@@ -1417,6 +1453,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testDoubleYAxisLineLegend(tc)
+            if is_octave()
+                return % The `yyaxis` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             t = (1:10)';
             y1 = randn(10,1);
@@ -1438,6 +1477,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testVerticalConstantLinePlotData(tc)
+            if is_octave()
+                return; % xline not supported in Octave.
+            end
             fig = figure("Visible","off");
             xline(1);
 
@@ -1463,6 +1505,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testVerticalConstantLineWithLabel(tc)
+            if is_octave()
+                return; % xline not supported in Octave.
+            end
             fig = figure("Visible","off");
             label = "label";
             alignment = "left";
@@ -1543,6 +1588,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testDoubleYAxisAreaPlotData(tc)
+            if is_octave()
+                return % The `yyaxis` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = linspace(0,10);
             y = sin(3*x);
@@ -1797,6 +1845,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testFunctionSurfacePlotData(tc)
+            if is_octave()
+                return % The `fsurf` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             fsurf(@(x,y) sin(x).*cos(y), [-pi pi -pi pi]);
 
@@ -2617,6 +2668,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testTiledLayoutHeatmap(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [1 2; 3 4];
             tiledlayout(2,2);
@@ -2734,6 +2788,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapTextColorBrightCells(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [1 2; 3 4];
             h = heatmap(data);
@@ -2750,6 +2807,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapTextColorDarkCells(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [1 2; 3 4];
             h = heatmap(data);
@@ -2766,6 +2826,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapMixedColorCells(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("visible","off");
             data = [ ...
                 4.316 3.895 3.176 2.850 2.667 2.429 2.173 1.920;
@@ -2799,6 +2862,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapCellTextAnnotations(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [1 2; 3 4; 5 6];
             heatmap(data);
@@ -2812,6 +2878,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapTitleAnnotation(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [1 2; 3 4];
             titleString = "title";
@@ -2826,6 +2895,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapAxisLabels(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [1 2; 3 4];
             xLabelText = "X Axis Label";
@@ -2841,6 +2913,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapWithNaNValues(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [1 2 NaN; 4 NaN 6; 7 8 9];
             heatmap(data);
@@ -2856,6 +2931,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testHeatmapAllNaNValues(tc)
+            if is_octave()
+                return % The `heatmap` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             data = [NaN NaN; NaN NaN];
             heatmap(data);
@@ -3019,6 +3097,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPlotDigraph(tc)
+            if is_octave()
+                return % The `digraph` function is not yet implemented in Octave.
+            end
             d = digraph(["Root" "Root" "Child1"], ...
                     ["Child1" "Child2" "Grandchild"]);
             fig = figure("Visible", "off");
@@ -3059,6 +3140,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPlotDigraphWithMultipleMarkers(tc)
+            if is_octave()
+                return % The `digraph` function is not yet implemented in Octave.
+            end
             d = digraph(["Root" "Root" "Child1"], ...
                     ["Child1" "Child2" "Grandchild"]);
             fig = figure("Visible", "off");
@@ -3081,6 +3165,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testDigraphTreeJsonPayloadSize(tc)
+            if is_octave()
+                return % The `digraph` function is not yet implemented in Octave.
+            end
             % Build a 1000-node tree digraph and verify the converted
             % Plotly JSON payload stays within a reasonable size limit.
             nNodes = 1000;
