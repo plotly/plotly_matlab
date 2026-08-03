@@ -21,7 +21,7 @@ function data = updateLineseries(obj, plotIndex)
     treatAs = lower(obj.PlotOptions.TreatAs);
     isPolar = ismember('compass', treatAs) || ismember('ezpolar', treatAs);
 
-    isPlot3D = isfield(plotData, "ZData") && ~isempty(get(plotData, 'ZData'));
+    isPlot3D = isprop(plotData, 'ZData') && ~isempty(get(plotData, 'ZData'));
 
     xData = get(plotData, 'XData');
     yData = get(plotData, 'YData');

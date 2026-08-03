@@ -18,7 +18,7 @@ function marker = extractLineMarker(line_data)
     %-MARKER SYMBOL-%
     if ~strcmp(get(line_data, 'Marker'), "none")
         marker.symbol = getMarkerSymbol(get(line_data, 'Marker'));
-        if isfield(line_data, "MarkerIndices")
+        if isprop(line_data, "MarkerIndices")
             marker.maxdisplayed=length(get(line_data, 'MarkerIndices'))+1;
         end
     end

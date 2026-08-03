@@ -74,7 +74,7 @@ end
 
 function [xData, yData] = getTraceData2D(plotData)
     %-initializations-%
-    isSwarmchart = isfield(plotData, "XJitter");
+    isSwarmchart = isprop(plotData, 'XJitter');
     xData = categ2NumData(get(plotData, 'XData'));
     yData = categ2NumData(get(plotData, 'YData'));
 

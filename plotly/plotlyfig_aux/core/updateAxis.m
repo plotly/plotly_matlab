@@ -57,7 +57,7 @@ function obj = updateAxis(obj,axIndex)
     obj.PlotOptions.is_heatmap_axis = isHeatmapAxis;
 
     %-check if geo-axis-%
-    isGeoaxis = isfield(axisData, 'Type') ...
+    isGeoaxis = isprop(axisData, 'Type') ...
             && strcmpi(get(axisData, 'Type'), 'geoaxes');
     obj.PlotlyDefaults.isGeoaxis = isGeoaxis;
 

@@ -96,7 +96,7 @@ function data = updateConstantLine(obj,plotIndex)
     %-For 3D plots-%
     obj.PlotOptions.is3d = false; % by default
 
-    if isfield(plotData,"ZData")
+    if isprop(plotData, 'ZData')
         numbset = unique(get(plotData, 'ZData'));
         if any(get(plotData, 'ZData')) && length(numbset)>1
             data.z = get(plotData, 'ZData');
