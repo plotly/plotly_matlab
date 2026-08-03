@@ -72,15 +72,17 @@ function data = updateConstantLine(obj,plotIndex)
 
         if strcmp(get(plotData, 'LabelHorizontalAlignment'), "center")
             if strcmp(get(plotData, 'InterceptAxis'), "x")
-                tmpExtent = get(text(0,0,get(plotData, 'Label'),units="normalized", ...
-                        rotation=90,Visible="off"), 'Extent');
+                tmpExtent = get(text(0,0,get(plotData, 'Label'), ...
+                        "units", "normalized", "rotation", 90, ...
+                        "Visible", "off"), 'Extent');
                 ylim = get(get(plotData, 'Parent'), 'YLim');
                 textWidth = tmpExtent(4);
                 textWidth = textWidth * (ylim(2) - ylim(1));
                 data.y(2) = data.y(2) - textWidth;
             else
-                tmpExtent2 = get(text(0,0,get(plotData, 'Label'),units="normalized", ...
-                        Visible="off"), 'Extent');
+                tmpExtent2 = get(text(0,0,get(plotData, 'Label'), ...
+                        "units", "normalized", ...
+                        "Visible", "off"), 'Extent');
                 xlim = get(get(plotData, 'Parent'), 'XLim');
                 textWidth = tmpExtent2(3);
                 textWidth = textWidth * (xlim(2) - xlim(1));
