@@ -408,11 +408,22 @@ classdef plotlyfig < handle
             end
 
             % find axes of figure
-            ax = findobj(obj.State.Figure.Handle, ...
-                {'Type','axes','-or','Type','PolarAxes','-or','Type','heatmap'}, ...
-                '-and',{'Tag','','-or','Tag','PlotMatrixBigAx', ...
-                        '-or','Tag','PlotMatrixScatterAx', ...
-                        '-or','Tag','PlotMatrixHistAx'});
+            if is_octave()
+                ax = findobj(obj.State.Figure.Handle, ...
+                    'Type','axes','-or','Type','PolarAxes','-or','Type','heatmap', ...
+                    '-and','Tag','','-or','Tag','PlotMatrixBigAx', ...
+                    '-or','Tag','PlotMatrixScatterAx', ...
+                    '-or','Tag','PlotMatrixHistAx');
+            else
+                % Grouped in cell arrays to keep MATLAB's operator
+                % precedence: (Type in {axes,PolarAxes,heatmap}) AND
+                % (Tag in {'' or PlotMatrix*})
+                ax = findobj(obj.State.Figure.Handle, ...
+                    {'Type','axes','-or','Type','PolarAxes','-or','Type','heatmap'}, ...
+                    '-and',{'Tag','','-or','Tag','PlotMatrixBigAx', ...
+                    '-or','Tag','PlotMatrixScatterAx', ...
+                    '-or','Tag','PlotMatrixHistAx'});
+            end
 
             if isempty(ax)
                 try
@@ -429,7 +440,7 @@ classdef plotlyfig < handle
                 for j = i:length(ax)
                     try
                         if ((mean(eq(get(ax(i),'Position'), get(ax(j),'Position'))) == 1) && (i~=j) && strcmp(get(get(ax(i),'Children'), 'Type'), 'histogram'))
-                            temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
+                            temp_plots = findobj(temp_ax(i),'-depth',1,'-not','Type','Text','-not','Type','axes');
                             if isprop(temp_plots, 'FaceAlpha')
                                 update_opac(i) = true;
                             else
@@ -484,7 +495,7 @@ classdef plotlyfig < handle
                 end
 
                 % find plots of figure
-                plots = findobj(ax(axrev),'-not','Type','Text','-not','Type','axes','-depth',1);
+                plots = findobj(ax(axrev),'-depth',1,'-not','Type','Text','-not','Type','axes');
 
                 % include GraphPlot objects (HandleVisibility='off' by default)
                 graphPlots = findall(ax(axrev), 'Type', 'graphplot', '-depth', 1);
