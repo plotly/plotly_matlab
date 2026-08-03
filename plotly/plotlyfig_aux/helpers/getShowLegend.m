@@ -1,4 +1,5 @@
 function showLegend = getShowLegend(plotData)
+	showLegend = false;
 	try
 		switch get(get(get(plotData, 'Annotation'), 'LegendInformation'), 'IconDisplayStyle')
 			case "on"
