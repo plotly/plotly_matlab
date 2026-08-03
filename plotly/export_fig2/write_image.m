@@ -51,7 +51,7 @@ function output = write_image(pfObj, options)
     end
 
     mjLoc = replace(string(fullfile( ...
-            wd, "kaleido", "etc", "mathjax", "MathJax.js")), "\", "/");
+            wd, "kaleido", "etc", "mathjax", "MathJax.js")), '\', '/');
     scope = "plotly";
 
     % Prepare input plotly object for Kaleido
