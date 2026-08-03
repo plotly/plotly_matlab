@@ -96,8 +96,11 @@ function output = write_image(pfObj, options)
         return
     end
 
-    out = unicode2native(output.result, "UTF-8");
-    out = matlab.net.base64decode(out);
+    if is_octave()
+        out = __base64_decode_bytes__(output.result);
+    else
+        out = matlab.net.base64decode(unicode2native(output.result, "UTF-8"));
+    end
     f = fopen(char(filename), "wb");
     fwrite(f, out);
     fclose(f);
