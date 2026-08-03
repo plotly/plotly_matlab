@@ -50,7 +50,7 @@ function valstr = m2json(val)
         else
             valstr = "false";
         end
-    elseif isdatetime(val)
+    elseif isa(val, "datetime")
         valstr = m2json(convertDate(val));
     elseif isstring(val)
         if isscalar(val)

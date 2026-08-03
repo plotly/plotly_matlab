@@ -93,7 +93,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.showticklabels = true;
         axis.tickmode = "array";
 
-        if ~iscategorical(tickValues)
+        if ~isa(tickValues, "categorical")
             axis.tickvals = tickValues;
         end
 
@@ -108,9 +108,9 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             elseif strcmp(axis.type, "log")
                 axis.range = log10(axisLim);
             end
-        elseif isduration(axisLim)
+        elseif isa(axisLim, "duration")
             [temp,type] = convertDuration(axisLim);
-            if (~isduration(temp)) % duration class has specified .Format
+            if (~isa(temp, "duration")) % duration class has specified .Format
                 axis.range = temp;
                 axis.type = "duration";
                 axis.title = type;
@@ -121,7 +121,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 axis.range = [-delta nticks+delta];
                 axis.type = "duration - specified format";
             end
-        elseif isdatetime(axisLim)
+        elseif isa(axisLim, "datetime")
             axis.range = axisLim;
             axis.type = "date";
             if isprop(axisData, "XTickLabelMode") ...
@@ -130,7 +130,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 tickLabels = {};
             end
 
-        elseif iscategorical(axisLim)
+        elseif isa(axisLim, "categorical")
             axis.autorange = true;
             axis.type = "category";
         else

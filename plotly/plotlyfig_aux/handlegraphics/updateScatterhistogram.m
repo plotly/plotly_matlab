@@ -137,7 +137,7 @@ function ax = getMainScatterAxis(plotData, axName)
     ax.title.font.family = matlab2plotlyfont(get(plotData, 'FontName'));
 
     %-range and ticklabels-%
-    if ~iscategorical(axisPlot)
+    if ~isa(axisPlot, "categorical")
         ax.range = axisLim;
         ax.nticks = 10;
     else
@@ -374,7 +374,7 @@ end
 function axisLim = getAxisLim(plotData, axName)
     axisLim = get(plotData, sprintf('%sLimits', axName));
     axisPlot = get(plotData, sprintf('%sData', axName));
-    if iscategorical(axisPlot)
+    if isa(axisPlot, "categorical")
         axisPlot = get(plotData, sprintf('%sData', axName));
         [~, ~, axisPlot] = unique(axisPlot);
         axisLim = [min(axisPlot)-0.5, max(axisPlot)+0.5];
@@ -386,10 +386,10 @@ function [xData, yData, groupName] = getTraceData(plotData)
     xPlot = get(plotData, 'XData');
     yPlot = get(plotData, 'YData');
 
-    if iscategorical(xPlot)
+    if isa(xPlot, "categorical")
         [~, ~, xPlot] = unique(xPlot);
     end
-    if iscategorical(yPlot)
+    if isa(yPlot, "categorical")
         [~, ~, yPlot] = unique(yPlot);
     end
 

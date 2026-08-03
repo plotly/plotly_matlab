@@ -47,7 +47,7 @@ function updateCategoricalAxis(obj, plotIndex)
     xData = get(plotData, 'XData');
     yData = get(plotData, 'YData');
 
-    if iscategorical(xData)
+    if isa(xData, "categorical")
         ax = obj.layout.(sprintf("xaxis%d", xSource));
         nTicks = length(ax.ticktext);
 
@@ -59,7 +59,7 @@ function updateCategoricalAxis(obj, plotIndex)
         obj.layout.(sprintf("xaxis%d", xSource)) = ax;
     end
 
-    if iscategorical(yData)
+    if isa(yData, "categorical")
         ax = obj.layout.(sprintf("yaxis %d", ySource));
         nTicks = length(ax.ticktext);
 
@@ -140,7 +140,7 @@ end
 
 function numData = categ2NumData(categData)
     numData = categData;
-    if iscategorical(categData)
+    if isa(categData, "categorical")
         [~, ~, numData] = unique(numData);
         numData = numData';
     end

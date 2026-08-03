@@ -146,7 +146,7 @@ end
 
 function tickVals = resolveDatetimeTicks(tick, tickLabel)
     tickVals = tick;
-    if isduration(tick) || isdatetime(tick)
+    if isa(tick, "duration") || isa(tick, "datetime")
         tickChar = char(tick);
         idx = zeros(1, length(tickLabel));
         for n = 1:length(tickLabel)

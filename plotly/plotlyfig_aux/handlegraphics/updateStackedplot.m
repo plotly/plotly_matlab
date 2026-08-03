@@ -164,7 +164,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
 
         if isnumeric(axisLim{a})
             [tickVals, tickText, expoFormat(a)] = getNumTicks(axisLim{a}, nTicks);
-        elseif isduration(axisLim{a}) || isdatetime(axisLim{a})
+        elseif isa(axisLim{a}, "duration") || isa(axisLim{a}, "datetime")
             [tickVals, tickText] = getDateTicks(axisLim{a}, nTicks);
             expoFormat(a) = 0;
         end

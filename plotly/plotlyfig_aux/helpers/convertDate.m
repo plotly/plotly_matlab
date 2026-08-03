@@ -9,7 +9,7 @@ function output = convertDate(date)
 end
 
 function dt = convertToDateTime(input)
-    if isdatetime(input)
+    if isa(input, "datetime")
         dt = input;
         return
     elseif isnumeric(input)

@@ -77,9 +77,9 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
             if strcmp(tickLabelMode, 'auto')
                 if isnumeric(axisLim)
                     axis.range = axisLim;
-                elseif isduration(axisLim)
+                elseif isa(axisLim, "duration")
                    [temp,type] = convertDuration(axisLim);
-                   if (~isduration(temp))
+                   if (~isa(temp, "duration"))
                        axis.range = temp;
                        axis.type = 'duration';
                        axis.title = type;
@@ -89,7 +89,7 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
                        axis.range = [-delta nticks+delta];
                        axis.type = 'duration - specified format';
                    end
-                elseif isdatetime(axisLim)
+                elseif isa(axisLim, "datetime")
                     axis.range = convertDate(axisLim);
                     axis.type = 'date';
                 else

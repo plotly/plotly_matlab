@@ -28,10 +28,10 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
 	xData = get(plotData, 'XData');
 	yData = get(plotData, 'YData');
 
-    if isduration(xData) || isdatetime(xData)
+    if isa(xData, "duration") || isa(xData, "datetime")
         xData = datenum(xData);
     end
-    if isduration(yData) || isdatetime(yData)
+    if isa(yData, "duration") || isa(yData, "datetime")
         yData = datenum(yData);
     end
 

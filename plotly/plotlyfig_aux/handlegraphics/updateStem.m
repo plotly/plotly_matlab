@@ -44,10 +44,10 @@ function data = updateStem(obj, dataIndex)
     data.name = get(stem_data, 'DisplayName');
     data.mode = "lines+markers";
 
-    if isdatetime(xdata)
+    if isa(xdata, "datetime")
         xdata = datenum(xdata);
     end
-    if isdatetime(ydata)
+    if isa(ydata, "datetime")
         ydata = datenum(ydata);
     end
 
