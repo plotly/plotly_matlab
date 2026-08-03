@@ -176,6 +176,17 @@ function obj = updateData(obj, dataIndex)
         end
     end
 
+    if is_octave() && ismember(lower(obj.State.Plot(dataIndex).Class), {"hggroup","group"}) ...
+            && (dataIndex > numel(obj.data) || isempty(obj.data{dataIndex}))
+        % Octave groups several plot types (scatter, bar, stem, stairs,
+        % area, errorbar, quiver, rectangle, contour, plotmatrix...) into
+        % hggroup objects. These are not supported, so warn and skip this
+        % plot instead of failing the entire conversion.
+        warning("Skipping unsupported hggroup plot of type ""%s"" in Octave", ...
+                get(obj.State.Plot(dataIndex).AssociatedAxis, 'Type'));
+        return
+    end
+
     if ~isfield(obj.data{dataIndex},"showlegend")
         plotHandle = obj.State.Plot(dataIndex).Handle;
         showLeg = getShowLegend(plotHandle);
