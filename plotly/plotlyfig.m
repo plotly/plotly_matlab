@@ -151,8 +151,12 @@ classdef plotlyfig < handle
             if ~noFig
                 addlistener(obj.State.Figure.Handle,'Visible','PostSet',@(src,event)updateFigureVisible(obj,src,event));
                 addlistener(obj.State.Figure.Handle,'Name','PostSet',@(src,event)updateFigureName(obj,src,event));
-                addlistener(obj,'PlotOptions','PostSet',@(src,event)updatePlotOptions(obj,src,event));
-                addlistener(obj,'UserData','PostSet',@(src,event)updateUserData(obj,src,event));
+                if ~is_octave()
+                    % Octave does not support addlistener on classdef
+                    % handles, only on graphics objects.
+                    addlistener(obj,'PlotOptions','PostSet',@(src,event)updatePlotOptions(obj,src,event));
+                    addlistener(obj,'UserData','PostSet',@(src,event)updateUserData(obj,src,event));
+                end
             end
         end
 
