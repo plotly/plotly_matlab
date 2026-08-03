@@ -26,8 +26,10 @@ function gallery = makegallery(varargin)
     %                  bundle when available and fall back to the Plotly
     %                  CDN, 'bundle' to require the local bundle, 'cdn'
     %                  to always link the CDN, 'none' to skip Plotly.
-    %   Width,Height - size in pixels of the Plotly panels.
-    %                  Default: 640, 480
+    %   Width,Height - maximum width and aspect ratio (Width:Height) of
+    %                  the figure panels. The native PNGs and the Plotly
+    %                  figures share the same size and shrink together
+    %                  as the window narrows. Default: 640, 480
     %
     % [OUTPUT]:
     %   gallery - struct with the generated HTML file path, the Plotly JS
@@ -206,7 +208,24 @@ function entries = processEntries(names, allEntries, opts)
             end
             try
                 if is_octave()
+                    % print() renders the PNG at the figure's
+                    % __device_pixel_ratio__; on HiDPI displays that
+                    % doubles the -S size (e.g. 1280x960 from 640x480).
+                    % Temporarily force a ratio of 1 so the PNG comes
+                    % out at exactly the requested size on any display
+                    dpr = [];
+                    try
+                        dpr = get(fig, '__device_pixel_ratio__');
+                        set(fig, '__device_pixel_ratio__', 1);
+                    catch
+                    end
                     print(fig, '-dpng', '-S640,480', pngPath);
+                    if ~isempty(dpr)
+                        try
+                            set(fig, '__device_pixel_ratio__', dpr);
+                        catch
+                        end
+                    end
                 else
                     print(fig, '-dpng', pngPath);
                 end
@@ -227,9 +246,24 @@ function entries = processEntries(names, allEntries, opts)
         if entry.nativeOK
             try
                 p = plotlyfig(fig, 'visible', 'off');
+                % plotlyfig sets autosize to false and stores a fixed
+                % pixel size (1.5x the figure) in the layout. With both
+                % width and height set, Plotly's responsive mode never
+                % resizes the figure, so it cannot track its HTML
+                % container. Enable autosize and drop the fixed size so
+                % the figure fills the container instead; the container
+                % CSS below matches the native PNG's shape
+                layout = p.layout;
+                if isfield(layout, 'width')
+                    layout = rmfield(layout, 'width');
+                end
+                if isfield(layout, 'height')
+                    layout = rmfield(layout, 'height');
+                end
+                layout.autosize = true;
                 entry.plotlyJSON = struct( ...
                     'data', jsonForScript(m2json(p.data)), ...
-                    'layout', jsonForScript(m2json(p.layout)) ...
+                    'layout', jsonForScript(m2json(layout)) ...
                 );
                 entry.plotlyOK = true;
             catch e
@@ -305,7 +339,7 @@ function parts = htmlHeader(opts, js, nEntries)
         'font-size: 13px; overflow-x: auto; margin: 8px 0 12px; }\n' ...
         '.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }\n' ...
         '.panel h3 { margin: 0 0 8px; font-size: 14px; color: #57606a; font-weight: 600; }\n' ...
-        '.panel img { max-width: 100%%; border: 1px solid #d0d7de; border-radius: 6px; background: #fff; }\n' ...
+        '.panel img { max-width: min(100%%, %dpx); border: 1px solid #d0d7de; border-radius: 6px; background: #fff; }\n' ...
         '.err { color: #cf222e; font-size: 13px; white-space: pre-wrap; ' ...
         'background: #fff5f5; border: 1px solid #ffcecb; border-radius: 6px; padding: 8px; }\n' ...
         '.plotlybox { width: 100%%; }\n' ...
@@ -317,7 +351,8 @@ function parts = htmlHeader(opts, js, nEntries)
         'Plotly JS: %s &middot; The PNGs are exported from the native Octave figures ' ...
         'with print(), not from the converted Plotly objects.</p>\n' ...
     ];
-    parts = {sprintf(fmt, datestr(now), runtime, nEntries, js.mode), jsTag};
+    parts = {sprintf(fmt, opts.Width, datestr(now), runtime, ...
+        nEntries, js.mode), jsTag};
 end
 
 function str = htmlSummary(entries)
@@ -372,9 +407,14 @@ function parts = htmlEntry(entry, i, opts)
         '<h3>Plotly figure</h3>\n']);
     if entry.plotlyOK
         divId = sprintf('plotly-%d', i);
+        % the container is sized purely by CSS like the native PNG:
+        % it fills the panel width (capped at opts.Width, keeping the
+        % opts.Width/opts.Height shape). The layout has no fixed pixel
+        % size, so Plotly's responsive mode follows the container
         divFmt = ['<div id="%s" class="plotlybox" ' ...
-            'style="width:%dpx;height:%dpx"></div>\n'];
-        parts{end + 1} = sprintf(divFmt, divId, opts.Width, opts.Height);
+            'style="max-width:%dpx;aspect-ratio:%d/%d"></div>\n'];
+        parts{end + 1} = sprintf(divFmt, divId, opts.Width, ...
+            opts.Width, opts.Height);
 
         % the JSON comes from m2json(); it is appended with char
         % concatenation, never through sprintf, so that backslash
