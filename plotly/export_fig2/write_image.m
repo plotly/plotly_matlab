@@ -1,14 +1,18 @@
-function output = write_image(pfObj, options)
+function output = write_image(pfObj, varargin)
     % Function to write plotly figures to a supported image format, which
     % are the following: "png", "jpg", "jpeg", "webp", "svg", "pdf", "eps",
     % "json".
-    arguments
-        pfObj
-        options.imageFormat string = "png"
-        options.filename string = ""
-        options.height double = pfObj.layout.height
-        options.width double = pfObj.layout.width
-        options.scale double = 1
+    options.imageFormat = "png";
+    options.filename = "";
+    options.height = pfObj.layout.height;
+    options.width = pfObj.layout.width;
+    options.scale = 1;
+    nargs = numel(varargin);
+    if mod(nargs, 2) ~= 0
+        error("write_image:options", "Arguments must be provided as Name, Value pairs.");
+    end
+    for k = 1:2:nargs
+        options.(varargin{k}) = varargin{k+1};
     end
 
     % Set default filename based on imageFormat if not provided

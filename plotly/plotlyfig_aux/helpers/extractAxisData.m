@@ -186,11 +186,6 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 end
 
 function lim = shrinkInfLimits(axis, lim, axisName)
-    arguments
-        axis
-        lim
-        axisName (1,1) string {mustBeMember(axisName,["Y" "X"])}
-    end
     plots = get(axis, 'Children');
     plots = plots(~arrayfun( ...
             @(x) isa(x,"matlab.graphics.chart.decoration.ConstantLine"), ...

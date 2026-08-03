@@ -1,12 +1,15 @@
-function updateScene(obj, dataIndex, opts)
-    arguments
-        obj
-        dataIndex
-        opts.normFacScale double = NaN
-        opts.aspectMultiplier (1,3) double = [1 1 1]
-        opts.setTitleFont logical = true
-        opts.handleDatetimeTicks logical = true
-        opts.useQuiverCamera logical = false
+function updateScene(obj, dataIndex, varargin)
+    opts.normFacScale = NaN;
+    opts.aspectMultiplier = [1 1 1];
+    opts.setTitleFont = true;
+    opts.handleDatetimeTicks = true;
+    opts.useQuiverCamera = false;
+    nargs = numel(varargin);
+    if mod(nargs, 2) ~= 0
+        error("updateScene:options", "Arguments must be provided as Name, Value pairs.");
+    end
+    for k = 1:2:nargs
+        opts.(varargin{k}) = varargin{k+1};
     end
 
     %-INITIALIZATIONS-%
