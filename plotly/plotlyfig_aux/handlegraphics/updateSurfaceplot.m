@@ -64,7 +64,7 @@ function data = updateSurfaceplot(obj, surfaceIndex)
     data.surfacecolor = cdata;
     data.name = image_data.DisplayName;
     data.showscale = false;
-    data.visible = image_data.Visible == "on";
+    data.visible = strcmp(image_data.Visible, "on");
 
     data.showlegend = getShowLegend(image_data);
 end

@@ -40,7 +40,7 @@ function data = updateStem(obj, dataIndex)
         data.type = "scatter";
     end
 
-    data.visible = stem_data.Visible == "on";
+    data.visible = strcmp(stem_data.Visible, "on");
     data.name = stem_data.DisplayName;
     data.mode = "lines+markers";
 
@@ -91,7 +91,7 @@ function data = updateStem(obj, dataIndex)
         data.marker.size = data.marker.size * 0.6;
 
         %-fix dash line-%
-        if lower(data.line.dash) == "dash"
+        if strcmpi(data.line.dash, "dash")
             data.line.dash = "dot";
         end
     end

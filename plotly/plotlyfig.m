@@ -667,7 +667,7 @@ classdef plotlyfig < handle
 
             if obj.State.Figure.NumLegends < 2
                 for n = 1:obj.State.Figure.NumLegends
-                    if lower(obj.PlotOptions.TreatAs) ~= "pie3"
+                    if ~strcmpi(obj.PlotOptions.TreatAs, "pie3")
                         updateLegend(obj,n);
                     end
                 end

@@ -31,7 +31,7 @@ function data = updateContourgroup(obj,plotIndex)
     data.xaxis = "x" + xSource;
     data.yaxis = "y" + ySource;
     data.name = plotData.DisplayName;
-    data.visible = plotData.Visible == "on";
+    data.visible = strcmp(plotData.Visible, "on");
     data.xtype = "array";
     data.ytype = "array";
 
@@ -51,14 +51,14 @@ function data = updateContourgroup(obj,plotIndex)
     data.reversescale = false;
     data.colorscale = getColorScale(plotData, axisData);
 
-    if plotData.Fill == "off"
+    if strcmp(plotData.Fill, "off")
         data.contours.coloring = "lines";
     else
         data.contours.coloring = "fill";
     end
 
     %-set contour line-%
-    if plotData.LineStyle ~= "none"
+    if ~strcmp(plotData.LineStyle, "none")
         data.contours.showlines = true;
         data.line = getContourLine(plotData);
     else
@@ -66,7 +66,7 @@ function data = updateContourgroup(obj,plotIndex)
     end
 
     %-set contour label-%
-    if lower(plotData.ShowText) == "on"
+    if strcmpi(plotData.ShowText, "on")
         data.contours.showlabels = true;
         data.contours.labelfont = getLabelFont(axisData);
     end
@@ -101,7 +101,7 @@ function colorScale = getColorScale(plotData, axisData)
     end
     cMapInd = floor((nColors-1)*cScaleInd) + 1;
 
-    if plotData.Fill == "on"
+    if strcmp(plotData.Fill, "on")
         colorScale = cell(1, nContours);
         colors = cMap(cMapInd, :);
         if isBackground

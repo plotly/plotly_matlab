@@ -54,7 +54,7 @@ function data = updateBar(obj,barIndex)
     data.yaxis = "y" + ySource;
     data.type = "bar";
     data.name = barData.DisplayName;
-    data.visible = barData.Visible == "on";
+    data.visible = strcmp(barData.Visible, "on");
 
     %-find all grouped bars on the same axis-%
     parentAxis = obj.State.Plot(barIndex).AssociatedAxis;
@@ -63,7 +63,7 @@ function data = updateBar(obj,barIndex)
     %-check for multiple bar groups (cheap: just compare BarWidth values)-%
     barWidths = arrayfun(@(b) b.BarWidth, bars);
     hasMultipleGroups = numel(unique(barWidths)) > 1 ...
-            && barData.BarLayout == "grouped";
+            && strcmp(barData.BarLayout, "grouped");
 
     if hasMultipleGroups
         %-MULTI-GROUP: use overlay mode with explicit positions/widths-%
@@ -98,7 +98,7 @@ function data = updateBar(obj,barIndex)
 
         obj.layout.bargroupgap = 1-barData.BarWidth;
 
-        nBar = sum({bars.BarLayout}=="grouped");
+        nBar = sum(strcmp({bars.BarLayout}, "grouped"));
         if nBar > 1
             obj.layout.bargap = 0.2;
         else

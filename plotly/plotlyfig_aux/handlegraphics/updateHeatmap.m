@@ -31,7 +31,7 @@ function data = updateHeatmap(obj,heatIndex)
     data.hoverlabel.bgcolor = "white";
 
     data.showscale = false;
-    if lower(heat_data.ColorbarVisible) == "on"
+    if strcmpi(heat_data.ColorbarVisible, "on")
         xaxis = obj.layout.("xaxis" + xSource);
         yaxis = obj.layout.("yaxis" + ySource);
         data.showscale = true;
@@ -50,7 +50,7 @@ function data = updateHeatmap(obj,heatIndex)
         );
     end
 
-    data.visible = heat_data.Visible == "on";
+    data.visible = strcmp(heat_data.Visible, "on");
     data.opacity = 0.95;
 
     %-setting annotation text-%

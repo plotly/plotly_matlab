@@ -29,7 +29,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     surfaceData.z = zDataSurface;
     surfaceData.name = meshData.DisplayName;
     surfaceData.showscale = false;
-    surfaceData.visible = meshData.Visible == "on";
+    surfaceData.visible = strcmp(meshData.Visible, "on");
 
     contourData.scene = "scene" + xsource;
     contourData.type = "scatter3d";
@@ -39,7 +39,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     contourData.z = getContourDataFromSurface(zDataSurface);
     contourData.name = meshData.DisplayName;
     contourData.showscale = false;
-    contourData.visible = meshData.Visible == "on";
+    contourData.visible = strcmp(meshData.Visible, "on");
 
     %-COLORING-%
 
@@ -113,7 +113,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     obj.data{surfaceIndex} = surfaceData;
     obj.data{contourIndex} = contourData;
 
-    if lower(meshData.ShowContours) == "on"
+    if strcmpi(meshData.ShowContours, "on")
         obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
         projectionIndex = obj.PlotOptions.nPlots;
         obj.data{projectionIndex} = struct( ...

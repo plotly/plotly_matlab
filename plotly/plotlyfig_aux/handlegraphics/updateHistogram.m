@@ -51,7 +51,7 @@ function data = updateHistogram(obj,histIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     isStairs = isprop(hist_data, "DisplayStyle") ...
-            && hist_data.DisplayStyle == "stairs";
+            && strcmp(hist_data.DisplayStyle, "stairs");
 
     data.xaxis = "x" + xsource;
     data.yaxis = "y" + ysource;
@@ -63,7 +63,7 @@ function data = updateHistogram(obj,histIndex)
     end
 
     data.name = hist_data.DisplayName;
-    data.visible = hist_data.Visible == "on";
+    data.visible = strcmp(hist_data.Visible, "on");
     data.showlegend = getShowLegend(hist_data);
 end
 
@@ -84,7 +84,7 @@ function data = updateHistogramStairs(data, hist_data)
     x = repelem(edges, 2);
     y = [0 repelem(vals, 2) 0];
 
-    if hist_data.Orientation == "horizontal"
+    if strcmp(hist_data.Orientation, "horizontal")
         [x, y] = deal(y, x);
     end
 
@@ -143,7 +143,7 @@ function data = updateHistogramBar(obj,data,hist_data,axisData)
                 "Unknown histogram orientation: %s", orientation);
     end
 
-    if axisData.Tag == "yhist"
+    if strcmp(axisData.Tag, "yhist")
         data.orientation = "h";
         [data.x, data.y] = deal(data.y, data.x);
     end

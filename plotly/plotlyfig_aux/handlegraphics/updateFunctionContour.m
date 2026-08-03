@@ -32,7 +32,7 @@ function data = updateFunctionContour(obj,contourIndex)
 
     data.xtype = "array";
     data.ytype = "array";
-    data.visible = contour_data.Visible == "on";
+    data.visible = strcmp(contour_data.Visible, "on");
     data.showscale = false;
     data.zauto = false;
     data.zmin = axis_data.CLim(1);
@@ -71,7 +71,7 @@ function data = updateFunctionContour(obj,contourIndex)
     data.contours.end = cend;
     data.contours.size = csize;
 
-    if contour_data.LineStyle ~= "none"
+    if ~strcmp(contour_data.LineStyle, "none")
         if isnumeric(contour_data.LineColor)
             data.line.color = getStringColor(round(255*contour_data.LineColor));
         else

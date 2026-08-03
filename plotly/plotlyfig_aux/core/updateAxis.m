@@ -53,7 +53,7 @@ function obj = updateAxis(obj,axIndex)
     end
 
     %-check if heatmap axis-%
-    isHeatmapAxis = axisData.Type == "heatmap";
+    isHeatmapAxis = strcmp(axisData.Type, "heatmap");
     obj.PlotOptions.is_heatmap_axis = isHeatmapAxis;
 
     %-check if geo-axis-%
@@ -76,7 +76,7 @@ function obj = updateAxis(obj,axIndex)
         axisPos(3:4) = min(axisPos(3:4));
     end
 
-    if (ischar(axisData.Tag) || isstring(axisData.Tag)) && axisData.Tag == "yhist"
+    if (ischar(axisData.Tag) || isstring(axisData.Tag)) && strcmp(axisData.Tag, "yhist")
         % scatterhist() function
         [xaxis, yaxis] = deal(yaxis,xaxis);
         [xaxis.side, yaxis.side] = deal(yaxis.side,xaxis.side);

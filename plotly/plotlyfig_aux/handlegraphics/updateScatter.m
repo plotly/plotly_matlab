@@ -4,7 +4,7 @@ function data = updateScatter(obj,plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     data.mode = "markers";
-    data.visible = plotData.Visible == "on";
+    data.visible = strcmp(plotData.Visible, "on");
     data.name = plotData.DisplayName;
     data.marker = extractScatterMarker(plotData);
     [data.x, data.y] = getTraceData2D(plotData);

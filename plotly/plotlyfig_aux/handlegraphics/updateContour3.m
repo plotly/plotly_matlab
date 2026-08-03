@@ -115,7 +115,7 @@ function data = updateContour3(obj,contourIndex)
     obj.layout.scene.yaxis.zeroline = false;
     obj.layout.scene.zaxis.zeroline = false;
 
-    data.visible = contour_data.Visible == "on";
+    data.visible = strcmp(contour_data.Visible, "on");
     data.showscale = false;
     data.reversescale = false;
 

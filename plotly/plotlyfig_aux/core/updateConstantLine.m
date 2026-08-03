@@ -11,12 +11,12 @@ function data = updateConstantLine(obj,plotIndex)
     data.xaxis = "x" + xsource;
     data.yaxis = "y" + ysource;
     data.type = "scatter";
-    data.visible = plotData.Visible == "on";
+    data.visible = strcmp(plotData.Visible, "on");
 
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
     value = [plotData.Value plotData.Value];
-    if plotData.InterceptAxis == "y"
+    if strcmp(plotData.InterceptAxis, "y")
         data.x = xaxis.range;
         data.y = value;
     else
@@ -32,7 +32,7 @@ function data = updateConstantLine(obj,plotIndex)
         annotation.xref = "x" + xsource;
         annotation.yref = "y" + ysource;
 
-        if plotData.InterceptAxis == "x"
+        if strcmp(plotData.InterceptAxis, "x")
             annotation.textangle = -90;
         end
 
@@ -52,7 +52,7 @@ function data = updateConstantLine(obj,plotIndex)
         annotation.text = "<b>" + join( ...
                 string(annotation.text), "<br>") + "</b>";
 
-        if plotData.InterceptAxis == "x"
+        if strcmp(plotData.InterceptAxis, "x")
             annotation.x = plotData.Value;
             annotation.y = yaxis.range(2);
         else
@@ -71,8 +71,8 @@ function data = updateConstantLine(obj,plotIndex)
             otherwise
         end
 
-        if plotData.LabelHorizontalAlignment == "center"
-            if plotData.InterceptAxis == "x"
+        if strcmp(plotData.LabelHorizontalAlignment, "center")
+            if strcmp(plotData.InterceptAxis, "x")
                 ylim = plotData.Parent.YLim;
                 textWidth = text(0,0,plotData.Label,units="normalized", ...
                         rotation=90,Visible="off").Extent(4);
@@ -105,14 +105,14 @@ function data = updateConstantLine(obj,plotIndex)
 
     data.name = plotData.DisplayName;
 
-    if plotData.Type ~= "constantline" ...
-            && lower(plotData.Marker) ~= "none" ...
-            && lower(plotData.LineStyle) ~= "none"
+    if ~strcmp(plotData.Type, "constantline") ...
+            && ~strcmpi(plotData.Marker, "none") ...
+            && ~strcmpi(plotData.LineStyle, "none")
         mode = "lines+markers";
-    elseif plotData.Type ~= "constantline" ...
-            && lower(plotData.Marker) ~= "none"
+    elseif ~strcmp(plotData.Type, "constantline") ...
+            && ~strcmpi(plotData.Marker, "none")
         mode = "markers";
-    elseif lower(plotData.LineStyle) ~= "none"
+    elseif ~strcmpi(plotData.LineStyle, "none")
         mode = "lines";
     else
         mode = "none";
@@ -121,7 +121,7 @@ function data = updateConstantLine(obj,plotIndex)
     data.mode = mode;
     data.line = extractLineLine(plotData);
 
-    if plotData.Type ~= "constantline"
+    if ~strcmp(plotData.Type, "constantline")
         data.marker = extractLineMarker(plotData);
     end
 

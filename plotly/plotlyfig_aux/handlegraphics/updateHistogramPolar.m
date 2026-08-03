@@ -63,7 +63,7 @@ function data = updateHistogramPolar(obj,histIndex)
     end
 
     data.marker = extractPatchFace(hist_data);
-    data.visible = hist_data.Visible == "on";
+    data.visible = strcmp(hist_data.Visible, "on");
 
     data.showlegend = getShowLegend(hist_data);
 end

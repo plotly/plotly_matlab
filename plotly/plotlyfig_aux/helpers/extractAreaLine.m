@@ -4,7 +4,7 @@ function line = extractAreaLine(area_data)
     % STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
 
     line = struct();
-    if area_data.LineStyle == "none"
+    if strcmp(area_data.LineStyle, "none")
         return
     end
 

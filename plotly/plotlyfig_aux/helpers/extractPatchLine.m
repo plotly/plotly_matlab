@@ -4,7 +4,7 @@ function line = extractPatchLine(patch_data)
     % STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
 
     line = struct();
-    if patch_data.LineStyle == "none"
+    if strcmp(patch_data.LineStyle, "none")
         return
     end
 

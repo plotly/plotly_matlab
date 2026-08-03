@@ -42,7 +42,7 @@ function [axis] = extractHeatmapAxisData(obj,axis_data,axisName)
         ) ...
     );
 
-    if axis_data.Visible == "on"
+    if strcmp(axis_data.Visible, "on")
         axis.showline = true;
     else
         axis.showline = false;

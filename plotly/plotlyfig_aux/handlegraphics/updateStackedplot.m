@@ -39,7 +39,7 @@ function updateStackedplot(obj, plotIndex)
 
         %-set current trace-%
         data.type = "scatter";
-        data.visible = plotData.Visible == "on";
+        data.visible = strcmp(plotData.Visible, "on");
         data.name = plotData.DisplayLabels{t};
         data.xaxis = "x1";
         data.yaxis = "y" + t;
@@ -151,7 +151,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         axis.linewidth = lineWidth;
         axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
-        if plotData.GridVisible == "on"
+        if strcmp(plotData.GridVisible, "on")
             axis.showgrid = true;
             axis.gridwidth = lineWidth;
             axis.gridcolor = getStringColor(round(255*0.15*ones(1,3)), 0.15);

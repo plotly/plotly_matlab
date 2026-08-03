@@ -12,7 +12,7 @@ function output = write_image(pfObj, options)
     end
 
     % Set default filename based on imageFormat if not provided
-    if options.filename == ""
+    if strcmp(options.filename, "")
         options.filename = "figure." + options.imageFormat;
     end
 
@@ -22,7 +22,7 @@ function output = write_image(pfObj, options)
     width = options.width;
     scale = options.scale;
 
-    if imageFormat == "jpg"
+    if strcmp(imageFormat, "jpg")
         imageFormat = "jpeg";
     end
 
@@ -86,7 +86,7 @@ function output = write_image(pfObj, options)
     end
 
     a = string(split(out,newline));
-    if a(end) == ""
+    if strcmp(a(end), "")
         a(end) = [];
     end
     output = jsondecode(a(end));

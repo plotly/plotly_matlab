@@ -49,7 +49,7 @@ function data = updateLineseries(obj, plotIndex)
         updateScene(obj, plotIndex);
     end
 
-    data.visible = plotData.Visible == "on";
+    data.visible = strcmp(plotData.Visible, "on");
     data.name = plotData.DisplayName;
     data.mode = getScatterMode(plotData);
 

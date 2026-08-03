@@ -52,7 +52,7 @@ function obj = updateData(obj, dataIndex)
             case "line"
                 if obj.PlotlyDefaults.isGeoaxis
                     updateGeoPlot(obj, dataIndex);
-                elseif obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
+                elseif strcmp(obj.State.Plot(dataIndex).AssociatedAxis.Type, "polaraxes")
                     obj.data{dataIndex} = updatePolarplot(obj, dataIndex);
                 elseif ismember("ternplot", lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlot(obj, dataIndex);
@@ -64,7 +64,7 @@ function obj = updateData(obj, dataIndex)
             case "categoricalhistogram"
                 updateCategoricalHistogram(obj, dataIndex);
             case "histogram"
-                if obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
+                if strcmp(obj.State.Plot(dataIndex).AssociatedAxis.Type, "polaraxes")
                     obj.data{dataIndex} = updateHistogramPolar(obj, dataIndex);
                 else
                     obj.data{dataIndex} = updateHistogram(obj, dataIndex);
@@ -114,7 +114,7 @@ function obj = updateData(obj, dataIndex)
             case "baseline"
                 updateBaseline(obj, dataIndex);
             case {"contourgroup","contour"}
-                if obj.State.Plot(dataIndex).AssociatedAxis.ZGrid == "on"
+                if strcmp(obj.State.Plot(dataIndex).AssociatedAxis.ZGrid, "on")
                     obj.data{dataIndex} = updateContour3(obj, dataIndex);
                 elseif obj.PlotOptions.ContourProjection
                     updateContourProjection(obj,dataIndex);
@@ -136,7 +136,7 @@ function obj = updateData(obj, dataIndex)
             case "quivergroup"
                 updateQuivergroup(obj, dataIndex);
             case "scatter"
-                if obj.State.Plot(dataIndex).AssociatedAxis.Type == "polaraxes"
+                if strcmp(obj.State.Plot(dataIndex).AssociatedAxis.Type, "polaraxes")
                     updateScatterPolar(obj, dataIndex);
                 elseif obj.PlotlyDefaults.isGeoaxis
                     updateGeoScatter(obj, dataIndex);
@@ -205,16 +205,16 @@ function obj = updateData(obj, dataIndex)
         yaxis = obj.layout.("yaxis" + ysource);
 
         % check for xaxis dates
-        if xaxis.type == "date"
+        if strcmp(xaxis.type, "date")
             obj.data{dataIndex}.x = convertDate(obj.data{dataIndex}.x);
-        elseif xaxis.type == "duration"
+        elseif strcmp(xaxis.type, "duration")
             obj.data{dataIndex}.x = convertDuration(obj.data{dataIndex}.x);
         end
 
         % check for yaxis dates
         if strcmpi(yaxis.type, "date")
             obj.data{dataIndex}.y = convertDate(obj.data{dataIndex}.y);
-        elseif yaxis.type == "duration"
+        elseif strcmp(yaxis.type, "duration")
             obj.data{dataIndex}.y = convertDuration(obj.data{dataIndex}.y);
         end
 

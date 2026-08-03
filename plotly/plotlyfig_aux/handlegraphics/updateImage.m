@@ -75,12 +75,12 @@ function data = updateImage(obj, imageIndex)
     end
 
     data.opacity = image_data.AlphaData;
-    data.visible = image_data.Visible == "on";
+    data.visible = strcmp(image_data.Visible, "on");
     data.showscale = false;
     data.zauto = false;
     data.zmin = axis_data.CLim(1);
 
-    if lower(image_data.CDataMapping) ~= "direct"
+    if ~strcmpi(image_data.CDataMapping, "direct")
         data.zmax = axis_data.CLim(2);
     else
         data.zmax = 255;

@@ -90,7 +90,7 @@ function data = updateArea(obj,areaIndex)
     end
 
     data.name = area_data.DisplayName;
-    data.visible = area_data.Visible == "on";
+    data.visible = strcmp(area_data.Visible, "on");
 
     if ~isempty(prevAreaIndex)
         data.fill = "tonexty";
@@ -98,7 +98,7 @@ function data = updateArea(obj,areaIndex)
         data.fill = "tozeroy";
     end
 
-    if isprop(area_data, "LineStyle") && area_data.LineStyle == "none"
+    if isprop(area_data, "LineStyle") && strcmp(area_data.LineStyle, "none")
         data.mode = "none";
     else
         data.mode = "lines";

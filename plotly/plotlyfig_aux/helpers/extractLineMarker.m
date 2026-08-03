@@ -9,7 +9,7 @@ function marker = extractLineMarker(line_data)
     %-MARKER SIZE-%
     marker.size = line_data.MarkerSize;
 
-    if line_data.Marker == "." % scale factor for points is off
+    if strcmp(line_data.Marker, ".") % scale factor for points is off
         marker.size = floor(sqrt(marker.size));
     elseif length(marker.size) == 1
         marker.size = 0.6*marker.size;

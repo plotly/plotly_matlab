@@ -400,7 +400,11 @@ function [xData, yData, groupName] = getTraceData(plotData)
         end
         groupName = unique(groupData,'stable');
         for g = 1:length(groupName)
-            groudInd = groupData == groupName(g);
+            if isnumeric(groupData) || islogical(groupData) || isa(groupData, 'categorical')
+                groudInd = groupData == groupName(g);
+            else
+                groudInd = strcmp(groupData, groupName{g});
+            end
             xData{g} = xPlot(groudInd);
             yData{g} = yPlot(groudInd);
         end
