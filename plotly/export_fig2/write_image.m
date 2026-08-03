@@ -88,7 +88,7 @@ function output = write_image(pfObj, varargin)
         return
     end
 
-    a = split(out,newline);
+    a = strsplit(out, newline);
     if strcmp(a{end}, "")
         a(end) = [];
     end
