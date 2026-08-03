@@ -70,7 +70,7 @@ function data = updateLineseries(obj, plotIndex)
     hasDataTipRows = isprop(plotData, "DataTipTemplate") && isprop(plotData.DataTipTemplate, "DataTipRows");
     if hasDataTipRows
         dataTipRows = plotData.DataTipTemplate.DataTipRows;
-        exclude = ["Size" "Color" "X" "Y" "Z" "Y Delta"];
+        exclude = {"Size" "Color" "X" "Y" "Z" "Y Delta"};
         dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, exclude));
         if numel(dataTipRows) > 0
             customLabel = "";

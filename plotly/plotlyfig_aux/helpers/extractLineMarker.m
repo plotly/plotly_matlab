@@ -26,8 +26,8 @@ function marker = extractLineMarker(line_data)
     %-MARKER LINE WIDTH-%
     marker.line.width = get(line_data, 'LineWidth');
 
-    filledMarkerSet = ["o","square","s","diamond","d",...
-            "v","^", "<",">","hexagram","pentagram"];
+    filledMarkerSet = {"o","square","s","diamond","d",...
+            "v","^", "<",">","hexagram","pentagram"};
 
     filledMarker = ismember(get(line_data, 'Marker'),filledMarkerSet);
 
