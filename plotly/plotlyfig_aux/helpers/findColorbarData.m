@@ -18,7 +18,10 @@ function colorbarDataIndex = findColorbarData(obj, colorbarIndex, colorbarData)
         allAxesIndex = zeros(length(colorbarSiblings), 1);
         for n = 1:length(colorbarSiblings)
             siblingType = get(colorbarSiblings(n), 'Type');
-            if strcmp(colorbarData.Parent.Children(n).Type, 'colorbar')
+            isColorbar = strcmp(siblingType, 'colorbar') ...
+                    || (is_octave() && strcmp(siblingType, 'axes') ...
+                        && strcmp(get(colorbarSiblings(n), 'Tag'), 'colorbar'));
+            if isColorbar
                 allColorbarIndex(c) = n;
                 c = c + 1;
             elseif strcmp(siblingType, 'axes')

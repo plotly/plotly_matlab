@@ -578,7 +578,12 @@ classdef plotlyfig < handle
             end
 
             % find legends of figure
-            legs = findobj(obj.State.Figure.Handle,'Type','Legend');
+            if is_octave()
+                % In Octave, legends are axes objects with a "legend" tag
+                legs = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','legend');
+            else
+                legs = findobj(obj.State.Figure.Handle,'Type','Legend');
+            end
 
             obj.State.Figure.NumLegends = length(legs);
 
@@ -593,7 +598,12 @@ classdef plotlyfig < handle
             end
 
             % find colorbar of figure
-            cols = findobj(obj.State.Figure.Handle,'Type','Colorbar');
+            if is_octave()
+                % In Octave, colorbars are axes objects with a "colorbar" tag
+                cols = findobj(obj.State.Figure.Handle,'Type','axes','-and','Tag','colorbar');
+            else
+                cols = findobj(obj.State.Figure.Handle,'Type','Colorbar');
+            end
 
             obj.State.Figure.NumColorbars = length(cols);
 
