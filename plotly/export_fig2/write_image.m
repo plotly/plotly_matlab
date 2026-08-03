@@ -96,7 +96,9 @@ function output = write_image(pfObj, options)
         return
     end
 
-    if is_octave()
+    if strcmp(imageFormat, "json") || strcmp(imageFormat, "svg")
+        out = unicode2native(output.result, "UTF-8");
+    elseif is_octave()
         out = __base64_decode_bytes__(output.result);
     else
         out = matlab.net.base64decode(unicode2native(output.result, "UTF-8"));
