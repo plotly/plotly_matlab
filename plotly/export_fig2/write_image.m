@@ -50,7 +50,7 @@ function output = write_image(pfObj, options)
         end
     end
 
-    mjLoc = replace(fullfile( ...
+    mjLoc = strrep(fullfile( ...
             wd, "kaleido", "etc", "mathjax", "MathJax.js"), '\', '/');
     scope = "plotly";
 

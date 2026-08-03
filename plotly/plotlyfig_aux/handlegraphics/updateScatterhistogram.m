@@ -310,14 +310,14 @@ function axisDomain = getXMarginalDomain(plotData, axName)
         case 'X'
             axisDomain = min([axisPos(1) sum(axisPos([1,3]))], 1);
         case 'Y'
-            if contains(plotLocation, 'South')
+            if ~isempty(strfind(plotLocation, 'South'))
                 yo = axisPos(2) + axisPos(4) + 0.01;
                 if isTitle
                     h=0.9-yo;
                 else
                     h = 0.96 - yo;
                 end
-            elseif contains(plotLocation, 'North')
+            elseif ~isempty(strfind(plotLocation, 'North'))
                 yo = 0.02; h = axisPos(2)*0.7-yo;
             end
             axisDomain = min([yo yo+h], 1);
@@ -359,10 +359,10 @@ function axisDomain = getYMarginalDomain(plotData, axName)
     plotLocation = get(plotData, 'ScatterPlotLocation');
     switch axName
         case 'X'
-            if contains(plotLocation, 'West')
+            if ~isempty(strfind(plotLocation, 'West'))
                 xo = axisPos(1) + axisPos(3) + 0.01;
                 w = 0.96-xo;
-            elseif contains(plotLocation, 'East')
+            elseif ~isempty(strfind(plotLocation, 'East'))
                 xo = 0.02; w = axisPos(1)*0.7-xo;
             end
             axisDomain = min([xo xo+w], 1);
@@ -475,12 +475,12 @@ function updateLegend(obj, plotIndex, groupName)
             obj.layout.legend.title.font.family = fontFamily;
         end
 
-        if contains(plotLocation, 'SouthWest')
+        if ~isempty(strfind(plotLocation, 'SouthWest'))
             obj.layout.legend.x = 0.96;
             obj.layout.legend.y = 0.96;
             obj.layout.legend.xanchor = 'right';
             obj.layout.legend.yanchor = 'top';
-        elseif contains(plotLocation, 'NorthEast')
+        elseif ~isempty(strfind(plotLocation, 'NorthEast'))
             obj.layout.legend.x = 0.02;
             obj.layout.legend.y = 0.02;
             obj.layout.legend.xanchor = 'left';

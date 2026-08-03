@@ -148,7 +148,7 @@ function tickVals = resolveDatetimeTicks(tick, tickLabel)
         idx = zeros(1, length(tickLabel));
         for n = 1:length(tickLabel)
             for m = 1:size(tickChar, 1)
-                if contains(tickChar(m, :), tickLabel{n})
+                if isempty(tickLabel{n}) || ~isempty(strfind(tickChar(m, :), tickLabel{n}))
                     idx(n) = m;
                 end
             end

@@ -21,9 +21,9 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     vars = split(strf(ind1:ind2), ',');
 
     strf = [strf(ind2+2:end) '==0'];
-    strf = replace(strf, vars{1}, 'Xx');
-    strf = replace(strf, vars{2}, 'Yy');
-    strf = replace(strf, vars{3}, 'Zz');
+    strf = strrep(strf, vars{1}, 'Xx');
+    strf = strrep(strf, vars{2}, 'Yy');
+    strf = strrep(strf, vars{3}, 'Zz');
 
     syms Xx Yy Zz;
     f = eval(strf);

@@ -49,8 +49,7 @@ function data = updateConstantLine(obj,plotIndex)
 
         annotation.text = parseString( ...
                 get(plotData, 'Label'), get(plotData, 'Interpreter'));
-        annotation.text = sprintf('<b>%s</b>', join( ...
-                annotation.text, '<br>'));
+        annotation.text = sprintf('<b>%s</b>', strjoin(cellstr(annotation.text), '<br>'));
 
         if strcmp(get(plotData, 'InterceptAxis'), "x")
             annotation.x = get(plotData, 'Value');

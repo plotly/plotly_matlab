@@ -73,8 +73,7 @@ function annotation = updateAnnotation(obj,anIndex)
         if isempty(get(text_data, 'String'))
             annotation.text = "<b></b>"; %empty string annotation
         else
-            annotation.text = sprintf('<b>%s</b>', join( ...
-                    annotation.text, '<br>'));
+            annotation.text = sprintf('<b>%s</b>', strjoin(cellstr(annotation.text), '<br>'));
         end
     else
         if ~strcmpi(obj.PlotOptions.TreatAs, "pie3")

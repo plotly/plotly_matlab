@@ -188,7 +188,7 @@ classdef plotlyfig < handle
 
             % strip the style keys from data
             for d = 1:length(obj.data)
-                if contains(lower(obj.data{d}.type), ["scatter" "contour" "bar"])
+                if cellfun(@(p) ~isempty(strfind(lower(obj.data{d}.type), p)), ["scatter" "contour" "bar"])
                     return
                 end
                 obj.data{d} = obj.stripkeys(obj.data{d}, obj.data{d}.type, 'style');
