@@ -12,12 +12,12 @@ function data = updateScatter(obj,plotIndex)
     isScatter3D = isprop(plotData,"ZData") && ~isempty(get(plotData, 'ZData'));
     if ~isScatter3D
         data.type = "scatter";
-        data.xaxis = "x" + xSource;
-        data.yaxis = "y" + ySource;
+        data.xaxis = sprintf("x%d", xSource);
+        data.yaxis = sprintf("y%d", ySource);
         updateCategoricalAxis(obj, plotIndex);
     else
         data.type = "scatter3d";
-        data.scene = "scene" + xSource;
+        data.scene = sprintf("scene%d", xSource);
         updateScene(obj, plotIndex);
         data.z = get(plotData, 'ZData');
         data.marker.size = 2*data.marker.size;
@@ -48,7 +48,7 @@ function updateCategoricalAxis(obj, plotIndex)
     yData = get(plotData, 'YData');
 
     if iscategorical(xData)
-        ax = obj.layout.("xaxis" + xSource);
+        ax = obj.layout.(sprintf("xaxis%d", xSource));
         nTicks = length(ax.ticktext);
 
         ax.autorange = false;
@@ -56,11 +56,11 @@ function updateCategoricalAxis(obj, plotIndex)
         ax.type = "linear";
         ax.tickvals = 1:nTicks;
 
-        obj.layout.("xaxis" + xSource) = ax;
+        obj.layout.(sprintf("xaxis%d", xSource)) = ax;
     end
 
     if iscategorical(yData)
-        ax = obj.layout.("yaxis " + ySource);
+        ax = obj.layout.(sprintf("yaxis %d", ySource));
         nTicks = length(ax.ticktext);
 
         ax.autorange = false;
@@ -68,7 +68,7 @@ function updateCategoricalAxis(obj, plotIndex)
         ax.type = "linear";
         ax.tickvals = 1:nTicks;
 
-        obj.layout.("yaxis" + ySource) = ax;
+        obj.layout.(sprintf("yaxis%d", ySource)) = ax;
     end
 end
 
@@ -89,8 +89,8 @@ function [xData, yData] = getTraceData2D(plotData)
 end
 
 function jitData = setJitData(jitData, refData, plotData, axName)
-    jitType = get(plotData, axName + "Jitter");
-    jitWidth = get(plotData, axName + "JitterWidth");
+    jitType = get(plotData, sprintf("%sJitter", axName));
+    jitWidth = get(plotData, sprintf("%sJitterWidth", axName));
     jitUnique = sort(unique(jitData), "ascend");
     jitWeight = getJitWeight(jitData, refData);
     isJitDensity = strcmp(jitType, "density");

@@ -42,11 +42,11 @@ function data = updateLineseries(obj, plotIndex)
         obj.layout.(data.subplot) = updateDefaultPolarAxes(obj, plotIndex);
     elseif ~isPlot3D
         data.type = "scatter";
-        data.xaxis = "x" + xSource;
-        data.yaxis = "y" + ySource;
+        data.xaxis = sprintf("x%d", xSource);
+        data.yaxis = sprintf("y%d", ySource);
     else
         data.type = "scatter3d";
-        data.scene = "scene" + xSource;
+        data.scene = sprintf("scene%d", xSource);
         updateScene(obj, plotIndex);
     end
 

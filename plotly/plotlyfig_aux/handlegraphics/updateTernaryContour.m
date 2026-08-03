@@ -292,10 +292,10 @@ function ternaryAxes(obj, ternaryIndex)
         labelFontSize = 1.5 * get(ternaryChildren(n), 'FontSize');
         labelFontFamily = matlab2plotlyfont(get(ternaryChildren(n), 'FontName'));
 
-        ternary.(labelLetter(l) + "axis").title.text = labelText;
-        ternary.(labelLetter(l) + "axis").title.font.color = labelFontColor;
-        ternary.(labelLetter(l) + "axis").title.font.size = labelFontSize;
-        ternary.(labelLetter(l) + "axis").title.font.family = labelFontFamily;
+        ternary.(sprintf('%saxis', labelLetter{l})).title.text = labelText;
+        ternary.(sprintf('%saxis', labelLetter{l})).title.font.color = labelFontColor;
+        ternary.(sprintf('%saxis', labelLetter{l})).title.font.size = labelFontSize;
+        ternary.(sprintf('%saxis', labelLetter{l})).title.font.family = labelFontFamily;
     end
 
     %-tick settings-%
@@ -309,11 +309,11 @@ function ternaryAxes(obj, ternaryIndex)
     tickFontFamily = matlab2plotlyfont(get(ternaryChildren(t0), 'FontName'));
 
     for l = 1:3
-        ternary.(labelLetter{l} + "axis").tick0 = tick0;
-        ternary.(labelLetter{l} + "axis").dtick = dtick;
-        ternary.(labelLetter{l} + "axis").tickfont.color = tickFontColor;
-        ternary.(labelLetter{l} + "axis").tickfont.size = tickFontSize;
-        ternary.(labelLetter{l} + "axis").tickfont.family = tickFontFamily;
+        ternary.(sprintf('%saxis', labelLetter{l})).tick0 = tick0;
+        ternary.(sprintf('%saxis', labelLetter{l})).dtick = dtick;
+        ternary.(sprintf('%saxis', labelLetter{l})).tickfont.color = tickFontColor;
+        ternary.(sprintf('%saxis', labelLetter{l})).tickfont.size = tickFontSize;
+        ternary.(sprintf('%saxis', labelLetter{l})).tickfont.family = tickFontFamily;
     end
 
     %-set ternary axes to layout-%

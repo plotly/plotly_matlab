@@ -50,8 +50,8 @@ function data = updateBar(obj,barIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
-    data.xaxis = "x" + xSource;
-    data.yaxis = "y" + ySource;
+    data.xaxis = sprintf("x%d", xSource);
+    data.yaxis = sprintf("y%d", ySource);
     data.type = "bar";
     data.name = get(barData, 'DisplayName');
     data.visible = strcmp(get(barData, 'Visible'), "on");

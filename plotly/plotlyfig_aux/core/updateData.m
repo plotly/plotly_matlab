@@ -201,8 +201,8 @@ function obj = updateData(obj, dataIndex)
         [xsource, ysource] = findSourceAxis(obj,axIndex);
 
         %-AXIS DATA-%
-        xaxis = obj.layout.("xaxis" + xsource);
-        yaxis = obj.layout.("yaxis" + ysource);
+        xaxis = obj.layout.(sprintf("xaxis%d", xsource));
+        yaxis = obj.layout.(sprintf("yaxis%d", ysource));
 
         % check for xaxis dates
         if strcmp(xaxis.type, "date")
@@ -230,14 +230,14 @@ function obj = updateData(obj, dataIndex)
         if strcmpi(xaxis.type, "category") && ...
                 ~any(strcmp(obj.data{dataIndex}.type,["heatmap" "box"]))
             obj.data{dataIndex}.x = get(ax, 'XTickLabel');
-            obj.layout.("xaxis" + xsource).autotick = true;
+            obj.layout.(sprintf("xaxis%d", xsource)).autotick = true;
         end
 
         % check for yaxis categories
         if strcmpi(yaxis.type, "category") && ...
                 ~any(strcmp(obj.data{dataIndex}.type, ["heatmap" "box"]))
             obj.data{dataIndex}.y = get(ax, 'YTickLabel');
-            obj.layout.("yaxis" + xsource).autotick = true;
+            obj.layout.(sprintf("yaxis%d", xsource)).autotick = true;
         end
     end
 

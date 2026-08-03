@@ -13,7 +13,7 @@ function output = write_image(pfObj, options)
 
     % Set default filename based on imageFormat if not provided
     if strcmp(options.filename, "")
-        options.filename = "figure." + options.imageFormat;
+        options.filename = sprintf("figure.%s", options.imageFormat);
     end
 
     imageFormat = options.imageFormat;
@@ -72,13 +72,12 @@ function output = write_image(pfObj, options)
     fprintf(f, "%s", pfJson);
     fclose(f);
 
-    cmd = [cc, " ", tFile, " | ", kExec, " ", scope, " --plotlyjs='", ...
-            plyJsLoc, "' ", "--mathjax='file:///",mjLoc,"' " ...
-            + "--no-sandbox --disable-gpu " ...
-            + "--allow-file-access-from-files --disable-breakpad " ...
-            + "--disable-dev-shm-usage"];
+    cmd = sprintf(['%s %s | %s %s --plotlyjs=''%s'' --mathjax=''file:///%s'' ' ...
+            '--no-sandbox --disable-gpu ' ...
+            '--allow-file-access-from-files --disable-breakpad ' ...
+            '--disable-dev-shm-usage'], cc, tFile, kExec, scope, plyJsLoc, mjLoc);
 
-    [code,out] = system(char(join(cmd, "")));
+    [code,out] = system(cmd);
 
     if code ~= 0
         fprintf("\nFatal: Failed to run Kaleido.\n\n");

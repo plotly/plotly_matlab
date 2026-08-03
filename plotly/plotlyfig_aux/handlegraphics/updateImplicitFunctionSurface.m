@@ -9,8 +9,8 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     image_data = obj.State.Plot(surfaceIndex).Handle;
     figure_data = obj.State.Figure.Handle;
 
-    obj.data{surfaceIndex}.xaxis = "x" + xsource;
-    obj.data{surfaceIndex}.yaxis = "y" + ysource;
+    obj.data{surfaceIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{surfaceIndex}.yaxis = sprintf("y%d", ysource);
     obj.data{surfaceIndex}.type = 'surface';
 
     %-getting x,y,z surface data-%

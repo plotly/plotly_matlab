@@ -53,8 +53,8 @@ function data = updateHistogram(obj,histIndex)
     isStairs = isprop(hist_data, "DisplayStyle") ...
             && strcmp(get(hist_data, 'DisplayStyle'), "stairs");
 
-    data.xaxis = "x" + xsource;
-    data.yaxis = "y" + ysource;
+    data.xaxis = sprintf("x%d", xsource);
+    data.yaxis = sprintf("y%d", ysource);
 
     if isStairs
         data = updateHistogramStairs(data,hist_data);

@@ -4,8 +4,8 @@ function updateGraphPlot(obj, dataIndex)
     [xSource, ySource] = findSourceAxis(obj, axIndex);
     plotData = obj.State.Plot(dataIndex).Handle;
 
-    xaxis = "x" + xSource;
-    yaxis = "y" + ySource;
+    xaxis = sprintf("x%d", xSource);
+    yaxis = sprintf("y%d", ySource);
 
     %-EDGE TRACE (uses dataIndex slot)-%
     obj.data{dataIndex}.type = "scatter";

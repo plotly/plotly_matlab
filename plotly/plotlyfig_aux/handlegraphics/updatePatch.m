@@ -53,8 +53,8 @@ function obj = updatePatch(obj, patchIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-patch xaxis and yaxis-%
-    obj.data{patchIndex}.xaxis = "x" + xsource;
-    obj.data{patchIndex}.yaxis = "y" + ysource;
+    obj.data{patchIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{patchIndex}.yaxis = sprintf("y%d", ysource);
 
     %-patch type-%
     if any(nonzeros(get(patch_data, 'ZData')))

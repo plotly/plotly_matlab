@@ -64,8 +64,8 @@ function updateScattergroup(obj,scatterIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    obj.data{scatterIndex}.xaxis = "x" + xsource;
-    obj.data{scatterIndex}.yaxis = "y" + ysource;
+    obj.data{scatterIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{scatterIndex}.yaxis = sprintf("y%d", ysource);
 
     if any(nonzeros(get(scatter_data, 'ZData')))
         obj.data{scatterIndex}.type = 'scatter3d';

@@ -79,9 +79,9 @@ function obj = updateBoxplot(obj, boxIndex)
         [xsource, ysource] = findSourceAxis(obj,axIndex);
 
         %-AXIS DATA-%
-        xaxis = obj.layout.("xaxis" + xsource);
-        obj.data{boxIndex}.xaxis = "x" + xsource;
-        obj.data{boxIndex}.yaxis = "y" + ysource;
+        xaxis = obj.layout.(sprintf("xaxis%d", xsource));
+        obj.data{boxIndex}.xaxis = sprintf("x%d", xsource);
+        obj.data{boxIndex}.yaxis = sprintf("y%d", ysource);
         obj.data{boxIndex}.type = 'box';
         obj.data{boxIndex}.visible = strcmp(get(box_data, 'Visible'),'on');
         obj.data{boxIndex}.fillcolor = 'rgba(0, 0, 0, 0)';
@@ -193,7 +193,7 @@ function obj = updateBoxplot(obj, boxIndex)
     xaxis.showticklabels = true;
     xaxis.autorange = true;
 
-    obj.layout.("xaxis" + xsource) = xaxis;
+    obj.layout.(sprintf("xaxis%d", xsource)) = xaxis;
 
     %-REVERT UNITS-%
     set(text_child(1), 'FontUnits', fontunits);

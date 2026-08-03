@@ -44,7 +44,7 @@ function updateStackedplot(obj, plotIndex)
         data.visible = strcmp(get(plotData, 'Visible'), "on");
         data.name = get(plotData, 'DisplayLabels'){t};
         data.xaxis = "x1";
-        data.yaxis = "y" + t;
+        data.yaxis = sprintf("y%d", t);
 
         %-set current trace data-%
         data.x = xData;
@@ -75,7 +75,7 @@ function updateStackedplotAxis(obj, plotIndex)
     [yaxis, yExpoFormat] = getAxis(obj, plotIndex, "Y");
 
     for a = 1:length(yaxis)
-        obj.layout.("yaxis" + a) = yaxis{a};
+        obj.layout.(sprintf("yaxis%d", a)) = yaxis{a};
     end
 
     obj.layout.annotations{1} = updateTitle(obj, get(plotData, 'Title'), [1, 3]);
@@ -292,8 +292,8 @@ function tickVals = getTickVals(axisLim, refVals, refPot, nTicks)
 end
 
 function ann = updateTitle(obj, titleText, xySource)
-    xaxis = obj.layout.("xaxis" + xySource(1));
-    yaxis = obj.layout.("yaxis" + xySource(2));
+    xaxis = obj.layout.(sprintf("xaxis%d", xySource(1)));
+    yaxis = obj.layout.(sprintf("yaxis%d", xySource(2)));
     if ~isempty(titleText)
         titleText = parseString(titleText);
     end
@@ -316,8 +316,8 @@ end
 
 function ann = updateExponentFormat(obj, expoFormat, xySource, axName)
     axName = lower(axName);
-    xaxis = obj.layout.("xaxis" + xySource(1));
-    yaxis = obj.layout.("yaxis" + xySource(2));
+    xaxis = obj.layout.(sprintf("xaxis%d", xySource(1)));
+    yaxis = obj.layout.(sprintf("yaxis%d", xySource(2)));
 
     exponentText = sprintf("\\times10^%d", expoFormat);
     exponentText = parseString(exponentText, "tex");

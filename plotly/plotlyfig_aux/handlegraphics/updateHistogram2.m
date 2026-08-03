@@ -103,7 +103,7 @@ function updateScene(obj, dataIndex)
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = get(plotData, 'Parent');
     xSource = findSourceAxis(obj, axIndex);
-    scene = obj.layout.("scene" + xSource);
+    scene = obj.layout.(sprintf("scene%d", xSource));
 
     aspectRatio = get(axisData, 'PlotBoxAspectRatio');
     cameraPosition = get(axisData, 'CameraPosition');
@@ -150,20 +150,20 @@ function updateScene(obj, dataIndex)
     end
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout.("scene" + xsource) = scene;
+    obj.layout.(sprintf("scene%d", xsource)) = scene;
 end
 
 function ax = getSceneAxis(axisData, axName)
     %-initializations-%
-    axx = get(axisData, axName + "Axis");
+    axx = get(axisData, sprintf('%sAxis', axName));
     ax.zeroline = false;
     ax.showline = true;
     ax.showspikes = true;
     ax.linecolor = getStringColor(round(255*get(axx, 'Color')));
-    ax.range = get(axisData, axName + "Lim");
+    ax.range = get(axisData, sprintf('%sLim', axName));
 
     %-label-%
-    label = get(axisData, axName + "Label");
+    label = get(axisData, sprintf('%sLabel', axName));
     ax.title = get(label, 'String');
     if ~isempty(ax.title)
         ax.title = parseString(ax.title);
@@ -188,7 +188,7 @@ function ax = getSceneAxis(axisData, axName)
     end
 
     %-grid-%
-    axGrid = get(axisData, axName + "Grid");
+    axGrid = get(axisData, sprintf('%sGrid', axName));
     if strcmp(axGrid, 'off')
         ax.showgrid = false;
     end

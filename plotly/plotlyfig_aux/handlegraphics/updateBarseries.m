@@ -63,8 +63,8 @@ function obj = updateBarseries(obj,barIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    obj.data{barIndex}.xaxis = "x" + xsource;
-    obj.data{barIndex}.yaxis = "y" + ysource;
+    obj.data{barIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{barIndex}.yaxis = sprintf("y%d", ysource);
     obj.data{barIndex}.visible = strcmp(get(bar_data, 'Visible'),'on');
     obj.data{barIndex}.type = 'bar';
     obj.data{barIndex}.name = get(bar_data, 'DisplayName');

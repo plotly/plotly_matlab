@@ -34,23 +34,23 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
 
     [xsource, ysource, xoverlay, yoverlay] = findSourceAxis(obj, axIndex, yaxIndex);
 
-    xaxis.anchor = "y" + ysource;
-    yaxis.anchor = "x" + xsource;
+    xaxis.anchor = sprintf("y%d", ysource);
+    yaxis.anchor = sprintf("x%d", xsource);
 
     if xoverlay
-        xaxis.overlaying = "x" + xoverlay;
+        xaxis.overlaying = sprintf("x%d", xoverlay);
     end
     if yoverlay
-        yaxis.overlaying = "y" + yoverlay;
+        yaxis.overlaying = sprintf("y%d", yoverlay);
     end
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
-        obj.layout.("xaxis" + xsource) = xaxis;
+        obj.layout.(sprintf("xaxis%d", xsource)) = xaxis;
     end
 
     % update the layout field (do not overwrite source)
-    obj.layout.("yaxis" + ysource) = yaxis;
+    obj.layout.(sprintf("yaxis%d", ysource)) = yaxis;
 
     %-REVERT UNITS-%
     set(axisData, 'Units', axisUnits);
@@ -64,6 +64,6 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     plotIndex = obj.PlotOptions.nPlots;
 
     obj.data{plotIndex}.type = 'scatter';
-    obj.data{plotIndex}.xaxis = "x" + xsource;
-    obj.data{plotIndex}.yaxis = "y" + ysource;
+    obj.data{plotIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{plotIndex}.yaxis = sprintf("y%d", ysource);
 end

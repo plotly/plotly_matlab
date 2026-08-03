@@ -8,13 +8,13 @@ function data = updateConstantLine(obj,plotIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj, axIndex);
 
-    data.xaxis = "x" + xsource;
-    data.yaxis = "y" + ysource;
+    data.xaxis = sprintf("x%d", xsource);
+    data.yaxis = sprintf("y%d", ysource);
     data.type = "scatter";
     data.visible = strcmp(get(plotData, 'Visible'), "on");
 
-    xaxis = obj.layout.("xaxis" + xsource);
-    yaxis = obj.layout.("yaxis" + ysource);
+    xaxis = obj.layout.(sprintf("xaxis%d", xsource));
+    yaxis = obj.layout.(sprintf("yaxis%d", ysource));
     value = [get(plotData, 'Value') get(plotData, 'Value')];
     if strcmp(get(plotData, 'InterceptAxis'), "y")
         data.x = xaxis.range;
@@ -29,8 +29,8 @@ function data = updateConstantLine(obj,plotIndex)
 
         annotation.showarrow = false;
 
-        annotation.xref = "x" + xsource;
-        annotation.yref = "y" + ysource;
+        annotation.xref = sprintf("x%d", xsource);
+        annotation.yref = sprintf("y%d", ysource);
 
         if strcmp(get(plotData, 'InterceptAxis'), "x")
             annotation.textangle = -90;
@@ -49,8 +49,8 @@ function data = updateConstantLine(obj,plotIndex)
 
         annotation.text = parseString( ...
                 get(plotData, 'Label'), get(plotData, 'Interpreter'));
-        annotation.text = "<b>" + join( ...
-                annotation.text, "<br>") + "</b>";
+        annotation.text = sprintf('<b>%s</b>', join( ...
+                annotation.text, '<br>'));
 
         if strcmp(get(plotData, 'InterceptAxis'), "x")
             annotation.x = get(plotData, 'Value');
@@ -67,7 +67,7 @@ function data = updateConstantLine(obj,plotIndex)
         annotation.font.size = get(plotData, 'FontSize');
         switch get(plotData, 'FontWeight')
             case {"bold","demi"}
-                annotation.text = "<b>" + annotation.text + "</b>";
+                annotation.text = sprintf('<b>%s</b>', annotation.text);
             otherwise
         end
 

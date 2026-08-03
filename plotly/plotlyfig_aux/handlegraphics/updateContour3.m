@@ -11,8 +11,8 @@ function data = updateContour3(obj,contourIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    data.xaxis = "x" + xsource;
-    data.yaxis = "y" + ysource;
+    data.xaxis = sprintf("x%d", xsource);
+    data.yaxis = sprintf("y%d", ysource);
     data.name = get(contour_data, 'DisplayName');
     data.type = "surface";
 

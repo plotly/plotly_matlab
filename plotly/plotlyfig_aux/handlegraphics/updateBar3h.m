@@ -13,7 +13,7 @@ function obj = updateBar3h(obj, surfaceIndex)
     axis_data = ancestor(get(bar_data, 'Parent'),'axes');
 
     %-GET SCENE-%
-    scene = obj.layout.("scene" + xsource);
+    scene = obj.layout.(sprintf("scene%d", xsource));
 
     %-associate scene-%
     obj.data{surfaceIndex}.scene = sprintf('scene%d', xsource);
@@ -200,7 +200,7 @@ function obj = updateBar3h(obj, surfaceIndex)
     scene.zaxis.title = get(get(axis_data, 'ZLabel'), 'String');
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout.("scene" + xsource) = scene;
+    obj.layout.(sprintf("scene%d", xsource)) = scene;
 end
 
 function bar_ = bar_data(position3d, size_)

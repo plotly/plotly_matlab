@@ -21,7 +21,7 @@ function valstr = m2json(val)
                 valsubstr{i} = sprintf([fmt ","], val(i,:));
                 valsubstr{i} = char(valsubstr{i});
                 valsubstr{i}(end) = [];
-                valsubstr{i} = "[" + valsubstr{i} + "]";
+                valsubstr{i} = sprintf('[%s]', valsubstr{i});
             end
             valstr = strjoin(valsubstr, ",");
         else
@@ -30,7 +30,7 @@ function valstr = m2json(val)
             valstr(end) = [];
         end
         if length(val)>1
-            valstr = "[" + valstr + "]";
+            valstr = sprintf('[%s]', valstr);
         end
         valstr = strrep(valstr,"-Inf", "null");
         valstr = strrep(valstr, "Inf", "null");

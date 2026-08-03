@@ -31,8 +31,8 @@ function updateAnimatedLine(obj,plotIndex)
         z = get(plotData, 'ZData');
     end
 
-    obj.data{plotIndex}.xaxis = "x" + xsource;
-    obj.data{plotIndex}.yaxis = "y" + ysource;
+    obj.data{plotIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{plotIndex}.yaxis = sprintf("y%d", ysource);
 
     %-scatter type-%
     obj.data{plotIndex}.type = 'scatter';
@@ -199,7 +199,7 @@ function updateAnimatedLine(obj,plotIndex)
         scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
         %-SET SCENE TO LAYOUT-%
-        obj.layout.("scene" + xsource) = scene;
+        obj.layout.(sprintf("scene%d", xsource)) = scene;
     end
 
     %-Add a temporary tag-%

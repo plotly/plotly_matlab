@@ -54,8 +54,8 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    obj.data{histIndex}.xaxis = "x" + xsource;
-    obj.data{histIndex}.yaxis = "y" + ysource;
+    obj.data{histIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{histIndex}.yaxis = sprintf("y%d", ysource);
     obj.data{histIndex}.type = 'bar';
     obj.data{histIndex}.width = get(hist_data, 'BarWidth');
     obj.data{histIndex}.y = get(hist_data, 'Values');
@@ -65,9 +65,9 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     xmin = -gap;
     xmax = (get(hist_data, 'NumDisplayBins') - 1) + gap;
 
-    obj.layout.("xaxis" + xsource).type = 'category';
-    obj.layout.("xaxis" + xsource).autotick = false;
-    obj.layout.("xaxis" + xsource).range = {xmin, xmax};
+    obj.layout.(sprintf("xaxis%d", xsource)).type = 'category';
+    obj.layout.(sprintf("xaxis%d", xsource)).autotick = false;
+    obj.layout.(sprintf("xaxis%d", xsource)).range = {xmin, xmax};
 
     obj.data{histIndex}.name = get(hist_data, 'DisplayName');
     obj.layout.barmode = 'group';

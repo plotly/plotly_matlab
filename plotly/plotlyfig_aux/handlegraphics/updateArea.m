@@ -76,8 +76,8 @@ function data = updateArea(obj,areaIndex)
         [xsource, ysource] = findSourceAxis(obj,axIndex);
     end
 
-    data.xaxis = "x" + xsource;
-    data.yaxis = "y" + ysource;
+    data.xaxis = sprintf("x%d", xsource);
+    data.yaxis = sprintf("y%d", ysource);
     data.type = "scatter";
     data.x = get(area_data, 'XData');
 

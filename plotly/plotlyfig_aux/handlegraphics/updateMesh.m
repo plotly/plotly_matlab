@@ -12,7 +12,7 @@ function obj = updateMesh(obj, surfaceIndex)
     axisData = ancestor(get(meshData, 'Parent'),'axes');
 
     %-SCENE DATA-%
-    scene = obj.layout.("scene" + xsource);
+    scene = obj.layout.(sprintf("scene%d", xsource));
 
     %-GET CONTOUR INDEX-%
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
@@ -338,7 +338,7 @@ tmpCLim = get(axisData, 'CLim');
     scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout.("scene" + xsource) = scene;
+    obj.layout.(sprintf("scene%d", xsource)) = scene;
 
     obj.data{surfaceIndex}.name = get(meshData, 'DisplayName');
     obj.data{contourIndex}.name = get(meshData, 'DisplayName');

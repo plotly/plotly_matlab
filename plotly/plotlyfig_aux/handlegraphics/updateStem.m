@@ -19,18 +19,18 @@ function data = updateStem(obj, dataIndex)
 
     %-SCENE-%
     if isstem
-        scene = obj.layout.("scene" + xsource);
+        scene = obj.layout.(sprintf("scene%d", xsource));
     else
-        xaxis = obj.layout.("xaxis" + xsource);
-        yaxis = obj.layout.("yaxis" + xsource);
+        xaxis = obj.layout.(sprintf("xaxis%d", xsource));
+        yaxis = obj.layout.(sprintf("yaxis%d", xsource));
     end
 
     %-scatter3d scene-%
     if isstem
-        data.scene = "scene" + xsource;
+        data.scene = sprintf("scene%d", xsource);
     else
-        data.xaxis = "x" + xsource;
-        data.yaxis = "y" + xsource;
+        data.xaxis = sprintf("x%d", xsource);
+        data.yaxis = sprintf("y%d", xsource);
     end
 
     %-scatter3d type-%
@@ -218,7 +218,7 @@ function data = updateStem(obj, dataIndex)
         scene.yaxis.title = get(get(get(stem_data, 'Parent'), 'YLabel'), 'String');
         scene.zaxis.title = get(get(get(stem_data, 'Parent'), 'ZLabel'), 'String');
 
-        obj.layout.("scene" + xsource) = scene;
+        obj.layout.(sprintf("scene%d", xsource)) = scene;
     else
         yaxis.zeroline = true;
 
@@ -234,7 +234,7 @@ function data = updateStem(obj, dataIndex)
         xaxis.title = get(get(get(stem_data, 'Parent'), 'XLabel'), 'String');
         yaxis.title = get(get(get(stem_data, 'Parent'), 'YLabel'), 'String');
 
-        obj.layout.("xaxis" + xsource) = xaxis;
-        obj.layout.("yaxis" + ysource) = yaxis;
+        obj.layout.(sprintf("xaxis%d", xsource)) = xaxis;
+        obj.layout.(sprintf("yaxis%d", ysource)) = yaxis;
     end
 end

@@ -39,8 +39,8 @@ function ann = getHeatmapTitleAnnotation(obj,anIndex)
         ann.xref = "paper";
         ann.yref = "paper";
     else
-        ann.xref = "x" + xsource;
-        ann.yref = "y" + ysource;
+        ann.xref = sprintf("x%d", xsource);
+        ann.yref = sprintf("y%d", ysource);
     end
 
     ann.xanchor = "middle";
@@ -51,8 +51,8 @@ function ann = getHeatmapTitleAnnotation(obj,anIndex)
 
     if obj.State.Text(anIndex).Title
         %-AXIS DATA-%
-        xaxis = obj.layout.("xaxis" + xsource);
-        yaxis = obj.layout.("yaxis" + ysource);
+        xaxis = obj.layout.(sprintf("xaxis%d", xsource));
+        yaxis = obj.layout.(sprintf("yaxis%d", ysource));
 
         ann.x = mean(xaxis.domain);
         ann.y = (yaxis.domain(2) + 0.04);

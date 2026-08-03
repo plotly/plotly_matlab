@@ -3,13 +3,13 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %   axisData is the data extracted from the figure, axisName take the
     %   values "x" "y" or "z"
 
-    axisColor = getStringColor(round(255 * get(axisData, axisName + "Color")));
+    axisColor = getStringColor(round(255 * get(axisData, sprintf("%sColor", axisName))));
     lineWidth = max(1, ...
             get(axisData, 'LineWidth')*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
-    if isprop(axisData, axisName + "Axis") ...
-            && isprop(get(axisData, axisName + "Axis"), "Exponent")
-        exponentFormat = get(get(axisData, axisName + "Axis"), 'Exponent');
+    if isprop(axisData, sprintf("%sAxis", axisName)) ...
+            && isprop(get(axisData, sprintf("%sAxis", axisName)), "Exponent")
+        exponentFormat = get(get(axisData, sprintf("%sAxis", axisName)), 'Exponent');
     else
         exponentFormat = 0;
     end
@@ -21,7 +21,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         tmpTickLength(1)*axisPosition(4)*obj.layout.height));
 
     axis = struct(...
-        "side", get(axisData, axisName + "AxisLocation"), ...
+        "side", get(axisData, sprintf("%sAxisLocation", axisName)), ...
         "zeroline", false, ...
         "autorange", false, ...
         "linecolor", axisColor, ...
@@ -35,8 +35,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         "ticklen", tickLength, ...
         "tickcolor", axisColor, ...
         "tickwidth", lineWidth, ...
-        "tickangle", -get(axisData, axisName + "TickLabelRotation"), ...
-        "type", get(axisData, axisName + "Scale") ...
+        "tickangle", -get(axisData, sprintf("%sTickLabelRotation", axisName)), ...
+        "type", get(axisData, sprintf("%sScale", axisName)) ...
     );
 
     switch get(axisData, 'TickDir')
@@ -46,8 +46,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             axis.ticks = "outside";
     end
 
-    isGrid = get(axisData, axisName + "Grid");
-    isMinorGrid = get(axisData, axisName + "MinorGrid");
+    isGrid = get(axisData, sprintf("%sGrid", axisName));
+    isMinorGrid = get(axisData, sprintf("%sMinorGrid", axisName));
     if strcmp(isGrid, "on") || strcmp(isMinorGrid, "on")
         axis.showgrid = true;
         axis.gridwidth = lineWidth;
@@ -62,8 +62,8 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.gridcolor = axisColor;
     end
 
-    tickLabels = get(axisData, axisName + "TickLabel");
-    tickValues = get(axisData, axisName + "Tick");
+    tickLabels = get(axisData, sprintf("%sTickLabel", axisName));
+    tickValues = get(axisData, sprintf("%sTick", axisName));
 
     if ischar(tickLabels)
         tickLabels = cellstr(tickLabels);
@@ -98,7 +98,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         end
 
         %-set axis limits-%
-        axisLim = get(axisData, axisName + "Lim");
+        axisLim = get(axisData, sprintf("%sLim", axisName));
 
         if isnumeric(axisLim)
             if any(~isfinite(axisLim))
@@ -116,7 +116,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 axis.title = type;
                 axis.tickvals = convertDuration(axis.tickvals);
             else
-                nticks = length(get(axisData, axisName + "Tick"))-1;
+                nticks = length(get(axisData, sprintf("%sTick", axisName)))-1;
                 delta = 0.1;
                 axis.range = [-delta nticks+delta];
                 axis.type = "duration - specified format";
@@ -149,13 +149,13 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         end
     end
 
-    axisDirection = get(axisData, axisName + "Dir");
+    axisDirection = get(axisData, sprintf("%sDir", axisName));
 
     if strcmp(axisDirection, "reverse")
         axis.range = [axis.range(2) axis.range(1)];
     end
 
-    label = get(axisData, axisName + "Label");
+    label = get(axisData, sprintf("%sLabel", axisName));
     labelData = label;
 
     %-STANDARDIZE UNITS-%
@@ -198,8 +198,8 @@ function lim = shrinkInfLimits(axis, lim, axisName)
     if ~isempty(plots)
         dataRange = [Inf -Inf];
         for i = 1:numel(plots)
-            dataRange(1) = min(dataRange(1),min(get(plots(i), axisName+"Data")));
-            dataRange(2) = max(dataRange(2),max(get(plots(i), axisName+"Data")));
+            dataRange(1) = min(dataRange(1),min(get(plots(i), sprintf("%sData", axisName))));
+            dataRange(2) = max(dataRange(2),max(get(plots(i), sprintf("%sData", axisName))));
         end
         dataRange = dataRange + [-1 1]*diff(dataRange)/8; % add some margin
     else

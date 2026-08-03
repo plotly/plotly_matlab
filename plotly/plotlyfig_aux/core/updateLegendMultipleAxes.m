@@ -26,8 +26,8 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
         axIndex = obj.getAxisIndex( ...
                 obj.State.Plot(traceIndex).AssociatedAxis);
         [xSource, ySource] = findSourceAxis(obj, axIndex);
-        xAxis = obj.layout.("xaxis" + xSource);
-        yAxis = obj.layout.("yaxis" + ySource);
+        xAxis = obj.layout.(sprintf("xaxis%d", xSource));
+        yAxis = obj.layout.(sprintf("yaxis%d", ySource));
 
         allDomain(traceIndex, 1) = max(xAxis.domain);
         allDomain(traceIndex, 2) = max(yAxis.domain);

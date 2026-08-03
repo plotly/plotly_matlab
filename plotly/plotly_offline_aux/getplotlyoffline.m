@@ -3,8 +3,7 @@ function getplotlyoffline(plotly_bundle_url)
         % download bundle
         plotly_bundle = webread(plotly_bundle_url);
     catch exception
-        disp("Whoops! There was an error attempting to download the " ...
-                + "MATLAB offline Plotly bundle");
+        disp("Whoops! There was an error attempting to download the MATLAB offline Plotly bundle");
         rethrow(exception);
     end
 

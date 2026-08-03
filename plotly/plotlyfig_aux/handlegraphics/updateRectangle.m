@@ -35,8 +35,8 @@ function obj = updateRectangle(obj, rectIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    obj.data{rectIndex}.xaxis = "x" + xsource;
-    obj.data{rectIndex}.yaxis = "y" + ysource;
+    obj.data{rectIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{rectIndex}.yaxis = sprintf("y%d", ysource);
     obj.data{rectIndex}.type = 'scatter';
 tmpPosition = get(rect_data, 'Position');
 

@@ -4,8 +4,8 @@ function data = updateHeatmap(obj,heatIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(heatIndex).AssociatedAxis);
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
-    data.xaxis = "x" + xSource;
-    data.yaxis = "y" + ySource;
+    data.xaxis = sprintf("x%d", xSource);
+    data.yaxis = sprintf("y%d", ySource);
 
     data.type = "heatmap";
 
@@ -36,8 +36,8 @@ function data = updateHeatmap(obj,heatIndex)
 
     data.showscale = false;
     if strcmpi(get(heat_data, 'ColorbarVisible'), "on")
-        xaxis = obj.layout.("xaxis" + xSource);
-        yaxis = obj.layout.("yaxis" + ySource);
+        xaxis = obj.layout.(sprintf("xaxis%d", xSource));
+        yaxis = obj.layout.(sprintf("yaxis%d", ySource));
         data.showscale = true;
         data.colorbar = struct( ...
             "x", xaxis.domain(2), ...

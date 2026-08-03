@@ -25,7 +25,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     yDataSurface = reformatDataToMesh(yData, meshDensity);
     zDataSurface = reformatDataToMesh(zData, meshDensity);
 
-    surfaceData.scene = "scene" + xsource;
+    surfaceData.scene = sprintf("scene%d", xsource);
     surfaceData.type = "surface";
     surfaceData.x = xDataSurface;
     surfaceData.y = yDataSurface;
@@ -34,7 +34,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     surfaceData.showscale = false;
     surfaceData.visible = strcmp(get(meshData, 'Visible'), "on");
 
-    contourData.scene = "scene" + xsource;
+    contourData.scene = sprintf("scene%d", xsource);
     contourData.type = "scatter3d";
     contourData.mode = "lines";
     contourData.x = getContourDataFromSurface(xDataSurface);
@@ -121,7 +121,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
         projectionIndex = obj.PlotOptions.nPlots;
         obj.data{projectionIndex} = struct( ...
             "type", "surface", ...
-            "scene", "scene" + xsource, ...
+            "scene", sprintf("scene%d", xsource), ...
             "x", xDataSurface, ...
             "y", yDataSurface, ...
             "z", zDataSurface, ...
@@ -141,7 +141,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     end
 
     %-SCENE CONFIGURATION-%
-    scene = obj.layout.("scene" + xsource);
+    scene = obj.layout.(sprintf("scene%d", xsource));
 
     asr = obj.PlotOptions.AspectRatio;
 
@@ -229,7 +229,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
     scene.zaxis.tickfont.size = get(axisData, 'FontSize');
     scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
-    obj.layout.("scene" + xsource) = scene;
+    obj.layout.(sprintf("scene%d", xsource)) = scene;
 end
 
 function surfaceData = reformatDataToMesh(data, meshDensity)

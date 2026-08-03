@@ -42,8 +42,8 @@ function obj = updateImage3D(obj, imageIndex)
     %-IMAGE DATA STRUCTURE- %
     image_data = obj.State.Plot(imageIndex).Handle;
 
-    obj.data{imageIndex}.xaxis = "x" + xsource;
-    obj.data{imageIndex}.yaxis = "y" + ysource;
+    obj.data{imageIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{imageIndex}.yaxis = sprintf("y%d", ysource);
     obj.data{imageIndex}.type = 'surface';
 
     %-format x an y data-%

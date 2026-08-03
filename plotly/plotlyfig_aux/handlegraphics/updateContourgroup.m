@@ -29,8 +29,8 @@ function data = updateContourgroup(obj,plotIndex)
     end
 
     data.type = "contour";
-    data.xaxis = "x" + xSource;
-    data.yaxis = "y" + ySource;
+    data.xaxis = sprintf("x%d", xSource);
+    data.yaxis = sprintf("y%d", ySource);
     data.name = get(plotData, 'DisplayName');
     data.visible = strcmp(get(plotData, 'Visible'), "on");
     data.xtype = "array";

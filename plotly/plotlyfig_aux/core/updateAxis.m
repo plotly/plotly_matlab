@@ -99,8 +99,8 @@ function obj = updateAxis(obj,axIndex)
         exponentText = sprintf('x10^%d', yExponentFormat);
 
         obj.layout.annotations{anIndex}.text = exponentText;
-        obj.layout.annotations{anIndex}.xref = "x" + xsource;
-        obj.layout.annotations{anIndex}.yref = "y" + ysource;
+        obj.layout.annotations{anIndex}.xref = sprintf("x%d", xsource);
+        obj.layout.annotations{anIndex}.yref = sprintf("y%d", ysource);
         obj.layout.annotations{anIndex}.xanchor = 'left';
         obj.layout.annotations{anIndex}.yanchor = 'bottom';
         obj.layout.annotations{anIndex}.font.size = yaxis.tickfont.size;
@@ -119,8 +119,8 @@ function obj = updateAxis(obj,axIndex)
         exponentText = sprintf('x10^%d', xExponentFormat);
 
         obj.layout.annotations{anIndex}.text = exponentText;
-        obj.layout.annotations{anIndex}.xref = "x" + xsource;
-        obj.layout.annotations{anIndex}.yref = "y" + ysource;
+        obj.layout.annotations{anIndex}.xref = sprintf("x%d", xsource);
+        obj.layout.annotations{anIndex}.yref = sprintf("y%d", ysource);
         obj.layout.annotations{anIndex}.xanchor = 'left';
         obj.layout.annotations{anIndex}.yanchor = 'bottom';
         obj.layout.annotations{anIndex}.font.size = xaxis.tickfont.size;
@@ -134,25 +134,25 @@ function obj = updateAxis(obj,axIndex)
         end
     end
 
-    xaxis.anchor = "y" + ysource;
-    yaxis.anchor = "x" + xsource;
+    xaxis.anchor = sprintf("y%d", ysource);
+    yaxis.anchor = sprintf("x%d", xsource);
 
     if xoverlay
-        xaxis.overlaying = "x" + xoverlay;
+        xaxis.overlaying = sprintf("x%d", xoverlay);
     end
     if yoverlay
-        yaxis.overlaying = "y" + yoverlay;
+        yaxis.overlaying = sprintf("y%d", yoverlay);
     end
 
     % update the layout field (do not overwrite source)
     if xsource == axIndex
-        obj.layout.("xaxis" + xsource) = xaxis;
-        obj.layout.("scene" + xsource) = scene;
+        obj.layout.(sprintf("xaxis%d", xsource)) = xaxis;
+        obj.layout.(sprintf("scene%d", xsource)) = scene;
     end
 
     % update the layout field (do not overwrite source)
     if ysource == axIndex
-        obj.layout.("yaxis" + ysource) = yaxis;
+        obj.layout.(sprintf("yaxis%d", ysource)) = yaxis;
     end
 
     %-REVERT UNITS-%

@@ -9,7 +9,7 @@ function obj = updateConeplot(obj, coneIndex)
     xsource = findSourceAxis(obj,axIndex);
 
     %-SCENE DATA-%
-    scene = obj.layout.("scene" + xsource);
+    scene = obj.layout.(sprintf("scene%d", xsource));
 
     %-cone type-%
     obj.data{coneIndex}.type = 'cone';
@@ -147,6 +147,6 @@ function obj = updateConeplot(obj, coneIndex)
     end
 
     %-set scene to layout-%
-    obj.layout.("scene" + xsource) = scene;
-    obj.data{coneIndex}.scene = "scene" + xsource;
+    obj.layout.(sprintf("scene%d", xsource)) = scene;
+    obj.data{coneIndex}.scene = sprintf("scene%d", xsource);
 end

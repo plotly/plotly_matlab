@@ -10,8 +10,8 @@ function data = updateSurfaceplot(obj, surfaceIndex)
     figure_data = obj.State.Figure.Handle;
 
     %-surface xaxis and yaxis-%
-    data.xaxis = "x" + xsource;
-    data.yaxis = "y" + ysource;
+    data.xaxis = sprintf("x%d", xsource);
+    data.yaxis = sprintf("y%d", ysource);
 
     % check for 3D
     if any(nonzeros(get(image_data, 'ZData')))

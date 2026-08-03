@@ -75,8 +75,8 @@ function obj = updatePatchPie3(obj, patchIndex)
     xsource = findSourceAxis(obj,axIndex);
 
     %-AXIS DATA-%
-    scene = obj.layout.("scene" + xsource);
-    obj.PlotOptions.scene_anchor = "scene" + xsource;
+    scene = obj.layout.(sprintf("scene%d", xsource));
+    obj.PlotOptions.scene_anchor = sprintf("scene%d", xsource);
 
     %-scene to be set-%
     obj.PlotOptions.scene = scene;
@@ -165,8 +165,8 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     figure_data = obj.State.Figure.Handle;
 
     %-AXIS DATA-%
-    scene = obj.layout.("scene" + xsource);
-    obj.PlotOptions.scene_anchor = "scene" + xsource;
+    scene = obj.layout.(sprintf("scene%d", xsource));
+    obj.PlotOptions.scene_anchor = sprintf("scene%d", xsource);
 
     obj.data{surfaceIndex}.type = 'surface';
     obj.data{surfaceIndex}.x = get(image_data, 'XData');

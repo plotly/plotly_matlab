@@ -51,8 +51,8 @@ function annotation = updateAnnotation(obj,anIndex)
         annotation.xref = "paper";
         annotation.yref = "paper";
     else
-        annotation.xref = "x" + xsource;
-        annotation.yref = "y" + ysource;
+        annotation.xref = sprintf("x%d", xsource);
+        annotation.yref = sprintf("y%d", ysource);
     end
 
     annotation.xanchor = get(text_data, 'HorizontalAlignment');
@@ -73,8 +73,8 @@ function annotation = updateAnnotation(obj,anIndex)
         if isempty(get(text_data, 'String'))
             annotation.text = "<b></b>"; %empty string annotation
         else
-            annotation.text = "<b>" + join( ...
-                    annotation.text, "<br>") + "</b>";
+            annotation.text = sprintf('<b>%s</b>', join( ...
+                    annotation.text, '<br>'));
         end
     else
         if ~strcmpi(obj.PlotOptions.TreatAs, "pie3")
@@ -97,8 +97,8 @@ function annotation = updateAnnotation(obj,anIndex)
 
     if obj.State.Text(anIndex).Title
         %-AXIS DATA-%
-        xaxis = obj.layout.("xaxis" + xsource);
-        yaxis = obj.layout.("yaxis" + xsource);
+        xaxis = obj.layout.(sprintf("xaxis%d", xsource));
+        yaxis = obj.layout.(sprintf("yaxis%d", xsource));
 
         annotation.x = mean(xaxis.domain);
         annotation.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
@@ -118,7 +118,7 @@ function annotation = updateAnnotation(obj,anIndex)
     switch get(text_data, 'FontWeight')
         case {"bold","demi"}
             %-bold text-%
-            annotation.text = "<b>" + annotation.text + "</b>";
+            annotation.text = sprintf('<b>%s</b>', annotation.text);
         otherwise
     end
 

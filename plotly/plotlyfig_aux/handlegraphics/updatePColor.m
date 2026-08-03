@@ -10,8 +10,8 @@ function obj = updatePColor(obj, patchIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-pcolor xaxis and yaxis-%
-    obj.data{patchIndex}.xaxis = "x" + xsource;
-    obj.data{patchIndex}.yaxis = "y" + ysource;
+    obj.data{patchIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{patchIndex}.yaxis = sprintf("y%d", ysource);
 
     %-plot type: surface-%
     obj.data{patchIndex}.type = 'surface';

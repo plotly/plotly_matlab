@@ -30,8 +30,8 @@ function response = plotlyoffline(plotlyfig)
 
     % handle plot div specs
     id = char(java.util.UUID.randomUUID);
-    width = plotlyfig.layout.width + "px";
-    height = plotlyfig.layout.height + "px";
+    width = sprintf('%gpx', plotlyfig.layout.width);
+    height = sprintf('%gpx', plotlyfig.layout.height);
 
     if plotlyfig.PlotOptions.ShowLinkText
         linkText = plotlyfig.PlotOptions.LinkText;

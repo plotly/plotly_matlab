@@ -14,7 +14,7 @@ function updateScene(obj, dataIndex, opts)
     plotData = obj.State.Plot(dataIndex).Handle;
     axisData = get(plotData, 'Parent');
     xSource = findSourceAxis(obj, axIndex);
-    scene = obj.layout.("scene" + xSource);
+    scene = obj.layout.(sprintf("scene%d", xSource));
 
     aspectRatio = get(axisData, 'PlotBoxAspectRatio');
     cameraPosition = get(axisData, 'CameraPosition');
@@ -138,7 +138,7 @@ function updateScene(obj, dataIndex, opts)
     end
 
     %-SET SCENE TO LAYOUT-%
-    obj.layout.("scene" + xSource) = scene;
+    obj.layout.(sprintf("scene%d", xSource)) = scene;
 end
 
 function tickVals = resolveDatetimeTicks(tick, tickLabel)

@@ -11,8 +11,8 @@ function obj = updateContourProjection(obj,contourIndex)
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    obj.data{contourIndex}.xaxis = "x" + xsource;
-    obj.data{contourIndex}.yaxis = "y" + ysource;
+    obj.data{contourIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{contourIndex}.yaxis = sprintf("y%d", ysource);
     obj.data{contourIndex}.name = get(contour_data, 'DisplayName');
 
     %-setting the plot-%

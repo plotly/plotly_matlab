@@ -7,8 +7,8 @@ function data = updateFunctionContour(obj,contourIndex)
     contour_data = obj.State.Plot(contourIndex).Handle;
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
-    data.xaxis = "x" + xsource;
-    data.yaxis = "y" + ysource;
+    data.xaxis = sprintf("x%d", xsource);
+    data.yaxis = sprintf("y%d", ysource);
     data.name = get(contour_data, 'DisplayName');
     data.type = "contour";
 
@@ -90,13 +90,13 @@ function data = updateFunctionContour(obj,contourIndex)
     data.showlegend = getShowLegend(contour_data);
 
     t = "linear";
-    obj.layout.("xaxis" + xsource).type = t;
-    obj.layout.("xaxis" + xsource).autorange = true;
-    obj.layout.("xaxis" + xsource).ticktext = get(axis_data, 'XTickLabel');
-    obj.layout.("xaxis" + xsource).tickvals = get(axis_data, 'XTick');
+    obj.layout.(sprintf("xaxis%d", xsource)).type = t;
+    obj.layout.(sprintf("xaxis%d", xsource)).autorange = true;
+    obj.layout.(sprintf("xaxis%d", xsource)).ticktext = get(axis_data, 'XTickLabel');
+    obj.layout.(sprintf("xaxis%d", xsource)).tickvals = get(axis_data, 'XTick');
 
-    obj.layout.("yaxis" + xsource).type = t;
-    obj.layout.("yaxis" + xsource).autorange = true;
-    obj.layout.("yaxis" + xsource).ticktext = get(axis_data, 'YTickLabel');
-    obj.layout.("yaxis" + xsource).tickvals = get(axis_data, 'YTick');
+    obj.layout.(sprintf("yaxis%d", xsource)).type = t;
+    obj.layout.(sprintf("yaxis%d", xsource)).autorange = true;
+    obj.layout.(sprintf("yaxis%d", xsource)).ticktext = get(axis_data, 'YTickLabel');
+    obj.layout.(sprintf("yaxis%d", xsource)).tickvals = get(axis_data, 'YTick');
 end

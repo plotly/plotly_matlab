@@ -102,9 +102,9 @@ end
 function ax = getMainScatterAxis(plotData, axName)
     axisPos = get(plotData, 'Position');
     axisColor = 'rgba(0,0,0, 0.9)';
-    axisLim = get(plotData, axName + "Limits");
-    axisPlot = get(plotData, axName + "Data");
-    axisLabel = get(plotData, axName + "Label");
+    axisLim = get(plotData, sprintf('%sLimits', axName));
+    axisPlot = get(plotData, sprintf('%sData', axName));
+    axisLabel = get(plotData, sprintf('%sLabel', axName));
 
     switch axName
         case 'X'
@@ -372,10 +372,10 @@ function axisDomain = getYMarginalDomain(plotData, axName)
 end
 
 function axisLim = getAxisLim(plotData, axName)
-    axisLim = get(plotData, axName + "Limits");
-    axisPlot = get(plotData, axName + "Data");
+    axisLim = get(plotData, sprintf('%sLimits', axName));
+    axisPlot = get(plotData, sprintf('%sData', axName));
     if iscategorical(axisPlot)
-        axisPlot = get(plotData, axName + "Data");
+        axisPlot = get(plotData, sprintf('%sData', axName));
         [~, ~, axisPlot] = unique(axisPlot);
         axisLim = [min(axisPlot)-0.5, max(axisPlot)+0.5];
     end
@@ -433,7 +433,7 @@ function updateTitle(obj, plotIndex)
     if isTitle
         titleText = sprintf('<b>%s</b>', parseString(get(plotData, 'Title')));
         titleFamily = matlab2plotlyfont(get(plotData, 'FontName'));
-        xaxis = obj.layout.("xaxis" + xSource);
+        xaxis = obj.layout.(sprintf("xaxis%d", xSource));
 
         obj.layout.annotations{1}.text = titleText;
         obj.layout.annotations{1}.x = mean(xaxis.domain);

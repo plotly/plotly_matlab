@@ -71,8 +71,8 @@ function updateComet(obj,plotIndex)
     %-getting data-%
     [x,y,z] = getpoints(tail);
 
-    obj.data{plotIndex}.xaxis = "x" + xsource;
-    obj.data{plotIndex}.yaxis = "y" + ysource;
+    obj.data{plotIndex}.xaxis = sprintf("x%d", xsource);
+    obj.data{plotIndex}.yaxis = sprintf("y%d", ysource);
     obj.data{plotIndex}.type = 'scatter';
     obj.data{plotIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
     obj.data{plotIndex}.x = x(1);
@@ -222,7 +222,7 @@ function updateComet(obj,plotIndex)
         scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
         %-SET SCENE TO LAYOUT-%
-        obj.layout.("scene" + xsource) = scene;
+        obj.layout.(sprintf("scene%d", xsource)) = scene;
     end
 
     %-Add a temporary tag-%
