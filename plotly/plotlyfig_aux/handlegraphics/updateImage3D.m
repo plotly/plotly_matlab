@@ -47,9 +47,9 @@ function obj = updateImage3D(obj, imageIndex)
     obj.data{imageIndex}.type = 'surface';
 
     %-format x an y data-%
-    x = image_data.XData;
-    y = image_data.YData;
-    cdata = image_data.CData;
+    x = get(image_data, 'XData');
+    y = get(image_data, 'YData');
+    cdata = get(image_data, 'CData');
 
     if isvector(x)
         if size(x,2) == 2
@@ -68,7 +68,7 @@ function obj = updateImage3D(obj, imageIndex)
     obj.data{imageIndex}.y = y;
 
     %-surface z-%
-    isrgbimg = (size(image_data.CData,3) > 1);
+    isrgbimg = (size(get(image_data, 'CData'),3) > 1);
 
     if isrgbimg
         [IND,colormap] = rgb2ind(cdata, 256);
@@ -85,20 +85,21 @@ function obj = updateImage3D(obj, imageIndex)
 
     %-image name-%
     if isprop(image_data, "DisplayName")
-        obj.data{imageIndex}.name = image_data.DisplayName;
+        obj.data{imageIndex}.name = get(image_data, 'DisplayName');
     else
         obj.data{imageIndex}.name = '';
     end
 
-    obj.data{imageIndex}.opacity = image_data.AlphaData;
-    obj.data{imageIndex}.visible = strcmp(image_data.Visible, 'on');
+    obj.data{imageIndex}.opacity = get(image_data, 'AlphaData');
+    obj.data{imageIndex}.visible = strcmp(get(image_data, 'Visible'), 'on');
     obj.data{imageIndex}.showscale = false;
     obj.data{imageIndex}.zauto = false;
-    obj.data{imageIndex}.zmin = axis_data.CLim(1);
+    tmpCLim = get(axis_data, 'CLim');
+    obj.data{imageIndex}.zmin = tmpCLim(1);
 
     %-image zmax-%
-    if ~strcmpi(image_data.CDataMapping, 'direct')
-        obj.data{imageIndex}.zmax = axis_data.CLim(2);
+    if ~strcmpi(get(image_data, 'CDataMapping'), 'direct')
+        obj.data{imageIndex}.zmax = tmpCLim(2);
     else
         obj.data{imageIndex}.zmax = 255;
     end
@@ -107,7 +108,7 @@ function obj = updateImage3D(obj, imageIndex)
     %-image colorscale-%
 
     if ~isrgbimg
-        colormap = figure_data.Colormap;
+        colormap = get(figure_data, 'Colormap');
     end
 
     len = length(colormap) - 1;

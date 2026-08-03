@@ -12,22 +12,22 @@ function updateScene(obj, dataIndex, opts)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = plotData.Parent;
+    axisData = get(plotData, 'Parent');
     xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.("scene" + xSource);
 
-    aspectRatio = axisData.PlotBoxAspectRatio;
-    cameraPosition = axisData.CameraPosition;
-    dataAspectRatio = axisData.DataAspectRatio;
-    cameraUpVector = axisData.CameraUpVector;
+    aspectRatio = get(axisData, 'PlotBoxAspectRatio');
+    cameraPosition = get(axisData, 'CameraPosition');
+    dataAspectRatio = get(axisData, 'DataAspectRatio');
+    cameraUpVector = get(axisData, 'CameraUpVector');
     cameraEye = cameraPosition ./ dataAspectRatio;
 
     %-camera normalization-%
     if opts.useQuiverCamera
         normFac = abs(min(cameraEye));
         if isprop(axisData, "Layout") ...
-                && isprop(axisData.Layout, "TileSpan")
-            fac = size(axisData.Layout.TileSpan, 2);
+                && isprop(get(axisData, 'Layout'), "TileSpan")
+            fac = size(get(get(axisData, 'Layout'), 'TileSpan'), 2);
         else
             fac = 1;
         end
@@ -63,9 +63,9 @@ function updateScene(obj, dataIndex, opts)
     scene.camera.up.z = cameraUpVector(3);
 
     %-scene axis configuration-%
-    scene.xaxis.range = axisData.XLim;
-    scene.yaxis.range = axisData.YLim;
-    scene.zaxis.range = axisData.ZLim;
+    scene.xaxis.range = get(axisData, 'XLim');
+    scene.yaxis.range = get(axisData, 'YLim');
+    scene.zaxis.range = get(axisData, 'ZLim');
 
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;
@@ -79,61 +79,61 @@ function updateScene(obj, dataIndex, opts)
     scene.yaxis.ticklabelposition = "outside";
     scene.zaxis.ticklabelposition = "outside";
 
-    scene.xaxis.title = axisData.XLabel.String;
-    scene.yaxis.title = axisData.YLabel.String;
-    scene.zaxis.title = axisData.ZLabel.String;
+    scene.xaxis.title = get(get(axisData, 'XLabel'), 'String');
+    scene.yaxis.title = get(get(axisData, 'YLabel'), 'String');
+    scene.zaxis.title = get(get(axisData, 'ZLabel'), 'String');
 
     if opts.setTitleFont
         scene.xaxis.titlefont.color = "rgba(0,0,0,1)";
         scene.yaxis.titlefont.color = "rgba(0,0,0,1)";
         scene.zaxis.titlefont.color = "rgba(0,0,0,1)";
-        scene.xaxis.titlefont.size = axisData.XLabel.FontSize;
-        scene.yaxis.titlefont.size = axisData.YLabel.FontSize;
-        scene.zaxis.titlefont.size = axisData.ZLabel.FontSize;
+        scene.xaxis.titlefont.size = get(get(axisData, 'XLabel'), 'FontSize');
+        scene.yaxis.titlefont.size = get(get(axisData, 'YLabel'), 'FontSize');
+        scene.zaxis.titlefont.size = get(get(axisData, 'ZLabel'), 'FontSize');
         scene.xaxis.titlefont.family = ...
-            matlab2plotlyfont(axisData.XLabel.FontName);
+            matlab2plotlyfont(get(get(axisData, 'XLabel'), 'FontName'));
         scene.yaxis.titlefont.family = ...
-            matlab2plotlyfont(axisData.YLabel.FontName);
+            matlab2plotlyfont(get(get(axisData, 'YLabel'), 'FontName'));
         scene.zaxis.titlefont.family = ...
-            matlab2plotlyfont(axisData.ZLabel.FontName);
+            matlab2plotlyfont(get(get(axisData, 'ZLabel'), 'FontName'));
     end
 
     %-tick labels-%
     if opts.handleDatetimeTicks
-        xTick = resolveDatetimeTicks(axisData.XTick, axisData.XTickLabel);
-        yTick = resolveDatetimeTicks(axisData.YTick, axisData.YTickLabel);
-        zTick = resolveDatetimeTicks(axisData.ZTick, axisData.ZTickLabel);
+        xTick = resolveDatetimeTicks(get(axisData, 'XTick'), get(axisData, 'XTickLabel'));
+        yTick = resolveDatetimeTicks(get(axisData, 'YTick'), get(axisData, 'YTickLabel'));
+        zTick = resolveDatetimeTicks(get(axisData, 'ZTick'), get(axisData, 'ZTickLabel'));
     else
-        xTick = axisData.XTick;
-        yTick = axisData.YTick;
-        zTick = axisData.ZTick;
+        xTick = get(axisData, 'XTick');
+        yTick = get(axisData, 'YTick');
+        zTick = get(axisData, 'ZTick');
     end
 
     scene.xaxis.tickvals = xTick;
-    scene.xaxis.ticktext = axisData.XTickLabel;
+    scene.xaxis.ticktext = get(axisData, 'XTickLabel');
     scene.yaxis.tickvals = yTick;
-    scene.yaxis.ticktext = axisData.YTickLabel;
+    scene.yaxis.ticktext = get(axisData, 'YTickLabel');
     scene.zaxis.tickvals = zTick;
-    scene.zaxis.ticktext = axisData.ZTickLabel;
+    scene.zaxis.ticktext = get(axisData, 'ZTickLabel');
 
     scene.xaxis.tickcolor = "rgba(0,0,0,1)";
     scene.yaxis.tickcolor = "rgba(0,0,0,1)";
     scene.zaxis.tickcolor = "rgba(0,0,0,1)";
-    scene.xaxis.tickfont.size = axisData.FontSize;
-    scene.yaxis.tickfont.size = axisData.FontSize;
-    scene.zaxis.tickfont.size = axisData.FontSize;
-    scene.xaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-    scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-    scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+    scene.xaxis.tickfont.size = get(axisData, 'FontSize');
+    scene.yaxis.tickfont.size = get(axisData, 'FontSize');
+    scene.zaxis.tickfont.size = get(axisData, 'FontSize');
+    scene.xaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+    scene.yaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+    scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
     %-grid-%
-    if strcmp(axisData.XGrid, "off")
+    if strcmp(get(axisData, 'XGrid'), "off")
         scene.xaxis.showgrid = false;
     end
-    if strcmp(axisData.YGrid, "off")
+    if strcmp(get(axisData, 'YGrid'), "off")
         scene.yaxis.showgrid = false;
     end
-    if strcmp(axisData.ZGrid, "off")
+    if strcmp(get(axisData, 'ZGrid'), "off")
         scene.zaxis.showgrid = false;
     end
 

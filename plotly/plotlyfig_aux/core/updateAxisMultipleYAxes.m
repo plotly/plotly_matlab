@@ -5,25 +5,26 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     axisData = obj.State.Axis(axIndex).Handle;
 
     %-STANDARDIZE UNITS-%
-    axisUnits = axisData.Units;
-    axisData.Units = 'normalized';
+    axisUnits = get(axisData, 'Units');
+    set(axisData, 'Units', 'normalized');
 
     if isprop(axisData, "FontUnits")
-        fontUnits = axisData.FontUnits;
-        axisData.FontUnits = 'points';
+        fontUnits = get(axisData, 'FontUnits');
+        set(axisData, 'FontUnits', 'points');
     end
 
     xaxis = extractAxisData(obj,axisData, 'X');
     yaxis = extractAxisDataMultipleYAxes(obj, axisData, yaxIndex);
 
     %-getting and setting position data-%
-    xo = axisData.Position(1);
-    yo = axisData.Position(2);
-    w = axisData.Position(3);
-    h = axisData.Position(4);
+    axisPosition = get(axisData, 'Position');
+    xo = axisPosition(1);
+    yo = axisPosition(2);
+    w = axisPosition(3);
+    h = axisPosition(4);
 
     if obj.PlotOptions.AxisEqual
-        wh = min(axisData.Position(3:4));
+        wh = min(axisPosition(3:4));
         w = wh;
         h = wh;
     end
@@ -52,10 +53,10 @@ function obj = updateAxisMultipleYAxes(obj,axIndex,yaxIndex)
     obj.layout.("yaxis" + ysource) = yaxis;
 
     %-REVERT UNITS-%
-    axisData.Units = axisUnits;
+    set(axisData, 'Units', axisUnits);
 
     if isprop(axisData, "FontUnits")
-        axisData.FontUnits = fontUnits;
+        set(axisData, 'FontUnits', fontUnits);
     end
 
     %-do y-axes visible-%

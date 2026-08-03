@@ -3,49 +3,51 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
     %   axisData is the data extracted from the figure, axisName take the
     %   values "x" "y" or "z"
 
-    axisColor = getStringColor(round(255 * axisData.(axisName + "Color")));
+    axisColor = getStringColor(round(255 * get(axisData, axisName + "Color")));
     lineWidth = max(1, ...
-            axisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
+            get(axisData, 'LineWidth')*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
     if isprop(axisData, axisName + "Axis") ...
-            && isprop(axisData.(axisName + "Axis"), "Exponent")
-        exponentFormat = axisData.(axisName + "Axis").Exponent;
+            && isprop(get(axisData, axisName + "Axis"), "Exponent")
+        exponentFormat = get(get(axisData, axisName + "Axis"), 'Exponent');
     else
         exponentFormat = 0;
     end
 
+    tmpTickLength = get(axisData, 'TickLength');
+    axisPosition = get(axisData, 'Position');
     tickLength = min(obj.PlotlyDefaults.MaxTickLength, ...
-        max(axisData.TickLength(1)*axisData.Position(3)*obj.layout.width, ...
-        axisData.TickLength(1)*axisData.Position(4)*obj.layout.height));
+        max(tmpTickLength(1)*axisPosition(3)*obj.layout.width, ...
+        tmpTickLength(1)*axisPosition(4)*obj.layout.height));
 
     axis = struct(...
-        "side", axisData.(axisName + "AxisLocation"), ...
+        "side", get(axisData, axisName + "AxisLocation"), ...
         "zeroline", false, ...
         "autorange", false, ...
         "linecolor", axisColor, ...
         "linewidth", lineWidth, ...
         "exponentformat", obj.PlotlyDefaults.ExponentFormat, ...
         "tickfont", struct( ...
-            "size", axisData.FontSize, ...
-            "family", matlab2plotlyfont(axisData.FontName), ...
+            "size", get(axisData, 'FontSize'), ...
+            "family", matlab2plotlyfont(get(axisData, 'FontName')), ...
             "color", axisColor ...
         ), ...
         "ticklen", tickLength, ...
         "tickcolor", axisColor, ...
         "tickwidth", lineWidth, ...
-        "tickangle", -axisData.(axisName + "TickLabelRotation"), ...
-        "type", axisData.(axisName + "Scale") ...
+        "tickangle", -get(axisData, axisName + "TickLabelRotation"), ...
+        "type", get(axisData, axisName + "Scale") ...
     );
 
-    switch axisData.TickDir
+    switch get(axisData, 'TickDir')
         case "in"
             axis.ticks = "inside";
         case "out"
             axis.ticks = "outside";
     end
 
-    isGrid = axisData.(axisName + "Grid");
-    isMinorGrid = axisData.(axisName + "MinorGrid");
+    isGrid = get(axisData, axisName + "Grid");
+    isMinorGrid = get(axisData, axisName + "MinorGrid");
     if strcmp(isGrid, "on") || strcmp(isMinorGrid, "on")
         axis.showgrid = true;
         axis.gridwidth = lineWidth;
@@ -55,13 +57,13 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
     if isprop(axisData, "GridColor") && isprop(axisData, "GridAlpha")
         axis.gridcolor = getStringColor( ...
-                round(255*axisData.GridColor), axisData.GridAlpha);
+                round(255*get(axisData, 'GridColor')), get(axisData, 'GridAlpha'));
     else
         axis.gridcolor = axisColor;
     end
 
-    tickLabels = axisData.(axisName + "TickLabel");
-    tickValues = axisData.(axisName + "Tick");
+    tickLabels = get(axisData, axisName + "TickLabel");
+    tickValues = get(axisData, axisName + "Tick");
 
     if ischar(tickLabels)
         tickLabels = cellstr(tickLabels);
@@ -81,7 +83,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         axis.showticklabels = false;
         axis.autorange = true;
 
-        switch axisData.Box
+        switch get(axisData, 'Box')
             case "on"
                 axis.mirror = true;
             case "off"
@@ -96,7 +98,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         end
 
         %-set axis limits-%
-        axisLim = axisData.(axisName + "Lim");
+        axisLim = get(axisData, axisName + "Lim");
 
         if isnumeric(axisLim)
             if any(~isfinite(axisLim))
@@ -114,7 +116,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
                 axis.title = type;
                 axis.tickvals = convertDuration(axis.tickvals);
             else
-                nticks = length(axisData.(axisName + "Tick"))-1;
+                nticks = length(get(axisData, axisName + "Tick"))-1;
                 delta = 0.1;
                 axis.range = [-delta nticks+delta];
                 axis.type = "duration - specified format";
@@ -123,7 +125,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             axis.range = axisLim;
             axis.type = "date";
             if isprop(axisData, "XTickLabelMode") ...
-                    && isequal(axisData.XTickLabelMode, "auto")
+                    && isequal(get(axisData, 'XTickLabelMode'), "auto")
                 axis.autotick = true;
                 tickLabels = {};
             end
@@ -135,7 +137,7 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
             axis.autorange = true;
         end
 
-        switch axisData.Box
+        switch get(axisData, 'Box')
             case "on"
                 axis.mirror = "ticks";
             case "off"
@@ -147,33 +149,33 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
         end
     end
 
-    axisDirection = axisData.(axisName + "Dir");
+    axisDirection = get(axisData, axisName + "Dir");
 
     if strcmp(axisDirection, "reverse")
         axis.range = [axis.range(2) axis.range(1)];
     end
 
-    label = axisData.(axisName + "Label");
+    label = get(axisData, axisName + "Label");
     labelData = label;
 
     %-STANDARDIZE UNITS-%
-    fontunits = label.FontUnits;
-    label.FontUnits = "points";
+    fontunits = get(label, 'FontUnits');
+    set(label, 'FontUnits', 'points');
 
-    if ~isempty(labelData.String)
+    if ~isempty(get(labelData, 'String'))
         axis.title = struct( ...
-            "text", parseString(labelData.String,labelData.Interpreter) ...
+            "text", parseString(get(labelData, 'String'),get(labelData, 'Interpreter')) ...
         );
     end
 
-    axis.titlefont.color = getStringColor(round(255*labelData.Color));
-    axis.titlefont.size = labelData.FontSize;
-    axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
+    axis.titlefont.color = getStringColor(round(255*get(labelData, 'Color')));
+    axis.titlefont.size = get(labelData, 'FontSize');
+    axis.titlefont.family = matlab2plotlyfont(get(labelData, 'FontName'));
 
     %-REVERT UNITS-%
-    label.FontUnits = fontunits;
+    set(label, 'FontUnits', fontunits);
 
-    if strcmp(axisData.Visible, "on")
+    if strcmp(get(axisData, 'Visible'), "on")
         axis.showline = true;
     else
         axis.showticklabels = false;
@@ -189,15 +191,15 @@ function lim = shrinkInfLimits(axis, lim, axisName)
         lim
         axisName (1,1) string {mustBeMember(axisName,["Y" "X"])}
     end
-    plots = axis.Children;
+    plots = get(axis, 'Children');
     plots = plots(~arrayfun( ...
             @(x) isa(x,"matlab.graphics.chart.decoration.ConstantLine"), ...
             plots));
     if ~isempty(plots)
         dataRange = [Inf -Inf];
         for i = 1:numel(plots)
-            dataRange(1) = min(dataRange(1),min(plots(i).(axisName+"Data")));
-            dataRange(2) = max(dataRange(2),max(plots(i).(axisName+"Data")));
+            dataRange(1) = min(dataRange(1),min(get(plots(i), axisName+"Data")));
+            dataRange(2) = max(dataRange(2),max(get(plots(i), axisName+"Data")));
         end
         dataRange = dataRange + [-1 1]*diff(dataRange)/8; % add some margin
     else

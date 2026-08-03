@@ -16,7 +16,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
     %
     %=====================================================================%
 
-    if strcmpi(ternaryData.Fill, 'on')
+    if strcmpi(get(ternaryData, 'Fill'), 'on')
         fillContours(obj, ternaryIndex)
     end
 
@@ -27,7 +27,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
     %=====================================================================%
 
     %-parse plot data-%
-    contourMatrix = ternaryData.ContourMatrix;
+    contourMatrix = get(ternaryData, 'ContourMatrix');
 
     len = size(contourMatrix, 2);
     n = 1; c = 1;
@@ -41,12 +41,13 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         yData{c} = contourMatrix(2, n+1:n+m);
 
         %-get edge color-%
-        if isnumeric(ternaryData.LineColor)
-            lineColor{c} = getStringColor(round(255*ternaryData.LineColor));
-        elseif strcmpi(ternaryData.LineColor, "flat")
-            cMap = figureData.Colormap;
-            cMin = axisData.CLim(1);
-            cMax = axisData.CLim(2);
+        if isnumeric(get(ternaryData, 'LineColor'))
+            lineColor{c} = getStringColor(round(255*get(ternaryData, 'LineColor')));
+        elseif strcmpi(get(ternaryData, 'LineColor'), "flat")
+            cMap = get(figureData, 'Colormap');
+            tmpCLim = get(axisData, 'CLim');
+            cMin = tmpCLim(1);
+            cMax = tmpCLim(2);
             nColors = size(cMap,1);
 
             cData = max(min(zLevel, cMax), cMin);
@@ -54,7 +55,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
             cData = 1 + floor( cData*(nColors-1) );
 
             lineColor{c} = getStringColor(round(255*cMap(cData,:)));
-        elseif strcmpi(ternaryData.LineColor, "none")
+        elseif strcmpi(get(ternaryData, 'LineColor'), "none")
             lineColor{c} = "rgba(0,0,0,0)";
         end
 
@@ -67,7 +68,7 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         %-get trace index-%
         traceIndex = ternaryIndex;
 
-        if c > 1 || strcmpi(ternaryData.Fill, 'on')
+        if c > 1 || strcmpi(get(ternaryData, 'Fill'), 'on')
             obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
             traceIndex = obj.PlotOptions.nPlots;
         end
@@ -86,14 +87,14 @@ function obj = updateTernaryContour(obj, ternaryIndex)
         obj.data{traceIndex}.b = bData;
 
         %-line settings-%
-        obj.data{traceIndex}.line.width = 1.0*ternaryData.LineWidth;
+        obj.data{traceIndex}.line.width = 1.0*get(ternaryData, 'LineWidth');
         obj.data{traceIndex}.line.color = lineColor{c};
-        obj.data{traceIndex}.line.dash = getLineDash(ternaryData.LineStyle);
+        obj.data{traceIndex}.line.dash = getLineDash(get(ternaryData, 'LineStyle'));
 
         %-some trace settings-%
-        obj.data{traceIndex}.name = ternaryData.DisplayName;
+        obj.data{traceIndex}.name = get(ternaryData, 'DisplayName');
         obj.data{traceIndex}.showscale = false;
-        obj.data{traceIndex}.visible = strcmp(ternaryData.Visible,'on');
+        obj.data{traceIndex}.visible = strcmp(get(ternaryData, 'Visible'),'on');
 
 
         obj.data{traceIndex}.showlegend = false;
@@ -122,7 +123,7 @@ function fillContours(obj, ternaryIndex)
     xsource = findSourceAxis(obj, axIndex);
 
     %-get zLevels-%
-    contourMatrix = ternaryData.ContourMatrix;
+    contourMatrix = get(ternaryData, 'ContourMatrix');
     len = size(contourMatrix, 2);
     n = 1; c = 1;
 
@@ -137,13 +138,13 @@ function fillContours(obj, ternaryIndex)
     zLevel = sort(zLevel);
 
     %-get close contours-%
-    resizeScale = 1000/mean(size(ternaryData.XData));
-    xDataResize = imresize(ternaryData.XData, resizeScale, 'triangle');
-    yDataResize = imresize(ternaryData.YData, resizeScale, 'triangle');
-    zDataResize = imresize(ternaryData.ZData, resizeScale, 'triangle');
+    resizeScale = 1000/mean(size(get(ternaryData, 'XData')));
+    xDataResize = imresize(get(ternaryData, 'XData'), resizeScale, 'triangle');
+    yDataResize = imresize(get(ternaryData, 'YData'), resizeScale, 'triangle');
+    zDataResize = imresize(get(ternaryData, 'ZData'), resizeScale, 'triangle');
 
-    cMap = figureData.Colormap;
-    cLim = axisData.CLim;
+    cMap = get(figureData, 'Colormap');
+    cLim = get(axisData, 'CLim');
     c = 1;
 
     for l = 1:length(zLevel)-1
@@ -228,17 +229,17 @@ function fillContours(obj, ternaryIndex)
         obj.data{traceIndex}.line.color = lineColor{c};
         obj.data{traceIndex}.line.shape = 'spline';
         obj.data{traceIndex}.line.smoothing = 1.3;
-        obj.data{traceIndex}.line.width = 1.0*ternaryData.LineWidth;
-        obj.data{traceIndex}.line.dash = getLineDash(ternaryData.LineStyle);
+        obj.data{traceIndex}.line.width = 1.0*get(ternaryData, 'LineWidth');
+        obj.data{traceIndex}.line.dash = getLineDash(get(ternaryData, 'LineStyle'));
 
         %-fill settings-%
         obj.data{traceIndex}.fill = 'toself';
         obj.data{traceIndex}.fillcolor = lineColor{c};
 
         %-some trace settings-%
-        obj.data{traceIndex}.name = ternaryData.DisplayName;
+        obj.data{traceIndex}.name = get(ternaryData, 'DisplayName');
         obj.data{traceIndex}.showscale = false;
-        obj.data{traceIndex}.visible = strcmp(ternaryData.Visible,'on');
+        obj.data{traceIndex}.visible = strcmp(get(ternaryData, 'Visible'),'on');
 
         %-trace legend-%
         obj.data{traceIndex}.showlegend = false;
@@ -256,10 +257,11 @@ function ternaryAxes(obj, ternaryIndex)
     xsource = findSourceAxis(obj, axIndex);
 
     %-set domain plot-%
-    xo = axisData.Position(1);
-    yo = axisData.Position(2);
-    w = axisData.Position(3);
-    h = axisData.Position(4);
+    ternaryPosition = get(axisData, 'Position');
+    xo = ternaryPosition(1);
+    yo = ternaryPosition(2);
+    w = ternaryPosition(3);
+    h = ternaryPosition(4);
 
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
@@ -268,9 +270,10 @@ function ternaryAxes(obj, ternaryIndex)
     l = 1; t = 1;
     labelLetter = {'b', 'a', 'c'};
 
-    for n = 1:length(axisData.Children)
-        if strcmpi(axisData.Children(n).Type, 'text')
-            stringText = axisData.Children(n).String;
+    ternaryChildren = get(axisData, 'Children');
+    for n = 1:length(ternaryChildren)
+        if strcmpi(get(ternaryChildren(n), 'Type'), 'text')
+            stringText = get(ternaryChildren(n), 'String');
             if any(isletter(stringText))
                 labelIndex(l) = n;
                 l = l + 1;
@@ -284,10 +287,10 @@ function ternaryAxes(obj, ternaryIndex)
     for l = 1:length(labelIndex)
         n = labelIndex(l);
 
-        labelText = axisData.Children(n).String;
-        labelFontColor = getStringColor(round(255*axisData.Children(n).Color));
-        labelFontSize = 1.5 * axisData.Children(n).FontSize;
-        labelFontFamily = matlab2plotlyfont(axisData.Children(n).FontName);
+        labelText = get(ternaryChildren(n), 'String');
+        labelFontColor = getStringColor(round(255*get(ternaryChildren(n), 'Color')));
+        labelFontSize = 1.5 * get(ternaryChildren(n), 'FontSize');
+        labelFontFamily = matlab2plotlyfont(get(ternaryChildren(n), 'FontName'));
 
         ternary.(labelLetter(l) + "axis").title.text = labelText;
         ternary.(labelLetter(l) + "axis").title.font.color = labelFontColor;
@@ -297,13 +300,13 @@ function ternaryAxes(obj, ternaryIndex)
 
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);
-    tick0 = str2num(axisData.Children(t0).String);
-    tick1 = str2num(axisData.Children(t1).String);
+    tick0 = str2num(get(ternaryChildren(t0), 'String'));
+    tick1 = str2num(get(ternaryChildren(t1), 'String'));
     dtick = tick1 - tick0;
 
-    tickFontColor = getStringColor(round(255*axisData.Children(t0).Color));
-    tickFontSize = 1.0 * axisData.Children(t0).FontSize;
-    tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);
+    tickFontColor = getStringColor(round(255*get(ternaryChildren(t0), 'Color')));
+    tickFontSize = 1.0 * get(ternaryChildren(t0), 'FontSize');
+    tickFontFamily = matlab2plotlyfont(get(ternaryChildren(t0), 'FontName'));
 
     for l = 1:3
         ternary.(labelLetter{l} + "axis").tick0 = tick0;

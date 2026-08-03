@@ -25,7 +25,7 @@ function updateScatterhistogram(obj, plotIndex)
     updateYMarginalAxis(obj, plotIndex);
 
     %-set plotly data-%
-    switch plotData.HistogramDisplayStyle
+    switch get(plotData, 'HistogramDisplayStyle')
         case 'stairs'
             updateMarginalHistogram(obj, plotIndex, 'X');
             updateMarginalHistogram(obj, plotIndex, 'Y');
@@ -60,7 +60,7 @@ function updateMainScatter(obj, plotIndex)
         obj.data{traceIndex}.mode = 'markers';
         obj.data{traceIndex}.xaxis = sprintf('x%d', xSource);
         obj.data{traceIndex}.yaxis = sprintf('y%d', ySource);
-        obj.data{traceIndex}.visible = strcmp(plotData.Visible,'on');
+        obj.data{traceIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
 
         %-set current trace data-%
         obj.data{traceIndex}.x = xData{t};
@@ -100,11 +100,11 @@ function updateMainScatterAxis(obj, plotIndex)
 end
 
 function ax = getMainScatterAxis(plotData, axName)
-    axisPos = plotData.Position;
+    axisPos = get(plotData, 'Position');
     axisColor = 'rgba(0,0,0, 0.9)';
-    axisLim = plotData.(axName + "Limits");
-    axisPlot = plotData.(axName + "Data");
-    axisLabel = plotData.(axName + "Label");
+    axisLim = get(plotData, axName + "Limits");
+    axisPlot = get(plotData, axName + "Data");
+    axisLabel = get(plotData, axName + "Label");
 
     switch axName
         case 'X'
@@ -123,18 +123,18 @@ function ax = getMainScatterAxis(plotData, axName)
     %-ticks-%
     ax.showticklabels = true;
     ax.ticks = 'inside';
-    ax.tickfont.size = 1.2*plotData.FontSize;
+    ax.tickfont.size = 1.2*get(plotData, 'FontSize');
     ax.tickcolor = axisColor;
-    ax.tickfont.family = matlab2plotlyfont(plotData.FontName);
+    ax.tickfont.family = matlab2plotlyfont(get(plotData, 'FontName'));
 
     %-label-%
     ax.title.text = axisLabel;
     if ~isempty(axisLabel)
         axisLabel = parseString(axisLabel);
     end
-    ax.title.font.size = 1.2*plotData.FontSize;
+    ax.title.font.size = 1.2*get(plotData, 'FontSize');
     ax.title.font.color = 1.2*axisColor;
-    ax.title.font.family = matlab2plotlyfont(plotData.FontName);
+    ax.title.font.family = matlab2plotlyfont(get(plotData, 'FontName'));
 
     %-range and ticklabels-%
     if ~iscategorical(axisPlot)
@@ -178,7 +178,8 @@ function updateMarginalHistogram(obj, plotIndex, axName)
         obj.data{traceIndex}.y = yData{t};
 
         %-set other trace properties-%
-        traceColor = getStringColor(plotData.Color(t,:), 0.7);
+        tmpColor = get(plotData, 'Color');
+        traceColor = getStringColor(tmpColor(t,:), 0.7);
 
         obj.data{traceIndex}.marker.color = traceColor;
         obj.data{traceIndex}.histnorm = 'probability';
@@ -187,11 +188,12 @@ function updateMarginalHistogram(obj, plotIndex, axName)
 
         switch axName
             case 'X'
+                tmpNumBins = get(plotData, 'NumBins');
                 obj.data{traceIndex}.orientation = 'v';
-                try obj.data{traceIndex}.nbinsx = plotData.NumBins(1,t); end
+                try obj.data{traceIndex}.nbinsx = tmpNumBins(1,t); end
             case 'Y'
                 obj.data{traceIndex}.orientation = 'h';
-                try obj.data{traceIndex}.nbinsy = plotData.NumBins(2,t); end
+                try obj.data{traceIndex}.nbinsy = tmpNumBins(2,t); end
         end
 
         %-link legend-%
@@ -245,11 +247,13 @@ function updateMarginalSmooth(obj, plotIndex, axName)
         obj.data{traceIndex}.y = ySmooth;
 
         %-set other trace properties-%
-        traceColor = getStringColor(plotData.Color(t,:), 0.7);
-        lineStyle = plotData.LineStyle(t);
+        traceColor = getStringColor(tmpColor(t,:), 0.7);
+        tmpLineStyle = get(plotData, 'LineStyle');
+        lineStyle = tmpLineStyle(t);
 
         obj.data{traceIndex}.line.color = traceColor;
-        obj.data{traceIndex}.line.width = 2*plotData.LineWidth(t);
+        tmpLineWidth = get(plotData, 'LineWidth');
+        obj.data{traceIndex}.line.width = 2*tmpLineWidth(t);
         obj.data{traceIndex}.line.dash = getLineDash(lineStyle);
         obj.data{traceIndex}.showlegend = false;
 
@@ -298,9 +302,9 @@ function ax = getXMarginalAxis(plotData, axName)
 end
 
 function axisDomain = getXMarginalDomain(plotData, axName)
-    axisPos = plotData.Position;
-    plotLocation = plotData.ScatterPlotLocation;
-    isTitle = ~isempty(plotData.Title);
+    axisPos = get(plotData, 'Position');
+    plotLocation = get(plotData, 'ScatterPlotLocation');
+    isTitle = ~isempty(get(plotData, 'Title'));
 
     switch axName
         case 'X'
@@ -351,8 +355,8 @@ function ax = getYMarginalAxis(plotData, axName)
 end
 
 function axisDomain = getYMarginalDomain(plotData, axName)
-    axisPos = plotData.Position;
-    plotLocation = plotData.ScatterPlotLocation;
+    axisPos = get(plotData, 'Position');
+    plotLocation = get(plotData, 'ScatterPlotLocation');
     switch axName
         case 'X'
             if contains(plotLocation, 'West')
@@ -368,10 +372,10 @@ function axisDomain = getYMarginalDomain(plotData, axName)
 end
 
 function axisLim = getAxisLim(plotData, axName)
-    axisLim = plotData.(axName + "Limits");
-    axisPlot = plotData.(axName + "Data");
+    axisLim = get(plotData, axName + "Limits");
+    axisPlot = get(plotData, axName + "Data");
     if iscategorical(axisPlot)
-        axisPlot = plotData.(axName + "Data");
+        axisPlot = get(plotData, axName + "Data");
         [~, ~, axisPlot] = unique(axisPlot);
         axisLim = [min(axisPlot)-0.5, max(axisPlot)+0.5];
     end
@@ -379,8 +383,8 @@ end
 
 function [xData, yData, groupName] = getTraceData(plotData)
     %-parcing data-%
-    xPlot = plotData.XData;
-    yPlot = plotData.YData;
+    xPlot = get(plotData, 'XData');
+    yPlot = get(plotData, 'YData');
 
     if iscategorical(xPlot)
         [~, ~, xPlot] = unique(xPlot);
@@ -390,7 +394,7 @@ function [xData, yData, groupName] = getTraceData(plotData)
     end
 
     xData = {}; yData = {};
-    groupData = plotData.GroupData;
+    groupData = get(plotData, 'GroupData');
     isByGroups = ~isempty(groupData);
     groupName = {};
 
@@ -421,14 +425,14 @@ function updateTitle(obj, plotIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(plotIndex).AssociatedAxis);
     plotData = obj.State.Plot(plotIndex).Handle;
     xSource = findSourceAxis(obj,axIndex);
-    isTitle = ~isempty(plotData.Title);
+    isTitle = ~isempty(get(plotData, 'Title'));
 
-    obj.layout.annotations{1}.text = plotData.Title;
+    obj.layout.annotations{1}.text = get(plotData, 'Title');
     obj.layout.annotations{1}.showarrow = false;
 
     if isTitle
-        titleText = sprintf('<b>%s</b>', parseString(plotData.Title));
-        titleFamily = matlab2plotlyfont(plotData.FontName);
+        titleText = sprintf('<b>%s</b>', parseString(get(plotData, 'Title')));
+        titleFamily = matlab2plotlyfont(get(plotData, 'FontName'));
         xaxis = obj.layout.("xaxis" + xSource);
 
         obj.layout.annotations{1}.text = titleText;
@@ -441,7 +445,7 @@ function updateTitle(obj, plotIndex)
 
         obj.layout.annotations{1}.font.color = 'black';
         obj.layout.annotations{1}.font.family = titleFamily;
-        obj.layout.annotations{1}.font.size = 1.5*plotData.FontSize;
+        obj.layout.annotations{1}.font.size = 1.5*get(plotData, 'FontSize');
     end
 end
 
@@ -449,16 +453,16 @@ function updateLegend(obj, plotIndex, groupName)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     if ~isempty(groupName)
-        fontFamily = matlab2plotlyfont(plotData.FontName);
-        legTitle = plotData.LegendTitle;
-        plotLocation = plotData.ScatterPlotLocation;
+        fontFamily = matlab2plotlyfont(get(plotData, 'FontName'));
+        legTitle = get(plotData, 'LegendTitle');
+        plotLocation = get(plotData, 'ScatterPlotLocation');
 
         obj.layout.showlegend = true;
         obj.layout.legend.xref = 'paper';
         obj.layout.legend.valign = 'middle';
         obj.layout.legend.borderwidth = 1;
         obj.layout.legend.bordercolor = 'rgba(0,0,0,0.2)';
-        obj.layout.legend.font.size = 1.0*plotData.FontSize;
+        obj.layout.legend.font.size = 1.0*get(plotData, 'FontSize');
         obj.layout.legend.font.family = fontFamily;
 
         if ~isempty(legTitle) > 0
@@ -466,7 +470,7 @@ function updateLegend(obj, plotIndex, groupName)
 
             obj.layout.legend.title.text = legTitle;
             obj.layout.legend.title.side = 'top';
-            obj.layout.legend.title.font.size = 1.2*plotData.FontSize;
+            obj.layout.legend.title.font.size = 1.2*get(plotData, 'FontSize');
             obj.layout.legend.title.font.color = 'black';
             obj.layout.legend.title.font.family = fontFamily;
         end

@@ -1,6 +1,6 @@
 function scatterMode = getScatterMode(plotData)
-	marker = plotData.Marker;
-	lineStyle = plotData.LineStyle;
+	marker = get(plotData, 'Marker');
+	lineStyle = get(plotData, 'LineStyle');
 
 	if ~strcmpi('none', marker) && ~strcmpi('none', lineStyle)
         scatterMode = 'lines+markers';

@@ -7,31 +7,32 @@ function data = updateContourgroup(obj,plotIndex)
     [xSource, ySource] = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
-    xData = plotData.XData;
+    xData = get(plotData, 'XData');
     if ~isvector(xData)
         xData = xData(1,:);
     end
-    yData = plotData.YData;
+    yData = get(plotData, 'YData');
     if ~isvector(yData)
         yData = yData(:,1);
     end
-    zData = plotData.ZData;
+    zData = get(plotData, 'ZData');
 
-    contourStart = plotData.TextList(1);
-    contourEnd = plotData.TextList(end);
-    contourSize = mean(diff(plotData.TextList));
+    tmpTextList = get(plotData, 'TextList');
+    contourStart = tmpTextList(1);
+    contourEnd = tmpTextList(end);
+    contourSize = mean(diff(get(plotData, 'TextList')));
 
-    if isscalar(plotData.TextList)
-        contourStart = plotData.TextList(1) - 1e-3;
-        contourEnd = plotData.TextList(end) + 1e-3;
+    if isscalar(get(plotData, 'TextList'))
+        contourStart = tmpTextList(1) - 1e-3;
+        contourEnd = tmpTextList(end) + 1e-3;
         contourSize = 2e-3;
     end
 
     data.type = "contour";
     data.xaxis = "x" + xSource;
     data.yaxis = "y" + ySource;
-    data.name = plotData.DisplayName;
-    data.visible = strcmp(plotData.Visible, "on");
+    data.name = get(plotData, 'DisplayName');
+    data.visible = strcmp(get(plotData, 'Visible'), "on");
     data.xtype = "array";
     data.ytype = "array";
 
@@ -45,20 +46,21 @@ function data = updateContourgroup(obj,plotIndex)
     data.contours.size = contourSize;
 
     data.zauto = false;
-    data.zmin = axisData.CLim(1);
-    data.zmax = axisData.CLim(2);
+    tmpCLim = get(axisData, 'CLim');
+    data.zmin = tmpCLim(1);
+    data.zmax = tmpCLim(2);
     data.showscale = false;
     data.reversescale = false;
     data.colorscale = getColorScale(plotData, axisData);
 
-    if strcmp(plotData.Fill, "off")
+    if strcmp(get(plotData, 'Fill'), "off")
         data.contours.coloring = "lines";
     else
         data.contours.coloring = "fill";
     end
 
     %-set contour line-%
-    if ~strcmp(plotData.LineStyle, "none")
+    if ~strcmp(get(plotData, 'LineStyle'), "none")
         data.contours.showlines = true;
         data.line = getContourLine(plotData);
     else
@@ -66,42 +68,43 @@ function data = updateContourgroup(obj,plotIndex)
     end
 
     %-set contour label-%
-    if strcmpi(plotData.ShowText, "on")
+    if strcmpi(get(plotData, 'ShowText'), "on")
         data.contours.showlabels = true;
         data.contours.labelfont = getLabelFont(axisData);
     end
 
     %-set trace legend-%
-    data.showlegend = getShowLegend(plotData) & ~isempty(plotData.DisplayName);
+    data.showlegend = getShowLegend(plotData) & ~isempty(get(plotData, 'DisplayName'));
 end
 
 function contourLine = getContourLine(plotData)
-    if isnumeric(plotData.LineColor)
-        lineColor = getStringColor(round(255*plotData.LineColor));
+    if isnumeric(get(plotData, 'LineColor'))
+        lineColor = getStringColor(round(255*get(plotData, 'LineColor')));
     else
         lineColor = "rgba(0,0,0,0)";
     end
 
     contourLine = struct( ...
-        "width", 1.5*plotData.LineWidth, ...
-        "dash", getLineDash(plotData.LineStyle), ...
+        "width", 1.5*get(plotData, 'LineWidth'), ...
+        "dash", getLineDash(get(plotData, 'LineStyle')), ...
         "color", lineColor, ...
         "smoothing", 0 ...
     );
 end
 
 function colorScale = getColorScale(plotData, axisData)
-    cMap = axisData.Colormap;
+    cMap = get(axisData, 'Colormap');
     nColors = size(cMap, 1);
-    isBackground = any(plotData.ZData(:) < plotData.TextList(1));
-    nContours = length(plotData.TextList);
+    tmpZData = get(plotData, 'ZData');
+    isBackground = any(tmpZData(:) < tmpTextList(1));
+    nContours = length(get(plotData, 'TextList'));
     cScaleInd = linspace(0,1, nContours);
     if nContours == 1
         cScaleInd = 0.5;
     end
     cMapInd = floor((nColors-1)*cScaleInd) + 1;
 
-    if strcmp(plotData.Fill, "on")
+    if strcmp(get(plotData, 'Fill'), "on")
         colorScale = cell(1, nContours);
         colors = cMap(cMapInd, :);
         if isBackground
@@ -122,8 +125,8 @@ end
 
 function labelFont = getLabelFont(axisData)
     labelFont = struct( ...
-        "color", getStringColor(round(255*axisData.XAxis.Color)), ...
-        "size", axisData.XAxis.FontSize, ...
-        "family", matlab2plotlyfont(axisData.XAxis.FontName) ...
+        "color", getStringColor(round(255*get(get(axisData, 'XAxis'), 'Color'))), ...
+        "size", get(get(axisData, 'XAxis'), 'FontSize'), ...
+        "family", matlab2plotlyfont(get(get(axisData, 'XAxis'), 'FontName')) ...
     );
 end

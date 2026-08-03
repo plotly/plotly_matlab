@@ -39,19 +39,20 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     end
 
     %-STANDARDIZE UNITS-%
-    colorbarunits = colorbarData.Units;
-    obj.State.Colorbar(colorbarIndex).Handle.Units = "normalized";
+    colorbarunits = get(colorbarData, 'Units');
+    set(obj.State.Colorbar(colorbarIndex).Handle, 'Units', "normalized");
 
     %-colorbar position-%
     colorbar.xanchor = "left";
     colorbar.yanchor = "bottom";
-    colorbar.x = colorbarData.Position(1)*1.025;
-    colorbar.y = colorbarData.Position(2);
+    tmpPosition = get(colorbarData, 'Position');
+    colorbar.x = tmpPosition(1)*1.025;
+    colorbar.y = tmpPosition(2);
 
     colorbar.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
     % get colorbar title and labels
-    colorbarTitle = colorbarData.Label;
+    colorbarTitle = get(colorbarData, 'Label');
 
     colorbarTitleData = colorbarTitle;
     colorbarYLabel = colorbarTitle;
@@ -59,29 +60,29 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     colorbarXLabelData.String = [];
 
     %-colorbar title-%
-    if ~isempty(colorbarTitleData.String)
-        colorbar.title = parseString(colorbarTitleData.String, ...
-                colorbarTitleData.Interpreter);
+    if ~isempty(get(colorbarTitleData, 'String'))
+        colorbar.title = parseString(get(colorbarTitleData, 'String'), ...
+                get(colorbarTitleData, 'Interpreter'));
     elseif ~isempty(colorbarXLabelData.String)
         colorbar.title = parseString(colorbarXLabelData.String, ...
                 colorbarXLabelData.Interpreter);
-    elseif ~isempty(colorbarYLabelData.String)
-        colorbar.title = parseString(colorbarYLabelData.String, ...
-                colorbarYLabelData.Interpreter);
+    elseif ~isempty(get(colorbarYLabelData, 'String'))
+        colorbar.title = parseString(get(colorbarYLabelData, 'String'), ...
+                get(colorbarYLabelData, 'Interpreter'));
     end
 
     %-STANDARDIZE UNITS-%
-    titleUnits = colorbarTitleData.Units;
-    titleFontUnits = colorbarTitleData.FontUnits;
-    yLabelUnits = colorbarYLabelData.Units;
-    yLabelFontUnits = colorbarYLabelData.FontUnits;
-    colorbarTitle.Units = "data";
-    colorbarYLabel.Units = "data";
-    colorbarYLabel.FontUnits = "points";
+    titleUnits = get(colorbarTitleData, 'Units');
+    titleFontUnits = get(colorbarTitleData, 'FontUnits');
+    yLabelUnits = get(colorbarYLabelData, 'Units');
+    yLabelFontUnits = get(colorbarYLabelData, 'FontUnits');
+    set(colorbarTitle, 'Units', "data");
+    set(colorbarYLabel, 'Units', "data");
+    set(colorbarYLabel, 'FontUnits', "points");
 
 
-    if ~isempty(colorbarTitleData.String)
-        if colorbarTitleData.Rotation == 90
+    if ~isempty(get(colorbarTitleData, 'String'))
+        if get(colorbarTitleData, 'Rotation') == 90
             colorbar.titleside = "right";
         else
             colorbar.titleside = "top";
@@ -91,80 +92,81 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     elseif ~isempty(colorbarXLabelData.String)
         colorbar.titleside = "right";
         colorbar.titlefont = getFont(colorbarXLabelData);
-    elseif ~isempty(colorbarYLabelData.String)
+    elseif ~isempty(get(colorbarYLabelData, 'String'))
         colorbar.titleside = "bottom";
         colorbar.titlefont = getFont(colorbarYLabelData);
     end
 
     %-REVERT UNITS-%
-    colorbarTitle.Units = titleUnits;
-    colorbarTitle.FontUnits = titleFontUnits;
-    colorbarYLabel.Units = yLabelUnits;
-    colorbarYLabel.FontUnits = yLabelFontUnits;
+    set(colorbarTitle, 'Units', titleUnits);
+    set(colorbarTitle, 'FontUnits', titleFontUnits);
+    set(colorbarYLabel, 'Units', yLabelUnits);
+    set(colorbarYLabel, 'FontUnits', yLabelFontUnits);
 
 
+    tmpTickLength = get(colorbarData, 'TickLength');
     %-some colorbar settings-%
-    lineWidth = colorbarData.LineWidth ...
+    lineWidth = get(colorbarData, 'LineWidth') ...
             * obj.PlotlyDefaults.AxisLineIncreaseFactor;
     tickLength = min(obj.PlotlyDefaults.MaxTickLength,...
-        max(colorbarData.TickLength(1) * colorbarData.Position(3) ...
-        * obj.layout.width, colorbarData.TickLength(1) ...
-        * colorbarData.Position(4) * obj.layout.height));
+        max(tmpTickLength(1) * tmpPosition(3) ...
+        * obj.layout.width, tmpTickLength(1) ...
+        * tmpPosition(4) * obj.layout.height));
 
     colorbar.thicknessmode = "fraction";
-    colorbar.thickness = colorbarData.Position(3);
+    colorbar.thickness = tmpPosition(3);
     colorbar.tickwidth = lineWidth;
     colorbar.ticklen = tickLength;
 
     colorbar.lenmode = "fraction";
-    colorbar.len = colorbarData.Position(4)*1.025;
+    colorbar.len = tmpPosition(4)*1.025;
     colorbar.outlinewidth = lineWidth;
 
     %-coloration-%
-    col = colorbarData.Color;
+    col = get(colorbarData, 'Color');
 
     colorbarColor = getStringColor(round(255*col));
 
     colorbar.outlinecolor = colorbarColor;
     colorbar.tickcolor = colorbarColor;
     colorbar.tickfont.color = colorbarColor;
-    colorbar.tickfont.size = colorbarData.FontSize;
-    colorbar.tickfont.family = matlab2plotlyfont(colorbarData.FontName);
+    colorbar.tickfont.size = get(colorbarData, 'FontSize');
+    colorbar.tickfont.family = matlab2plotlyfont(get(colorbarData, 'FontName'));
     colorbar.xpad = obj.PlotlyDefaults.MarginPad;
     colorbar.ypad = obj.PlotlyDefaults.MarginPad;
 
     %-set ticklabels-%
-    nticks = length(colorbarData.Ticks);
+    nticks = length(get(colorbarData, 'Ticks'));
 
-    if isempty(colorbarData.Ticks)
+    if isempty(get(colorbarData, 'Ticks'))
         colorbar.ticks = "";
         colorbar.showticklabels = false;
     else
         %-tick direction-%
-        switch colorbarData.TickDirection
+        switch get(colorbarData, 'TickDirection')
             case "in"
                 colorbar.ticks = "inside";
             case "out"
                 colorbar.ticks = "outside";
         end
-        if strcmp(colorbarData.TickLabelsMode,"auto")
+        if strcmp(get(colorbarData, 'TickLabelsMode'),"auto")
             colorbar.autotick = true;
             % nticks = max ticks (so + 1)
-            colorbar.nticks = length(colorbarData.Ticks) + 1;
+            colorbar.nticks = length(get(colorbarData, 'Ticks')) + 1;
         else
-            if isempty(colorbarData.TickLabels)
+            if isempty(get(colorbarData, 'TickLabels'))
                 colorbar.showticklabels = false;
             else
                 colorbar.autotick = false;
-                colorbar.tickvals = colorbarData.Ticks;
-                colorbar.ticktext = colorbarData.TickLabels;
+                colorbar.tickvals = get(colorbarData, 'Ticks');
+                colorbar.ticktext = get(colorbarData, 'TickLabels');
             end
         end
     end
 
     %-ASSOCIATED DATA-%
-    if isfield(colorbarData.UserData,"dataref")
-        colorbarDataIndex = colorbarData.UserData.dataref;
+    if isfield(get(colorbarData, 'UserData'),"dataref")
+        colorbarDataIndex = get(colorbarData, 'UserData').dataref;
     else
         colorbarDataIndex = findColorbarData(obj,colorbarIndex);
     end
@@ -181,7 +183,7 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
             colorscale{2*n} = {colorIndex(n+1), ...
                     getStringColor(round(255*[col, col, col]))};
         end
-        obj.data{colorbarDataIndex}.marker.color = colorbarData.Ticks;
+        obj.data{colorbarDataIndex}.marker.color = get(colorbarData, 'Ticks');
     else
         colorscale = {{0, "rgb(255,255,255)"}, {1, "rgb(0,0,0)"}};
     end
@@ -191,13 +193,13 @@ function obj = updateTernaryColorbar(obj,colorbarIndex)
     obj.data{colorbarDataIndex}.showscale = true;
 
     %-REVERT UNITS-%
-    obj.State.Colorbar(colorbarIndex).Handle.Units = colorbarunits;
+    set(obj.State.Colorbar(colorbarIndex).Handle, 'Units', colorbarunits);
 end
 
 function out = getFont(labelData)
     out = struct( ...
-        "family", matlab2plotlyfont(labelData.FontName), ...
-        "color", getStringColor(round(255*labelData.Color)), ...
-        "size", 1.20 * labelData.FontSize ...
+        "family", matlab2plotlyfont(get(labelData, 'FontName')), ...
+        "color", getStringColor(round(255*get(labelData, 'Color'))), ...
+        "size", 1.20 * get(labelData, 'FontSize') ...
     );
 end

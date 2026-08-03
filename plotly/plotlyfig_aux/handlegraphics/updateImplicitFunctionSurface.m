@@ -15,7 +15,7 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
 
     %-getting x,y,z surface data-%
 
-    strf = func2str(image_data.Function);
+    strf = func2str(get(image_data, 'Function'));
     ind1 = strfind(strf, '('); ind1 = ind1(1)+1;
     ind2 = strfind(strf, ')'); ind2 = ind2(1)-1;
     vars = split(strf(ind1:ind2), ',');
@@ -29,9 +29,9 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     f = eval(strf);
     s = solve(f, Zz);
 
-    x = image_data.XRange;
-    y = image_data.YRange;
-    z = image_data.ZRange;
+    x = get(image_data, 'XRange');
+    y = get(image_data, 'YRange');
+    z = get(image_data, 'ZRange');
     N = 400;
 
     [Xx,Yy] = meshgrid(linspace(x(1),x(2),N), linspace(y(1),y(2),N));
@@ -55,7 +55,7 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
 
     %- setting grid mesh by default -%
     % x-direction
-    mden = image_data.MeshDensity;
+    mden = get(image_data, 'MeshDensity');
     xsize = (x(2) - x(1)) / mden;
     obj.data{surfaceIndex}.contours.x.start = x(1);
     obj.data{surfaceIndex}.contours.x.end = x(2);
@@ -79,7 +79,7 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
 
     %-image colorscale-%
 
-    cmap = figure_data.Colormap;
+    cmap = get(figure_data, 'Colormap');
     len = length(cmap)-1;
 
     for c = 1: length(cmap)
@@ -89,9 +89,9 @@ function obj = updateImplicitFunctionSurface(obj, surfaceIndex)
     end
 
     obj.data{surfaceIndex}.surfacecolor = Z;
-    obj.data{surfaceIndex}.name = image_data.DisplayName;
+    obj.data{surfaceIndex}.name = get(image_data, 'DisplayName');
     obj.data{surfaceIndex}.showscale = false;
-    obj.data{surfaceIndex}.visible = strcmp(image_data.Visible, 'on');
+    obj.data{surfaceIndex}.visible = strcmp(get(image_data, 'Visible'), 'on');
 
     obj.data{surfaceIndex}.showlegend = getShowLegend(image_data);
 end

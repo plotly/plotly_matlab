@@ -1,17 +1,19 @@
 function updateStackedplot(obj, plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
-    lineData = plotData.LineProperties(end:-1:1);
+    tmpLineProperties = get(plotData, 'LineProperties');
+    lineData = tmpLineProperties(end:-1:1);
 
-    sourceTable = plotData.SourceTable;
-    displayVariables = plotData.DisplayVariables;
-    nTraces = length(plotData.AxesProperties);
+    sourceTable = get(plotData, 'SourceTable');
+    displayVariables = get(plotData, 'DisplayVariables');
+    nTraces = length(get(plotData, 'AxesProperties'));
 
     yData = cell(1,nTraces);
     if isempty(sourceTable)
-        xData = plotData.XData;
+        xData = get(plotData, 'XData');
         for t = 1:nTraces
             n = nTraces - t + 1;
-            yData{t} = plotData.YData(:, n);
+            tmpYData = get(plotData, 'YData');
+            yData{t} = tmpYData(:, n);
         end
     else
         if istimetable(sourceTable)
@@ -39,8 +41,8 @@ function updateStackedplot(obj, plotIndex)
 
         %-set current trace-%
         data.type = "scatter";
-        data.visible = strcmp(plotData.Visible, "on");
-        data.name = plotData.DisplayLabels{t};
+        data.visible = strcmp(get(plotData, 'Visible'), "on");
+        data.name = get(plotData, 'DisplayLabels'){t};
         data.xaxis = "x1";
         data.yaxis = "y" + t;
 
@@ -76,7 +78,7 @@ function updateStackedplotAxis(obj, plotIndex)
         obj.layout.("yaxis" + a) = yaxis{a};
     end
 
-    obj.layout.annotations{1} = updateTitle(obj, plotData.Title, [1, 3]);
+    obj.layout.annotations{1} = updateTitle(obj, get(plotData, 'Title'), [1, 3]);
     if xExpoFormat(1) ~= 0
         anIndex = obj.PlotlyDefaults.anIndex + 1;
         obj.layout.annotations{anIndex} = ...
@@ -96,11 +98,11 @@ end
 function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    axisPos = plotData.Position;
+    axisPos = get(plotData, 'Position');
     axisColor = getStringColor(zeros(1,3));
     lineWidth = 1;
-    fontSize = plotData.FontSize;
-    fontFamily = matlab2plotlyfont(plotData.FontName);;
+    fontSize = get(plotData, 'FontSize');
+    fontFamily = matlab2plotlyfont(get(plotData, 'FontName'));;
     tickLen = 5;
 
     %-Parse parameters according to axisName (X or Y)
@@ -108,13 +110,13 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         case {"x", "X"}
             nAxis = 1;
             nTicks = [5, 12];
-            axisLim{nAxis} = plotData.XLimits;
-            axisLabel{nAxis} = plotData.XLabel;
+            axisLim{nAxis} = get(plotData, 'XLimits');
+            axisLabel{nAxis} = get(plotData, 'XLabel');
             axisDomain{nAxis} = min([axisPos(1) sum(axisPos([1,3]))], 1);
             axisAnchor{nAxis} = "y1";
 
         case {"y", "Y"}
-            nAxis = length(plotData.AxesProperties);
+            nAxis = length(get(plotData, 'AxesProperties'));
             yPos = linspace(axisPos(2), sum(axisPos([2,4])), nAxis+1);
             yOffset = diff(yPos)*0.1; yOffset(1) = 0;
 
@@ -124,8 +126,9 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
             axisAnchor = cell(1,nAxis);
             for a = 1:nAxis
                 b = nAxis-a+1;
-                axisLim{a} = plotData.AxesProperties(b).YLimits;
-                axisLabel{a} = plotData.DisplayLabels{b};
+                tmpAxesProperties = get(plotData, 'AxesProperties');
+                axisLim{a} = tmpAxesProperties(b).YLimits;
+                axisLabel{a} = get(plotData, 'DisplayLabels'){b};
                 axisDomain{a} = min([yPos(a)+yOffset(a) yPos(a+1)], 1);
                 axisAnchor{a} = "x1";
             end
@@ -151,7 +154,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
         axis.linewidth = lineWidth;
         axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
 
-        if strcmp(plotData.GridVisible, "on")
+        if strcmp(get(plotData, 'GridVisible'), "on")
             axis.showgrid = true;
             axis.gridwidth = lineWidth;
             axis.gridcolor = getStringColor(round(255*0.15*ones(1,3)), 0.15);

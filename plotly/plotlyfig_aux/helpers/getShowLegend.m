@@ -1,6 +1,6 @@
 function showLegend = getShowLegend(plotData)
 	try
-		switch plotData.Annotation.LegendInformation.IconDisplayStyle
+		switch get(get(get(plotData, 'Annotation'), 'LegendInformation'), 'IconDisplayStyle')
 			case "on"
 				showLegend = true;
 			case "off"

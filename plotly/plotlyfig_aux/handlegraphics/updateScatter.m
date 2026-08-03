@@ -4,12 +4,12 @@ function data = updateScatter(obj,plotIndex)
     plotData = obj.State.Plot(plotIndex).Handle;
 
     data.mode = "markers";
-    data.visible = strcmp(plotData.Visible, "on");
-    data.name = plotData.DisplayName;
+    data.visible = strcmp(get(plotData, 'Visible'), "on");
+    data.name = get(plotData, 'DisplayName');
     data.marker = extractScatterMarker(plotData);
     [data.x, data.y] = getTraceData2D(plotData);
 
-    isScatter3D = isprop(plotData,"ZData") && ~isempty(plotData.ZData);
+    isScatter3D = isprop(plotData,"ZData") && ~isempty(get(plotData, 'ZData'));
     if ~isScatter3D
         data.type = "scatter";
         data.xaxis = "x" + xSource;
@@ -19,7 +19,7 @@ function data = updateScatter(obj,plotIndex)
         data.type = "scatter3d";
         data.scene = "scene" + xSource;
         updateScene(obj, plotIndex);
-        data.z = plotData.ZData;
+        data.z = get(plotData, 'ZData');
         data.marker.size = 2*data.marker.size;
     end
 
@@ -35,7 +35,7 @@ function data = updateScatter(obj,plotIndex)
         data.hoverinfo = "text";
     end
 
-    data.showlegend = getShowLegend(plotData) & ~isempty(plotData.DisplayName);
+    data.showlegend = getShowLegend(plotData) & ~isempty(get(plotData, 'DisplayName'));
 end
 
 function updateCategoricalAxis(obj, plotIndex)
@@ -44,8 +44,8 @@ function updateCategoricalAxis(obj, plotIndex)
     [xSource, ySource] = findSourceAxis(obj,axIndex);
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    xData = plotData.XData;
-    yData = plotData.YData;
+    xData = get(plotData, 'XData');
+    yData = get(plotData, 'YData');
 
     if iscategorical(xData)
         ax = obj.layout.("xaxis" + xSource);
@@ -75,22 +75,22 @@ end
 function [xData, yData] = getTraceData2D(plotData)
     %-initializations-%
     isSwarmchart = isfield(plotData, "XJitter");
-    xData = categ2NumData(plotData.XData);
-    yData = categ2NumData(plotData.YData);
+    xData = categ2NumData(get(plotData, 'XData'));
+    yData = categ2NumData(get(plotData, 'YData'));
 
     %-get 2D trace data-%
     if isSwarmchart
-        if ~strcmp(plotData.XJitter, "none")
+        if ~strcmp(get(plotData, 'XJitter'), "none")
             xData = setJitData(xData, yData, plotData, "X");
-        elseif ~strcmp(plotData.YJitter, "none")
+        elseif ~strcmp(get(plotData, 'YJitter'), "none")
             yData = setJitData(yData, xData, plotData, "Y");
         end
     end
 end
 
 function jitData = setJitData(jitData, refData, plotData, axName)
-    jitType = plotData.(axName + "Jitter");
-    jitWidth = plotData.(axName + "JitterWidth");
+    jitType = get(plotData, axName + "Jitter");
+    jitWidth = get(plotData, axName + "JitterWidth");
     jitUnique = sort(unique(jitData), "ascend");
     jitWeight = getJitWeight(jitData, refData);
     isJitDensity = strcmp(jitType, "density");

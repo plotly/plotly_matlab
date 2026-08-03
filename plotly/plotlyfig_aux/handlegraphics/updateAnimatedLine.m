@@ -7,7 +7,7 @@ function updateAnimatedLine(obj,plotIndex)
     %-PLOT DATA STRUCTURE- %
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    animObjs = obj.State.Plot(plotIndex).AssociatedAxis.Children;
+    animObjs = get(obj.State.Plot(plotIndex).AssociatedAxis, 'Children');
 
     for i=1:numel(animObjs)
         if isequaln(animObjs(i),plotData)
@@ -26,9 +26,9 @@ function updateAnimatedLine(obj,plotIndex)
     try
         [x,y,z] = getpoints(animObj);
     catch
-        x = plotData.XData;
-        y = plotData.YData;
-        z = plotData.ZData;
+        x = get(plotData, 'XData');
+        y = get(plotData, 'YData');
+        z = get(plotData, 'ZData');
     end
 
     obj.data{plotIndex}.xaxis = "x" + xsource;
@@ -41,7 +41,7 @@ function updateAnimatedLine(obj,plotIndex)
     end
 
     %-scatter visible-%
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
 
     %-scatter x-%
     if ispolar
@@ -75,15 +75,15 @@ function updateAnimatedLine(obj,plotIndex)
     end
 
     %-scatter name-%
-    obj.data{plotIndex}.name = plotData.DisplayName;
+    obj.data{plotIndex}.name = get(plotData, 'DisplayName');
 
     %-scatter mode-%
-    if ~strcmpi('none', plotData.Marker) ...
-            && ~strcmpi('none', plotData.LineStyle)
+    if ~strcmpi('none', get(plotData, 'Marker')) ...
+            && ~strcmpi('none', get(plotData, 'LineStyle'))
         mode = 'lines+markers';
-    elseif ~strcmpi('none', plotData.Marker)
+    elseif ~strcmpi('none', get(plotData, 'Marker'))
         mode = 'markers';
-    elseif ~strcmpi('none', plotData.LineStyle)
+    elseif ~strcmpi('none', get(plotData, 'LineStyle'))
         mode = 'lines';
     else
         mode = 'none';
@@ -153,26 +153,26 @@ function updateAnimatedLine(obj,plotIndex)
         end
 
         %-scene axis configuration-%
-        scene.xaxis.range = axisData.XLim;
-        scene.yaxis.range = axisData.YLim;
-        scene.zaxis.range = axisData.ZLim;
+        scene.xaxis.range = get(axisData, 'XLim');
+        scene.yaxis.range = get(axisData, 'YLim');
+        scene.zaxis.range = get(axisData, 'ZLim');
 
-        scene.xaxis.tickvals = axisData.XTick;
-        scene.xaxis.ticktext = axisData.XTickLabel;
+        scene.xaxis.tickvals = get(axisData, 'XTick');
+        scene.xaxis.ticktext = get(axisData, 'XTickLabel');
 
-        scene.yaxis.tickvals = axisData.YTick;
-        scene.yaxis.ticktext = axisData.YTickLabel;
+        scene.yaxis.tickvals = get(axisData, 'YTick');
+        scene.yaxis.ticktext = get(axisData, 'YTickLabel');
 
-        scene.zaxis.tickvals = axisData.ZTick;
-        scene.zaxis.ticktext = axisData.ZTickLabel;
+        scene.zaxis.tickvals = get(axisData, 'ZTick');
+        scene.zaxis.ticktext = get(axisData, 'ZTickLabel');
 
         scene.xaxis.zeroline = false;
         scene.yaxis.zeroline = false;
         scene.zaxis.zeroline = false;
 
-        scene.xaxis.showgrid = strcmpi(axisData.XGrid,'on');
-        scene.yaxis.showgrid = strcmpi(axisData.YGrid,'on');
-        scene.zaxis.showgrid = strcmpi(axisData.ZGrid,'on');
+        scene.xaxis.showgrid = strcmpi(get(axisData, 'XGrid'),'on');
+        scene.yaxis.showgrid = strcmpi(get(axisData, 'YGrid'),'on');
+        scene.zaxis.showgrid = strcmpi(get(axisData, 'ZGrid'),'on');
 
         scene.xaxis.showline = true;
         scene.yaxis.showline = true;
@@ -186,17 +186,17 @@ function updateAnimatedLine(obj,plotIndex)
         scene.yaxis.ticklabelposition = 'outside';
         scene.zaxis.ticklabelposition = 'outside';
 
-        scene.xaxis.title = axisData.XLabel.String;
-        scene.yaxis.title = axisData.YLabel.String;
-        scene.zaxis.title = axisData.ZLabel.String;
+        scene.xaxis.title = get(get(axisData, 'XLabel'), 'String');
+        scene.yaxis.title = get(get(axisData, 'YLabel'), 'String');
+        scene.zaxis.title = get(get(axisData, 'ZLabel'), 'String');
 
-        scene.xaxis.tickfont.size = axisData.FontSize;
-        scene.yaxis.tickfont.size = axisData.FontSize;
-        scene.zaxis.tickfont.size = axisData.FontSize;
+        scene.xaxis.tickfont.size = get(axisData, 'FontSize');
+        scene.yaxis.tickfont.size = get(axisData, 'FontSize');
+        scene.zaxis.tickfont.size = get(axisData, 'FontSize');
 
-        scene.xaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-        scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-        scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+        scene.xaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+        scene.yaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+        scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
         %-SET SCENE TO LAYOUT-%
         obj.layout.("scene" + xsource) = scene;
@@ -209,7 +209,7 @@ function updateAnimatedLine(obj,plotIndex)
     frameData = obj.data{plotIndex};
 
     for i = 1:length(x)
-        sIdx = i - plotData.MaximumNumPoints;
+        sIdx = i - get(plotData, 'MaximumNumPoints');
         if sIdx < 0
             sIdx=0;
         end

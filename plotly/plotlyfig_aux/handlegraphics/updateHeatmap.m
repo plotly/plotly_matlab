@@ -9,17 +9,20 @@ function data = updateHeatmap(obj,heatIndex)
 
     data.type = "heatmap";
 
-    cdata = heat_data.ColorDisplayData(end:-1:1, :);
+    tmpColorDisplayData = get(heat_data, 'ColorDisplayData');
+    cdata = tmpColorDisplayData(end:-1:1, :);
 
-    data.x = heat_data.XDisplayData;
-    data.y = heat_data.YDisplayData(end:-1:1, :);
+    data.x = get(heat_data, 'XDisplayData');
+    tmpYDisplayData = get(heat_data, 'YDisplayData');
+    data.y = tmpYDisplayData(end:-1:1, :);
     data.z = mat2nestCell(cdata);
-    data.zmin = heat_data.ColorLimits(1);
-    data.zmax = heat_data.ColorLimits(2);
+    tmpColorLimits = get(heat_data, 'ColorLimits');
+    data.zmin = tmpColorLimits(1);
+    data.zmax = tmpColorLimits(2);
     data.connectgaps = false;
     data.hoverongaps = false;
 
-    cmap = heat_data.Colormap;
+    cmap = get(heat_data, 'Colormap');
     len = length(cmap)-1;
     for c = 1:length(cmap)
         col = round(255*cmap(c, :));
@@ -27,11 +30,12 @@ function data = updateHeatmap(obj,heatIndex)
     end
 
     data.hoverinfo = "text";
-    data.text = mat2nestCell(heat_data.ColorData(end:-1:1, :));
+    tmpColorData = get(heat_data, 'ColorData');
+    data.text = mat2nestCell(tmpColorData(end:-1:1, :));
     data.hoverlabel.bgcolor = "white";
 
     data.showscale = false;
-    if strcmpi(heat_data.ColorbarVisible, "on")
+    if strcmpi(get(heat_data, 'ColorbarVisible'), "on")
         xaxis = obj.layout.("xaxis" + xSource);
         yaxis = obj.layout.("yaxis" + ySource);
         data.showscale = true;
@@ -50,7 +54,7 @@ function data = updateHeatmap(obj,heatIndex)
         );
     end
 
-    data.visible = strcmp(heat_data.Visible, "on");
+    data.visible = strcmp(get(heat_data, 'Visible'), "on");
     data.opacity = 0.95;
 
     %-setting annotation text-%
@@ -60,8 +64,8 @@ function data = updateHeatmap(obj,heatIndex)
 
     % Set font properties once for all annotations
     obj.layout.font = struct( ...
-        size = heat_data.FontSize*1.15, ...
-        family = matlab2plotlyfont(heat_data.FontName) ...
+        size = get(heat_data, 'FontSize')*1.15, ...
+        family = matlab2plotlyfont(get(heat_data, 'FontName')) ...
     );
 
     for i = 1:m

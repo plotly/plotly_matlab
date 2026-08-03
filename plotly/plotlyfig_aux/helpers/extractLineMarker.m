@@ -7,32 +7,32 @@ function marker = extractLineMarker(line_data)
     marker = struct();
 
     %-MARKER SIZE-%
-    marker.size = line_data.MarkerSize;
+    marker.size = get(line_data, 'MarkerSize');
 
-    if strcmp(line_data.Marker, ".") % scale factor for points is off
+    if strcmp(get(line_data, 'Marker'), ".") % scale factor for points is off
         marker.size = floor(sqrt(marker.size));
     elseif length(marker.size) == 1
         marker.size = 0.6*marker.size;
     end
 
     %-MARKER SYMBOL-%
-    if ~strcmp(line_data.Marker, "none")
-        marker.symbol = getMarkerSymbol(line_data.Marker);
+    if ~strcmp(get(line_data, 'Marker'), "none")
+        marker.symbol = getMarkerSymbol(get(line_data, 'Marker'));
         if isfield(line_data, "MarkerIndices")
-            marker.maxdisplayed=length(line_data.MarkerIndices)+1;
+            marker.maxdisplayed=length(get(line_data, 'MarkerIndices'))+1;
         end
     end
 
     %-MARKER LINE WIDTH-%
-    marker.line.width = line_data.LineWidth;
+    marker.line.width = get(line_data, 'LineWidth');
 
     filledMarkerSet = ["o","square","s","diamond","d",...
             "v","^", "<",">","hexagram","pentagram"];
 
-    filledMarker = ismember(line_data.Marker,filledMarkerSet);
+    filledMarker = ismember(get(line_data, 'Marker'),filledMarkerSet);
 
     %--MARKER FILL COLOR--%
-    MarkerColor = line_data.MarkerFaceColor;
+    MarkerColor = get(line_data, 'MarkerFaceColor');
 
     if filledMarker
         if isnumeric(MarkerColor)
@@ -50,7 +50,7 @@ function marker = extractLineMarker(line_data)
     end
 
     %-MARKER LINE COLOR-%
-    MarkerLineColor = line_data.MarkerEdgeColor;
+    MarkerLineColor = get(line_data, 'MarkerEdgeColor');
 
     if isnumeric(MarkerLineColor)
         col = round(255*MarkerLineColor);
@@ -60,7 +60,7 @@ function marker = extractLineMarker(line_data)
             case "none"
                 markerlinecolor = "rgba(0,0,0,0)";
             case "auto"
-                col = round(255*line_data.Color);
+                col = round(255*get(line_data, 'Color'));
                 markerlinecolor = getStringColor(col);
         end
     end

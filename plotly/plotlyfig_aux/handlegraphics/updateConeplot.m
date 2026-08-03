@@ -15,9 +15,9 @@ function obj = updateConeplot(obj, coneIndex)
     obj.data{coneIndex}.type = 'cone';
 
     %-get plot data-%
-    xdata = cone_data.XData;
-    ydata = cone_data.YData;
-    zdata = cone_data.ZData;
+    xdata = get(cone_data, 'XData');
+    ydata = get(cone_data, 'YData');
+    zdata = get(cone_data, 'ZData');
 
     %-reformat data-%
     nfaces = size(xdata, 2);
@@ -70,9 +70,9 @@ function obj = updateConeplot(obj, coneIndex)
 
     %-set cone color-%
     obj.data{coneIndex}.colorscale{1} = ...
-            {0, getStringColor(round(255*cone_data.EdgeColor))};
+            {0, getStringColor(round(255*get(cone_data, 'EdgeColor')))};
     obj.data{coneIndex}.colorscale{2} = ...
-            {1, getStringColor(round(255*cone_data.EdgeColor))};
+            {1, getStringColor(round(255*get(cone_data, 'EdgeColor')))};
 
     %-plot setting-%
     obj.data{coneIndex}.showscale = false;
@@ -80,11 +80,11 @@ function obj = updateConeplot(obj, coneIndex)
     obj.data{coneIndex}.sizeref = 1.5;
 
     %-scene axis-%
-    scene.xaxis.tickvals = cone_data.Parent.XTick;
-    scene.xaxis.ticktext = cone_data.Parent.XTickLabel;
-    scene.yaxis.tickvals = cone_data.Parent.YTick;
-    scene.yaxis.ticktext = cone_data.Parent.YTickLabel;
-    scene.zaxis.range = cone_data.Parent.ZLim;
+    scene.xaxis.tickvals = get(get(cone_data, 'Parent'), 'XTick');
+    scene.xaxis.ticktext = get(get(cone_data, 'Parent'), 'XTickLabel');
+    scene.yaxis.tickvals = get(get(cone_data, 'Parent'), 'YTick');
+    scene.yaxis.ticktext = get(get(cone_data, 'Parent'), 'YTickLabel');
+    scene.zaxis.range = get(get(cone_data, 'Parent'), 'ZLim');
     scene.zaxis.nticks = 10;
 
     %-aspect ratio-%

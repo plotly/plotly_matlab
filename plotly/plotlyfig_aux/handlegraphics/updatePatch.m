@@ -57,7 +57,7 @@ function obj = updatePatch(obj, patchIndex)
     obj.data{patchIndex}.yaxis = "y" + ysource;
 
     %-patch type-%
-    if any(nonzeros(patch_data.ZData))
+    if any(nonzeros(get(patch_data, 'ZData')))
         if obj.PlotOptions.TriangulatePatch
             obj.data{patchIndex}.type = 'mesh3d';
             % update the patch data using reducepatch
@@ -71,7 +71,7 @@ function obj = updatePatch(obj, patchIndex)
 
     if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
         %-patch x-%
-        xdata = patch_data.XData;
+        xdata = get(patch_data, 'XData');
         if isvector(xdata)
             obj.data{patchIndex}.x = [xdata' xdata(1)];
         else
@@ -80,7 +80,7 @@ function obj = updatePatch(obj, patchIndex)
         end
 
         %-patch y-%
-        ydata = patch_data.YData;
+        ydata = get(patch_data, 'YData');
         if isvector(ydata)
             obj.data{patchIndex}.y = [ydata' ydata(1)];
         else
@@ -89,8 +89,8 @@ function obj = updatePatch(obj, patchIndex)
         end
 
         %-patch z-%
-        if any(nonzeros(patch_data.ZData))
-            zdata = patch_data.ZData;
+        if any(nonzeros(get(patch_data, 'ZData')))
+            zdata = get(patch_data, 'ZData');
             if isvector(ydata)
                 obj.data{patchIndex}.z = [zdata' zdata(1)];
             else
@@ -99,19 +99,19 @@ function obj = updatePatch(obj, patchIndex)
             end
         end
 
-        obj.data{patchIndex}.name = patch_data.DisplayName;
-        obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
+        obj.data{patchIndex}.name = get(patch_data, 'DisplayName');
+        obj.data{patchIndex}.visible = strcmp(get(patch_data, 'Visible'),'on');
 
         %-patch fill-%
         obj.data{patchIndex}.fill = 'tozeroy';
 
         %-PATCH MODE-%
-        if ~strcmpi('none', patch_data.Marker) ...
-                && ~strcmpi('none', patch_data.LineStyle)
+        if ~strcmpi('none', get(patch_data, 'Marker')) ...
+                && ~strcmpi('none', get(patch_data, 'LineStyle'))
             mode = 'lines+markers';
-        elseif ~strcmpi('none', patch_data.Marker)
+        elseif ~strcmpi('none', get(patch_data, 'Marker'))
             mode = 'markers';
-        elseif ~strcmpi('none', patch_data.LineStyle)
+        elseif ~strcmpi('none', get(patch_data, 'LineStyle'))
             mode = 'lines';
         else
             mode = 'none';
@@ -132,20 +132,22 @@ function obj = updatePatch(obj, patchIndex)
 
         %-surfaceaxis-%
         if strcmp(obj.data{patchIndex}.type,'scatter3d')
-            minstd = min([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)]);
-            ind = find([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)] == minstd)-1;
+            minstd = min([std(get(patch_data, 'XData')) std(get(patch_data, 'YData')) std(get(patch_data, 'ZData'))]);
+            ind = find([std(get(patch_data, 'XData')) std(get(patch_data, 'YData')) std(get(patch_data, 'ZData'))] == minstd)-1;
             obj.data{patchIndex}.surfaceaxis = ind;
         end
     else
         % handle vertices
-        x_data = patch_data_red.vertices(:,1);
-        y_data = patch_data_red.vertices(:,2);
-        z_data = patch_data_red.vertices(:,3);
+        tmpvertices = get(patch_data_red, 'vertices');
+        x_data = tmpvertices(:,1);
+        y_data = tmpvertices(:,2);
+        z_data = tmpvertices(:,3);
 
         % specify how vertices connect to form the faces
-        i_data = patch_data_red.faces(:,1)-1;
-        j_data = patch_data_red.faces(:,2)-1;
-        k_data = patch_data_red.faces(:,3)-1;
+        tmpfaces = get(patch_data_red, 'faces');
+        i_data = tmpfaces(:,1)-1;
+        j_data = tmpfaces(:,2)-1;
+        k_data = tmpfaces(:,3)-1;
 
         %-patch x/y/z-%
         obj.data{patchIndex}.x = x_data;

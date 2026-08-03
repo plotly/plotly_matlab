@@ -51,7 +51,7 @@ function data = updateHistogram(obj,histIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     isStairs = isprop(hist_data, "DisplayStyle") ...
-            && strcmp(hist_data.DisplayStyle, "stairs");
+            && strcmp(get(hist_data, 'DisplayStyle'), "stairs");
 
     data.xaxis = "x" + xsource;
     data.yaxis = "y" + ysource;
@@ -62,8 +62,8 @@ function data = updateHistogram(obj,histIndex)
         data = updateHistogramBar(obj,data, hist_data,axisData);
     end
 
-    data.name = hist_data.DisplayName;
-    data.visible = strcmp(hist_data.Visible, "on");
+    data.name = get(hist_data, 'DisplayName');
+    data.visible = strcmp(get(hist_data, 'Visible'), "on");
     data.showlegend = getShowLegend(hist_data);
 end
 
@@ -73,8 +73,8 @@ function data = updateHistogramStairs(data, hist_data)
     data.type = "scatter";
     data.mode = "lines";
 
-    edges = hist_data.BinEdges;
-    vals = double(hist_data.Values);
+    edges = get(hist_data, 'BinEdges');
+    vals = double(get(hist_data, 'Values'));
 
     % Build explicit staircase coordinates: each edge appears twice so the
     % path traces vertical rises and horizontal runs without needing
@@ -84,7 +84,7 @@ function data = updateHistogramStairs(data, hist_data)
     x = repelem(edges, 2);
     y = [0 repelem(vals, 2) 0];
 
-    if strcmp(hist_data.Orientation, "horizontal")
+    if strcmp(get(hist_data, 'Orientation'), "horizontal")
         [x, y] = deal(y, x);
     end
 
@@ -92,66 +92,69 @@ function data = updateHistogramStairs(data, hist_data)
     data.y = y;
 
     % Edge color becomes the line color.
-    if isnumeric(hist_data.EdgeColor)
-        data.line.color = getStringColor(round(255*hist_data.EdgeColor));
+    if isnumeric(get(hist_data, 'EdgeColor'))
+        data.line.color = getStringColor(round(255*get(hist_data, 'EdgeColor')));
     end
-    data.line.width = hist_data.LineWidth;
-    data.line.dash = getLineDash(hist_data.LineStyle);
+    data.line.width = get(hist_data, 'LineWidth');
+    data.line.dash = getLineDash(get(hist_data, 'LineStyle'));
 end
 
 function data = updateHistogramBar(obj,data,hist_data,axisData)
     data.type = "bar";
 
     if isprop(hist_data, "Orientation")
-        orientation = hist_data.Orientation;
+        orientation = get(hist_data, 'Orientation');
     else
         orientation = histogramOrientation(hist_data);
     end
 
     switch orientation
         case {"vertical", "horizontal"}
-            data.x = hist_data.BinEdges(1:end-1) ...
-                    + 0.5*diff(hist_data.BinEdges);
-            data.width = diff(hist_data.BinEdges);
-            data.y = double(hist_data.Values);
+            tmpBinEdges = get(hist_data, 'BinEdges');
+            data.x = tmpBinEdges(1:end-1) ...
+                    + 0.5*diff(get(hist_data, 'BinEdges'));
+            data.width = diff(get(hist_data, 'BinEdges'));
+            data.y = double(get(hist_data, 'Values'));
         case "v"
-            xdata = mean(hist_data.XData(2:3,:));
-            counts = hist_data.YData(2,:);
+            tmpXData = get(hist_data, 'XData');
+            xdata = mean(tmpXData(2:3,:));
+            tmpYData = get(hist_data, 'YData');
+            counts = tmpYData(2,:);
             data.x = repelem(xdata, counts);
             data.autobinx = false;
-            xbins.start = hist_data.XData(2,1);
-            xbins.end = hist_data.XData(3,end);
-            xbins.size = diff(hist_data.XData(2:3,1));
+            xbins.start = tmpXData(2,1);
+            xbins.end = tmpXData(3,end);
+            xbins.size = diff(tmpXData(2:3,1));
             data.xbins = xbins;
             obj.layout.bargap = ...
-                    (hist_data.XData(3,1) - hist_data.XData(2,2)) ...
-                    / (hist_data.XData(3,1) - hist_data.XData(2,1));
+                    (tmpXData(3,1) - tmpXData(2,2)) ...
+                    / (tmpXData(3,1) - tmpXData(2,1));
         case "h"
-            ydata = mean(hist_data.YData(2:3,:));
-            counts = hist_data.XData(2,:);
+            ydata = mean(tmpYData(2:3,:));
+            counts = tmpXData(2,:);
             data.y = repelem(ydata, counts);
             data.autobiny = false;
-            ybins.start = hist_data.YData(2,1);
-            ybins.end = hist_data.YData(3,end);
-            ybins.size = diff(hist_data.YData(2:3,1));
+            ybins.start = tmpYData(2,1);
+            ybins.end = tmpYData(3,end);
+            ybins.size = diff(tmpYData(2:3,1));
             data.ybins = ybins;
             obj.layout.bargap = ...
-                    (hist_data.XData(3,1) - hist_data.XData(2,2)) ...
-                    / (hist_data.XData(3,1) - hist_data.XData(2,1));
+                    (tmpXData(3,1) - tmpXData(2,2)) ...
+                    / (tmpXData(3,1) - tmpXData(2,1));
         otherwise
             error("updateHistogram:unknownOrientation", ...
                 "Unknown histogram orientation: %s", orientation);
     end
 
-    if strcmp(axisData.Tag, "yhist")
+    if strcmp(get(axisData, 'Tag'), "yhist")
         data.orientation = "h";
         [data.x, data.y] = deal(data.y, data.x);
     end
 
     obj.layout.barmode = "overlay";
 
-    if ~ischar(hist_data.FaceAlpha)
-        data.opacity = hist_data.FaceAlpha * 1.25;
+    if ~ischar(get(hist_data, 'FaceAlpha'))
+        data.opacity = get(hist_data, 'FaceAlpha') * 1.25;
     end
 
     data.marker = extractPatchFace(hist_data);

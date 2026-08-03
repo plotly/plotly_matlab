@@ -57,9 +57,11 @@ function obj = updatePatchPie3(obj, patchIndex)
     patch_data = obj.State.Plot(patchIndex).Handle;
 
     %-get the percentage-%
-    if ~any(nonzeros(patch_data.ZData))
-        t1 = atan2(patch_data.YData(2), patch_data.XData(2));
-        t2 = atan2(patch_data.YData(end-1), patch_data.XData(end-1));
+    if ~any(nonzeros(get(patch_data, 'ZData')))
+        tmpYData = get(patch_data, 'YData');
+        tmpXData = get(patch_data, 'XData');
+        t1 = atan2(tmpYData(2), tmpXData(2));
+        t2 = atan2(tmpYData(end-1), tmpXData(end-1));
 
         a = rad2deg(t2-t1);
         if a < 0
@@ -82,7 +84,7 @@ function obj = updatePatchPie3(obj, patchIndex)
     obj.data{patchIndex}.type = 'scatter3d';
 
     %-patch x-%
-    xdata = patch_data.XData;
+    xdata = get(patch_data, 'XData');
     if isvector(xdata)
         obj.data{patchIndex}.x = [xdata' xdata(1)];
     else
@@ -91,7 +93,7 @@ function obj = updatePatchPie3(obj, patchIndex)
     end
 
     %-patch y-%
-    ydata = patch_data.YData;
+    ydata = get(patch_data, 'YData');
     if isvector(ydata)
         obj.data{patchIndex}.y = [ydata' ydata(1)];
     else
@@ -100,7 +102,7 @@ function obj = updatePatchPie3(obj, patchIndex)
     end
 
     %-patch z-%
-    zdata = patch_data.ZData;
+    zdata = get(patch_data, 'ZData');
 
     if isvector(ydata)
         obj.data{patchIndex}.z = [zdata' zdata(1)];
@@ -109,21 +111,21 @@ function obj = updatePatchPie3(obj, patchIndex)
                 NaN(1,size(zdata,2))], [], 1);
     end
 
-    obj.data{patchIndex}.name = patch_data.DisplayName;
+    obj.data{patchIndex}.name = get(patch_data, 'DisplayName');
 
     %-patch visible-%
-    obj.data{patchIndex}.visible = strcmp(patch_data.Visible,'on');
+    obj.data{patchIndex}.visible = strcmp(get(patch_data, 'Visible'),'on');
 
     %-patch fill-%
     % obj.data{patchIndex}.fill = 'tozeroy';
 
     %-PATCH MODE-%
-    if ~strcmpi('none', patch_data.Marker) ...
-            && ~strcmpi('none', patch_data.LineStyle)
+    if ~strcmpi('none', get(patch_data, 'Marker')) ...
+            && ~strcmpi('none', get(patch_data, 'LineStyle'))
         mode = 'lines+markers';
-    elseif ~strcmpi('none', patch_data.Marker)
+    elseif ~strcmpi('none', get(patch_data, 'Marker'))
         mode = 'markers';
-    elseif ~strcmpi('none', patch_data.LineStyle)
+    elseif ~strcmpi('none', get(patch_data, 'LineStyle'))
         mode = 'lines';
     else
         mode = 'none';
@@ -143,8 +145,8 @@ function obj = updatePatchPie3(obj, patchIndex)
     end
 
     %-surfaceaxis-%
-    minstd = min([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)]);
-    ind = find([std(patch_data.XData) std(patch_data.YData) std(patch_data.ZData)] == minstd)-1;
+    minstd = min([std(get(patch_data, 'XData')) std(get(patch_data, 'YData')) std(get(patch_data, 'ZData'))]);
+    ind = find([std(get(patch_data, 'XData')) std(get(patch_data, 'YData')) std(get(patch_data, 'ZData'))] == minstd)-1;
     obj.data{patchIndex}.surfaceaxis = ind;
 
     %-patch showlegend-%
@@ -167,13 +169,13 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     obj.PlotOptions.scene_anchor = "scene" + xsource;
 
     obj.data{surfaceIndex}.type = 'surface';
-    obj.data{surfaceIndex}.x = image_data.XData;
-    obj.data{surfaceIndex}.y = image_data.YData;
-    obj.data{surfaceIndex}.z = image_data.ZData;
+    obj.data{surfaceIndex}.x = get(image_data, 'XData');
+    obj.data{surfaceIndex}.y = get(image_data, 'YData');
+    obj.data{surfaceIndex}.z = get(image_data, 'ZData');
 
     %-image colorscale-%
 
-    cmap = figure_data.Colormap;
+    cmap = get(figure_data, 'Colormap');
     len = length(cmap)-1;
 
     for c = 1:length(cmap)
@@ -183,13 +185,13 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     end
 
     obj.data{surfaceIndex}.surfacecolor = ...
-            255*(image_data.CData-1) / (obj.PlotOptions.nbars{xsource} - 1);
+            255*(get(image_data, 'CData')-1) / (obj.PlotOptions.nbars{xsource} - 1);
     obj.data{surfaceIndex}.cmax = 255;
     obj.data{surfaceIndex}.cmin = 0;
 
     %-get data-%
-    xdata = image_data.XData;
-    ydata = image_data.YData;
+    xdata = get(image_data, 'XData');
+    ydata = get(image_data, 'YData');
 
     %-aspect ratio-%
     ar = obj.PlotOptions.AspectRatio;
@@ -254,10 +256,10 @@ function obj = updateSurfacePie3(obj, surfaceIndex)
     %-scene to be set-%
     obj.PlotOptions.scene = scene;
 
-    obj.data{surfaceIndex}.name = image_data.DisplayName;
-    obj.data{surfaceIndex-1}.name = image_data.DisplayName;
+    obj.data{surfaceIndex}.name = get(image_data, 'DisplayName');
+    obj.data{surfaceIndex-1}.name = get(image_data, 'DisplayName');
     obj.data{surfaceIndex}.showscale = false;
-    obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
+    obj.data{surfaceIndex}.visible = strcmp(get(image_data, 'Visible'),'on');
 
     obj.data{surfaceIndex-1}.showlegend = getShowLegend(image_data);
     obj.data{surfaceIndex}.showlegend = false;

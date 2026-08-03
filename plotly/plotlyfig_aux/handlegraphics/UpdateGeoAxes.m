@@ -9,10 +9,11 @@ function UpdateGeoAxes(obj, geoIndex)
     xsource = findSourceAxis(obj,axIndex);
 
     %-set domain geo plot-%
-    xo = geoData.Position(1);
-    yo = geoData.Position(2);
-    w = geoData.Position(3);
-    h = geoData.Position(4);
+    geoPosition = get(geoData, 'Position');
+    xo = geoPosition(1);
+    yo = geoPosition(2);
+    w = geoPosition(3);
+    h = geoPosition(4);
 
     geoaxes.domain.x = min([xo xo + w],1);
     geoaxes.domain.y = min([yo yo + h],1);
@@ -25,10 +26,10 @@ function UpdateGeoAxes(obj, geoIndex)
     %-setting basemap-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.framecolor = 'rgb(120,120,120)';
-        if strcmpi(geoData.Basemap, 'streets-light')
+        if strcmpi(get(geoData, 'Basemap'), 'streets-light')
             geoaxes.oceancolor = 'rgba(215,215,220,1)';
             geoaxes.landcolor = 'rgba(220,220,220,0.4)';
-        elseif strcmpi(geoData.Basemap, 'colorterrain')
+        elseif strcmpi(get(geoData, 'Basemap'), 'colorterrain')
             geoaxes.oceancolor = 'rgba(118,165,225,0.6)';
             geoaxes.landcolor = 'rgba(190,180,170,1)';
             geoaxes.showcountries = true;
@@ -41,39 +42,40 @@ function UpdateGeoAxes(obj, geoIndex)
 
     %-setting latitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        latTick = geoData.LatitudeAxis.TickValues;
+        latTick = get(get(geoData, 'LatitudeAxis'), 'TickValues');
 
-        geoaxes.lataxis.range = geoData.LatitudeLimits;
+        geoaxes.lataxis.range = get(geoData, 'LatitudeLimits');
         geoaxes.lataxis.tick0 = latTick(1);
         geoaxes.lataxis.dtick = mean(diff(latTick));
 
-        if strcmpi(geoData.Grid, 'on')
+        if strcmpi(get(geoData, 'Grid'), 'on')
             geoaxes.lataxis.showgrid = true;
-            geoaxes.lataxis.gridwidth = geoData.LineWidth;
+            geoaxes.lataxis.gridwidth = get(geoData, 'LineWidth');
             geoaxes.lataxis.gridcolor = getStringColor( ...
-                    round(255*geoData.GridColor), geoData.GridAlpha);
+                    round(255*get(geoData, 'GridColor')), get(geoData, 'GridAlpha'));
         end
     end
 
     %-setting longitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        lonTick = geoData.LongitudeAxis.TickValues;
+        lonTick = get(get(geoData, 'LongitudeAxis'), 'TickValues');
 
-        geoaxes.lonaxis.range = geoData.LongitudeLimits;
+        geoaxes.lonaxis.range = get(geoData, 'LongitudeLimits');
         geoaxes.lonaxis.tick0 = lonTick(1);
         geoaxes.lonaxis.dtick = mean(diff(lonTick));
 
-        if strcmpi(geoData.Grid, 'on')
+        if strcmpi(get(geoData, 'Grid'), 'on')
             geoaxes.lonaxis.showgrid = true;
-            geoaxes.lonaxis.gridwidth = geoData.LineWidth;
+            geoaxes.lonaxis.gridwidth = get(geoData, 'LineWidth');
             geoaxes.lonaxis.gridcolor = getStringColor( ...
-                    round(255*geoData.GridColor), geoData.GridAlpha);
+                    round(255*get(geoData, 'GridColor')), get(geoData, 'GridAlpha'));
         end
     end
 
     %-set map center-%
-    geoaxes.center.lat = geoData.MapCenter(1);
-    geoaxes.center.lon = geoData.MapCenter(2);
+    tmpMapCenter = get(geoData, 'MapCenter');
+    geoaxes.center.lat = tmpMapCenter(1);
+    geoaxes.center.lon = tmpMapCenter(2);
 
     %-set better resolution-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -82,35 +84,36 @@ function UpdateGeoAxes(obj, geoIndex)
 
     %-set mapbox style-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
-        geoaxes.zoom = geoData.ZoomLevel - 1.4;
-        if strcmpi(geoData.Basemap, 'streets-light')
+        geoaxes.zoom = get(geoData, 'ZoomLevel') - 1.4;
+        if strcmpi(get(geoData, 'Basemap'), 'streets-light')
             geoaxes.style = 'carto-positron';
-        elseif strcmpi(geoData.Basemap, 'colorterrain')
+        elseif strcmpi(get(geoData, 'Basemap'), 'colorterrain')
             geoaxes.style = 'stamen-terrain';
         end
     end
 
     %-TEXT SETTINGS-%
     isText = false;
-    child = geoData.Children;
+    child = get(geoData, 'Children');
     t = 1;
 
     for n=1:length(child)
-        if strcmpi(child(n).Type, 'text')
+        if strcmpi(get(child(n), 'Type'), 'text')
             isText = true;
-            texts{t} = child(t).String;
-            lats(t) = child(t).Position(1);
-            lons(t) = child(t).Position(2);
-            sizes(t) = child(t).FontSize;
-            families{t} = matlab2plotlyfont(child(t).FontName);
-            colors{t} = getStringColor(round(255*child(t).Color));
+            texts{t} = get(child(t), 'String');
+            tmpPosition = get(child(t), 'Position');
+            lats(t) = tmpPosition(1);
+            lons(t) = tmpPosition(2);
+            sizes(t) = get(child(t), 'FontSize');
+            families{t} = matlab2plotlyfont(get(child(t), 'FontName'));
+            colors{t} = getStringColor(round(255*get(child(t), 'Color')));
 
-            if strcmpi(child(t).HorizontalAlignment, 'left')
+            if strcmpi(get(child(t), 'HorizontalAlignment'), 'left')
                 pos{t} = 'right';
-            elseif strcmpi(child(t).HorizontalAlignment, 'right')
+            elseif strcmpi(get(child(t), 'HorizontalAlignment'), 'right')
                 pos{t} = 'left';
             else
-                pos{t} = child(t).HorizontalAlignment;
+                pos{t} = get(child(t), 'HorizontalAlignment');
             end
             t = t + 1;
         end

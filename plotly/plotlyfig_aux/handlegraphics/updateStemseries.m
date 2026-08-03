@@ -3,7 +3,7 @@ function obj = updateStemseries(obj,dataIndex)
     stem_group = obj.State.Plot(dataIndex).Handle;
 
     %-get children-%
-    stem_child = stem_group.Children;
+    stem_child = get(stem_group, 'Children');
 
     %-update line-%
     obj.State.Plot(dataIndex).Handle = stem_child(1);

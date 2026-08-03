@@ -4,19 +4,19 @@ function obj = updateHistogram2(obj,dataIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     xSource = findSourceAxis(obj, axIndex);
     plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = plotData.Parent;
+    axisData = get(plotData, 'Parent');
 
-    colorMap = axisData.Colormap;
+    colorMap = get(axisData, 'Colormap');
     barGap = 0.05;
 
     %-get trace data-%
 
-    values = plotData.Values;
-    if strcmp(plotData.ShowEmptyBins, 'on')
+    values = get(plotData, 'Values');
+    if strcmp(get(plotData, 'ShowEmptyBins'), 'on')
         values = values+1;
     end
-    xEdges = plotData.XBinEdges;
-    yEdges = plotData.YBinEdges;
+    xEdges = get(plotData, 'XBinEdges');
+    yEdges = get(plotData, 'YBinEdges');
 
     dx = diff(xEdges(2:end-1));
     dy = diff(yEdges(2:end-1));
@@ -38,7 +38,7 @@ function obj = updateHistogram2(obj,dataIndex)
     [xData, yData, zData, iData, jData, kData] = ...
             getPlotlyMesh3d( xEdges, yEdges, values, barGap );
 
-    if strcmp(plotData.ShowEmptyBins, 'on')
+    if strcmp(get(plotData, 'ShowEmptyBins'), 'on')
         zData = zData-1;
     end
 
@@ -52,8 +52,8 @@ function obj = updateHistogram2(obj,dataIndex)
 
     obj.data{dataIndex}.type = 'mesh3d';
     obj.data{dataIndex}.scene = sprintf('scene%d', xSource);
-    obj.data{dataIndex}.name = plotData.DisplayName;
-    obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{dataIndex}.name = get(plotData, 'DisplayName');
+    obj.data{dataIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
     obj.layout.bargap = barGap;
 
     %-set trace data-%
@@ -65,7 +65,7 @@ function obj = updateHistogram2(obj,dataIndex)
     obj.data{dataIndex}.k = int16(kData - 1);
 
     %-set trace coloring-%
-    faceColor = plotData.FaceColor;
+    faceColor = get(plotData, 'FaceColor');
 
     if isnumeric(faceColor)
         obj.data{dataIndex}.color = getStringColor(round(255*faceColor));
@@ -74,12 +74,13 @@ function obj = updateHistogram2(obj,dataIndex)
     elseif strcmp(faceColor, 'flat')
         obj.data{dataIndex}.intensity = cData;
         obj.data{dataIndex}.colorscale = getColorScale(colorMap);
-        obj.data{dataIndex}.cmin = axisData.CLim(1);
-        obj.data{dataIndex}.cmax = axisData.CLim(2);
+        tmpCLim = get(axisData, 'CLim');
+        obj.data{dataIndex}.cmin = tmpCLim(1);
+        obj.data{dataIndex}.cmax = tmpCLim(2);
         obj.data{dataIndex}.showscale = false;
     end
 
-    if ~strcmp(plotData.DisplayStyle, 'tile')
+    if ~strcmp(get(plotData, 'DisplayStyle'), 'tile')
         obj.data{dataIndex}.flatshading = true;
         obj.data{dataIndex}.lighting.diffuse = 0.92;
         obj.data{dataIndex}.lighting.ambient = 0.54;
@@ -100,22 +101,22 @@ function updateScene(obj, dataIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = plotData.Parent;
+    axisData = get(plotData, 'Parent');
     xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.("scene" + xSource);
 
-    aspectRatio = axisData.PlotBoxAspectRatio;
-    cameraPosition = axisData.CameraPosition;
-    cameraUpVector = axisData.CameraUpVector;
+    aspectRatio = get(axisData, 'PlotBoxAspectRatio');
+    cameraPosition = get(axisData, 'CameraPosition');
+    cameraUpVector = get(axisData, 'CameraUpVector');
     cameraEye = cameraPosition;
 
-    rangeXLim = rangeLength(axisData.XLim);
-    rangeYLim = rangeLength(axisData.YLim);
-    rangeZLim = rangeLength(axisData.ZLim);
+    rangeXLim = rangeLength(get(axisData, 'XLim'));
+    rangeYLim = rangeLength(get(axisData, 'YLim'));
+    rangeZLim = rangeLength(get(axisData, 'ZLim'));
     cameraEye = cameraEye./[rangeXLim, rangeYLim rangeZLim];
     eyeNorm = max(abs(cameraEye)) - 1.4;
 
-    if strcmp(plotData.DisplayStyle, 'tile')
+    if strcmp(get(plotData, 'DisplayStyle'), 'tile')
         aspectRatio(3) = 1e-6;
     else
         eyeNorm2 = min([norm(aspectRatio([1,3])), norm(aspectRatio([2,3]))]);
@@ -144,7 +145,7 @@ function updateScene(obj, dataIndex)
     scene.yaxis = getSceneAxis(axisData, 'Y');
     scene.zaxis = getSceneAxis(axisData, 'Z');
 
-    if strcmp(plotData.DisplayStyle, 'tile')
+    if strcmp(get(plotData, 'DisplayStyle'), 'tile')
         scene.zaxis.visible = false;
     end
 
@@ -154,32 +155,32 @@ end
 
 function ax = getSceneAxis(axisData, axName)
     %-initializations-%
-    axx = axisData.(axName + "Axis");
+    axx = get(axisData, axName + "Axis");
     ax.zeroline = false;
     ax.showline = true;
     ax.showspikes = true;
-    ax.linecolor = getStringColor(round(255*axx.Color));
-    ax.range = axisData.(axName + "Lim");
+    ax.linecolor = getStringColor(round(255*get(axx, 'Color')));
+    ax.range = get(axisData, axName + "Lim");
 
     %-label-%
-    label = axisData.(axName + "Label");
-    ax.title = label.String;
+    label = get(axisData, axName + "Label");
+    ax.title = get(label, 'String');
     if ~isempty(ax.title)
         ax.title = parseString(ax.title);
     end
-    ax.titlefont.size = label.FontSize;
-    ax.titlefont.color = getStringColor(round(255*label.Color));
-    ax.titlefont.family = matlab2plotlyfont(label.FontName);
+    ax.titlefont.size = get(label, 'FontSize');
+    ax.titlefont.color = getStringColor(round(255*get(label, 'Color')));
+    ax.titlefont.family = matlab2plotlyfont(get(label, 'FontName'));
 
     %-ticks-%
-    ax.tickvals = axx.TickValues;
-    ax.ticktext = axx.TickLabels;
+    ax.tickvals = get(axx, 'TickValues');
+    ax.ticktext = get(axx, 'TickLabels');
 
-    ax.tickcolor = getStringColor(round(255*axx.Color));
-    ax.tickfont.size = axx.FontSize;
-    ax.tickfont.family = matlab2plotlyfont(axx.FontName);
+    ax.tickcolor = getStringColor(round(255*get(axx, 'Color')));
+    ax.tickfont.size = get(axx, 'FontSize');
+    ax.tickfont.family = matlab2plotlyfont(get(axx, 'FontName'));
 
-    switch axx.TickDirection
+    switch get(axx, 'TickDirection')
         case 'in'
             ax.ticks = 'inside';
         case 'out'
@@ -187,13 +188,13 @@ function ax = getSceneAxis(axisData, axName)
     end
 
     %-grid-%
-    axGrid = axisData.(axName + "Grid");
+    axGrid = get(axisData, axName + "Grid");
     if strcmp(axGrid, 'off')
         ax.showgrid = false;
     end
 
     %-box-%
-    if strcmp(axisData.Box, 'on')
+    if strcmp(get(axisData, 'Box'), 'on')
         ax.mirror = true;
     end
 end

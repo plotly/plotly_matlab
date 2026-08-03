@@ -57,44 +57,45 @@ function obj = updateBarseries(obj,barIndex)
     bar_data = obj.State.Plot(barIndex).Handle;
 
     %-BAR CHILD (PATCH) DATA STRUCTURE- %
-    bar_child_data = bar_data.Children(1);
+    tmpChildren = get(bar_data, 'Children');
+    bar_child_data = tmpChildren(1);
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     obj.data{barIndex}.xaxis = "x" + xsource;
     obj.data{barIndex}.yaxis = "y" + ysource;
-    obj.data{barIndex}.visible = strcmp(bar_data.Visible,'on');
+    obj.data{barIndex}.visible = strcmp(get(bar_data, 'Visible'),'on');
     obj.data{barIndex}.type = 'bar';
-    obj.data{barIndex}.name = bar_data.DisplayName;
+    obj.data{barIndex}.name = get(bar_data, 'DisplayName');
 
-    switch bar_data.BarLayout
+    switch get(bar_data, 'BarLayout')
         case 'grouped'
             obj.layout.barmode = 'group';
         case 'stacked'
             obj.layout.barmode = 'stack';
     end
 
-    obj.layout.bargroupgap = 1-bar_data.BarWidth;
+    obj.layout.bargroupgap = 1-get(bar_data, 'BarWidth');
     obj.layout.bargap = obj.PlotlyDefaults.Bargap;
 
     %-bar orientation-%
-    switch bar_data.Horizontal
+    switch get(bar_data, 'Horizontal')
         case 'off'
             obj.data{barIndex}.orientation = 'v';
-            obj.data{barIndex}.x = bar_data.XData;
-            obj.data{barIndex}.y = bar_data.YData;
+            obj.data{barIndex}.x = get(bar_data, 'XData');
+            obj.data{barIndex}.y = get(bar_data, 'YData');
         case 'on'
             obj.data{barIndex}.orientation = 'h';
-            obj.data{barIndex}.x = bar_data.YData;
-            obj.data{barIndex}.y = bar_data.XData;
+            obj.data{barIndex}.x = get(bar_data, 'YData');
+            obj.data{barIndex}.y = get(bar_data, 'XData');
     end
 
     obj.data{barIndex}.showlegend = getShowLegend(bar_data);
 
     %-bar opacity-%
-    if ~ischar(bar_child_data.FaceAlpha)
-        obj.data{barIndex}.opacity = bar_child_data.FaceAlpha;
+    if ~ischar(get(bar_child_data, 'FaceAlpha'))
+        obj.data{barIndex}.opacity = get(bar_child_data, 'FaceAlpha');
     end
 
     %-bar marker-%

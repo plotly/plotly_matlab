@@ -14,20 +14,20 @@ function data = updateSurfaceplot(obj, surfaceIndex)
     data.yaxis = "y" + ysource;
 
     % check for 3D
-    if any(nonzeros(image_data.ZData))
+    if any(nonzeros(get(image_data, 'ZData')))
         data.type = "surface";
 
         %-format x an y data-%
-        x = image_data.XData;
-        y = image_data.YData;
-        cdata = image_data.CData;
+        x = get(image_data, 'XData');
+        y = get(image_data, 'YData');
+        cdata = get(image_data, 'CData');
         if isvector(x)
             [x, y] = meshgrid(x,y);
         end
 
         data.x = x;
         data.y = y;
-        data.z = image_data.ZData;
+        data.z = get(image_data, 'ZData');
         obj.PlotOptions.Image3D = true;
         obj.PlotOptions.ContourProjection = true;
 
@@ -49,11 +49,13 @@ function data = updateSurfaceplot(obj, surfaceIndex)
         );
     else
         data = updateImage(obj, surfaceIndex);
-        data.x = image_data.XData(1,:);
-        data.y = image_data.YData(:,1);
+        tmpXData = get(image_data, 'XData');
+        data.x = tmpXData(1,:);
+        tmpYData = get(image_data, 'YData');
+        data.y = tmpYData(:,1);
     end
 
-    cmap = figure_data.Colormap;
+    cmap = get(figure_data, 'Colormap');
     len = length(cmap)-1;
 
     for c = 1: length(cmap)
@@ -62,9 +64,9 @@ function data = updateSurfaceplot(obj, surfaceIndex)
     end
 
     data.surfacecolor = cdata;
-    data.name = image_data.DisplayName;
+    data.name = get(image_data, 'DisplayName');
     data.showscale = false;
-    data.visible = strcmp(image_data.Visible, "on");
+    data.visible = strcmp(get(image_data, 'Visible'), "on");
 
     data.showlegend = getShowLegend(image_data);
 end

@@ -51,16 +51,16 @@ function updateComet(obj,plotIndex)
     %-PLOT DATA STRUCTURE- %
     plotData = obj.State.Plot(plotIndex).Handle;
 
-    animObjs = obj.State.Plot(plotIndex).AssociatedAxis.Children;
+    animObjs = get(obj.State.Plot(plotIndex).AssociatedAxis, 'Children');
 
     for i=1:numel(animObjs)
         if isequaln(animObjs(i),plotData)
             animObj = animObjs(i);
         end
-        if strcmpi(animObjs(i).Tag,'tail')
+        if strcmpi(get(animObjs(i), 'Tag'),'tail')
             tail = animObjs(i);
         end
-        if strcmpi(animObjs(i).Tag,'body')
+        if strcmpi(get(animObjs(i), 'Tag'),'body')
             body = animObjs(i);
         end
     end
@@ -74,7 +74,7 @@ function updateComet(obj,plotIndex)
     obj.data{plotIndex}.xaxis = "x" + xsource;
     obj.data{plotIndex}.yaxis = "y" + ysource;
     obj.data{plotIndex}.type = 'scatter';
-    obj.data{plotIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{plotIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
     obj.data{plotIndex}.x = x(1);
     obj.data{plotIndex}.y = y(1);
 
@@ -96,15 +96,15 @@ function updateComet(obj,plotIndex)
     end
 
     %-scatter name-%
-    obj.data{plotIndex}.name = plotData.Tag;
+    obj.data{plotIndex}.name = get(plotData, 'Tag');
 
     %-scatter mode-%
-    if ~strcmpi('none', plotData.Marker) ...
-            && ~strcmpi('none', plotData.LineStyle)
+    if ~strcmpi('none', get(plotData, 'Marker')) ...
+            && ~strcmpi('none', get(plotData, 'LineStyle'))
         mode = 'lines+markers';
-    elseif ~strcmpi('none', plotData.Marker)
+    elseif ~strcmpi('none', get(plotData, 'Marker'))
         mode = 'markers';
-    elseif ~strcmpi('none', plotData.LineStyle)
+    elseif ~strcmpi('none', get(plotData, 'LineStyle'))
         mode = 'lines';
     else
         mode = 'none';
@@ -176,26 +176,26 @@ function updateComet(obj,plotIndex)
 
         %-scene axis configuration-%
 
-        scene.xaxis.range = axisData.XLim;
-        scene.yaxis.range = axisData.YLim;
-        scene.zaxis.range = axisData.ZLim;
+        scene.xaxis.range = get(axisData, 'XLim');
+        scene.yaxis.range = get(axisData, 'YLim');
+        scene.zaxis.range = get(axisData, 'ZLim');
 
-        scene.xaxis.tickvals = axisData.XTick;
-        scene.xaxis.ticktext = axisData.XTickLabel;
+        scene.xaxis.tickvals = get(axisData, 'XTick');
+        scene.xaxis.ticktext = get(axisData, 'XTickLabel');
 
-        scene.yaxis.tickvals = axisData.YTick;
-        scene.yaxis.ticktext = axisData.YTickLabel;
+        scene.yaxis.tickvals = get(axisData, 'YTick');
+        scene.yaxis.ticktext = get(axisData, 'YTickLabel');
 
-        scene.zaxis.tickvals = axisData.ZTick;
-        scene.zaxis.ticktext = axisData.ZTickLabel;
+        scene.zaxis.tickvals = get(axisData, 'ZTick');
+        scene.zaxis.ticktext = get(axisData, 'ZTickLabel');
 
         scene.xaxis.zeroline = false;
         scene.yaxis.zeroline = false;
         scene.zaxis.zeroline = false;
 
-        scene.xaxis.showgrid = strcmpi(axisData.XGrid,'on');
-        scene.yaxis.showgrid = strcmpi(axisData.YGrid,'on');
-        scene.zaxis.showgrid = strcmpi(axisData.ZGrid,'on');
+        scene.xaxis.showgrid = strcmpi(get(axisData, 'XGrid'),'on');
+        scene.yaxis.showgrid = strcmpi(get(axisData, 'YGrid'),'on');
+        scene.zaxis.showgrid = strcmpi(get(axisData, 'ZGrid'),'on');
 
         scene.xaxis.showline = true;
         scene.yaxis.showline = true;
@@ -209,17 +209,17 @@ function updateComet(obj,plotIndex)
         scene.yaxis.ticklabelposition = 'outside';
         scene.zaxis.ticklabelposition = 'outside';
 
-        scene.xaxis.title = axisData.XLabel.String;
-        scene.yaxis.title = axisData.YLabel.String;
-        scene.zaxis.title = axisData.ZLabel.String;
+        scene.xaxis.title = get(get(axisData, 'XLabel'), 'String');
+        scene.yaxis.title = get(get(axisData, 'YLabel'), 'String');
+        scene.zaxis.title = get(get(axisData, 'ZLabel'), 'String');
 
-        scene.xaxis.tickfont.size = axisData.FontSize;
-        scene.yaxis.tickfont.size = axisData.FontSize;
-        scene.zaxis.tickfont.size = axisData.FontSize;
+        scene.xaxis.tickfont.size = get(axisData, 'FontSize');
+        scene.yaxis.tickfont.size = get(axisData, 'FontSize');
+        scene.zaxis.tickfont.size = get(axisData, 'FontSize');
 
-        scene.xaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-        scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-        scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+        scene.xaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+        scene.yaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+        scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
         %-SET SCENE TO LAYOUT-%
         obj.layout.("scene" + xsource) = scene;
@@ -231,7 +231,7 @@ function updateComet(obj,plotIndex)
     %-Create Frames-%
     frameData = obj.data{plotIndex};
 
-    switch(plotData.Tag)
+    switch(get(plotData, 'Tag'))
         case 'head'
             for i = 1:length(x)
                 frameData.x=[x(i) x(i)];
@@ -244,7 +244,7 @@ function updateComet(obj,plotIndex)
             end
         case 'body'
             for i = 1:length(x)
-                sIdx = i-animObj.MaximumNumPoints;
+                sIdx = i-get(animObj, 'MaximumNumPoints');
                 if sIdx < 0
                     sIdx=0;
                 end
@@ -269,10 +269,10 @@ function updateComet(obj,plotIndex)
                 if obj.PlotOptions.is3d
                     frameData.z=z(1:i);
                 end
-                if i < body.MaximumNumPoints
+                if i < get(body, 'MaximumNumPoints')
                     rIdx = i;
                 else
-                    rIdx = body.MaximumNumPoints;
+                    rIdx = get(body, 'MaximumNumPoints');
                 end
                 if i ~= length(x)
                     val = nan(rIdx,1);

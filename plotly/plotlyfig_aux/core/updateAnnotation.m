@@ -36,10 +36,10 @@ function annotation = updateAnnotation(obj,anIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-STANDARDIZE UNITS-%
-    textunits = obj.State.Text(anIndex).Handle.Units;
-    fontunits = obj.State.Text(anIndex).Handle.FontUnits;
-    obj.State.Text(anIndex).Handle.Units = "data";
-    obj.State.Text(anIndex).Handle.FontUnits = "points";
+    textunits = get(obj.State.Text(anIndex).Handle, 'Units');
+    fontunits = get(obj.State.Text(anIndex).Handle, 'FontUnits');
+    set(obj.State.Text(anIndex).Handle, 'Units', "data");
+    set(obj.State.Text(anIndex).Handle, 'FontUnits', "points");
 
     %-TEXT DATA STRUCTURE-%
     text_data = obj.State.Text(anIndex).Handle;
@@ -55,10 +55,10 @@ function annotation = updateAnnotation(obj,anIndex)
         annotation.yref = "y" + ysource;
     end
 
-    annotation.xanchor = text_data.HorizontalAlignment;
-    annotation.align = text_data.HorizontalAlignment;
+    annotation.xanchor = get(text_data, 'HorizontalAlignment');
+    annotation.align = get(text_data, 'HorizontalAlignment');
 
-    switch text_data.VerticalAlignment
+    switch get(text_data, 'VerticalAlignment')
         case {"top", "cap"}
             annotation.yanchor = "top";
         case "middle"
@@ -69,8 +69,8 @@ function annotation = updateAnnotation(obj,anIndex)
 
     if obj.State.Text(anIndex).Title
         annotation.text = parseString( ...
-                text_data.String,text_data.Interpreter);
-        if isempty(text_data.String)
+                get(text_data, 'String'), get(text_data, 'Interpreter'));
+        if isempty(get(text_data, 'String'))
             annotation.text = "<b></b>"; %empty string annotation
         else
             annotation.text = "<b>" + join( ...
@@ -79,7 +79,7 @@ function annotation = updateAnnotation(obj,anIndex)
     else
         if ~strcmpi(obj.PlotOptions.TreatAs, "pie3")
             annotation.text = parseString( ...
-                    text_data.String,text_data.Interpreter);
+                    get(text_data, 'String'), get(text_data, 'Interpreter'));
         else
             annotation.text = "<b></b>";
         end
@@ -103,18 +103,19 @@ function annotation = updateAnnotation(obj,anIndex)
         annotation.x = mean(xaxis.domain);
         annotation.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
     else
-        annotation.x = text_data.Position(1);
-        annotation.y = text_data.Position(2);
+        tmpPosition = get(text_data, 'Position');
+        annotation.x = tmpPosition(1);
+        annotation.y = tmpPosition(2);
     end
 
-    col = round(255*text_data.Color);
+    col = round(255*get(text_data, 'Color'));
     annotation.font.color = getStringColor(col);
 
-    annotation.font.family = matlab2plotlyfont(text_data.FontName);
+    annotation.font.family = matlab2plotlyfont(get(text_data, 'FontName'));
 
-    annotation.font.size = text_data.FontSize;
+    annotation.font.size = get(text_data, 'FontSize');
 
-    switch text_data.FontWeight
+    switch get(text_data, 'FontWeight')
         case {"bold","demi"}
             %-bold text-%
             annotation.text = "<b>" + annotation.text + "</b>";
@@ -122,16 +123,16 @@ function annotation = updateAnnotation(obj,anIndex)
     end
 
     %-background color-%
-    if ~ischar(text_data.BackgroundColor)
-        switch text_data.BackgroundColor
+    if ~ischar(get(text_data, 'BackgroundColor'))
+        switch get(text_data, 'BackgroundColor')
             case "ne"
                 annotation.bgcolor = "rgba(0,0,0,0)";
             otherwise
         end
     end
 
-    if ~ischar(text_data.EdgeColor)
-        col = round(255*text_data.EdgeColora);
+    if ~ischar(get(text_data, 'EdgeColor'))
+        col = round(255*get(text_data, 'EdgeColora'));
         annotation.bordercolor = getStringColor(col);
     else
         %-none-%
@@ -139,7 +140,7 @@ function annotation = updateAnnotation(obj,anIndex)
     end
 
     %-text rotation (plotly CW positive, MATLAB CCW positive)-%
-    rotation = text_data.Rotation;
+    rotation = get(text_data, 'Rotation');
     if rotation > 180
         rotation = rotation - 360;
     end
@@ -149,15 +150,15 @@ function annotation = updateAnnotation(obj,anIndex)
     end
     annotation.textangle = rotation;
 
-    annotation.borderwidth = text_data.LineWidth;
-    annotation.borderpad = text_data.Margin;
+    annotation.borderwidth = get(text_data, 'LineWidth');
+    annotation.borderpad = get(text_data, 'Margin');
 
     %-hide text (a workaround)
-    if strcmp(text_data.Visible,"off")
+    if strcmp(get(text_data, 'Visible'),"off")
         annotation.text = " ";
     end
 
     %-REVERT UNITS-%
-    obj.State.Text(anIndex).Handle.Units = textunits;
-    obj.State.Text(anIndex).Handle.FontUnits = fontunits;
+    set(obj.State.Text(anIndex).Handle, 'Units', textunits);
+    set(obj.State.Text(anIndex).Handle, 'FontUnits', fontunits);
 end

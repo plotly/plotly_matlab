@@ -20,10 +20,10 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     obj.data{surfaceIndex}.type = 'surface';
 
     %-getting plot data-%
-    x = image_data.XData;
-    y = image_data.YData;
-    z = image_data.ZData;
-    cdata = image_data.CData;
+    x = get(image_data, 'XData');
+    y = get(image_data, 'YData');
+    z = get(image_data, 'ZData');
+    cdata = get(image_data, 'CData');
 
     %-playing with level quality-%
     quality = obj.PlotOptions.Quality/100;
@@ -140,7 +140,7 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     obj.layout.scene = scene;
 
     %-image colorscale-%
-    cmap = figure_data.Colormap;
+    cmap = get(figure_data, 'Colormap');
     len = length(cmap)-1;
     for c = 1: length(cmap)
         col = round(255 * cmap(c, :));
@@ -149,9 +149,9 @@ function updateSurfaceStreamtube(obj, surfaceIndex)
     end
 
     obj.data{surfaceIndex}.surfacecolor = cdata;
-    obj.data{surfaceIndex}.name = image_data.DisplayName;
+    obj.data{surfaceIndex}.name = get(image_data, 'DisplayName');
     obj.data{surfaceIndex}.showscale = false;
-    obj.data{surfaceIndex}.visible = strcmp(image_data.Visible,'on');
+    obj.data{surfaceIndex}.visible = strcmp(get(image_data, 'Visible'),'on');
 
     obj.data{surfaceIndex}.showlegend = getShowLegend(image_data);
 end

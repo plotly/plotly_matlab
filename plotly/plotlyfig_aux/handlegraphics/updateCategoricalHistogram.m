@@ -57,28 +57,28 @@ function obj = updateCategoricalHistogram(obj,histIndex)
     obj.data{histIndex}.xaxis = "x" + xsource;
     obj.data{histIndex}.yaxis = "y" + ysource;
     obj.data{histIndex}.type = 'bar';
-    obj.data{histIndex}.width = hist_data.BarWidth;
-    obj.data{histIndex}.y = hist_data.Values;
+    obj.data{histIndex}.width = get(hist_data, 'BarWidth');
+    obj.data{histIndex}.y = get(hist_data, 'Values');
 
     %-hist categorical layout on x-axis-%
-    gap = 1 - hist_data.BarWidth;
+    gap = 1 - get(hist_data, 'BarWidth');
     xmin = -gap;
-    xmax = (hist_data.NumDisplayBins - 1) + gap;
+    xmax = (get(hist_data, 'NumDisplayBins') - 1) + gap;
 
     obj.layout.("xaxis" + xsource).type = 'category';
     obj.layout.("xaxis" + xsource).autotick = false;
     obj.layout.("xaxis" + xsource).range = {xmin, xmax};
 
-    obj.data{histIndex}.name = hist_data.DisplayName;
+    obj.data{histIndex}.name = get(hist_data, 'DisplayName');
     obj.layout.barmode = 'group';
-    obj.data{histIndex}.marker.line.width = hist_data.LineWidth;
+    obj.data{histIndex}.marker.line.width = get(hist_data, 'LineWidth');
 
-    if ~ischar(hist_data.FaceAlpha)
-        obj.data{histIndex}.opacity = 1.25*hist_data.FaceAlpha;
+    if ~ischar(get(hist_data, 'FaceAlpha'))
+        obj.data{histIndex}.opacity = 1.25*get(hist_data, 'FaceAlpha');
     end
 
     obj.data{histIndex}.marker = extractPatchFace(hist_data);
-    obj.data{histIndex}.visible = strcmp(hist_data.Visible,'on');
+    obj.data{histIndex}.visible = strcmp(get(hist_data, 'Visible'),'on');
 
     obj.data{histIndex}.showlegend = getShowLegend(hist_data);
 end

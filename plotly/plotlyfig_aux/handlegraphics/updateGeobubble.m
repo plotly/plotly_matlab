@@ -6,15 +6,15 @@ function updateGeobubble(obj,geoIndex)
     xSource = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
-    bubbleRange = geoData.BubbleWidthRange;
-    allLats = geoData.LatitudeData;
-    allLons = geoData.LongitudeData;
-    allSizes = rescale(geoData.SizeData, bubbleRange(1), bubbleRange(2));
-    colorMap = geoData.BubbleColorList;
+    bubbleRange = get(geoData, 'BubbleWidthRange');
+    allLats = get(geoData, 'LatitudeData');
+    allLons = get(geoData, 'LongitudeData');
+    allSizes = rescale(get(geoData, 'SizeData'), bubbleRange(1), bubbleRange(2));
+    colorMap = get(geoData, 'BubbleColorList');
     nColors = size(colorMap, 1);
 
-    if ~isempty(geoData.ColorData)
-        allNames = geoData.ColorData;
+    if ~isempty(get(geoData, 'ColorData'))
+        allNames = get(geoData, 'ColorData');
 
         [groupNames, ~, allNamesIdx] = unique(allNames);
         nGroups = length(groupNames);
@@ -96,10 +96,11 @@ function updateGeobubble(obj,geoIndex)
     %=====================================================================%
 
     %-set domain plot-%
-    xo = geoData.Position(1);
-    yo = geoData.Position(2);
-    w = geoData.Position(3);
-    h = geoData.Position(4);
+    geoPosition = get(geoData, 'Position');
+    xo = geoPosition(1);
+    yo = geoPosition(2);
+    w = geoPosition(3);
+    h = geoPosition(4);
 
     geoaxes.domain.x = min([xo xo + w],1);
     geoaxes.domain.y = min([yo yo + h],1);
@@ -113,10 +114,10 @@ function updateGeobubble(obj,geoIndex)
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
         geoaxes.framecolor = 'rgb(120,120,120)';
 
-        if strcmpi(geoData.Basemap, 'streets-light')
+        if strcmpi(get(geoData, 'Basemap'), 'streets-light')
             geoaxes.oceancolor = 'rgba(215,215,220,1)';
             geoaxes.landcolor = 'rgba(220,220,220,0.4)';
-        elseif strcmpi(geoData.Basemap, 'colorterrain')
+        elseif strcmpi(get(geoData, 'Basemap'), 'colorterrain')
             geoaxes.oceancolor = 'rgba(118,165,225,0.6)';
             geoaxes.landcolor = 'rgba(190,180,170,1)';
             geoaxes.showcountries = true;
@@ -130,9 +131,9 @@ function updateGeobubble(obj,geoIndex)
 
     %-setting latitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        geoaxes.lataxis.range = geoData.LatitudeLimits;
+        geoaxes.lataxis.range = get(geoData, 'LatitudeLimits');
 
-        if strcmpi(geoData.GridVisible, 'on')
+        if strcmpi(get(geoData, 'GridVisible'), 'on')
             geoaxes.lataxis.showgrid = true;
             geoaxes.lataxis.gridwidth = 0.5;
             geoaxes.lataxis.gridcolor = 'rgba(38.250000,38.250000,38.250000,0.150000)';
@@ -141,9 +142,9 @@ function updateGeobubble(obj,geoIndex)
 
     %-setting longitude axis-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
-        geoaxes.lonaxis.range = geoData.LongitudeLimits;
+        geoaxes.lonaxis.range = get(geoData, 'LongitudeLimits');
 
-        if strcmpi(geoData.GridVisible, 'on')
+        if strcmpi(get(geoData, 'GridVisible'), 'on')
             geoaxes.lonaxis.showgrid = true;
             geoaxes.lonaxis.gridwidth = 0.5;
             geoaxes.lonaxis.gridcolor = 'rgba(38.250000,38.250000,38.250000,0.150000)';
@@ -151,8 +152,9 @@ function updateGeobubble(obj,geoIndex)
     end
 
     %-set map center-%
-    geoaxes.center.lat = geoData.MapCenter(1);
-    geoaxes.center.lon = geoData.MapCenter(2);
+    tmpMapCenter = get(geoData, 'MapCenter');
+    geoaxes.center.lat = tmpMapCenter(1);
+    geoaxes.center.lon = tmpMapCenter(2);
 
     %-set better resolution-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'geo')
@@ -161,11 +163,11 @@ function updateGeobubble(obj,geoIndex)
 
     %-set mapbox style-%
     if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')
-        geoaxes.zoom = geoData.ZoomLevel - 1.4;
+        geoaxes.zoom = get(geoData, 'ZoomLevel') - 1.4;
 
-        if strcmpi(geoData.Basemap, 'streets-light')
+        if strcmpi(get(geoData, 'Basemap'), 'streets-light')
             geoaxes.style = 'carto-positron';
-        elseif strcmpi(geoData.Basemap, 'colorterrain')
+        elseif strcmpi(get(geoData, 'Basemap'), 'colorterrain')
             geoaxes.style = 'stamen-terrain';
         end
     end
@@ -178,13 +180,13 @@ function updateGeobubble(obj,geoIndex)
     end
 
     %-remove any annotation text-%
-    istitle = length(geoData.Title) > 0;
+    istitle = length(get(geoData, 'Title')) > 0;
     obj.layout.annotations{1}.text = ' ';
     obj.layout.annotations{1}.showarrow = false;
 
     %-layout title-%
     if istitle
-      obj.layout.annotations{1}.text = sprintf('<b>%s</b>', geoData.Title);
+      obj.layout.annotations{1}.text = sprintf('<b>%s</b>', get(geoData, 'Title'));
       obj.layout.annotations{1}.xref = 'paper';
       obj.layout.annotations{1}.yref = 'paper';
       obj.layout.annotations{1}.yanchor = 'top';
@@ -192,8 +194,8 @@ function updateGeobubble(obj,geoIndex)
       obj.layout.annotations{1}.x = mean(geoaxes.domain.x);
       obj.layout.annotations{1}.y = 0.96;
       obj.layout.annotations{1}.font.color = 'black';
-      obj.layout.annotations{1}.font.family = matlab2plotlyfont(geoData.FontName);
-      obj.layout.annotations{1}.font.size = 1.5*geoData.FontSize;
+      obj.layout.annotations{1}.font.family = matlab2plotlyfont(get(geoData, 'FontName'));
+      obj.layout.annotations{1}.font.size = 1.5*get(geoData, 'FontSize');
     end
 
     %-setting legend-%
@@ -201,14 +203,14 @@ function updateGeobubble(obj,geoIndex)
         obj.layout.showlegend = true;
         obj.layout.legend.borderwidth = 1;
         obj.layout.legend.bordercolor = 'rgba(0,0,0,0.2)';
-        obj.layout.legend.font.family = matlab2plotlyfont(geoData.FontName);
-        obj.layout.legend.font.size = 1.0*geoData.FontSize;
+        obj.layout.legend.font.family = matlab2plotlyfont(get(geoData, 'FontName'));
+        obj.layout.legend.font.size = 1.0*get(geoData, 'FontSize');
 
-        if length(geoData.ColorLegendTitle) > 0
-            obj.layout.legend.title.text = sprintf('<b>%s</b>', geoData.ColorLegendTitle);
+        if length(get(geoData, 'ColorLegendTitle')) > 0
+            obj.layout.legend.title.text = sprintf('<b>%s</b>', get(geoData, 'ColorLegendTitle'));
             obj.layout.legend.title.side = 'top';
-            obj.layout.legend.title.font.family = matlab2plotlyfont(geoData.FontName);
-            obj.layout.legend.title.font.size = 1.2*geoData.SizeLegendTitle;
+            obj.layout.legend.title.font.family = matlab2plotlyfont(get(geoData, 'FontName'));
+            obj.layout.legend.title.font.size = 1.2*get(geoData, 'SizeLegendTitle');
             obj.layout.legend.title.font.color = 'black';
         end
 

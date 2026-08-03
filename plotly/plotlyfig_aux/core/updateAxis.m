@@ -44,21 +44,21 @@ function obj = updateAxis(obj,axIndex)
     axisData = obj.State.Axis(axIndex).Handle;
 
     %-STANDARDIZE UNITS-%
-    axisUnits = axisData.Units;
-    axisData.Units = 'normalized';
+    axisUnits = get(axisData, 'Units');
+    set(axisData, 'Units', 'normalized');
 
     if isprop(axisData, "FontUnits")
-        fontUnits = axisData.FontUnits;
-        axisData.FontUnits = 'points';
+        fontUnits = get(axisData, 'FontUnits');
+        set(axisData, 'FontUnits', 'points');
     end
 
     %-check if heatmap axis-%
-    isHeatmapAxis = strcmp(axisData.Type, "heatmap");
+    isHeatmapAxis = strcmp(get(axisData, 'Type'), "heatmap");
     obj.PlotOptions.is_heatmap_axis = isHeatmapAxis;
 
     %-check if geo-axis-%
     isGeoaxis = isfield(axisData, 'Type') ...
-            && strcmpi(axisData.Type, 'geoaxes');
+            && strcmpi(get(axisData, 'Type'), 'geoaxes');
     obj.PlotlyDefaults.isGeoaxis = isGeoaxis;
 
     if isHeatmapAxis
@@ -71,12 +71,12 @@ function obj = updateAxis(obj,axIndex)
         [yaxis, yExponentFormat] = extractAxisData(obj,axisData, 'Y');
     end
 
-    axisPos = axisData.Position .* obj.PlotOptions.DomainFactor;
+    axisPos = get(axisData, 'Position') .* obj.PlotOptions.DomainFactor;
     if obj.PlotOptions.AxisEqual
         axisPos(3:4) = min(axisPos(3:4));
     end
 
-    if (ischar(axisData.Tag) || isstring(axisData.Tag)) && strcmp(axisData.Tag, "yhist")
+    if (ischar(get(axisData, 'Tag')) || isstring(get(axisData, 'Tag'))) && strcmp(get(axisData, 'Tag'), "yhist")
         % scatterhist() function
         [xaxis, yaxis] = deal(yaxis,xaxis);
         [xaxis.side, yaxis.side] = deal(yaxis.side,xaxis.side);
@@ -156,9 +156,9 @@ function obj = updateAxis(obj,axIndex)
     end
 
     %-REVERT UNITS-%
-    axisData.Units = axisUnits;
+    set(axisData, 'Units', axisUnits);
 
     if isprop(axisData, "FontUnits")
-        axisData.FontUnits = fontUnits;
+        set(axisData, 'FontUnits', fontUnits);
     end
 end

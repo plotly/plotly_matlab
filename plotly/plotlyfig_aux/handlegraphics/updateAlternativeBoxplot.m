@@ -3,7 +3,7 @@ function obj = updateAlternativeBoxplot(obj, dataIndex)
 
 	axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
 	plotStructure = obj.State.Plot(dataIndex).Handle;
-	plotData = plotStructure.Children;
+	plotData = get(plotStructure, 'Children');
 
 	nTraces = length(plotData);
 	traceIndex = dataIndex;
@@ -25,8 +25,8 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
 	[xSource, ySource] = findSourceAxis(obj, axIndex);
 
 	%-get trade data-%
-	xData = plotData.XData;
-	yData = plotData.YData;
+	xData = get(plotData, 'XData');
+	yData = get(plotData, 'YData');
 
     if isduration(xData) || isdatetime(xData)
         xData = datenum(xData);
@@ -45,8 +45,8 @@ function updateBoxplotLine(obj, axIndex, plotData, traceIndex)
     %-set trace-%
     obj.data{traceIndex}.type = 'scatter';
     obj.data{traceIndex}.mode = getScatterMode(plotData);
-    obj.data{traceIndex}.visible = strcmp(plotData.Visible,'on');
-    obj.data{traceIndex}.name = plotData.DisplayName;
+    obj.data{traceIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
+    obj.data{traceIndex}.name = get(plotData, 'DisplayName');
     obj.data{traceIndex}.xaxis = sprintf('x%d', xSource);
     obj.data{traceIndex}.yaxis = sprintf('y%d', ySource);
 

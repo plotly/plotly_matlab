@@ -63,11 +63,12 @@ function data = updateArea(obj,areaIndex)
     axIndex = obj.getAxisIndex(obj.State.Plot(areaIndex).AssociatedAxis);
 
     %-check for multiple axes-%
-    if numel(area_data.Parent.YAxis) > 1
+    if numel(get(get(area_data, 'Parent'), 'YAxis')) > 1
         yaxMatch = zeros(1,2);
         for yax = 1:2
-            yAxisColor = area_data.Parent.YAxis(yax).Color;
-            yaxMatch(yax) = sum(yAxisColor == area_data.FaceColor);
+            tmpYAxis = get(get(area_data, 'Parent'), 'YAxis');
+            yAxisColor = get(tmpYAxis(yax), 'Color');
+            yaxMatch(yax) = sum(yAxisColor == get(area_data, 'FaceColor'));
         end
         [~, yaxIndex] = max(yaxMatch);
         [xsource, ysource] = findSourceAxis(obj, axIndex, yaxIndex);
@@ -78,19 +79,19 @@ function data = updateArea(obj,areaIndex)
     data.xaxis = "x" + xsource;
     data.yaxis = "y" + ysource;
     data.type = "scatter";
-    data.x = area_data.XData;
+    data.x = get(area_data, 'XData');
 
     prevAreaIndex = find(cellfun(@(x) isfield(x,"fill") ...
             && isequal({x.xaxis x.yaxis},{data.xaxis ...
             data.yaxis}),obj.data(1:areaIndex-1)),1,"last");
     if ~isempty(prevAreaIndex)
-        data.y = obj.data{prevAreaIndex}.y + area_data.YData;
+        data.y = obj.data{prevAreaIndex}.y + get(area_data, 'YData');
     else
-        data.y = area_data.YData;
+        data.y = get(area_data, 'YData');
     end
 
-    data.name = area_data.DisplayName;
-    data.visible = strcmp(area_data.Visible, "on");
+    data.name = get(area_data, 'DisplayName');
+    data.visible = strcmp(get(area_data, 'Visible'), "on");
 
     if ~isempty(prevAreaIndex)
         data.fill = "tonexty";
@@ -98,7 +99,7 @@ function data = updateArea(obj,areaIndex)
         data.fill = "tozeroy";
     end
 
-    if isprop(area_data, "LineStyle") && strcmp(area_data.LineStyle, "none")
+    if isprop(area_data, "LineStyle") && strcmp(get(area_data, 'LineStyle'), "none")
         data.mode = "none";
     else
         data.mode = "lines";

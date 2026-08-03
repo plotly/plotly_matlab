@@ -4,14 +4,14 @@ function obj = updateSpiderPlot(obj,spiderIndex)
     plotData = obj.State.Plot(spiderIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
-    nTraces = size(plotData.P, 1);
+    nTraces = size(get(plotData, 'P'), 1);
     isLegend = false;
 
     axesStruct = setAxes(obj, spiderIndex);
     updateSpiderLayout(obj, spiderIndex);
     setAnnotation(obj, axesStruct, spiderIndex);
 
-    if ~isempty(plotData.LegendHandle)
+    if ~isempty(get(plotData, 'LegendHandle'))
         isLegend = true;
         setLegeng(obj, spiderIndex);
     end
@@ -30,7 +30,7 @@ function obj = updateSpiderPlot(obj,spiderIndex)
         obj.data{plotIndex}.type = 'scatter';
         obj.data{plotIndex}.mode = 'lines+markers';
 
-        if strcmp(plotData.Marker{t, 1}, 'none')
+        if strcmp(get(plotData, 'Marker'){t, 1}, 'none')
             obj.data{plotIndex}.mode = 'lines';
         end
 
@@ -47,17 +47,17 @@ function obj = updateSpiderPlot(obj,spiderIndex)
         obj.data{plotIndex}.line = getLine(plotData, t);
 
         %-fill area-%
-        if strcmp(plotData.FillOption{t}, 'on')
-            [fillColor, ~] = getColor(plotData.Color, t, ...
-                plotData.FillTransparency);
+        if strcmp(get(plotData, 'FillOption'){t}, 'on')
+            [fillColor, ~] = getColor(get(plotData, 'Color'), t, ...
+                get(plotData, 'FillTransparency'));
             obj.data{plotIndex}.fillcolor = fillColor;
             obj.data{plotIndex}.fill = 'toself';
         end
 
         %-legend-%
         if isLegend
-            if strcmp(plotData.LegendHandle.Visible, 'on')
-                obj.data{plotIndex}.name = plotData.LegendLabels{t};
+            if strcmp(get(get(plotData, 'LegendHandle'), 'Visible'), 'on')
+                obj.data{plotIndex}.name = get(plotData, 'LegendLabels'){t};
                 obj.data{plotIndex}.showlegend = true;
             end
         end
@@ -66,7 +66,8 @@ end
 
 function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
     %-initializations-%
-    rData = plotData.P(traceIndex, :);
+    tmpP = get(plotData, 'P');
+    rData = tmpP(traceIndex, :);
     axesAngle = axesStruct.axesAngle;
     nAxes = axesStruct.nAxes;
     nTicks = axesStruct.nTicks;
@@ -74,17 +75,20 @@ function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
     for a = 1:nAxes
         %-get axis limits-%
         try
-            axesLim = plotData.AxesLimits(:, a)';
+            tmpAxesLimits = get(plotData, 'AxesLimits');
+            axesLim = tmpAxesLimits(:, a)';
         catch
-            axesLim = [min(plotData.P(:, a)), max(plotData.P(:, a))];
+            axesLim = [min(tmpP(:, a)), max(tmpP(:, a))];
         end
 
         %-normalize radial data-%
+        tmpAxesScaling = get(plotData, 'AxesScaling');
+        tmpAxesDirection = get(plotData, 'AxesDirection');
         rPoint = [rData(a), axesLim];
-        if strcmpi(plotData.AxesScaling(a), 'log')
+        if strcmpi(tmpAxesScaling(a), 'log')
             rPoint = log10(rPoint);
         end
-        if strcmpi(plotData.AxesDirection(a), 'reverse');
+        if strcmpi(tmpAxesDirection(a), 'reverse');
             rPoint = -rPoint;
         end
         rPoint = rescale(rPoint, 1/nTicks, 1);
@@ -100,27 +104,29 @@ function [xData, yData] = getCartesianPoints(plotData, axesStruct, traceIndex)
 end
 
 function lineStruct = getLine(plotData, traceIndex)
-    [lineColor, ~] = getColor(plotData.Color, traceIndex, ...
-        plotData.LineTransparency);
+    [lineColor, ~] = getColor(get(plotData, 'Color'), traceIndex, ...
+        get(plotData, 'LineTransparency'));
+tmpLineWidth = get(plotData, 'LineWidth');
 
     lineStruct = struct( ...
         "color", lineColor, ...
-        "width", plotData.LineWidth(traceIndex), ...
-        "dash", getLineDash(plotData.LineStyle{traceIndex, 1}) ...
+        "width", tmpLineWidth(traceIndex), ...
+        "dash", getLineDash(get(plotData, 'LineStyle'){traceIndex, 1}) ...
     );
 end
 
 function markerStruct = getMarker(plotData, traceIndex)
     markerStruct = struct();
 
-    [markerColor, ~] = getColor(plotData.Color, traceIndex, ...
-        plotData.MarkerTransparency);
+    [markerColor, ~] = getColor(get(plotData, 'Color'), traceIndex, ...
+        get(plotData, 'MarkerTransparency'));
     markerStruct.color = markerColor;
     markerStruct.line.color = markerColor;
-    markerStruct.size = plotData.MarkerSize(traceIndex, 1) * 0.2;
+    tmpMarkerSize = get(plotData, 'MarkerSize');
+    markerStruct.size = tmpMarkerSize(traceIndex, 1) * 0.2;
 
-    if ~strcmp(plotData.Marker{traceIndex, 1}, "none")
-        markerStruct.symbol = getMarkerSymbol(plotData.Marker{traceIndex, 1});
+    if ~strcmp(get(plotData, 'Marker'){traceIndex, 1}, "none")
+        markerStruct.symbol = getMarkerSymbol(get(plotData, 'Marker'){traceIndex, 1});
     end
 end
 
@@ -132,27 +138,27 @@ function setAnnotation(obj, axesStruct, spiderIndex)
     plotData = obj.State.Plot(spiderIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
-    axesLabels = plotData.AxesLabels;
-    axesLabelsOffset = plotData.AxesLabelsOffset * 0.5;
-    axesDisplay = plotData.AxesDisplay;
-    axesFontColor = plotData.AxesFontColor;
-    axesPrecision = plotData.AxesPrecision;
-    axesLabelsEdge = plotData.AxesLabelsEdge;
+    axesLabels = get(plotData, 'AxesLabels');
+    axesLabelsOffset = get(plotData, 'AxesLabelsOffset') * 0.5;
+    axesDisplay = get(plotData, 'AxesDisplay');
+    axesFontColor = get(plotData, 'AxesFontColor');
+    axesPrecision = get(plotData, 'AxesPrecision');
+    axesLabelsEdge = get(plotData, 'AxesLabelsEdge');
 
     nAxes = axesStruct.nAxes;
     axesAngle = axesStruct.axesAngle;
     nTicks = axesStruct.nTicks;
     if strcmp(axesDisplay, 'data')
-        nTicks = size(plotData.P, 1);
+        nTicks = size(get(plotData, 'P'), 1);
     end
 
     labelColor = 'rgb(0,0,0)';
-    labelSize = plotData.LabelFontSize;
-    labelFamily = matlab2plotlyfont(plotData.LabelFont);
+    labelSize = get(plotData, 'LabelFontSize');
+    labelFamily = matlab2plotlyfont(get(plotData, 'LabelFont'));
 
     nAxesFontColor = size(axesFontColor, 1);
-    axesSize = plotData.AxesFontSize;
-    axesFamily = matlab2plotlyfont(plotData.AxesFont);
+    axesSize = get(plotData, 'AxesFontSize');
+    axesFamily = matlab2plotlyfont(get(plotData, 'AxesFont'));
 
     %-set axes labels-%
     for l = 1:nAxes
@@ -223,19 +229,19 @@ function setAnnotation(obj, axesStruct, spiderIndex)
 
             %-get tick label-%
             try
-                axesLim = plotData.AxesLimits(:, a)';
+                axesLim = tmpAxesLimits(:, a)';
             catch
-                axesLim = [min(plotData.P(:, a)), max(plotData.P(:, a))];
+                axesLim = [min(tmpP(:, a)), max(tmpP(:, a))];
             end
 
             if strcmp(axesDisplay, 'data')
-                tickLabel = plotData.P(t, a);
+                tickLabel = tmpP(t, a);
 
             else
                 tickLabel = linspace(axesLim(1), axesLim(2), nTicks);
                 tickLabel = tickLabel(t);
 
-                if strcmpi(plotData.AxesScaling(a), 'log')
+                if strcmpi(tmpAxesScaling(a), 'log')
                     tickLabel = 10^(t-1);
                 end
             end
@@ -243,11 +249,11 @@ function setAnnotation(obj, axesStruct, spiderIndex)
             %-get tick value-%
             tickValue = [tickLabel, axesLim];
 
-            if strcmpi(plotData.AxesScaling(a), 'log')
+            if strcmpi(tmpAxesScaling(a), 'log')
                 tickValue = log10(tickValue);
             end
 
-            if strcmpi(plotData.AxesDirection(a), 'reverse');
+            if strcmpi(tmpAxesDirection(a), 'reverse');
                 tickValue = -1 * tickValue;
             end
 
@@ -261,9 +267,9 @@ function setAnnotation(obj, axesStruct, spiderIndex)
             %-set tick location-%
             annotations{anIndex}.x = tickValue * cos(axesAngle(a));
             annotations{anIndex}.y = tickValue * sin(axesAngle(a));
-            annotations{anIndex}.xanchor = plotData.AxesHorzAlign;
-            annotations{anIndex}.yanchor = plotData.AxesVertAlign;
-            annotations{anIndex}.align = plotData.AxesHorzAlign;
+            annotations{anIndex}.xanchor = get(plotData, 'AxesHorzAlign');
+            annotations{anIndex}.yanchor = get(plotData, 'AxesVertAlign');
+            annotations{anIndex}.align = get(plotData, 'AxesHorzAlign');
 
             if strcmp(axesDisplay, 'data')
                 if annotations{anIndex}.y > 0
@@ -317,11 +323,11 @@ function axesStruct = setAxes(obj, spiderIndex)
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
     %-set axes-%
-    nAxes = size(plotData.P,2);
+    nAxes = size(get(plotData, 'P'),2);
     angleStep = 2*pi/nAxes;
     axesAngle = [pi/2];
     plotIndex = spiderIndex;
-    axesColor = getStringColor(round(255*plotData.AxesColor));
+    axesColor = getStringColor(round(255*get(plotData, 'AxesColor')));
 
     for a = 1:nAxes
         %-get plotIndex-%
@@ -344,7 +350,7 @@ function axesStruct = setAxes(obj, spiderIndex)
 
         %-update axesAngle list-%
         if a ~= nAxes
-            if strcmp(plotData.Direction, 'clockwise')
+            if strcmp(get(plotData, 'Direction'), 'clockwise')
                 axesAngle(a+1) = axesAngle(a) - angleStep;
             else
                 axesAngle(a+1) = axesAngle(a) + angleStep;
@@ -356,7 +362,7 @@ function axesStruct = setAxes(obj, spiderIndex)
     end
 
     %-set grid-%
-    nTicks = plotData.AxesInterval + 1;
+    nTicks = get(plotData, 'AxesInterval') + 1;
     tickValues = linspace(1/nTicks, 1, nTicks);
     xData = cos([axesAngle, axesAngle(1)]);
     yData = sin([axesAngle, axesAngle(1)]);
@@ -395,10 +401,11 @@ function updateSpiderLayout(obj, spiderIndex)
     plotData = obj.State.Plot(spiderIndex).Handle;
     [xSource, ySource] = findSourceAxis(obj, axIndex);
 
-    xo = plotData.Position(1);
-    yo = plotData.Position(2);
-    w = plotData.Position(3);
-    h = plotData.Position(4);
+    spiderPosition = get(plotData, 'Position');
+    xo = spiderPosition(1);
+    yo = spiderPosition(2);
+    w = spiderPosition(3);
+    h = spiderPosition(4);
 
     %-get x axis-%
     xaxis.domain = min([xo xo + w],1);
@@ -424,29 +431,30 @@ function setLegeng(obj, spiderIndex)
     %-INITIALIZATIONS-%
     plotData = obj.State.Plot(spiderIndex).Handle;
 
-    legData = plotData.LegendHandle;
-    obj.layout.showlegend = strcmpi(plotData.Visible,'on');
+    legData = get(plotData, 'LegendHandle');
+    obj.layout.showlegend = strcmpi(get(plotData, 'Visible'),'on');
 
     %-legend location-%
-    obj.layout.legend.x = legData.Position(1);
-    obj.layout.legend.y = legData.Position(2);
+    tmpPosition = get(legData, 'Position');
+    obj.layout.legend.x = tmpPosition(1);
+    obj.layout.legend.y = tmpPosition(2);
     obj.layout.legend.xref = 'paper';
     obj.layout.legend.yref = 'paper';
     obj.layout.legend.xanchor = 'left';
     obj.layout.legend.yanchor = 'top';
 
     %-legend settings-%
-    if (strcmp(legData.Box, 'on') && strcmp(legData.Visible, 'on'))
-        edgeColor = round(255*legData.EdgeColor);
-        bgColor = round(255*legData.Color);
-        textColor = round(255*legData.TextColor);
+    if (strcmp(get(legData, 'Box'), 'on') && strcmp(get(legData, 'Visible'), 'on'))
+        edgeColor = round(255*get(legData, 'EdgeColor'));
+        bgColor = round(255*get(legData, 'Color'));
+        textColor = round(255*get(legData, 'TextColor'));
 
         obj.layout.legend.traceorder = 'normal';
-        obj.layout.legend.borderwidth = legData.LineWidth;
+        obj.layout.legend.borderwidth = get(legData, 'LineWidth');
         obj.layout.legend.bordercolor = getStringColor(edgeColor);
         obj.layout.legend.bgcolor = getStringColor(bgColor);
-        obj.layout.legend.font.size = legData.FontSize;
-        obj.layout.legend.font.family = matlab2plotlyfont(legData.FontName);
+        obj.layout.legend.font.size = get(legData, 'FontSize');
+        obj.layout.legend.font.family = matlab2plotlyfont(get(legData, 'FontName'));
         obj.layout.legend.font.color = getStringColor(textColor);
     end
 end

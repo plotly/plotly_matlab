@@ -1,5 +1,6 @@
 function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIndex)
-    childAxisData = parentAxisData.YAxis(yaxIndex);
+    tmpYAxis = get(parentAxisData, 'YAxis');
+    childAxisData = tmpYAxis(yaxIndex);
 
     %-axis-side-%
     if yaxIndex == 1
@@ -12,16 +13,18 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
     axis.zeroline = false;
     axis.autorange = false;
     axis.exponentformat = obj.PlotlyDefaults.ExponentFormat;
-    axis.tickfont.size = childAxisData.FontSize;
-    axis.tickfont.family = matlab2plotlyfont(childAxisData.FontName);
+    axis.tickfont.size = get(childAxisData, 'FontSize');
+    axis.tickfont.family = matlab2plotlyfont(get(childAxisData, 'FontName'));
 
+    tmpTickLength = get(childAxisData, 'TickLength');
+    tmpPosition = get(parentAxisData, 'Position');
     %-y-axis ticklen-%
     axis.ticklen = min(obj.PlotlyDefaults.MaxTickLength,...
-        max(childAxisData.TickLength(1)*parentAxisData.Position(3)*obj.layout.width,...
-        childAxisData.TickLength(1)*parentAxisData.Position(4)*obj.layout.height));
+        max(tmpTickLength(1)*tmpPosition(3)*obj.layout.width,...
+        tmpTickLength(1)*tmpPosition(4)*obj.layout.height));
 
     %-y-axis coloring-%
-    axiscol = getStringColor(round(255*childAxisData.Color));
+    axiscol = getStringColor(round(255*get(childAxisData, 'Color')));
 
     axis.linecolor = axiscol;
     axis.tickcolor = axiscol;
@@ -29,35 +32,35 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
 
     if isprop(parentAxisData, "GridColor") && isprop(parentAxisData, "GridAlpha")
         axis.gridcolor = getStringColor( ...
-                round(255*parentAxisData.GridColor), ...
-                parentAxisData.GridAlpha);
+                round(255*get(parentAxisData, 'GridColor')), ...
+                get(parentAxisData, 'GridAlpha'));
     else
         axis.gridcolor = axiscol;
     end
 
-    if strcmp(parentAxisData.YGrid, 'on')
+    if strcmp(get(parentAxisData, 'YGrid'), 'on')
         axis.showgrid = true;
     else
         axis.showgrid = false;
     end
 
-    linewidth = max(1,childAxisData.LineWidth*obj.PlotlyDefaults.AxisLineIncreaseFactor);
+    linewidth = max(1,get(childAxisData, 'LineWidth')*obj.PlotlyDefaults.AxisLineIncreaseFactor);
 
     axis.linewidth = linewidth;
     axis.tickwidth = linewidth;
     axis.gridwidth = linewidth;
-    axis.type = childAxisData.Scale;
+    axis.type = get(childAxisData, 'Scale');
 
     %-axis showtick labels / ticks-%
-    tickValues = childAxisData.TickValues;
+    tickValues = get(childAxisData, 'TickValues');
 
     if isempty(tickValues)
         axis.ticks = '';
         axis.showticklabels = false;
         axis.autorange = true;
     else
-        axisLim = childAxisData.Limits;
-        switch childAxisData.TickDirection
+        axisLim = get(childAxisData, 'Limits');
+        switch get(childAxisData, 'TickDirection')
             case 'in'
                 axis.ticks = 'inside';
             case 'out'
@@ -69,7 +72,7 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
             axis.autotick = true;
             axis.nticks = length(tickValues) + 1;
         elseif strcmp(axis.type, 'linear')
-            tickLabelMode = childAxisData.TickLabelsMode;
+            tickLabelMode = get(childAxisData, 'TickLabelsMode');
             %-AUTO MODE-%
             if strcmp(tickLabelMode, 'auto')
                 if isnumeric(axisLim)
@@ -96,7 +99,7 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
                 axis.nticks = length(tickValues) + 1;
                 axis.showticklabels = true;
             else %-CUSTOM MODE-%
-                tickLabels = childAxisData.TickLabels;
+                tickLabels = get(childAxisData, 'TickLabels');
                 %-hide tick labels as lichkLabels field is empty-%
                 if isempty(tickLabels)
                     %-hide tick labels-%
@@ -117,31 +120,31 @@ function [axis, axisLim] = extractAxisDataMultipleYAxes(obj,parentAxisData,yaxIn
     end
 
     %-scale direction-%
-    if strcmp(childAxisData.Direction, 'reverse')
+    if strcmp(get(childAxisData, 'Direction'), 'reverse')
         axis.range = [axis.range(2) axis.range(1)];
     end
 
     %-y-axis label-%
-    label = childAxisData.Label;
+    label = get(childAxisData, 'Label');
     labelData = label;
 
     % STANDARDIZE UNITS
-    fontunits = label.FontUnits;
-    label.FontUnits = 'points';
+    fontunits = get(label, 'FontUnits');
+    set(label, 'FontUnits', 'points');
 
     %-title settings-%
-    if ~isempty(labelData.String)
-        axis.title = parseString(labelData.String,labelData.Interpreter);
+    if ~isempty(get(labelData, 'String'))
+        axis.title = parseString(get(labelData, 'String'),get(labelData, 'Interpreter'));
     end
 
-    axis.titlefont.color = getStringColor(round(255*labelData.Color));
-    axis.titlefont.size = labelData.FontSize;
-    axis.titlefont.family = matlab2plotlyfont(labelData.FontName);
+    axis.titlefont.color = getStringColor(round(255*get(labelData, 'Color')));
+    axis.titlefont.size = get(labelData, 'FontSize');
+    axis.titlefont.family = matlab2plotlyfont(get(labelData, 'FontName'));
 
     % REVERT UNITS
-    label.FontUnits = fontunits;
+    set(label, 'FontUnits', fontunits);
 
-    if strcmp(childAxisData.Visible, 'on')
+    if strcmp(get(childAxisData, 'Visible'), 'on')
         axis.showline = true;
     else
         axis.showline = false;

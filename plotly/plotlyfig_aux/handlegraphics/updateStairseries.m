@@ -3,7 +3,8 @@ function obj = updateStairseries(obj, dataIndex)
     stair_group = obj.State.Plot(dataIndex).Handle;
 
     %-update line -%
-    obj.State.Plot(dataIndex).Handle = stair_group.Children(1);
+    tmpChildren = get(stair_group, 'Children');
+    obj.State.Plot(dataIndex).Handle = tmpChildren(1);
     obj.data{dataIndex} = updateLineseries(obj,dataIndex);
 
     %-revert handle-%

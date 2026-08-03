@@ -8,28 +8,28 @@ function marker = extractScatterMarker(plotData)
     % SCATTERGROUP.                                                       %
     %                                                                     %
     %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-    axisData = ancestor(plotData.Parent, ["Axes" "PolarAxes"]);
-    figureData = ancestor(plotData.Parent, "figure");
+    axisData = ancestor(get(plotData, 'Parent'), ["Axes" "PolarAxes"]);
+    figureData = ancestor(get(plotData, 'Parent'), "figure");
 
     marker = struct();
     marker.sizeref = 1;
     marker.sizemode = "area";
     marker.size = getMarkerSize(plotData);
-    marker.line.width = 1.5*plotData.LineWidth;
+    marker.line.width = 1.5*get(plotData, 'LineWidth');
 
     filledMarkerSet = {'o', 'square', 's', 'diamond', 'd', 'v', '^', ...
             '<', '>', 'hexagram', 'pentagram'};
-    filledMarker = ismember(plotData.Marker, filledMarkerSet);
+    filledMarker = ismember(get(plotData, 'Marker'), filledMarkerSet);
 
-    if ~strcmp(plotData.Marker, "none")
-        if strcmp(plotData.Marker, ".")
+    if ~strcmp(get(plotData, 'Marker'), "none")
+        if strcmp(get(plotData, 'Marker'), ".")
             marker.size = 0.1*marker.size;
         end
-        marker.symbol = getMarkerSymbol(plotData.Marker);
+        marker.symbol = getMarkerSymbol(get(plotData, 'Marker'));
     end
 
-    markerFaceColor = plotData.MarkerFaceColor;
-    markerFaceAlpha = plotData.MarkerFaceAlpha;
+    markerFaceColor = get(plotData, 'MarkerFaceColor');
+    markerFaceAlpha = get(plotData, 'MarkerFaceAlpha');
 
     if filledMarker
         if isnumeric(markerFaceColor)
@@ -39,10 +39,10 @@ function marker = extractScatterMarker(plotData)
                 case "none"
                     faceColor = "rgba(0,0,0,0)";
                 case "auto"
-                    if ~strcmp(axisData.Color, "none")
-                        faceColor = axisData.Color;
+                    if ~strcmp(get(axisData, 'Color'), "none")
+                        faceColor = get(axisData, 'Color');
                     else
-                        faceColor = figureData.Color;
+                        faceColor = get(figureData, 'Color');
                     end
                     faceColor = getStringColor(round(255*faceColor));
                 case "flat"
@@ -57,8 +57,8 @@ function marker = extractScatterMarker(plotData)
                 case "none"
                     faceAlpha = 1;
                 case "flat"
-                    aLim = axisData.ALim;
-                    faceAlpha = plotData.AlphaData;
+                    aLim = get(axisData, 'ALim');
+                    faceAlpha = get(plotData, 'AlphaData');
                     faceAlpha = rescaleData(faceAlpha, aLim);
             end
         end
@@ -66,8 +66,8 @@ function marker = extractScatterMarker(plotData)
         marker.opacity = faceAlpha;
     end
 
-    markerEdgeColor = plotData.MarkerEdgeColor;
-    markerEdgeAlpha = plotData.MarkerEdgeAlpha;
+    markerEdgeColor = get(plotData, 'MarkerEdgeColor');
+    markerEdgeAlpha = get(plotData, 'MarkerEdgeAlpha');
 
     if isnumeric(markerEdgeColor)
         lineColor = getStringColor(round(255*markerEdgeColor));
@@ -76,10 +76,10 @@ function marker = extractScatterMarker(plotData)
             case "none"
                 lineColor = "rgba(0,0,0,0)";
             case "auto"
-                if ~strcmp(axisData.Color, "none")
-                    lineColor = axisData.Color;
+                if ~strcmp(get(axisData, 'Color'), "none")
+                    lineColor = get(axisData, 'Color');
                 else
-                    lineColor = figureData.Color;
+                    lineColor = get(figureData, 'Color');
                 end
                 lineColor = getStringColor(round(255*lineColor), markerEdgeAlpha);
             case "flat"
@@ -91,22 +91,22 @@ function marker = extractScatterMarker(plotData)
         marker.line.color = lineColor;
     else
         marker.color = lineColor;
-        if strcmp(plotData.Marker, ".")
+        if strcmp(get(plotData, 'Marker'), ".")
             marker.line.color = lineColor;
         end
     end
 end
 
 function flatColor = getScatterFlatColor(plotData, axisData)
-    cData = plotData.CData;
-    colorMap = axisData.Colormap;
-    cLim = axisData.CLim;
+    cData = get(plotData, 'CData');
+    colorMap = get(axisData, 'Colormap');
+    cLim = get(axisData, 'CLim');
     nColors = size(colorMap, 1);
     cDataByIndex = false;
 
     if isvector(cData)
         lenCData = length(cData);
-        nMarkers = length(plotData.XData);
+        nMarkers = length(get(plotData, 'XData'));
         cDataByIndex = lenCData == nMarkers || lenCData == 1;
     end
 
@@ -138,13 +138,13 @@ function outData = rescaleData(inData, dataLim)
 end
 
 function markerSize = getMarkerSize(plotData)
-    markerSize = plotData.SizeData;
+    markerSize = get(plotData, 'SizeData');
 
     if isscalar(markerSize)
-        if ~isempty(plotData.XData)
-            dataSize = size(plotData.XData);
+        if ~isempty(get(plotData, 'XData'))
+            dataSize = size(get(plotData, 'XData'));
         else
-            dataSize = size(plotData.RData); % polar plot
+            dataSize = size(get(plotData, 'RData')); % polar plot
         end
         markerSize = markerSize * ones(dataSize);
         if isscalar(markerSize)

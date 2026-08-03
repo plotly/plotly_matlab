@@ -21,19 +21,19 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     %-set trace-%
     obj.data{ternaryIndex}.type = 'scatterternary';
 
-    if ~strcmpi('none', ternaryData.Marker) && ~strcmpi('none', ternaryData.LineStyle)
+    if ~strcmpi('none', get(ternaryData, 'Marker')) && ~strcmpi('none', get(ternaryData, 'LineStyle'))
         obj.data{ternaryIndex}.mode = 'lines+markers';
-    elseif ~strcmpi('none', ternaryData.Marker)
+    elseif ~strcmpi('none', get(ternaryData, 'Marker'))
         obj.data{ternaryIndex}.mode = 'markers';
-    elseif ~strcmpi('none', ternaryData.LineStyle)
+    elseif ~strcmpi('none', get(ternaryData, 'LineStyle'))
         obj.data{ternaryIndex}.mode = 'lines';
     else
         obj.data{ternaryIndex}.mode = 'none';
     end
 
     %-get plot data-%
-    xData = ternaryData.XData;
-    yData = ternaryData.YData;
+    xData = get(ternaryData, 'XData');
+    yData = get(ternaryData, 'YData');
 
     %-convert from cartesian coordinates to trenary points-%
     aData = yData/sin(deg2rad(60));
@@ -48,9 +48,9 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     obj.data{ternaryIndex}.marker = extractLineMarker(ternaryData);
     obj.data{ternaryIndex}.marker.line.width = 2.00 * obj.data{ternaryIndex}.marker.line.width;
 
-    obj.data{ternaryIndex}.name = ternaryData.DisplayName;
+    obj.data{ternaryIndex}.name = get(ternaryData, 'DisplayName');
     obj.data{ternaryIndex}.showscale = false;
-    obj.data{ternaryIndex}.visible = strcmp(ternaryData.Visible,'on');
+    obj.data{ternaryIndex}.visible = strcmp(get(ternaryData, 'Visible'),'on');
 
     obj.data{ternaryIndex}.showlegend = getShowLegend(ternaryData);
 
@@ -61,10 +61,11 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     %=====================================================================%
 
     %-set domain plot-%
-    xo = axisData.Position(1);
-    yo = axisData.Position(2);
-    w = axisData.Position(3);
-    h = axisData.Position(4);
+    ternaryPosition = get(axisData, 'Position');
+    xo = ternaryPosition(1);
+    yo = ternaryPosition(2);
+    w = ternaryPosition(3);
+    h = ternaryPosition(4);
 
     ternary.domain.x = min([xo xo + w],1);
     ternary.domain.y = min([yo yo + h],1);
@@ -73,9 +74,10 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     l = 1; t = 1;
     labelLetter = {'b', 'a', 'c'};
 
-    for n = 1:length(axisData.Children)
-        if strcmpi(axisData.Children(n).Type, 'text')
-            stringText = axisData.Children(n).String;
+    ternaryChildren = get(axisData, 'Children');
+    for n = 1:length(ternaryChildren)
+        if strcmpi(get(ternaryChildren(n), 'Type'), 'text')
+            stringText = get(ternaryChildren(n), 'String');
             if any(isletter(stringText))
                 labelIndex(l) = n;
                 l = l + 1;
@@ -89,10 +91,10 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
     for l = 1:length(labelIndex)
         n = labelIndex(l);
 
-        labelText = axisData.Children(n).String;
-        labelFontColor = getStringColor(round(255*axisData.Children(n).Color));
-        labelFontSize = 1.5 * axisData.Children(n).FontSize;
-        labelFontFamily = matlab2plotlyfont(axisData.Children(n).FontName);
+        labelText = get(ternaryChildren(n), 'String');
+        labelFontColor = getStringColor(round(255*get(ternaryChildren(n), 'Color')));
+        labelFontSize = 1.5 * get(ternaryChildren(n), 'FontSize');
+        labelFontFamily = matlab2plotlyfont(get(ternaryChildren(n), 'FontName'));
 
         ternary.(labelLetter{l} + "axis").title.text = labelText;
         ternary.(labelLetter{l} + "axis").title.font.color = labelFontColor;
@@ -102,13 +104,13 @@ function obj = updateTernaryPlot(obj, ternaryIndex)
 
     %-tick settings-%
     t0 = tickIndex(1); t1 = tickIndex(2);
-    tick0 = str2num(axisData.Children(t0).String);
-    tick1 = str2num(axisData.Children(t1).String);
+    tick0 = str2num(get(ternaryChildren(t0), 'String'));
+    tick1 = str2num(get(ternaryChildren(t1), 'String'));
     dtick = tick1 - tick0;
 
-    tickFontColor = getStringColor(round(255*axisData.Children(t0).Color));
-    tickFontSize = 1.0 * axisData.Children(t0).FontSize;
-    tickFontFamily = matlab2plotlyfont(axisData.Children(t0).FontName);
+    tickFontColor = getStringColor(round(255*get(ternaryChildren(t0), 'Color')));
+    tickFontSize = 1.0 * get(ternaryChildren(t0), 'FontSize');
+    tickFontFamily = matlab2plotlyfont(get(ternaryChildren(t0), 'FontName'));
 
     for l = 1:3
         ternary.(labelLetter{l} + "axis").tick0 = tick0;

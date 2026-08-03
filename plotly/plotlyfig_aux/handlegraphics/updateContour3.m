@@ -13,13 +13,13 @@ function data = updateContour3(obj,contourIndex)
 
     data.xaxis = "x" + xsource;
     data.yaxis = "y" + ysource;
-    data.name = contour_data.DisplayName;
+    data.name = get(contour_data, 'DisplayName');
     data.type = "surface";
 
     %-setting the plot-%
-    xdata = contour_data.XData;
-    ydata = contour_data.YData;
-    zdata = contour_data.ZData;
+    xdata = get(contour_data, 'XData');
+    ydata = get(contour_data, 'YData');
+    zdata = get(contour_data, 'ZData');
 
     if isvector(xdata)
         [xdata, ydata] = meshgrid(xdata, ydata);
@@ -29,13 +29,14 @@ function data = updateContour3(obj,contourIndex)
     data.z = zdata;
 
     %-setting for contour lines z-direction-%
-    if length(contour_data.LevelList) > 1
-        zstart = contour_data.TextList(1);
-        zend = contour_data.TextList(end);
-        zsize = mean(diff(contour_data.TextList));
+    if length(get(contour_data, 'LevelList')) > 1
+        tmpTextList = get(contour_data, 'TextList');
+        zstart = tmpTextList(1);
+        zend = tmpTextList(end);
+        zsize = mean(diff(get(contour_data, 'TextList')));
     else
-        zstart = contour_data.TextList(1) - 1e-3;
-        zend = contour_data.TextList(end) + 1e-3;
+        zstart = tmpTextList(1) - 1e-3;
+        zend = tmpTextList(end) + 1e-3;
         zsize = 2e-3;
     end
 
@@ -45,11 +46,11 @@ function data = updateContour3(obj,contourIndex)
         "size", zsize, ...
         "show", true, ...
         "usecolormap", true, ...
-        "width", 2*contour_data.LineWidth ...
+        "width", 2*get(contour_data, 'LineWidth') ...
     );
     data.hidesurface = true;
 
-    colormap = figure_data.Colormap;
+    colormap = get(figure_data, 'Colormap');
     for c = 1:size((colormap),1)
         col = round(255*(colormap(c,:)));
         data.colorscale{c} = ...
@@ -115,7 +116,7 @@ function data = updateContour3(obj,contourIndex)
     obj.layout.scene.yaxis.zeroline = false;
     obj.layout.scene.zaxis.zeroline = false;
 
-    data.visible = strcmp(contour_data.Visible, "on");
+    data.visible = strcmp(get(contour_data, 'Visible'), "on");
     data.showscale = false;
     data.reversescale = false;
 

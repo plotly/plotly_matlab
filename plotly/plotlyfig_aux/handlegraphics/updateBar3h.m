@@ -10,7 +10,7 @@ function obj = updateBar3h(obj, surfaceIndex)
     figure_data = obj.State.Figure.Handle;
 
     %-AXIS STRUCTURE-%
-    axis_data = ancestor(bar_data.Parent,'axes');
+    axis_data = ancestor(get(bar_data, 'Parent'),'axes');
 
     %-GET SCENE-%
     scene = obj.layout.("scene" + xsource);
@@ -22,10 +22,10 @@ function obj = updateBar3h(obj, surfaceIndex)
     obj.data{surfaceIndex}.type = 'mesh3d';
 
     %-FORMAT DATA-%
-    xdata = bar_data.XData;
-    ydata = bar_data.ZData;
-    zdata = bar_data.YData;
-    cdata = bar_data.CData;
+    xdata = get(bar_data, 'XData');
+    ydata = get(bar_data, 'ZData');
+    zdata = get(bar_data, 'YData');
+    cdata = get(bar_data, 'CData');
 
     %-parse xedges-%
     xedges = xdata(2, 1:2:end);
@@ -66,23 +66,24 @@ function obj = updateBar3h(obj, surfaceIndex)
     obj.data{surfaceIndex}.k = int16(K-1);
 
     %-coloring-%
-    cmap = figure_data.Colormap;
+    cmap = get(figure_data, 'Colormap');
 
-    if isnumeric(bar_data.FaceColor)
+    if isnumeric(get(bar_data, 'FaceColor'))
         %-paper_bgcolor-%
-        col = round(255*bar_data.FaceColor);
+        col = round(255*get(bar_data, 'FaceColor'));
         col = getStringColor(col);
     else
-        switch bar_data.FaceColor
+        switch get(bar_data, 'FaceColor')
             case 'none'
                 col = 'rgba(0,0,0,0)';
             case {'flat','interp'}
-                switch bar_data.CDataMapping
+                switch get(bar_data, 'CDataMapping')
                     case 'scaled'
-                        capCD = max(min(cdata(1,1), axis_data.CLim(2)), ...
-                                axis_data.CLim(1));
-                        scalefactor = (capCD - axis_data.CLim(1)) ...
-                                / diff(axis_data.CLim);
+                        tmpCLim = get(axis_data, 'CLim');
+                        capCD = max(min(cdata(1,1), tmpCLim(2)), ...
+                                tmpCLim(1));
+                        scalefactor = (capCD - tmpCLim(1)) ...
+                                / diff(get(axis_data, 'CLim'));
                         col = round(255*(cmap(1+ floor(scalefactor ...
                                 *(length(cmap)-1)),:)));
                     case 'direct'
@@ -116,10 +117,10 @@ function obj = updateBar3h(obj, surfaceIndex)
     obj.data{surfaceIndex}.lightposition.z = 0;
 
     %-surface name-%
-    obj.data{surfaceIndex}.name = bar_data.DisplayName;
+    obj.data{surfaceIndex}.name = get(bar_data, 'DisplayName');
 
     %-surface visible-%
-    obj.data{surfaceIndex}.visible = strcmp(bar_data.Visible,'on');
+    obj.data{surfaceIndex}.visible = strcmp(get(bar_data, 'Visible'),'on');
 
     obj.data{surfaceIndex}.showlegend = getShowLegend(bar_data);
 
@@ -164,18 +165,19 @@ function obj = updateBar3h(obj, surfaceIndex)
     end
 
     %-axis configuration-%
-    scene.xaxis.range = axis_data.XLim(end:-1:1);
-    scene.yaxis.range = axis_data.YLim;
-    scene.zaxis.range = axis_data.ZLim;
+    tmpXLim = get(axis_data, 'XLim');
+    scene.xaxis.range = tmpXLim(end:-1:1);
+    scene.yaxis.range = get(axis_data, 'YLim');
+    scene.zaxis.range = get(axis_data, 'ZLim');
 
-    scene.xaxis.tickvals = axis_data.XTick;
-    scene.xaxis.ticktext = axis_data.XTickLabel;
+    scene.xaxis.tickvals = get(axis_data, 'XTick');
+    scene.xaxis.ticktext = get(axis_data, 'XTickLabel');
 
-    scene.yaxis.tickvals = axis_data.YTick;
-    scene.yaxis.ticktext = axis_data.YTickLabel;
+    scene.yaxis.tickvals = get(axis_data, 'YTick');
+    scene.yaxis.ticktext = get(axis_data, 'YTickLabel');
 
-    scene.zaxis.tickvals = axis_data.ZTick;
-    scene.zaxis.ticktext = axis_data.ZTickLabel;
+    scene.zaxis.tickvals = get(axis_data, 'ZTick');
+    scene.zaxis.ticktext = get(axis_data, 'ZTickLabel');
 
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;
@@ -193,9 +195,9 @@ function obj = updateBar3h(obj, surfaceIndex)
     scene.yaxis.ticklabelposition = 'outside';
     scene.zaxis.ticklabelposition = 'outside';
 
-    scene.xaxis.title = axis_data.XLabel.String;
-    scene.yaxis.title = axis_data.YLabel.String;
-    scene.zaxis.title = axis_data.ZLabel.String;
+    scene.xaxis.title = get(get(axis_data, 'XLabel'), 'String');
+    scene.yaxis.title = get(get(axis_data, 'YLabel'), 'String');
+    scene.zaxis.title = get(get(axis_data, 'ZLabel'), 'String');
 
     %-SET SCENE TO LAYOUT-%
     obj.layout.("scene" + xsource) = scene;

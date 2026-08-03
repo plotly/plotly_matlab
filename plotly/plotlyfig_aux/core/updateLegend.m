@@ -12,10 +12,10 @@ function obj = updateLegend(obj, legIndex)
     % yanchor: ...[DONE]
 
     %-STANDARDIZE UNITS-%
-    legendunits = obj.State.Legend(legIndex).Handle.Units;
-    fontunits = obj.State.Legend(legIndex).Handle.FontUnits;
-    obj.State.Legend(legIndex).Handle.Units = 'normalized';
-    obj.State.Legend(legIndex).Handle.FontUnits = 'points';
+    legendunits = get(obj.State.Legend(legIndex).Handle, 'Units');
+    fontunits = get(obj.State.Legend(legIndex).Handle, 'FontUnits');
+    set(obj.State.Legend(legIndex).Handle, 'Units', 'normalized');
+    set(obj.State.Legend(legIndex).Handle, 'FontUnits', 'points');
 
     %-LEGEND DATA STRUCTURE-%
     legend_data = obj.State.Legend(legIndex).Handle;
@@ -23,22 +23,23 @@ function obj = updateLegend(obj, legIndex)
     % only displays last legend as global Plotly legend
     legend = struct();
 
-    obj.layout.showlegend = strcmpi(legend_data.Visible, "on");
-    legend.x = legend_data.Position(1);
+    obj.layout.showlegend = strcmpi(get(legend_data, 'Visible'), "on");
+    tmpPosition = get(legend_data, 'Position');
+    legend.x = tmpPosition(1);
     legend.xref = "paper";
     legend.xanchor = "left";
-    legend.y = legend_data.Position(2);
+    legend.y = tmpPosition(2);
     legend.yref = "paper";
     legend.yanchor = "bottom";
     legend.traceorder = "normal";
 
-    if (strcmp(legend_data.Box, "on") && strcmp(legend_data.Visible, "on"))
-        legend.borderwidth = legend_data.LineWidth;
-        legend.bordercolor = getStringColor(round(255*legend_data.EdgeColor));
-        legend.bgcolor = getStringColor(round(255*legend_data.Color));
-        legend.font.size = legend_data.FontSize;
-        legend.font.family = matlab2plotlyfont(legend_data.FontName);
-        legend.font.color = getStringColor(round(255*legend_data.TextColor));
+    if (strcmp(get(legend_data, 'Box'), "on") && strcmp(get(legend_data, 'Visible'), "on"))
+        legend.borderwidth = get(legend_data, 'LineWidth');
+        legend.bordercolor = getStringColor(round(255*get(legend_data, 'EdgeColor')));
+        legend.bgcolor = getStringColor(round(255*get(legend_data, 'Color')));
+        legend.font.size = get(legend_data, 'FontSize');
+        legend.font.family = matlab2plotlyfont(get(legend_data, 'FontName'));
+        legend.font.color = getStringColor(round(255*get(legend_data, 'TextColor')));
     end
     obj.layout.legend = legend;
 
@@ -51,8 +52,8 @@ function obj = updateLegend(obj, legIndex)
     assignLegendRank(obj, legend_data);
 
     %-REVERT UNITS-%
-    obj.State.Legend(legIndex).Handle.Units = legendunits;
-    obj.State.Legend(legIndex).Handle.FontUnits = fontunits;
+    set(obj.State.Legend(legIndex).Handle, 'Units', legendunits);
+    set(obj.State.Legend(legIndex).Handle, 'FontUnits', fontunits);
 end
 
 function assignLegendRank(obj, legendHandle)
@@ -60,7 +61,7 @@ function assignLegendRank(obj, legendHandle)
         return
     end
 
-    legendPlots = legendHandle.PlotChildren;
+    legendPlots = get(legendHandle, 'PlotChildren');
     nPlots = obj.State.Figure.NumPlots;
 
     % Build a map from MATLAB plot handle to Plotly trace index.

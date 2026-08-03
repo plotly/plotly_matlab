@@ -31,8 +31,8 @@ function obj = updateFigure(obj)
 
 
     %-STANDARDIZE UNITS-%
-    figunits = obj.State.Figure.Handle.Units;
-    obj.State.Figure.Handle.Units = 'pixels';
+    figunits = get(obj.State.Figure.Handle, 'Units');
+    set(obj.State.Figure.Handle, 'Units', 'pixels');
 
     %-FIGURE DATA-%
     figure_data = obj.State.Figure.Handle;
@@ -51,23 +51,24 @@ function obj = updateFigure(obj)
     obj.layout.margin.b = 0;
     obj.layout.margin.t = 0;
 
+    figurePosition = get(figure_data, 'Position');
     if obj.PlotOptions.AxisEqual
-        wh = min(figure_data.Position(3:4));
+        wh = min(figurePosition(3:4));
         w = wh;
         h = wh;
     else
-        w = figure_data.Position(3);
-        h = figure_data.Position(4);
+        w = figurePosition(3);
+        h = figurePosition(4);
     end
 
     obj.layout.width = w * obj.PlotlyDefaults.FigureIncreaseFactor;
     obj.layout.height = h * obj.PlotlyDefaults.FigureIncreaseFactor;
 
-    col = round(255*figure_data.Color);
+    col = round(255*get(figure_data, 'Color'));
     obj.layout.paper_bgcolor = getStringColor(col);
 
     obj.layout.hovermode = 'closest';
 
     %-REVERT UNITS-%
-    obj.State.Figure.Handle.Units = figunits;
+    set(obj.State.Figure.Handle, 'Units', figunits);
 end

@@ -9,9 +9,9 @@ function data = updateStem(obj, dataIndex)
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
     %-get coordinate x,y,z data-%
-    xdata = stem_data.XData;
-    ydata = stem_data.YData;
-    zdata = stem_data.ZData;
+    xdata = get(stem_data, 'XData');
+    ydata = get(stem_data, 'YData');
+    zdata = get(stem_data, 'ZData');
     npoints = length(xdata);
 
     %-check if stem-%
@@ -40,8 +40,8 @@ function data = updateStem(obj, dataIndex)
         data.type = "scatter";
     end
 
-    data.visible = strcmp(stem_data.Visible, "on");
-    data.name = stem_data.DisplayName;
+    data.visible = strcmp(get(stem_data, 'Visible'), "on");
+    data.name = get(stem_data, 'DisplayName');
     data.mode = "lines+markers";
 
     if isdatetime(xdata)
@@ -206,17 +206,17 @@ function data = updateStem(obj, dataIndex)
         scene.yaxis.tickcolor = "rgba(0,0,0,0.8)";
         scene.zaxis.tickcolor = "rgba(0,0,0,0.8)";
 
-        scene.xaxis.range = stem_data.Parent.XLim;
-        scene.yaxis.range = stem_data.Parent.YLim;
-        scene.zaxis.range = stem_data.Parent.ZLim;
+        scene.xaxis.range = get(get(stem_data, 'Parent'), 'XLim');
+        scene.yaxis.range = get(get(stem_data, 'Parent'), 'YLim');
+        scene.zaxis.range = get(get(stem_data, 'Parent'), 'ZLim');
 
-        scene.xaxis.tickvals = stem_data.Parent.XTick;
-        scene.yaxis.tickvals = stem_data.Parent.YTick;
-        scene.zaxis.tickvals = stem_data.Parent.ZTick;
+        scene.xaxis.tickvals = get(get(stem_data, 'Parent'), 'XTick');
+        scene.yaxis.tickvals = get(get(stem_data, 'Parent'), 'YTick');
+        scene.zaxis.tickvals = get(get(stem_data, 'Parent'), 'ZTick');
 
-        scene.xaxis.title = stem_data.Parent.XLabel.String;
-        scene.yaxis.title = stem_data.Parent.YLabel.String;
-        scene.zaxis.title = stem_data.Parent.ZLabel.String;
+        scene.xaxis.title = get(get(get(stem_data, 'Parent'), 'XLabel'), 'String');
+        scene.yaxis.title = get(get(get(stem_data, 'Parent'), 'YLabel'), 'String');
+        scene.zaxis.title = get(get(get(stem_data, 'Parent'), 'ZLabel'), 'String');
 
         obj.layout.("scene" + xsource) = scene;
     else
@@ -228,11 +228,11 @@ function data = updateStem(obj, dataIndex)
         xaxis.tickcolor = "rgba(0,0,0,0.4)";
         yaxis.tickcolor = "rgba(0,0,0,0.4)";
 
-        xaxis.tickvals = stem_data.Parent.XTick;
-        yaxis.tickvals = stem_data.Parent.YTick;
+        xaxis.tickvals = get(get(stem_data, 'Parent'), 'XTick');
+        yaxis.tickvals = get(get(stem_data, 'Parent'), 'YTick');
 
-        xaxis.title = stem_data.Parent.XLabel.String;
-        yaxis.title = stem_data.Parent.YLabel.String;
+        xaxis.title = get(get(get(stem_data, 'Parent'), 'XLabel'), 'String');
+        yaxis.title = get(get(get(stem_data, 'Parent'), 'YLabel'), 'String');
 
         obj.layout.("xaxis" + xsource) = xaxis;
         obj.layout.("yaxis" + ysource) = yaxis;

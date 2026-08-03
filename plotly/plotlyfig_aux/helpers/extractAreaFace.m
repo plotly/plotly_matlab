@@ -4,13 +4,13 @@ function face = extractAreaFace(area_data)
     % BARSERIES, CONTOURGROUP, SCATTERGROUP.
 
     %-AXIS STRUCTURE-%
-    cLim = ancestor(area_data,"axes").CLim;
-    colormap = ancestor(area_data, "figure").Colormap;
+    cLim = get(ancestor(area_data,"axes"), 'CLim');
+    colormap = get(ancestor(area_data, "figure"), 'Colormap');
 
-    MarkerColor = area_data.FaceColor;
+    MarkerColor = get(area_data, 'FaceColor');
     if isnumeric(MarkerColor)
         col = MarkerColor;
-        alpha = area_data.FaceAlpha;
+        alpha = get(area_data, 'FaceAlpha');
     else
         switch MarkerColor
             case "none"
@@ -22,7 +22,7 @@ function face = extractAreaFace(area_data)
                 scalefactor = (capCD - cLim(1)) / diff(cLim);
                 col = colormap(1 + floor(scalefactor ...
                         * (length(colormap)-1)),:);
-                alpha = area_data.FaceAlpha;
+                alpha = get(area_data, 'FaceAlpha');
         end
     end
     face = struct(...

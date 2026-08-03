@@ -45,22 +45,22 @@ function data = updateImage(obj, imageIndex)
     data.yaxis = "y" + ysource;
     data.type = 'heatmap';
 
-    x = image_data.XData;
-    cdata = image_data.CData;
-    if (size(image_data.XData,2) == 2)
+    x = get(image_data, 'XData');
+    cdata = get(image_data, 'CData');
+    if (size(get(image_data, 'XData'),2) == 2)
         data.x = linspace(x(1), x(2), size(cdata,2));
     else
-        data.x = image_data.XData;
+        data.x = get(image_data, 'XData');
     end
 
-    y = image_data.YData;
-    if (size(image_data.YData,2) == 2)
+    y = get(image_data, 'YData');
+    if (size(get(image_data, 'YData'),2) == 2)
         data.y = linspace(y(1), y(2), size(cdata,1));
     else
         data.y = y;
     end
 
-    isrgbimg = (size(image_data.CData,3) > 1);
+    isrgbimg = (size(get(image_data, 'CData'),3) > 1);
     if isrgbimg
         [IND,colormap] = rgb2ind(cdata, 256);
         data.z = IND;
@@ -69,19 +69,20 @@ function data = updateImage(obj, imageIndex)
     end
 
     if isprop(image_data, "DisplayName")
-        data.name = image_data.DisplayName;
+        data.name = get(image_data, 'DisplayName');
     else
         data.name = '';
     end
 
-    data.opacity = image_data.AlphaData;
-    data.visible = strcmp(image_data.Visible, "on");
+    data.opacity = get(image_data, 'AlphaData');
+    data.visible = strcmp(get(image_data, 'Visible'), "on");
     data.showscale = false;
     data.zauto = false;
-    data.zmin = axis_data.CLim(1);
+    tmpCLim = get(axis_data, 'CLim');
+    data.zmin = tmpCLim(1);
 
-    if ~strcmpi(image_data.CDataMapping, "direct")
-        data.zmax = axis_data.CLim(2);
+    if ~strcmpi(get(image_data, 'CDataMapping'), "direct")
+        data.zmax = tmpCLim(2);
     else
         data.zmax = 255;
     end
@@ -89,7 +90,7 @@ function data = updateImage(obj, imageIndex)
     %-COLORSCALE (ASSUMES IMAGE CDATAMAP IS 'SCALED')-%
 
     if ~isrgbimg
-        colormap = figure_data.Colormap;
+        colormap = get(figure_data, 'Colormap');
     end
 
     len = length(colormap) - 1;

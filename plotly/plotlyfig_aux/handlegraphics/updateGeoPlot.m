@@ -3,7 +3,7 @@ function updateGeoPlot(obj,geoIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
     geoData = obj.State.Plot(geoIndex).Handle;
-    axisData = geoData.Parent;
+    axisData = get(geoData, 'Parent');
     xSource = findSourceAxis(obj,axIndex);
 
     %-set trace-%
@@ -18,14 +18,14 @@ function updateGeoPlot(obj,geoIndex)
     obj.data{geoIndex}.mode = 'lines+markers';
 
     %-set trace data-%
-    obj.data{geoIndex}.lat = geoData.LatitudeData;
-    obj.data{geoIndex}.lon = geoData.LongitudeData;
+    obj.data{geoIndex}.lat = get(geoData, 'LatitudeData');
+    obj.data{geoIndex}.lon = get(geoData, 'LongitudeData');
 
     %-set trace's marker and line-%
     [marker, linee] = extractGeoLinePlusMarker(geoData, axisData);
 
     %-corrections-%
-    if strcmpi(geoData.Marker, 'none')
+    if strcmpi(get(geoData, 'Marker'), 'none')
         obj.data{geoIndex}.mode = 'lines';
     else
         if strcmpi(obj.PlotOptions.geoRenderType, 'mapbox')

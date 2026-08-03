@@ -17,10 +17,10 @@ function obj = updatePColor(obj, patchIndex)
     obj.data{patchIndex}.type = 'surface';
 
     %-format data-%
-    XData = pcolor_data.XData;
-    YData = pcolor_data.YData;
-    ZData = pcolor_data.ZData;
-    CData = pcolor_data.CData;
+    XData = get(pcolor_data, 'XData');
+    YData = get(pcolor_data, 'YData');
+    ZData = get(pcolor_data, 'ZData');
+    CData = get(pcolor_data, 'CData');
     usegrid = false;
 
     if isvector(XData)
@@ -53,7 +53,7 @@ function obj = updatePColor(obj, patchIndex)
     obj.data{patchIndex}.z = zdata;
 
     %-coloring-%
-    cmap = figure_data.Colormap;
+    cmap = get(figure_data, 'Colormap');
     len = length(cmap)-1;
 
     for c = 1:length(cmap)

@@ -40,10 +40,10 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     end
 
     %-STANDARDIZE UNITS-%
-    legendUnits = obj.State.Legend(legIndex).Handle.Units;
-    fontUnits = obj.State.Legend(legIndex).Handle.FontUnits;
-    obj.State.Legend(legIndex).Handle.Units = 'normalized';
-    obj.State.Legend(legIndex).Handle.FontUnits = 'points';
+    legendUnits = get(obj.State.Legend(legIndex).Handle, 'Units');
+    fontUnits = get(obj.State.Legend(legIndex).Handle, 'FontUnits');
+    set(obj.State.Legend(legIndex).Handle, 'Units', 'normalized');
+    set(obj.State.Legend(legIndex).Handle, 'FontUnits', 'points');
 
     %-LEGEND DATA STRUCTURE-%
     legendData = obj.State.Legend(legIndex).Handle;
@@ -51,7 +51,7 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     % only displays last legend as global Plotly legend
     obj.layout.legend = struct();
 
-    obj.layout.showlegend = strcmpi(legendData.Visible,'on');
+    obj.layout.showlegend = strcmpi(get(legendData, 'Visible'),'on');
     obj.layout.legend.x = 1.005 * max(allDomain(:,1));
     obj.layout.legend.y = 1.001 * max(allDomain(:,2));
     obj.layout.legend.xref = 'paper';
@@ -59,25 +59,25 @@ function obj = updateLegendMultipleAxes(obj, legIndex)
     obj.layout.legend.xanchor = 'left';
     obj.layout.legend.yanchor = 'top';
 
-    if (strcmp(legendData.Box, 'on') && strcmp(legendData.Visible, 'on'))
+    if (strcmp(get(legendData, 'Box'), 'on') && strcmp(get(legendData, 'Visible'), 'on'))
         obj.layout.legend.traceorder = 'normal';
-        obj.layout.legend.borderwidth = legendData.LineWidth;
+        obj.layout.legend.borderwidth = get(legendData, 'LineWidth');
 
-        col = round(255*legendData.EdgeColor);
+        col = round(255*get(legendData, 'EdgeColor'));
         obj.layout.legend.bordercolor = getStringColor(col);
 
-        col = round(255*legendData.Color);
+        col = round(255*get(legendData, 'Color'));
         obj.layout.legend.bgcolor = getStringColor(col);
 
-        obj.layout.legend.font.size = legendData.FontSize;
+        obj.layout.legend.font.size = get(legendData, 'FontSize');
         obj.layout.legend.font.family = ...
-                matlab2plotlyfont(legendData.FontName);
+                matlab2plotlyfont(get(legendData, 'FontName'));
 
-        col = round(255*legendData.TextColor);
+        col = round(255*get(legendData, 'TextColor'));
         obj.layout.legend.font.color = getStringColor(col);
     end
 
     %-REVERT UNITS-%
-    obj.State.Legend(legIndex).Handle.Units = legendUnits;
-    obj.State.Legend(legIndex).Handle.FontUnits = fontUnits;
+    set(obj.State.Legend(legIndex).Handle, 'Units', legendUnits);
+    set(obj.State.Legend(legIndex).Handle, 'FontUnits', fontUnits);
 end

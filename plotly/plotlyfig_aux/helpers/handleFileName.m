@@ -4,8 +4,8 @@ function handleFileName(obj)
         if isempty(obj.PlotOptions.FileName)
             for t = 1:obj.State.Figure.NumTexts
                 if obj.State.Text(t).Title
-                    str = obj.State.Text(t).Handle.String;
-                    interp = obj.State.Text(t).Handle.Interpreter;
+                    str = get(obj.State.Text(t).Handle, 'String');
+                    interp = get(obj.State.Text(t).Handle, 'Interpreter');
                     obj.PlotOptions.FileName = parseString(str, interp);
 
                     % untitle.html if \text exist (special chars)

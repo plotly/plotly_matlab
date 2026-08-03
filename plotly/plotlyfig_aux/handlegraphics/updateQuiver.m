@@ -7,23 +7,23 @@ function obj = updateQuiver(obj, dataIndex)
     xSource = findSourceAxis(obj,axIndex);
 
     %-get trace data-%
-    xData = plotData.XData;
-    yData = plotData.YData;
-    zData = plotData.ZData;
+    xData = get(plotData, 'XData');
+    yData = get(plotData, 'YData');
+    zData = get(plotData, 'ZData');
 
     if isvector(xData)
         [xData, yData] = meshgrid(xData, yData);
     end
 
-    if strcmpi(plotData.AutoScale, 'on')
-        scaleFactor = getScaleFactor(xData, plotData.UData, 45);
+    if strcmpi(get(plotData, 'AutoScale'), 'on')
+        scaleFactor = getScaleFactor(xData, get(plotData, 'UData'), 45);
     else
         scaleFactor = 1;
     end
 
-    uData = plotData.UData * scaleFactor;
-    vData = plotData.VData * scaleFactor;
-    wData = plotData.WData * scaleFactor;
+    uData = get(plotData, 'UData') * scaleFactor;
+    vData = get(plotData, 'VData') * scaleFactor;
+    wData = get(plotData, 'WData') * scaleFactor;
 
     %-check if is 3D quiver-%
     isQuiver3D = ~isempty(zData);
@@ -46,15 +46,15 @@ function obj = updateQuiver(obj, dataIndex)
     end
 
     obj.data{dataIndex}.mode = 'lines';
-    obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
-    obj.data{dataIndex}.name = plotData.DisplayName;
+    obj.data{dataIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
+    obj.data{dataIndex}.name = get(plotData, 'DisplayName');
 
     %-quiver line color-%
-    lineColor = round(255*plotData.Color);
+    lineColor = round(255*get(plotData, 'Color'));
     obj.data{dataIndex}.line.color = getStringColor(lineColor);
 
     %-quiver line width-%
-    obj.data{dataIndex}.line.width = 2.5 * plotData.LineWidth;
+    obj.data{dataIndex}.line.width = 2.5 * get(plotData, 'LineWidth');
 
     %-set trace data for quiver line only-%
     m = 1;
@@ -77,8 +77,8 @@ function obj = updateQuiver(obj, dataIndex)
     end
 
     %-set trace data for quiver barb-%
-    if strcmp(plotData.ShowArrowHead, 'on')
-        maxHeadSize = plotData.MaxHeadSize * 1.5;
+    if strcmp(get(plotData, 'ShowArrowHead'), 'on')
+        maxHeadSize = get(plotData, 'MaxHeadSize') * 1.5;
         headWidth = 20;
         for n = 1:numel(xData)
             if isQuiver3D

@@ -19,12 +19,12 @@ function updateGraphPlot(obj, dataIndex)
     obj.data{dataIndex}.x = edgeX;
     obj.data{dataIndex}.y = edgeY;
 
-    edgeColor = plotData.EdgeColor;
+    edgeColor = get(plotData, 'EdgeColor');
     if isnumeric(edgeColor)
         obj.data{dataIndex}.line.color = getStringColor( ...
-                round(255*edgeColor), plotData.EdgeAlpha);
+                round(255*edgeColor), get(plotData, 'EdgeAlpha'));
     end
-    obj.data{dataIndex}.line.width = plotData.LineWidth;
+    obj.data{dataIndex}.line.width = get(plotData, 'LineWidth');
 
     %-NODE TRACE (new slot)-%
     obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
@@ -36,10 +36,10 @@ function updateGraphPlot(obj, dataIndex)
     obj.data{nodeIndex}.mode = "markers";
     obj.data{nodeIndex}.hoverinfo = "text";
     obj.data{nodeIndex}.showlegend = false;
-    obj.data{nodeIndex}.x = plotData.XData;
-    obj.data{nodeIndex}.y = plotData.YData;
+    obj.data{nodeIndex}.x = get(plotData, 'XData');
+    obj.data{nodeIndex}.y = get(plotData, 'YData');
 
-    nodeColor = plotData.NodeColor;
+    nodeColor = get(plotData, 'NodeColor');
     if isnumeric(nodeColor) && size(nodeColor, 1) == 1
         obj.data{nodeIndex}.marker.color = ...
                 getStringColor(round(255*nodeColor));
@@ -51,14 +51,14 @@ function updateGraphPlot(obj, dataIndex)
         obj.data{nodeIndex}.marker.color = colors;
     end
 
-    obj.data{nodeIndex}.marker.size = plotData.MarkerSize;
-    if isscalar(plotData.Marker)
-        symbol = extractGraphMarker(plotData.Marker);
+    obj.data{nodeIndex}.marker.size = get(plotData, 'MarkerSize');
+    if isscalar(get(plotData, 'Marker'))
+        symbol = extractGraphMarker(get(plotData, 'Marker'));
     else
-        symbol = cellfun(@extractGraphMarker, plotData.Marker);
+        symbol = cellfun(@extractGraphMarker, get(plotData, 'Marker'));
     end
     obj.data{nodeIndex}.marker.symbol = symbol;
-    obj.data{nodeIndex}.marker.line.width = plotData.LineWidth;
+    obj.data{nodeIndex}.marker.line.width = get(plotData, 'LineWidth');
 end
 
 function [edgeX, edgeY] = extractEdgeData(plotData)
@@ -68,11 +68,11 @@ function [edgeX, edgeY] = extractEdgeData(plotData)
     edgeY = [];
     try
         drawnow;
-        children = plotData.NodeChildren;
+        children = get(plotData, 'NodeChildren');
         for i = 1:numel(children)
             if isa(children(i), ...
                     'matlab.graphics.primitive.world.LineStrip')
-                vd = double(children(i).VertexData);
+                vd = double(get(children(i), 'VertexData'));
                 % LineStrip stores edges as consecutive vertex pairs.
                 % Insert NaN separators between each pair for plotly.
                 nVerts = size(vd, 2);

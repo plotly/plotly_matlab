@@ -12,7 +12,7 @@ function updateWordcloud(obj,scatterIndex)
     obj.data{scatterIndex}.type = 'scatter';
 
     %-format the mesh domain-%
-    maxx = scatter_data.MaxDisplayWords;
+    maxx = get(scatter_data, 'MaxDisplayWords');
     npoints = round(sqrt(maxx));
 
     if mod(npoints, 2) == 0
@@ -34,7 +34,7 @@ function updateWordcloud(obj,scatterIndex)
     ydata(~inds) = NaN;
 
     %-get frequency-%
-    [B, inds] = sort(scatter_data.SizeData, 'descend');
+    [B, inds] = sort(get(scatter_data, 'SizeData'), 'descend');
 
     %-take more freq words-%
     nwords = numel(xdata);
@@ -61,11 +61,13 @@ function updateWordcloud(obj,scatterIndex)
     inds = inds(:);
 
     %-get data to wordcloud-%
-    sizedata = scatter_data.SizeData(inds);
+    tmpSizeData = get(scatter_data, 'SizeData');
+    sizedata = tmpSizeData(inds);
 
     worddata = cell(nwords,1);
     for w = 1:nwords
-        worddata{w} = char(scatter_data.WordData(inds(w)));
+        tmpWordData = get(scatter_data, 'WordData');
+        worddata{w} = char(tmpWordData(inds(w)));
     end
 
     %-sent data to plotly-%
@@ -76,26 +78,27 @@ function updateWordcloud(obj,scatterIndex)
     obj.data{scatterIndex}.textfont.size = sizedata;
 
     %-coloring-%
-    is_colormap = size(scatter_data.Color, 1) > 1;
+    is_colormap = size(get(scatter_data, 'Color'), 1) > 1;
     col = cell(nwords, 1);
 
     if ~is_colormap
         for w=1:nwords
             if B(4) > sizedata(w)
-                col{w} = getStringColor(round(255*scatter_data.Color));
+                col{w} = getStringColor(round(255*get(scatter_data, 'Color')));
             else
-                col{w} = getStringColor(round(255*scatter_data.HighlightColor));
+                col{w} = getStringColor(round(255*get(scatter_data, 'HighlightColor')));
             end
         end
     else
         for w=1:nwords
-            col{w} = getStringColor(round(255*scatter_data.Color(inds(w), :)));
+            tmpColor = get(scatter_data, 'Color');
+            col{w} = getStringColor(round(255*tmpColor(inds(w), :)));
         end
     end
 
     obj.data{scatterIndex}.textfont.color = col;
-    obj.data{scatterIndex}.textfont.family = matlab2plotlyfont(scatter_data.FontName);
-    obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
+    obj.data{scatterIndex}.textfont.family = matlab2plotlyfont(get(scatter_data, 'FontName'));
+    obj.data{scatterIndex}.visible = strcmp(get(scatter_data, 'Visible'),'on');
 
     %-set layout-%
     xaxis.showgrid = false;
@@ -106,10 +109,11 @@ function updateWordcloud(obj,scatterIndex)
     yaxis.showticklabels = false;
     yaxis.zeroline = false;
 
-    xo = scatter_data.Position(1);
-    yo = scatter_data.Position(2);
-    w = scatter_data.Position(3);
-    h = scatter_data.Position(4);
+    wordcloudPosition = get(scatter_data, 'Position');
+    xo = wordcloudPosition(1);
+    yo = wordcloudPosition(2);
+    w = wordcloudPosition(3);
+    h = wordcloudPosition(4);
 
     xaxis.domain = min([xo xo + w],1);
     yaxis.domain = min([yo yo + h],1);
@@ -120,7 +124,7 @@ function updateWordcloud(obj,scatterIndex)
     obj.layout.annotations{1}.xref = 'paper';
     obj.layout.annotations{1}.yref = 'paper';
     obj.layout.annotations{1}.showarrow = false;
-    obj.layout.annotations{1}.text = sprintf('<b>%s</b>', scatter_data.Title);
+    obj.layout.annotations{1}.text = sprintf('<b>%s</b>', get(scatter_data, 'Title'));
     obj.layout.annotations{1}.x = mean(xaxis.domain);
     obj.layout.annotations{1}.y = (yaxis.domain(2) + obj.PlotlyDefaults.TitleHeight);
     obj.layout.annotations{1}.font.color = 'rgb(0,0,0)';

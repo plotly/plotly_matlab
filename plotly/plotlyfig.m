@@ -135,10 +135,10 @@ classdef plotlyfig < handle
                 end
 
                 % plotly figure default style
-                fig_han.Name = obj.PlotOptions.FileName;
-                fig_han.Color = [1 1 1];
-                fig_han.NumberTitle = 'off';
-                fig_han.Visible = obj.PlotOptions.Visible;
+                set(fig_han, 'Name', obj.PlotOptions.FileName);
+                set(fig_han, 'Color', [1 1 1]);
+                set(fig_han, 'NumberTitle', 'off');
+                set(fig_han, 'Visible', obj.PlotOptions.Visible);
 
                 % figure state
                 obj.State.Figure.Handle = fig_han;
@@ -401,8 +401,8 @@ classdef plotlyfig < handle
 
             % check if there is tiledlayout
             try
-                tiledLayoutStruct = obj.State.Figure.Handle.Children;
-                isTiledLayout = strcmp(tiledLayoutStruct.Type, 'tiledlayout');
+                tiledLayoutStruct = get(obj.State.Figure.Handle, 'Children');
+                isTiledLayout = any(strcmp(get(tiledLayoutStruct, 'Type'), 'tiledlayout'));
             catch
                 isTiledLayout = false;
             end
@@ -416,7 +416,7 @@ classdef plotlyfig < handle
 
             if isempty(ax)
                 try
-                    ax = obj.State.Figure.Handle.Children;
+                    ax = get(obj.State.Figure.Handle, 'Children');
                 catch
                     error("No axes found"); %#ok<CPROP>
                 end
@@ -428,15 +428,15 @@ classdef plotlyfig < handle
             for i = 1:length(ax)
                 for j = i:length(ax)
                     try
-                        if ((mean(eq(ax(i).Position, ax(j).Position)) == 1) && (i~=j) && strcmp(ax(i).Children.Type, 'histogram'))
+                        if ((mean(eq(get(ax(i),'Position'), get(ax(j),'Position'))) == 1) && (i~=j) && strcmp(get(get(ax(i),'Children'), 'Type'), 'histogram'))
                             temp_plots = findobj(temp_ax(i),'-not','Type','Text','-not','Type','axes','-depth',1);
                             if isprop(temp_plots, 'FaceAlpha')
                                 update_opac(i) = true;
                             else
                                 update_opac(i) = false;
                             end
-                            temp_ax(i).YTick = temp_ax(j- deleted_idx).YTick;
-                            temp_ax(i).XTick = temp_ax(j- deleted_idx).XTick;
+                            set(temp_ax(i), 'YTick', get(temp_ax(j - deleted_idx), 'YTick'));
+                            set(temp_ax(i), 'XTick', get(temp_ax(j - deleted_idx), 'XTick'));
                             temp_ax(j - deleted_idx) = [];
                             deleted_idx = deleted_idx + 1;
                         end
@@ -462,21 +462,21 @@ classdef plotlyfig < handle
 
                 % add title
                 try
-                    obj.State.Text(a).Handle = ax(axrev).Title;
+                    obj.State.Text(a).Handle = get(ax(axrev), 'Title');
                     obj.State.Text(a).AssociatedAxis = handle(ax(axrev));
                     obj.State.Text(a).Title = true;
                     % Recommended use for subtitles is to append to the
                     % title https://github.com/plotly/plotly.js/issues/233
                     if isprop(ax(axrev),"Subtitle")
-                        sub_handle = ax(axrev).Subtitle;
-                        if ~isempty(sub_handle.String)
-                            titleObj = ax(axrev).Title;
-                            origTitle = titleObj.String;
+                        sub_handle = get(ax(axrev), 'Subtitle');
+                        if ~isempty(get(sub_handle, 'String'))
+                            titleObj = get(ax(axrev), 'Title');
+                            origTitle = get(titleObj, 'String');
                             oncleanup = onCleanup( ...
                                     @() set(titleObj,'String',origTitle));
-                            obj.State.Text(a).Handle.String = [string( ...
-                                    obj.State.Text(a).Handle.String) ...
-                                    "<sub>"+sub_handle.String+"</sub>"];
+                            set(obj.State.Text(a).Handle, 'String', [string( ...
+                                    get(obj.State.Text(a).Handle, 'String')) ...
+                                    "<sub>"+get(sub_handle, 'String')+"</sub>"]);
                         end
                     end
                 catch
@@ -504,7 +504,7 @@ classdef plotlyfig < handle
 
                 % check if current axes have multiple y-axes
                 try
-                    obj.PlotlyDefaults.isMultipleYAxes(axrev) = length(ax(axrev).YAxis) == 2;
+                    obj.PlotlyDefaults.isMultipleYAxes(axrev) = length(get(ax(axrev), 'YAxis')) == 2;
                 catch
                     obj.PlotlyDefaults.isMultipleYAxes(axrev) = false;
                 end
@@ -599,8 +599,8 @@ classdef plotlyfig < handle
             axisUnitsOrig = cell(1, obj.State.Figure.NumAxes);
             for a = 1:obj.State.Figure.NumAxes
                 if isprop(obj.State.Axis(a).Handle, 'Units')
-                    axisUnitsOrig{a} = obj.State.Axis(a).Handle.Units;
-                    obj.State.Axis(a).Handle.Units = "normalized";
+                    axisUnitsOrig{a} = get(obj.State.Axis(a).Handle, 'Units');
+                    set(obj.State.Axis(a).Handle, 'Units', 'normalized');
                 end
             end
             restoreUnits = onCleanup(@() restoreAxisUnits( ...
@@ -618,7 +618,7 @@ classdef plotlyfig < handle
             % update axes
             for n = 1:obj.State.Figure.NumAxes
                 nrev = length(ax) - n + 1;
-                if ismember(ax(nrev).Type,specialAxisPlots())
+                if ismember(get(ax(nrev), 'Type'), specialAxisPlots())
                     continue
                 end
                 if ~obj.PlotlyDefaults.isMultipleYAxes(n)
@@ -702,11 +702,11 @@ classdef plotlyfig < handle
 
         %----UPDATE FIGURE OPTIONS----%
         function obj = updateFigureVisible(obj,src,event)
-            obj.PlotOptions.Visible = obj.State.Figure.Handle.Visible;
+            obj.PlotOptions.Visible = get(obj.State.Figure.Handle, 'Visible');
         end
 
         function obj = updateFigureName(obj,src,event)
-            obj.PlotOptions.FileName = obj.State.Figure.Handle.Name;
+            obj.PlotOptions.FileName = get(obj.State.Figure.Handle, 'Name');
         end
 
         %----UPDATE PLOT OPTIONS----%
@@ -1068,7 +1068,7 @@ end
 function restoreAxisUnits(stateAxis, origUnits, numAxes)
     for a = 1:numAxes
         if ~isempty(origUnits{a})
-            stateAxis(a).Handle.Units = origUnits{a};
+            set(stateAxis(a).Handle, 'Units', origUnits{a});
         end
     end
 end

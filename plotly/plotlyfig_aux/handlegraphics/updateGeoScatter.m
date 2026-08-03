@@ -3,7 +3,7 @@ function updateGeoScatter(obj,geoIndex)
 
     axIndex = obj.getAxisIndex(obj.State.Plot(geoIndex).AssociatedAxis);
     geoData = obj.State.Plot(geoIndex).Handle;
-    axisData = geoData.Parent;
+    axisData = get(geoData, 'Parent');
     xSource = findSourceAxis(obj,axIndex);
 
     %-set trace-%
@@ -18,8 +18,8 @@ function updateGeoScatter(obj,geoIndex)
     obj.data{geoIndex}.mode = 'markers+text';
 
     %-set trace data-%
-    obj.data{geoIndex}.lat = geoData.LatitudeData;
-    obj.data{geoIndex}.lon = geoData.LongitudeData;
+    obj.data{geoIndex}.lat = get(geoData, 'LatitudeData');
+    obj.data{geoIndex}.lon = get(geoData, 'LongitudeData');
 
     %-set trace marker-%
     marker = extractGeoMarker(geoData, axisData);

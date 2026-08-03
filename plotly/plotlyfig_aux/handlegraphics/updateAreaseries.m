@@ -3,7 +3,7 @@ function updateAreaseries(obj,areaIndex)
     area_group = obj.State.Plot(areaIndex).Handle;
 
     %-get children-%
-    area_child = area_group .Children;
+    area_child = get(area_group, 'Children');
 
     %-update patch -%
     obj.State.Plot(areaIndex).Handle = area_child(1);

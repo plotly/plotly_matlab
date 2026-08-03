@@ -31,18 +31,19 @@ function updateContourOnly(obj, contourIndex)
     obj.data{contourIndex}.mode = 'lines';
 
     %-get colormap-%
-    cMap = figureData.Colormap;
+    cMap = get(figureData, 'Colormap');
     colorScale = getColorScale(cMap);
 
     %-get plot data-%
-    contourMatrix = contourData.ContourMatrix;
+    contourMatrix = get(contourData, 'ContourMatrix');
 
     xData = [];
     yData = [];
     zData = [];
     cData = [];
 
-    zmin = axisData.ZLim(1);
+    tmpZLim = get(axisData, 'ZLim');
+    zmin = tmpZLim(1);
     len = size(contourMatrix, 2);
     n = 1;
 
@@ -55,19 +56,20 @@ function updateContourOnly(obj, contourIndex)
         yData = [yData, contourMatrix(2, n+1:n+m), NaN];
         zData = [zData, zmin * ones(1, m), NaN];
 
-        if isnumeric(contourData.LineColor)
-            cData = getStringColor(round(255*contourData.LineColor));
-        elseif strcmpi(contourData.LineColor, 'interp')
+        if isnumeric(get(contourData, 'LineColor'))
+            cData = getStringColor(round(255*get(contourData, 'LineColor')));
+        elseif strcmpi(get(contourData, 'LineColor'), 'interp')
             cData = zData;
             obj.data{contourIndex}.line.colorscale = colorScale;
-        elseif strcmpi(contourData.LineColor, 'flat')
-            [err, r] = min(abs(surfData.ZData - zlevel));
+        elseif strcmpi(get(contourData, 'LineColor'), 'flat')
+            [err, r] = min(abs(get(surfData, 'ZData') - zlevel));
             [~, c] = min(err);
             r = r(c);
 
-            cData = [cData, surfData.ZData(r, c) * ones(1, m), NaN];
+            tmpZData = get(surfData, 'ZData');
+            cData = [cData, tmpZData(r, c) * ones(1, m), NaN];
             obj.data{contourIndex}.line.colorscale = colorScale;
-        elseif strcmpi(contourData.LineColor, 'none')
+        elseif strcmpi(get(contourData, 'LineColor'), 'none')
             cData = 'rgba(0,0,0,0)';
         end
         n = n + m + 1;
@@ -78,12 +80,12 @@ function updateContourOnly(obj, contourIndex)
     obj.data{contourIndex}.z = zData;
 
     obj.data{contourIndex}.line.color = cData;
-    obj.data{contourIndex}.line.width = 2*contourData.LineWidth;
-    obj.data{contourIndex}.line.dash = getLineDash(contourData.LineStyle);
+    obj.data{contourIndex}.line.width = 2*get(contourData, 'LineWidth');
+    obj.data{contourIndex}.line.dash = getLineDash(get(contourData, 'LineStyle'));
 
-    obj.data{contourIndex}.name = contourData.DisplayName;
+    obj.data{contourIndex}.name = get(contourData, 'DisplayName');
     obj.data{contourIndex}.showscale = false;
-    obj.data{contourIndex}.visible = strcmp(contourData.Visible,'on');
+    obj.data{contourIndex}.visible = strcmp(get(contourData, 'Visible'),'on');
 end
 
 
@@ -99,7 +101,7 @@ function updateSurfOnly(obj, surfaceIndex)
     figureData = obj.State.Figure.Handle;
 
     %-AXIS STRUCTURE-%
-    axisData = ancestor(meshData.Parent,'axes');
+    axisData = ancestor(get(meshData, 'Parent'),'axes');
 
     %-SCENE DATA-%
     scene = obj.layout.("scene" + xsource);
@@ -121,9 +123,9 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{contourIndex}.mode = 'lines';
 
     %-get plot data-%
-    xData = meshData.XData;
-    yData = meshData.YData;
-    zData = meshData.ZData;
+    xData = get(meshData, 'XData');
+    yData = get(meshData, 'YData');
+    zData = get(meshData, 'ZData');
 
     if isvector(xData)
         [xData, yData] = meshgrid(xData, yData);
@@ -178,14 +180,14 @@ function updateSurfOnly(obj, surfaceIndex)
     %-COLORING-%
 
     %-get colormap-%
-    cMap = figureData.Colormap;
+    cMap = get(figureData, 'Colormap');
     colorScale = getColorScale(cMap);
 
     %-get edge color-%
-    if isnumeric(meshData.EdgeColor)
-        cDataContour = getStringColor(round(255*meshData.EdgeColor));
+    if isnumeric(get(meshData, 'EdgeColor'))
+        cDataContour = getStringColor(round(255*get(meshData, 'EdgeColor')));
 
-    elseif strcmpi(meshData.EdgeColor, 'interp')
+    elseif strcmpi(get(meshData, 'EdgeColor'), 'interp')
         cDataContour = zDataContour(:);
         obj.data{contourIndex}.line.colorscale = colorScale;
         obj.data{surfaceIndex}.contours.x.colorscale = cDataContour;
@@ -194,8 +196,9 @@ function updateSurfOnly(obj, surfaceIndex)
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
 
-    elseif strcmpi(meshData.EdgeColor, 'flat')
-        cData = meshData.CData;
+    elseif strcmpi(get(meshData, 'EdgeColor'), 'flat')
+        cData = get(meshData, 'CData');
+tmpCLim = get(axisData, 'CLim');
 
         if size(cData, 3) ~= 1
             cMap = unique( reshape(cData, ...
@@ -208,8 +211,8 @@ function updateSurfOnly(obj, surfaceIndex)
             obj.data{surfaceIndex}.line.cmax = 255;
             obj.data{contourIndex}.line.colorscale = edgeColorScale;
         else
-            obj.data{contourIndex}.line.cmin = axisData.CLim(1);
-            obj.data{contourIndex}.line.cmax = axisData.CLim(2);
+            obj.data{contourIndex}.line.cmin = tmpCLim(1);
+            obj.data{contourIndex}.line.cmax = tmpCLim(2);
             obj.data{contourIndex}.line.colorscale = colorScale;
         end
 
@@ -221,7 +224,7 @@ function updateSurfOnly(obj, surfaceIndex)
         obj.data{surfaceIndex}.contours.x.show = false;
         obj.data{surfaceIndex}.contours.y.show = false;
 
-    elseif strcmpi(meshData.EdgeColor, 'none')
+    elseif strcmpi(get(meshData, 'EdgeColor'), 'none')
         cDataContour = 'rgba(0,0,0,0)';
     end
 
@@ -231,7 +234,7 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.contours.y.color = cDataContour;
 
     %-get face color-%
-    faceColor = meshData.FaceColor;
+    faceColor = get(meshData, 'FaceColor');
 
     if isnumeric(faceColor)
         if all(faceColor == [1, 1, 1])
@@ -245,15 +248,15 @@ function updateSurfOnly(obj, surfaceIndex)
         end
 
         [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
-        cDataSurface = double(cDataSurface) + axisData.CLim(1);
+        cDataSurface = double(cDataSurface) + tmpCLim(1);
 
         for c = 1: size(cMapSurface, 1)
             colorScale{c} = {(c-1)*fac, ...
                     getStringColor(round(255*cMapSurface(c, :)), 1)};
         end
 
-        obj.data{surfaceIndex}.cmin = axisData.CLim(1);
-        obj.data{surfaceIndex}.cmax = axisData.CLim(2);
+        obj.data{surfaceIndex}.cmin = tmpCLim(1);
+        obj.data{surfaceIndex}.cmax = tmpCLim(2);
     elseif strcmpi(faceColor, 'interp')
         cDataSurface = zDataSurface;
         if surfaceIndex > xsource
@@ -272,7 +275,7 @@ function updateSurfOnly(obj, surfaceIndex)
             end
         end
     elseif strcmpi(faceColor, 'flat')
-        cData = meshData.CData;
+        cData = get(meshData, 'CData');
         if size(cData, 3) ~= 1
             cMap = unique(reshape(cData, [size(cData,1)*size(cData,2), ...
                     size(cData,3)]), 'rows');
@@ -289,14 +292,14 @@ function updateSurfOnly(obj, surfaceIndex)
     obj.data{surfaceIndex}.surfacecolor = cDataSurface;
 
     %-lighting settings-%
-    if isnumeric(meshData.FaceColor) && all(meshData.FaceColor == [1, 1, 1])
+    if isnumeric(get(meshData, 'FaceColor')) && all(get(meshData, 'FaceColor') == [1, 1, 1])
         obj.data{surfaceIndex}.lighting.diffuse = 0.5;
         obj.data{surfaceIndex}.lighting.ambient = 0.725;
     end
 
-    if meshData.FaceAlpha ~= 1
+    if get(meshData, 'FaceAlpha') ~= 1
         obj.data{surfaceIndex}.lighting.diffuse = 0.5;
-        obj.data{surfaceIndex}.lighting.ambient = 0.725 + (1-meshData.FaceAlpha);
+        obj.data{surfaceIndex}.lighting.ambient = 0.725 + (1-get(meshData, 'FaceAlpha'));
     end
 
     if obj.PlotlyDefaults.IsLight
@@ -304,12 +307,12 @@ function updateSurfOnly(obj, surfaceIndex)
         obj.data{surfaceIndex}.lighting.ambient = 0.3;
     end
 
-    obj.data{surfaceIndex}.opacity = meshData.FaceAlpha;
+    obj.data{surfaceIndex}.opacity = get(meshData, 'FaceAlpha');
 
 
     %-line style-%
-    obj.data{contourIndex}.line.width = 3*meshData.LineWidth;
-    if strcmpi(meshData.LineStyle, '-')
+    obj.data{contourIndex}.line.width = 3*get(meshData, 'LineWidth');
+    if strcmpi(get(meshData, 'LineStyle'), '-')
         obj.data{contourIndex}.line.dash = 'solid';
     else
         obj.data{contourIndex}.line.dash = 'dot';
@@ -375,18 +378,18 @@ function updateSurfOnly(obj, surfaceIndex)
     end
 
     %-scene axis configuration-%
-    scene.xaxis.range = axisData.XLim;
-    scene.yaxis.range = axisData.YLim;
-    scene.zaxis.range = axisData.ZLim;
+    scene.xaxis.range = get(axisData, 'XLim');
+    scene.yaxis.range = get(axisData, 'YLim');
+    scene.zaxis.range = get(axisData, 'ZLim');
 
-    scene.xaxis.tickvals = axisData.XTick;
-    scene.xaxis.ticktext = axisData.XTickLabel;
+    scene.xaxis.tickvals = get(axisData, 'XTick');
+    scene.xaxis.ticktext = get(axisData, 'XTickLabel');
 
-    scene.yaxis.tickvals = axisData.YTick;
-    scene.yaxis.ticktext = axisData.YTickLabel;
+    scene.yaxis.tickvals = get(axisData, 'YTick');
+    scene.yaxis.ticktext = get(axisData, 'YTickLabel');
 
-    scene.zaxis.tickvals = axisData.ZTick;
-    scene.zaxis.ticktext = axisData.ZTickLabel;
+    scene.zaxis.tickvals = get(axisData, 'ZTick');
+    scene.zaxis.ticktext = get(axisData, 'ZTickLabel');
 
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;
@@ -404,27 +407,27 @@ function updateSurfOnly(obj, surfaceIndex)
     scene.yaxis.ticklabelposition = 'outside';
     scene.zaxis.ticklabelposition = 'outside';
 
-    scene.xaxis.title = axisData.XLabel.String;
-    scene.yaxis.title = axisData.YLabel.String;
-    scene.zaxis.title = axisData.ZLabel.String;
+    scene.xaxis.title = get(get(axisData, 'XLabel'), 'String');
+    scene.yaxis.title = get(get(axisData, 'YLabel'), 'String');
+    scene.zaxis.title = get(get(axisData, 'ZLabel'), 'String');
 
-    scene.xaxis.tickfont.size = axisData.FontSize;
-    scene.yaxis.tickfont.size = axisData.FontSize;
-    scene.zaxis.tickfont.size = axisData.FontSize;
+    scene.xaxis.tickfont.size = get(axisData, 'FontSize');
+    scene.yaxis.tickfont.size = get(axisData, 'FontSize');
+    scene.zaxis.tickfont.size = get(axisData, 'FontSize');
 
-    scene.xaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-    scene.yaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
-    scene.zaxis.tickfont.family = matlab2plotlyfont(axisData.FontName);
+    scene.xaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+    scene.yaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
+    scene.zaxis.tickfont.family = matlab2plotlyfont(get(axisData, 'FontName'));
 
     %-SET SCENE TO LAYOUT-%
     obj.layout.("scene" + xsource) = scene;
 
-    obj.data{surfaceIndex}.name = meshData.DisplayName;
-    obj.data{contourIndex}.name = meshData.DisplayName;
+    obj.data{surfaceIndex}.name = get(meshData, 'DisplayName');
+    obj.data{contourIndex}.name = get(meshData, 'DisplayName');
     obj.data{surfaceIndex}.showscale = false;
     obj.data{contourIndex}.showscale = false;
-    obj.data{surfaceIndex}.visible = strcmp(meshData.Visible,'on');
-    obj.data{contourIndex}.visible = strcmp(meshData.Visible,'on');
+    obj.data{surfaceIndex}.visible = strcmp(get(meshData, 'Visible'),'on');
+    obj.data{contourIndex}.visible = strcmp(get(meshData, 'Visible'),'on');
 
     obj.data{surfaceIndex}.showlegend = getShowLegend(meshData);
 end

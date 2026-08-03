@@ -11,12 +11,12 @@ function data = updateConstantLine(obj,plotIndex)
     data.xaxis = "x" + xsource;
     data.yaxis = "y" + ysource;
     data.type = "scatter";
-    data.visible = strcmp(plotData.Visible, "on");
+    data.visible = strcmp(get(plotData, 'Visible'), "on");
 
     xaxis = obj.layout.("xaxis" + xsource);
     yaxis = obj.layout.("yaxis" + ysource);
-    value = [plotData.Value plotData.Value];
-    if strcmp(plotData.InterceptAxis, "y")
+    value = [get(plotData, 'Value') get(plotData, 'Value')];
+    if strcmp(get(plotData, 'InterceptAxis'), "y")
         data.x = xaxis.range;
         data.y = value;
     else
@@ -24,7 +24,7 @@ function data = updateConstantLine(obj,plotIndex)
         data.y = yaxis.range;
     end
 
-    if ~isempty(plotData.Label)
+    if ~isempty(get(plotData, 'Label'))
         annotation = struct();
 
         annotation.showarrow = false;
@@ -32,13 +32,13 @@ function data = updateConstantLine(obj,plotIndex)
         annotation.xref = "x" + xsource;
         annotation.yref = "y" + ysource;
 
-        if strcmp(plotData.InterceptAxis, "x")
+        if strcmp(get(plotData, 'InterceptAxis'), "x")
             annotation.textangle = -90;
         end
 
-        annotation.xanchor = plotData.LabelHorizontalAlignment;
+        annotation.xanchor = get(plotData, 'LabelHorizontalAlignment');
 
-        switch plotData.LabelVerticalAlignment
+        switch get(plotData, 'LabelVerticalAlignment')
             case {"top", "cap"}
                 annotation.yanchor = "top";
             case "middle"
@@ -48,40 +48,42 @@ function data = updateConstantLine(obj,plotIndex)
         end
 
         annotation.text = parseString( ...
-                plotData.Label, plotData.Interpreter);
+                get(plotData, 'Label'), get(plotData, 'Interpreter'));
         annotation.text = "<b>" + join( ...
                 string(annotation.text), "<br>") + "</b>";
 
-        if strcmp(plotData.InterceptAxis, "x")
-            annotation.x = plotData.Value;
+        if strcmp(get(plotData, 'InterceptAxis'), "x")
+            annotation.x = get(plotData, 'Value');
             annotation.y = yaxis.range(2);
         else
             annotation.x = xaxis.range(2);
-            annotation.y = plotData.Value;
+            annotation.y = get(plotData, 'Value');
         end
 
-        col = round(255*plotData.LabelColor);
+        col = round(255*get(plotData, 'LabelColor'));
         annotation.font.color = getStringColor(col);
 
-        annotation.font.family = matlab2plotlyfont(plotData.FontName);
-        annotation.font.size = plotData.FontSize;
-        switch plotData.FontWeight
+        annotation.font.family = matlab2plotlyfont(get(plotData, 'FontName'));
+        annotation.font.size = get(plotData, 'FontSize');
+        switch get(plotData, 'FontWeight')
             case {"bold","demi"}
                 annotation.text = "<b>" + annotation.text + "</b>";
             otherwise
         end
 
-        if strcmp(plotData.LabelHorizontalAlignment, "center")
-            if strcmp(plotData.InterceptAxis, "x")
-                ylim = plotData.Parent.YLim;
-                textWidth = text(0,0,plotData.Label,units="normalized", ...
-                        rotation=90,Visible="off").Extent(4);
+        if strcmp(get(plotData, 'LabelHorizontalAlignment'), "center")
+            if strcmp(get(plotData, 'InterceptAxis'), "x")
+                tmpExtent = get(text(0,0,get(plotData, 'Label'),units="normalized", ...
+                        rotation=90,Visible="off"), 'Extent');
+                ylim = get(get(plotData, 'Parent'), 'YLim');
+                textWidth = tmpExtent(4);
                 textWidth = textWidth * (ylim(2) - ylim(1));
                 data.y(2) = data.y(2) - textWidth;
             else
-                xlim = plotData.Parent.XLim;
-                textWidth = text(0,0,plotData.Label,units="normalized", ...
-                        Visible="off").Extent(3);
+                tmpExtent2 = get(text(0,0,get(plotData, 'Label'),units="normalized", ...
+                        Visible="off"), 'Extent');
+                xlim = get(get(plotData, 'Parent'), 'XLim');
+                textWidth = tmpExtent2(3);
                 textWidth = textWidth * (xlim(2) - xlim(1));
                 data.x(2) = data.x(2) - textWidth;
             end
@@ -94,25 +96,25 @@ function data = updateConstantLine(obj,plotIndex)
     obj.PlotOptions.is3d = false; % by default
 
     if isfield(plotData,"ZData")
-        numbset = unique(plotData.ZData);
-        if any(plotData.ZData) && length(numbset)>1
-            data.z = plotData.ZData;
+        numbset = unique(get(plotData, 'ZData'));
+        if any(get(plotData, 'ZData')) && length(numbset)>1
+            data.z = get(plotData, 'ZData');
             data.type = "scatter3d";
             %-flag to manage 3d plots-%
             obj.PlotOptions.is3d = true;
         end
     end
 
-    data.name = plotData.DisplayName;
+    data.name = get(plotData, 'DisplayName');
 
-    if ~strcmp(plotData.Type, "constantline") ...
-            && ~strcmpi(plotData.Marker, "none") ...
-            && ~strcmpi(plotData.LineStyle, "none")
+    if ~strcmp(get(plotData, 'Type'), "constantline") ...
+            && ~strcmpi(get(plotData, 'Marker'), "none") ...
+            && ~strcmpi(get(plotData, 'LineStyle'), "none")
         mode = "lines+markers";
-    elseif ~strcmp(plotData.Type, "constantline") ...
-            && ~strcmpi(plotData.Marker, "none")
+    elseif ~strcmp(get(plotData, 'Type'), "constantline") ...
+            && ~strcmpi(get(plotData, 'Marker'), "none")
         mode = "markers";
-    elseif ~strcmpi(plotData.LineStyle, "none")
+    elseif ~strcmpi(get(plotData, 'LineStyle'), "none")
         mode = "lines";
     else
         mode = "none";
@@ -121,7 +123,7 @@ function data = updateConstantLine(obj,plotIndex)
     data.mode = mode;
     data.line = extractLineLine(plotData);
 
-    if ~strcmp(plotData.Type, "constantline")
+    if ~strcmp(get(plotData, 'Type'), "constantline")
         data.marker = extractLineMarker(plotData);
     end
 

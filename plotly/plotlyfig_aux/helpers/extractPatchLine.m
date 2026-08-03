@@ -4,18 +4,18 @@ function line = extractPatchLine(patch_data)
     % STAIRSERIES, STEMSERIES, BASELINESERIES, AND BOXPLOTS
 
     line = struct();
-    if strcmp(patch_data.LineStyle, "none")
+    if strcmp(get(patch_data, 'LineStyle'), "none")
         return
     end
 
-    cLim = ancestor(patch_data.Parent, "axes").CLim;
-    colormap = ancestor(patch_data.Parent, "figure").Colormap;
+    cLim = get(ancestor(get(patch_data, 'Parent'), "axes"), 'CLim');
+    colormap = get(ancestor(get(patch_data, 'Parent'), "figure"), 'Colormap');
     faceVertexCData = patch_data.FaceVertexCData(1,1);
     cDataMapping = patch_data.CDataMapping;
 
-    line.color = extractColor(patch_data.EdgeColor, cDataMapping, colormap, cLim, faceVertexCData);
-    line.width = patch_data.LineWidth;
-    line.dash = getLineDash(patch_data.LineStyle);
+    line.color = extractColor(get(patch_data, 'EdgeColor'), cDataMapping, colormap, cLim, faceVertexCData);
+    line.width = get(patch_data, 'LineWidth');
+    line.dash = getLineDash(get(patch_data, 'LineStyle'));
 end
 
 function out = extractColor(color, cDataMapping, colormap, cLim, faceVertexCData)

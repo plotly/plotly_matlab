@@ -53,31 +53,31 @@ function data = updateBar(obj,barIndex)
     data.xaxis = "x" + xSource;
     data.yaxis = "y" + ySource;
     data.type = "bar";
-    data.name = barData.DisplayName;
-    data.visible = strcmp(barData.Visible, "on");
+    data.name = get(barData, 'DisplayName');
+    data.visible = strcmp(get(barData, 'Visible'), "on");
 
     %-find all grouped bars on the same axis-%
     parentAxis = obj.State.Plot(barIndex).AssociatedAxis;
-    bars = findobj(parentAxis.Children, "Type", "Bar");
+    bars = findobj(get(parentAxis, 'Children'), "Type", "Bar");
 
     %-check for multiple bar groups (cheap: just compare BarWidth values)-%
-    barWidths = arrayfun(@(b) b.BarWidth, bars);
+    barWidths = arrayfun(@(b) get(b, 'BarWidth'), bars);
     hasMultipleGroups = numel(unique(barWidths)) > 1 ...
-            && strcmp(barData.BarLayout, "grouped");
+            && strcmp(get(barData, 'BarLayout'), "grouped");
 
     if hasMultipleGroups
         %-MULTI-GROUP: use overlay mode with explicit positions/widths-%
         barWidth = getRenderedBarWidth(obj, barData);
 
-        switch barData.Horizontal
+        switch get(barData, 'Horizontal')
             case "off"
                 data.orientation = "v";
-                data.x = barData.XEndPoints;
-                data.y = barData.YData;
+                data.x = get(barData, 'XEndPoints');
+                data.y = get(barData, 'YData');
             case "on"
                 data.orientation = "h";
-                data.x = barData.YData;
-                data.y = barData.XEndPoints;
+                data.x = get(barData, 'YData');
+                data.y = get(barData, 'XEndPoints');
         end
 
         data.width = barWidth;
@@ -85,27 +85,27 @@ function data = updateBar(obj,barIndex)
         obj.layout.bargap = 0;
     else
         %-SINGLE GROUP: use plotly's built-in grouping-%
-        switch barData.Horizontal
+        switch get(barData, 'Horizontal')
             case "off"
                 data.orientation = "v";
-                data.x = barData.XData;
-                data.y = barData.YData;
+                data.x = get(barData, 'XData');
+                data.y = get(barData, 'YData');
             case "on"
                 data.orientation = "h";
-                data.x = barData.YData;
-                data.y = barData.XData;
+                data.x = get(barData, 'YData');
+                data.y = get(barData, 'XData');
         end
 
-        obj.layout.bargroupgap = 1-barData.BarWidth;
+        obj.layout.bargroupgap = 1-get(barData, 'BarWidth');
 
-        nBar = sum(strcmp({bars.BarLayout}, "grouped"));
+        nBar = sum(strcmp(get(bars, 'BarLayout'), "grouped"));
         if nBar > 1
             obj.layout.bargap = 0.2;
         else
             obj.layout.bargap = 0;
         end
 
-        switch barData.BarLayout
+        switch get(barData, 'BarLayout')
             case "grouped"
                 obj.layout.barmode = "group";
             case "stacked"
@@ -129,9 +129,9 @@ function w = getRenderedBarWidth(obj, barData)
         lastFigure = figHandle;
     end
 
-    w = barData.BarWidth;
+    w = get(barData, 'BarWidth');
     try
-        vd = double(barData.Face.VertexData);
+        vd = double(get(get(barData, 'Face'), 'VertexData'));
         if size(vd, 2) >= 4
             xVerts = vd(1, 1:4);
             w = max(xVerts) - min(xVerts);

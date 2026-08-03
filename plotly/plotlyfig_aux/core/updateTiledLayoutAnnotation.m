@@ -1,17 +1,17 @@
 function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
     %-INITIALIZATIONS-%
     anIndex = obj.State.Figure.NumTexts + 1;
-    titleStruct = tiledLayoutData.Title;
+    titleStruct = get(tiledLayoutData, 'Title');
 
     obj.layout.annotations{anIndex}.showarrow = false;
     obj.layout.annotations{anIndex}.xref = 'paper';
     obj.layout.annotations{anIndex}.yref = 'paper';
-    obj.layout.annotations{anIndex}.align = titleStruct.HorizontalAlignment;
+    obj.layout.annotations{anIndex}.align = get(titleStruct, 'HorizontalAlignment');
 
     %-anchors-%
-    obj.layout.annotations{anIndex}.xanchor = titleStruct.HorizontalAlignment;
+    obj.layout.annotations{anIndex}.xanchor = get(titleStruct, 'HorizontalAlignment');
 
-    switch titleStruct.VerticalAlignment
+    switch get(titleStruct, 'VerticalAlignment')
         case {'top', 'cap'}
             obj.layout.annotations{anIndex}.yanchor = 'top';
         case 'middle'
@@ -21,8 +21,8 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
     end
 
     %-text-%
-    titleString = titleStruct.String;
-    titleInterpreter = titleStruct.Interpreter;
+    titleString = get(titleStruct, 'String');
+    titleInterpreter = get(titleStruct, 'Interpreter');
 
     if isempty(titleString)
         titleTex = titleString;
@@ -37,15 +37,15 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
     obj.layout.annotations{anIndex}.y = 0.95;
 
     %-font properties-%
-    titleColor = getStringColor(round(255*titleStruct.Color));
-    titleSize = titleStruct.FontSize;
-    titleFamily = matlab2plotlyfont(titleStruct.FontName);
+    titleColor = getStringColor(round(255*get(titleStruct, 'Color')));
+    titleSize = get(titleStruct, 'FontSize');
+    titleFamily = matlab2plotlyfont(get(titleStruct, 'FontName'));
 
     obj.layout.annotations{anIndex}.font.color = titleColor;
     obj.layout.annotations{anIndex}.font.size = 1.2*titleSize;
     obj.layout.annotations{anIndex}.font.family = titleFamily;
 
-    switch titleStruct.FontWeight
+    switch get(titleStruct, 'FontWeight')
         case {'bold','demi'}
             titleString = sprintf('<b>%s</b>', titleString);
             obj.layout.annotations{anIndex}.text = titleString;
@@ -53,14 +53,14 @@ function obj = updateTiledLayoutAnnotation(obj, tiledLayoutData)
     end
 
     %-title angle-%
-    textAngle = titleStruct.Rotation;
+    textAngle = get(titleStruct, 'Rotation');
     if textAngle > 180
         textAngle = textAngle - 360;
     end
     obj.layout.annotations{anIndex}.textangle = textAngle;
 
     %-hide text (a workaround)-%
-    if strcmp(titleStruct.Visible,'off')
+    if strcmp(get(titleStruct, 'Visible'),'off')
         obj.layout.annotations{anIndex}.text = ' ';
     end
 end

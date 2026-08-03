@@ -56,7 +56,7 @@ function updateScattergroup(obj,scatterIndex)
     scatter_data = obj.State.Plot(scatterIndex).Handle;
 
     %-SCATTER CHILDREN-%
-    scatter_child = obj.State.Plot(scatterIndex).Handle.Children;
+    scatter_child = get(obj.State.Plot(scatterIndex).Handle, 'Children');
 
     %-SCATTER CHILDREN DATA-%
     scatter_child_data = scatter_child;
@@ -67,15 +67,15 @@ function updateScattergroup(obj,scatterIndex)
     obj.data{scatterIndex}.xaxis = "x" + xsource;
     obj.data{scatterIndex}.yaxis = "y" + ysource;
 
-    if any(nonzeros(scatter_data.ZData))
+    if any(nonzeros(get(scatter_data, 'ZData')))
         obj.data{scatterIndex}.type = 'scatter3d';
     else
         obj.data{scatterIndex}.type = 'scatter';
     end
 
     obj.data{scatterIndex}.mode = 'markers';
-    obj.data{scatterIndex}.visible = strcmp(scatter_data.Visible,'on');
-    obj.data{scatterIndex}.name = scatter_data.DisplayName;
+    obj.data{scatterIndex}.visible = strcmp(get(scatter_data, 'Visible'),'on');
+    obj.data{scatterIndex}.name = get(scatter_data, 'DisplayName');
 
     %-scatter patch data-%
     for m = 1:length(scatter_child_data)
@@ -84,24 +84,24 @@ function updateScattergroup(obj,scatterIndex)
 
         %-scatter x-%
         if length(scatter_child_data) > 1
-            obj.data{scatterIndex}.x(m) = scatter_child_data(n).XData;
+            obj.data{scatterIndex}.x(m) = get(scatter_child_data(n), 'XData');
         else
-            obj.data{scatterIndex}.x = scatter_child_data.XData;
+            obj.data{scatterIndex}.x = get(scatter_child_data, 'XData');
         end
 
         %-scatter y-%
         if length(scatter_child_data) > 1
-            obj.data{scatterIndex}.y(m) = scatter_child_data(n).YData;
+            obj.data{scatterIndex}.y(m) = get(scatter_child_data(n), 'YData');
         else
-            obj.data{scatterIndex}.y = scatter_child_data.YData;
+            obj.data{scatterIndex}.y = get(scatter_child_data, 'YData');
         end
 
         %-scatter z-%
-        if any(nonzeros(scatter_data.ZData))
+        if any(nonzeros(get(scatter_data, 'ZData')))
             if length(scatter_child_data) > 1
-                obj.data{scatterIndex}.z(m) = scatter_child_data(n).ZData;
+                obj.data{scatterIndex}.z(m) = get(scatter_child_data(n), 'ZData');
             else
-                obj.data{scatterIndex}.z = scatter_child_data.ZData;
+                obj.data{scatterIndex}.z = get(scatter_child_data, 'ZData');
             end
         end
 

@@ -52,7 +52,7 @@ function obj = updateData(obj, dataIndex)
             case "line"
                 if obj.PlotlyDefaults.isGeoaxis
                     updateGeoPlot(obj, dataIndex);
-                elseif strcmp(obj.State.Plot(dataIndex).AssociatedAxis.Type, "polaraxes")
+                elseif strcmp(get(obj.State.Plot(dataIndex).AssociatedAxis, 'Type'), "polaraxes")
                     obj.data{dataIndex} = updatePolarplot(obj, dataIndex);
                 elseif ismember("ternplot", lower(obj.PlotOptions.TreatAs))
                     updateTernaryPlot(obj, dataIndex);
@@ -64,7 +64,7 @@ function obj = updateData(obj, dataIndex)
             case "categoricalhistogram"
                 updateCategoricalHistogram(obj, dataIndex);
             case "histogram"
-                if strcmp(obj.State.Plot(dataIndex).AssociatedAxis.Type, "polaraxes")
+                if strcmp(get(obj.State.Plot(dataIndex).AssociatedAxis, 'Type'), "polaraxes")
                     obj.data{dataIndex} = updateHistogramPolar(obj, dataIndex);
                 else
                     obj.data{dataIndex} = updateHistogram(obj, dataIndex);
@@ -114,7 +114,7 @@ function obj = updateData(obj, dataIndex)
             case "baseline"
                 updateBaseline(obj, dataIndex);
             case {"contourgroup","contour"}
-                if strcmp(obj.State.Plot(dataIndex).AssociatedAxis.ZGrid, "on")
+                if strcmp(get(obj.State.Plot(dataIndex).AssociatedAxis, 'ZGrid'), "on")
                     obj.data{dataIndex} = updateContour3(obj, dataIndex);
                 elseif obj.PlotOptions.ContourProjection
                     updateContourProjection(obj,dataIndex);
@@ -136,7 +136,7 @@ function obj = updateData(obj, dataIndex)
             case "quivergroup"
                 updateQuivergroup(obj, dataIndex);
             case "scatter"
-                if strcmp(obj.State.Plot(dataIndex).AssociatedAxis.Type, "polaraxes")
+                if strcmp(get(obj.State.Plot(dataIndex).AssociatedAxis, 'Type'), "polaraxes")
                     updateScatterPolar(obj, dataIndex);
                 elseif obj.PlotlyDefaults.isGeoaxis
                     updateGeoScatter(obj, dataIndex);
@@ -180,7 +180,7 @@ function obj = updateData(obj, dataIndex)
         plotHandle = obj.State.Plot(dataIndex).Handle;
         showLeg = getShowLegend(plotHandle);
         if showLeg && isprop(plotHandle, 'DisplayName')
-            showLeg = ~isempty(plotHandle.DisplayName);
+            showLeg = ~isempty(get(plotHandle, 'DisplayName'));
         end
         obj.data{dataIndex}.showlegend = showLeg;
     end
@@ -193,7 +193,7 @@ function obj = updateData(obj, dataIndex)
     %----------------------AXIS/DATA CLEAN UP-----------------------------%
 
     ax = obj.State.Plot(dataIndex).AssociatedAxis;
-    if ~ismember(ax.Type,specialAxisPlots())
+    if ~ismember(get(ax, 'Type'), specialAxisPlots())
         %-AXIS INDEX-%
         axIndex = obj.getAxisIndex(ax);
 
@@ -229,14 +229,14 @@ function obj = updateData(obj, dataIndex)
         % check for xaxis categories
         if strcmpi(xaxis.type, "category") && ...
                 ~any(strcmp(obj.data{dataIndex}.type,["heatmap" "box"]))
-            obj.data{dataIndex}.x = ax.XTickLabel;
+            obj.data{dataIndex}.x = get(ax, 'XTickLabel');
             obj.layout.("xaxis" + xsource).autotick = true;
         end
 
         % check for yaxis categories
         if strcmpi(yaxis.type, "category") && ...
                 ~any(strcmp(obj.data{dataIndex}.type, ["heatmap" "box"]))
-            obj.data{dataIndex}.y = ax.YTickLabel;
+            obj.data{dataIndex}.y = get(ax, 'YTickLabel');
             obj.layout.("yaxis" + xsource).autotick = true;
         end
     end

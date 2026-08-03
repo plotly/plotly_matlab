@@ -11,10 +11,10 @@ function obj = updateSlice(obj, dataIndex)
         "setTitleFont", false, "handleDatetimeTicks", false)
 
     %-get trace data-%
-    xData = plotData.XData;
-    yData = plotData.YData;
-    zData = plotData.ZData;
-    cData = plotData.CData;
+    xData = get(plotData, 'XData');
+    yData = get(plotData, 'YData');
+    zData = get(plotData, 'ZData');
+    cData = get(plotData, 'CData');
 
     xDataSurf = zeros(2*(size(xData)-1));
     yDataSurf = zeros(2*(size(xData)-1));
@@ -31,9 +31,9 @@ function obj = updateSlice(obj, dataIndex)
             yDataSurf(m2:m2+1,n2:n2+1) = yData(m:m+1,n:n+1);
             zDataSurf(m2:m2+1,n2:n2+1) = zData(m:m+1,n:n+1);
 
-            if strcmp(plotData.FaceColor, 'flat')
+            if strcmp(get(plotData, 'FaceColor'), 'flat')
                 cDataSurf(m2:m2+1,n2:n2+1) = ones(2,2)*cData(m,n);
-            elseif strcmp(plotData.FaceColor, 'interp')
+            elseif strcmp(get(plotData, 'FaceColor'), 'interp')
                 cDataSurf(m2:m2+1,n2:n2+1) = cData(m:m+1,n:n+1);
             end
         end
@@ -41,8 +41,8 @@ function obj = updateSlice(obj, dataIndex)
 
     %-set trace-%
     obj.data{dataIndex}.type = 'surface';
-    obj.data{dataIndex}.name = plotData.DisplayName;
-    obj.data{dataIndex}.visible = strcmp(plotData.Visible,'on');
+    obj.data{dataIndex}.name = get(plotData, 'DisplayName');
+    obj.data{dataIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
     obj.data{dataIndex}.scene = sprintf('scene%d', xSource);
     obj.data{dataIndex}.showscale = false;
     obj.data{dataIndex}.surfacecolor = cDataSurf;
@@ -56,7 +56,7 @@ function obj = updateSlice(obj, dataIndex)
     updateSurfaceFaceColor(obj, dataIndex, cDataSurf);
 
     %-update edge color-%
-    if isnumeric(plotData.EdgeColor)
+    if isnumeric(get(plotData, 'EdgeColor'))
         updateSurfaceEdgeColor(obj, dataIndex);
     end
 end
@@ -66,10 +66,10 @@ function updateSurfaceEdgeColor(obj, dataIndex)
 
     plotData = obj.State.Plot(dataIndex).Handle;
 
-    xData = plotData.XData;
-    yData = plotData.YData;
-    zData = plotData.ZData;
-    edgeColor = plotData.EdgeColor;
+    xData = get(plotData, 'XData');
+    yData = get(plotData, 'YData');
+    zData = get(plotData, 'ZData');
+    edgeColor = get(plotData, 'EdgeColor');
 
     xConst = ( xData(:) - min(xData(:)) ) <= 1e-6;
     yConst = ( yData(:) - min(yData(:)) ) <= 1e-6;
@@ -119,11 +119,11 @@ function updateSurfaceFaceColor(obj, dataIndex, surfaceColor)
     %-INITIALIZATIONS-%
 
     plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = plotData.Parent;
+    axisData = get(plotData, 'Parent');
 
-    faceColor = plotData.FaceColor;
-    cLim = axisData.CLim;
-    colorMap = axisData.Colormap;
+    faceColor = get(plotData, 'FaceColor');
+    cLim = get(axisData, 'CLim');
+    colorMap = get(axisData, 'Colormap');
 
     obj.data{dataIndex}.cauto = false;
     obj.data{dataIndex}.autocolorscale = false;
