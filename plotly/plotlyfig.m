@@ -463,7 +463,7 @@ classdef plotlyfig < handle
                 % add title
                 try
                     obj.State.Text(a).Handle = get(ax(axrev), 'Title');
-                    obj.State.Text(a).AssociatedAxis = handle(ax(axrev));
+                    obj.State.Text(a).AssociatedAxis = ax(axrev);
                     obj.State.Text(a).Title = true;
                     % Recommended use for subtitles is to append to the
                     % title https://github.com/plotly/plotly.js/issues/233
@@ -520,8 +520,8 @@ classdef plotlyfig < handle
 
                     if ~ismember(plotClass, {'light', 'polaraxes'})
                         obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
-                        obj.State.Plot(obj.State.Figure.NumPlots).Handle = handle(plots(nprev));
-                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).Handle = plots(nprev);
+                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = ax(axrev);
                         obj.State.Plot(obj.State.Figure.NumPlots).Class = graphClass;
                     else
                         obj.PlotlyDefaults.IsLight = true;
@@ -540,11 +540,11 @@ classdef plotlyfig < handle
                     end
 
                     if isPareto
-                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = ax(axrev);
                     else
                         obj.State.Figure.NumPlots = obj.State.Figure.NumPlots + 1;
                         obj.State.Plot(obj.State.Figure.NumPlots).Handle = {};
-                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = handle(ax(axrev));
+                        obj.State.Plot(obj.State.Figure.NumPlots).AssociatedAxis = ax(axrev);
                         obj.State.Plot(obj.State.Figure.NumPlots).Class = 'nothing';
                     end
                 end
@@ -553,9 +553,9 @@ classdef plotlyfig < handle
                 texts = findobj(ax(axrev),'Type','text','-depth',1);
 
                 for t = 1:length(texts)
-                    obj.State.Text(obj.State.Figure.NumTexts + t).Handle = handle(texts(t));
+                    obj.State.Text(obj.State.Figure.NumTexts + t).Handle = texts(t);
                     obj.State.Text(obj.State.Figure.NumTexts + t).Title = false;
-                    obj.State.Text(obj.State.Figure.NumTexts + t).AssociatedAxis = handle(ax(axrev));
+                    obj.State.Text(obj.State.Figure.NumTexts + t).AssociatedAxis = ax(axrev);
                 end
 
                 % update number of annotations
@@ -568,10 +568,10 @@ classdef plotlyfig < handle
             obj.State.Figure.NumLegends = length(legs);
 
             for g = 1:length(legs)
-                obj.State.Legend(g).Handle = handle(legs(g));
+                obj.State.Legend(g).Handle = legs(g);
 
                 % find associated axis
-                legendAxis = findLegendAxis(obj, handle(legs(g)));
+                legendAxis = findLegendAxis(obj, legs(g));
 
                 % update colorbar associated axis
                 obj.State.Legend(g).AssociatedAxis = legendAxis;
@@ -584,10 +584,10 @@ classdef plotlyfig < handle
 
             for c = 1:length(cols)
                 % update colorbar handle
-                obj.State.Colorbar(c).Handle = handle(cols(c));
+                obj.State.Colorbar(c).Handle = cols(c);
 
                 % find associated axis
-                colorbarAxis = findColorbarAxis(obj, handle(cols(c)));
+                colorbarAxis = findColorbarAxis(obj, cols(c));
 
                 % update colorbar associated axis
                 obj.State.Colorbar(c).AssociatedAxis = colorbarAxis;
