@@ -74,7 +74,7 @@ function annotation = updateAnnotation(obj,anIndex)
             annotation.text = "<b></b>"; %empty string annotation
         else
             annotation.text = "<b>" + join( ...
-                    string(annotation.text), "<br>") + "</b>";
+                    annotation.text, "<br>") + "</b>";
         end
     else
         if ~strcmpi(obj.PlotOptions.TreatAs, "pie3")

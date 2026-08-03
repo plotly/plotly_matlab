@@ -70,7 +70,7 @@ function data = updateHeatmap(obj,heatIndex)
 
     for i = 1:m
         for j = 1:n
-            ann.text = string(num2str(round(cdata(j,i), 2)));
+            ann.text = num2str(round(cdata(j,i), 2));
             ann.x = i-1;
             ann.y = j-1;
             ann.showarrow = false;

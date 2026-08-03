@@ -1,11 +1,11 @@
 function output = convertDate(date)
     date = convertToDateTime(date);
     if isDate(date)
-        format = "yyyy-MM-dd";
+        format = 'yyyy-mm-dd';
     else
-        format = "yyyy-MM-dd HH:mm:ss";
+        format = 'yyyy-mm-dd HH:MM:SS';
     end
-    output = string(date, format);
+    output = datestr(date, format);
 end
 
 function dt = convertToDateTime(input)

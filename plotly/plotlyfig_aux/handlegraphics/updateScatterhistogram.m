@@ -75,7 +75,7 @@ function updateMainScatter(obj, plotIndex)
             try
               obj.data{traceIndex}.name = char(groupName(t));
             catch
-              obj.data{traceIndex}.name = char(string(groupName(t)));
+              obj.data{traceIndex}.name = char(groupName{t});
             end
             obj.data{traceIndex}.legendgroup = obj.data{traceIndex}.name;
             obj.data{traceIndex}.showlegend = true;
@@ -201,7 +201,7 @@ function updateMarginalHistogram(obj, plotIndex, axName)
             try
                 obj.data{traceIndex}.name = char(groupName(t));
             catch
-                obj.data{traceIndex}.name = char(string(groupName(t)));
+                obj.data{traceIndex}.name = char(groupName{t});
             end
             obj.data{traceIndex}.legendgroup = obj.data{traceIndex}.name;
         end
@@ -262,7 +262,7 @@ function updateMarginalSmooth(obj, plotIndex, axName)
             try
                 obj.data{traceIndex}.name = char(groupName(t));
             catch
-                obj.data{traceIndex}.name = char(string(groupName(t)));
+                obj.data{traceIndex}.name = char(groupName{t});
             end
 
             obj.data{traceIndex}.legendgroup = obj.data{traceIndex}.name;
@@ -400,7 +400,7 @@ function [xData, yData, groupName] = getTraceData(plotData)
 
     if isByGroups
         if iscellstr(groupData)
-            groupData = string(groupData);
+            groupData = cellstr(groupData);
         end
         groupName = unique(groupData,'stable');
         for g = 1:length(groupName)

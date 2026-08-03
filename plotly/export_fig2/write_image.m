@@ -35,13 +35,13 @@ function output = write_image(pfObj, options)
     end
 
     if isunix()
-        kExec = string(fullfile(wd,"kaleido", "kaleido"));
+        kExec = fullfile(wd,"kaleido", "kaleido");
         cc = "cat";
     else
-        kExec = string(fullfile(wd,"kaleido", "kaleido.cmd"));
+        kExec = fullfile(wd,"kaleido", "kaleido.cmd");
         cc = "type";
     end
-    plyJsLoc = string(fullfile(wd,"kaleido", "plotly-latest.min.js"));
+    plyJsLoc = fullfile(wd,"kaleido", "plotly-latest.min.js");
 
     if ~isfile(kExec) || ~isfile(plyJsLoc)
         status = getKaleido();
@@ -50,8 +50,8 @@ function output = write_image(pfObj, options)
         end
     end
 
-    mjLoc = replace(string(fullfile( ...
-            wd, "kaleido", "etc", "mathjax", "MathJax.js")), '\', '/');
+    mjLoc = replace(fullfile( ...
+            wd, "kaleido", "etc", "mathjax", "MathJax.js"), '\', '/');
     scope = "plotly";
 
     % Prepare input plotly object for Kaleido
@@ -60,14 +60,14 @@ function output = write_image(pfObj, options)
             "data", {pfObj.data}, ...
             "layout", rmfield(pfObj.layout, ["height" "width"]) ...
         ), ...
-        "format", string(imageFormat), ...
+        "format", imageFormat, ...
         "height", height, ...
         "scale", scale, ...
         "width", width ...
     );
 
     pfJson = native2unicode(jsonencode(q), "UTF-8");
-    tFile = string(fullfile(wd, "kaleido", "temp.txt"));
+    tFile = fullfile(wd, "kaleido", "temp.txt");
     f = fopen(tFile, "w");
     fprintf(f, "%s", pfJson);
     fclose(f);
@@ -85,11 +85,11 @@ function output = write_image(pfObj, options)
         return
     end
 
-    a = string(split(out,newline));
-    if strcmp(a(end), "")
+    a = split(out,newline);
+    if strcmp(a{end}, "")
         a(end) = [];
     end
-    output = jsondecode(a(end));
+    output = jsondecode(a{end});
 
     if output.code ~= 0
         fprintf("\nError: %s\n", output.message);

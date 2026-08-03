@@ -79,15 +79,15 @@ function data = updateLineseries(obj, plotIndex)
             for i = 1:numel(dataTipRows)
                 dataTipRow = dataTipRows(i);
                 if isequal(dataTipRow.Value, "XData")
-                    xDataLabel = string(dataTipRow.Label);
+                    xDataLabel = dataTipRow.Label;
                     continue
                 end
                 if isequal(dataTipRow.Value, "YData")
-                    yDataLabel = string(dataTipRow.Label);
+                    yDataLabel = dataTipRow.Label;
                     continue
                 end
-                customLabel = customLabel + arrayfun(@(value) string(dataTipRow.Label) ...
-                        + ": " + string(value) + "<br>", dataTipRow.Value);
+                customLabel = customLabel + arrayfun(@(value) dataTipRow.Label ...
+                        + ": " + num2str(value) + "<br>", dataTipRow.Value);
             end
             if isPolar
                 data.hovertext = "R: " + data.r(:) + "<br>" + "Theta: " + ...

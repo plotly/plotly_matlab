@@ -229,5 +229,5 @@ function formatStr = parseString(inputStr,interpreter)
             end
         end
     end
-    formatStr = string(formatStr);
+    formatStr = formatStr;
 end
