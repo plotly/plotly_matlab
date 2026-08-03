@@ -8,6 +8,8 @@ function userDir = getuserdir
         %         ['Software\Microsoft\Windows\CurrentVersion\' ...
         %          'Explorer\Shell Folders'],'Personal');
         userDir = getenv('appdata');
+    elseif is_octave()
+        userDir = getenv('HOME');
     else
         userDir = char(java.lang.System.getProperty('user.home'));
     end

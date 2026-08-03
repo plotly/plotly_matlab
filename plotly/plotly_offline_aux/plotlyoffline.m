@@ -29,7 +29,11 @@ function response = plotlyoffline(plotlyfig)
     end
 
     % handle plot div specs
-    id = char(java.util.UUID.randomUUID);
+    if is_octave()
+        id = sprintf('plotly-%d', floor(rand*1e15));
+    else
+        id = char(java.util.UUID.randomUUID);
+    end
     width = sprintf('%gpx', plotlyfig.layout.width);
     height = sprintf('%gpx', plotlyfig.layout.height);
 
