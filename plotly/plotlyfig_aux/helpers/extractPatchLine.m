@@ -10,15 +10,14 @@ function line = extractPatchLine(patch_data)
 
     cLim = get(ancestor(get(patch_data, 'Parent'), "axes"), 'CLim');
     colormap = get(ancestor(get(patch_data, 'Parent'), "figure"), 'Colormap');
-    faceVertexCData = patch_data.FaceVertexCData(1,1);
-    cDataMapping = patch_data.CDataMapping;
 
-    line.color = extractColor(get(patch_data, 'EdgeColor'), cDataMapping, colormap, cLim, faceVertexCData);
+    line.color = extractColor(patch_data, colormap, cLim);
     line.width = get(patch_data, 'LineWidth');
     line.dash = getLineDash(get(patch_data, 'LineStyle'));
 end
 
-function out = extractColor(color, cDataMapping, colormap, cLim, faceVertexCData)
+function out = extractColor(patch_data, colormap, cLim)
+    color = get(patch_data, 'EdgeColor');
     if isnumeric(color)
         out = getStringColor(round(255*color));
     else
@@ -26,7 +25,9 @@ function out = extractColor(color, cDataMapping, colormap, cLim, faceVertexCData
             case "none"
                 out = "rgba(0,0,0,0)";
             case "flat"
-                switch cDataMapping
+                tmpFaceVertexCData = get(patch_data, 'FaceVertexCData');
+                faceVertexCData = tmpFaceVertexCData(1,1);
+                switch get(patch_data, 'CDataMapping')
                     case "scaled"
                         capCD = max(min(faceVertexCData, cLim(2)), cLim(1));
                         scalefactor = (capCD - cLim(1)) / diff(cLim);
