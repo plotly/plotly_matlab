@@ -23,16 +23,24 @@ function data = updateScatter(obj,plotIndex)
         data.marker.size = 2*data.marker.size;
     end
 
-    dataTipRows = plotData.DataTipTemplate.DataTipRows;
-    dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, {"Size" "Color" "X" "Y" "Z"}));
-    if numel(dataTipRows) > 0
-        customLabel = "";
-        for i = 1:numel(dataTipRows)
-            dataTipRow = dataTipRows(i);
-            customLabel = customLabel + arrayfun(@(value) string(dataTipRow.Label) + ": " + string(value) + "<br>", dataTipRow.Value);
+    dataTipRows = [];
+    if isprop(plotData, 'DataTipTemplate')
+        try
+            dataTipRows = plotData.DataTipTemplate.DataTipRows;
+        catch
         end
-        data.hovertext = "X: " + data.x(:) + "<br>" + "Y: " + data.y(:) + "<br>" + customLabel(:);
-        data.hoverinfo = "text";
+    end
+    if ~isempty(dataTipRows)
+        dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, {"Size" "Color" "X" "Y" "Z"}));
+        if numel(dataTipRows) > 0
+            customLabel = "";
+            for i = 1:numel(dataTipRows)
+                dataTipRow = dataTipRows(i);
+                customLabel = customLabel + arrayfun(@(value) string(dataTipRow.Label) + ": " + string(value) + "<br>", dataTipRow.Value);
+            end
+            data.hovertext = "X: " + data.x(:) + "<br>" + "Y: " + data.y(:) + "<br>" + customLabel(:);
+            data.hoverinfo = "text";
+        end
     end
 
     data.showlegend = getShowLegend(plotData) & ~isempty(get(plotData, 'DisplayName'));
