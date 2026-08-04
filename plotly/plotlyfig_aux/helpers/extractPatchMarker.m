@@ -12,6 +12,22 @@ function marker = extractPatchMarker(patch_data)
     %-INITIALIZE OUTPUT-%
     marker = struct();
 
+    % patches with Faces/Vertices store their colors in
+    % FaceVertexCData; patches without it have an empty color array
+    try
+        tmpFaceVertexCData = get(patch_data, 'FaceVertexCData');
+        if isempty(tmpFaceVertexCData)
+            tmpFaceVertexCData = get(patch_data, 'CData');
+        end
+    catch
+        try
+            tmpFaceVertexCData = get(patch_data, 'CData');
+        catch
+            tmpFaceVertexCData = [];
+        end
+    end
+    tmpCLim = get(axis_data, 'CLim');
+
     marker.sizeref = 1;
     marker.sizemode = "diameter";
     marker.size = get(patch_data, 'MarkerSize');
@@ -56,8 +72,6 @@ function marker = extractPatchMarker(patch_data)
                     end
                     markercolor = getStringColor(col);
                 case "flat"
-                    tmpFaceVertexCData = get(patch_data, 'FaceVertexCData');
-                    tmpCLim = get(axis_data, 'CLim');
                     for n = 1:length(get(patch_data, 'FaceVertexCData'))
                         switch get(patch_data, 'CDataMapping')
                             case "scaled"
