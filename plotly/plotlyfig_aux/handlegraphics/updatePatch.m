@@ -193,9 +193,9 @@ function obj = updatePatch(obj, patchIndex)
         edgeColor = get(patch_data, 'EdgeColor');
         faceIsFlat = ischar(faceColor) && any(strcmp(faceColor, {'flat', 'interp'}));
         edgeIsFlat = ischar(edgeColor) && any(strcmp(edgeColor, {'flat', 'interp'}));
-        % plain white faces (trimesh) carry no information: draw the
-        % edges only
-        wantMesh = faceIsFlat || (isnumeric(faceColor) && any(faceColor < 1));
+        % patches always draw their faces (white for trimesh); only
+        % FaceColor 'none' is edge-only
+        wantMesh = ~(ischar(faceColor) && strcmp(faceColor, 'none'));
 
         %-per-vertex intensity from the patch colors (shared by the
         %-mesh faces and the flat edge colors)-%
@@ -235,9 +235,16 @@ function obj = updatePatch(obj, patchIndex)
             %-patch fillcolor-%
             fill = extractPatchFace(patch_data);
             obj.data{patchIndex}.color = fill.color;
+            if ~faceIsFlat
+                % solid-color faces (fill3, tetramesh, trimesh's white
+                % faces) render flat: no lighting gradients
+                obj.data{patchIndex}.lighting.diffuse = 0;
+                obj.data{patchIndex}.lighting.ambient = 1;
+            end
 
             %-per-face or per-vertex colors (trisurf, isosurface...)-%
-            if ~isempty(faceVertexCData) && isnumeric(faceVertexCData) ...
+            if faceIsFlat && ~isempty(faceVertexCData) ...
+                    && isnumeric(faceVertexCData) ...
                     && numel(faceVertexCData) > 1
                 obj.data{patchIndex}.intensity = intensity;
                 obj.data{patchIndex}.cmin = cLim(1);
