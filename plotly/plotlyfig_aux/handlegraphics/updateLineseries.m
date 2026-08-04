@@ -219,7 +219,12 @@ function polarAxis = updateOctavePolarAxes(obj, plotIndex)
         ttick = 0:30:330;
     end
 
-    gridColor = getStringColor(round(255*get(axisData, 'GridColor')));
+    gridColor = get(axisData, 'GridColor');
+    gridAlpha = 1;
+    if isprop(axisData, 'GridAlpha')
+        gridAlpha = get(axisData, 'GridAlpha');
+    end
+    gridColor = getStringColor(round(255*gridColor), gridAlpha);
     gridWidth = get(axisData, 'LineWidth');
 
     polarAxis.domain = struct( ...
