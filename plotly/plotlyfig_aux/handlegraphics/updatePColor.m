@@ -13,44 +13,33 @@ function obj = updatePColor(obj, patchIndex)
     obj.data{patchIndex}.xaxis = sprintf("x%d", xsource);
     obj.data{patchIndex}.yaxis = sprintf("y%d", ysource);
 
-    %-plot type: surface-%
-    obj.data{patchIndex}.type = 'surface';
+    %-plot type: heatmap (a flat colored cell grid)-%
+    obj.data{patchIndex}.type = 'heatmap';
 
     %-format data-%
     XData = get(pcolor_data, 'XData');
     YData = get(pcolor_data, 'YData');
-    ZData = get(pcolor_data, 'ZData');
     CData = get(pcolor_data, 'CData');
-    usegrid = false;
 
     if isvector(XData)
-        usegrid = true;
         [XData, YData] = meshgrid(XData, YData);
     end
 
-    sizes = [(size(XData, 1)-1)*2, (size(XData, 2)-1)*2];
-    xdata = zeros(sizes);
-    ydata = zeros(sizes);
-    zdata = zeros(sizes);
-    cdata = zeros(sizes);
-
-    for n = 1:size(XData, 2)-1
-        for m = 1:size(XData, 1)-1
-            % get indices
-            n1 = 2*(n-1)+1; m1 = 2*(m-1)+1;
-
-            % get surface mesh
-            xdata(m1:m1+1,n1:n1+1) = XData(m:m+1, n:n+1);
-            ydata(m1:m1+1,n1:n1+1) = YData(m:m+1, n:n+1);
-            zdata(m1:m1+1,n1:n1+1) = ZData(m:m+1, n:n+1);
-            cdata(m1:m1+1,n1:n1+1) = ones(2,2)*CData(m, n);
-        end
+    % the last row and column of pcolor's CData are unused (each cell
+    % is bounded by its four corner values); a heatmap needs one value
+    % per cell
+    if size(CData, 1) == size(XData, 1) && size(CData, 2) == size(XData, 2)
+        cellData = CData(1:end-1, 1:end-1);
+    else
+        cellData = CData;
     end
+    obj.data{patchIndex}.z = cellData;
 
-    %-x,y,z-data-%
-    obj.data{patchIndex}.x = xdata;
-    obj.data{patchIndex}.y = ydata;
-    obj.data{patchIndex}.z = zdata;
+    % cell centers along x and y
+    xCenter = mean([XData(1, 1:end-1); XData(1, 2:end)]);
+    yCenter = mean([YData(1:end-1, 1)'; YData(2:end, 1)']);
+    obj.data{patchIndex}.x = xCenter;
+    obj.data{patchIndex}.y = yCenter;
 
     %-coloring-%
     cmap = get(figure_data, 'Colormap');
@@ -62,62 +51,9 @@ function obj = updatePColor(obj, patchIndex)
                 {(c-1)/len, getStringColor(col)};
     end
 
-    obj.data{patchIndex}.surfacecolor = cdata;
     obj.data{patchIndex}.showscale = false;
-    obj.data{patchIndex}.cmin = min(CData(:));
-    obj.data{patchIndex}.cmax = max(CData(:));
-
-    %-setting grid mesh-%
-    if usegrid
-        % x-direction
-        xmin = min(XData(:));
-        xmax = max(XData(:));
-        xsize = (xmax - xmin) / (size(XData, 2) - 1);
-        obj.data{patchIndex}.contours.x.start = xmin;
-        obj.data{patchIndex}.contours.x.end = xmax;
-        obj.data{patchIndex}.contours.x.size = xsize;
-        obj.data{patchIndex}.contours.x.show = true;
-        obj.data{patchIndex}.contours.x.color = 'black';
-        % y-direction
-        ymin = min(YData(:));
-        ymax = max(YData(:));
-        ysize = (ymax - ymin) / (size(YData, 2)-1);
-        obj.data{patchIndex}.contours.y.start = ymin;
-        obj.data{patchIndex}.contours.y.end = ymax;
-        obj.data{patchIndex}.contours.y.size = ysize;
-        obj.data{patchIndex}.contours.y.show = true;
-        obj.data{patchIndex}.contours.y.color = 'black';
-    end
-
-    %-aspectratio-%
-    obj.layout.scene.aspectratio.x = 12;
-    obj.layout.scene.aspectratio.y = 10;
-    obj.layout.scene.aspectratio.z = 0.0001;
-
-    %-camera.eye-%
-    obj.layout.scene.camera.eye.x = 0;
-    obj.layout.scene.camera.eye.y = -0.5;
-    obj.layout.scene.camera.eye.z = 14;
-
-    %-hide axis-x-%
-    obj.layout.scene.xaxis.showticklabels = true;
-    obj.layout.scene.xaxis.zeroline = false;
-    obj.layout.scene.xaxis.showgrid = false;
-    obj.layout.scene.xaxis.title = '';
-
-    %-hide axis-y-%
-    obj.layout.scene.yaxis.zeroline = false;
-    obj.layout.scene.yaxis.showgrid = false;
-    obj.layout.scene.yaxis.showticklabels = true;
-    obj.layout.scene.yaxis.title = '';
-
-    %-hide axis-z-%
-    obj.layout.scene.zaxis.title = '';
-    obj.layout.scene.zaxis.autotick = false;
-    obj.layout.scene.zaxis.zeroline = false;
-    obj.layout.scene.zaxis.showline = false;
-    obj.layout.scene.zaxis.showticklabels = false;
-    obj.layout.scene.zaxis.showgrid = false;
+    obj.data{patchIndex}.zmin = min(CData(:));
+    obj.data{patchIndex}.zmax = max(CData(:));
 
     obj.data{patchIndex}.showlegend = getShowLegend(pcolor_data);
 end
