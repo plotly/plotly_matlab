@@ -9,13 +9,13 @@ function obj = updateStemseries(obj,dataIndex)
     obj.State.Plot(dataIndex).Handle = stem_child(1);
     stem_temp_data = updateLineseries(obj,dataIndex);
 
-    %-scatter mode-%
-    stem_temp_data.mode = 'lines+markers';
-
     %-update marker-%
     stem_marker = stem_temp_data.marker;
     obj.State.Plot(dataIndex).Handle = stem_child(2);
     stem_temp_data = updateLineseries(obj,dataIndex);
+
+    %-scatter mode-%
+    stem_temp_data.mode = 'lines+markers';
 
     stem_temp_data.marker = stem_marker;
 
