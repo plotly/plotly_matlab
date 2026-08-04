@@ -114,11 +114,12 @@ function updateScene(obj, dataIndex, varargin)
         r = max([r1, r2, r3]);
         eyeScale = (1.4 + r * fac) / normFac;
     elseif isnan(opts.normFacScale)
-        cameraOffset = 0.5;
-        normFac = abs(min(cameraEye));
-        normFac = normFac ...
-            / (max(pb) / min(pb) + cameraOffset);
-        eyeScale = 1 / normFac;
+        % the eye distance scales with the plot box so every scene
+        % fits the viewport the same way (Octave places the camera at
+        % a distance proportional to the box diagonal); the constant
+        % keeps the 1:1:1 box at its original distance
+        boxDiag = sqrt(sum(pb .^ 2));
+        eyeScale = 1.2586 * boxDiag / norm(cameraEye);
     else
         normFac = opts.normFacScale * abs(min(cameraEye));
         eyeScale = 1 / normFac;
