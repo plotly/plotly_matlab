@@ -499,6 +499,16 @@ classdef plotlyfig < handle
                 end
 
                 % find plots of figure
+                try
+                    axTag = get(ax(axrev), 'Tag');
+                catch
+                    axTag = '';
+                end
+                if ischar(axTag) && strcmp(axTag, 'legend')
+                    % Octave legends are axes objects tagged "legend";
+                    % their children are legend graphics, not plots
+                    continue
+                end
                 plots = findobj(ax(axrev),'-depth',1,'-not','Type','Text','-not','Type','axes');
 
                 % include GraphPlot objects (HandleVisibility='off' by default)

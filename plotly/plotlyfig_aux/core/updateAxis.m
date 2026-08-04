@@ -43,6 +43,15 @@ function obj = updateAxis(obj,axIndex)
     %-AXIS DATA STRUCTURE-%
     axisData = obj.State.Axis(axIndex).Handle;
 
+    %-Octave legends are axes objects tagged "legend"; they are handled
+    %-through the legend machinery instead of the axis machinery-%
+    try
+        if ischar(get(axisData, 'Tag')) && strcmp(get(axisData, 'Tag'), 'legend')
+            return
+        end
+    catch
+    end
+
     %-STANDARDIZE UNITS-%
     axisUnits = get(axisData, 'Units');
     set(axisData, 'Units', 'normalized');

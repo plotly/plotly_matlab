@@ -94,7 +94,29 @@ function obj = updateData(obj, dataIndex)
                 elseif ismember("slice", lower(obj.PlotOptions.TreatAs))
                     updateSlice(obj, dataIndex);
                 else
-                    obj.data{dataIndex} = updateSurfaceplot(obj,dataIndex);
+                    %-distinguish mesh/surf/slice/pcolor surfaces by
+                    %-their properties: mesh and waterfall draw no
+                    %-faces, pcolor has no z data, and slice planes
+                    %-have one constant coordinate-%
+                    surfHandle = obj.State.Plot(dataIndex).Handle;
+                    faceColor = get(surfHandle, 'FaceColor');
+                    if ischar(faceColor)
+                        isMeshLike = strcmpi(faceColor, 'none') ...
+                            || strcmpi(faceColor, 'w');
+                    else
+                        isMeshLike = numel(faceColor) == 3 ...
+                            && all(faceColor == 1);
+                    end
+                    if isMeshLike
+                        updateMesh(obj, dataIndex);
+                    elseif all(nonzeros(get(surfHandle, 'ZData')) == 0) ...
+                            || isempty(nonzeros(get(surfHandle, 'ZData')))
+                        updatePColor(obj, dataIndex);
+                    elseif isSliceSurface(surfHandle)
+                        updateSlice(obj, dataIndex);
+                    else
+                        updateSurf(obj, dataIndex);
+                    end
                 end
             case {"functionsurface", "parameterizedfunctionsurface"}
                 updateFunctionSurface(obj,dataIndex);
@@ -166,6 +188,29 @@ function obj = updateData(obj, dataIndex)
                 % check for boxplot
                 if isBoxplot(obj, dataIndex)
                     updateBoxplot(obj, dataIndex);
+                elseif is_octave()
+                    % Octave wraps bar, area, stairs, stem, quiver,
+                    % errorbar, contour and rectangle plots in hggroup
+                    % objects; identify the plot type from the custom
+                    % properties each plotting function adds
+                    switch getOctaveGroupClass(obj.State.Plot(dataIndex).Handle)
+                        case 'bar'
+                            updateBarseries(obj, dataIndex);
+                        case 'area'
+                            updateAreaseries(obj, dataIndex);
+                        case 'rectangle'
+                            updateRectangle(obj, dataIndex);
+                        case 'stairs'
+                            updateStairseries(obj, dataIndex);
+                        case 'stem'
+                            updateStemseries(obj, dataIndex);
+                        case 'quiver'
+                            updateQuivergroup(obj, dataIndex);
+                        case 'errorbar'
+                            obj.data{dataIndex} = updateErrorbarseries(obj, dataIndex);
+                        case 'contour'
+                            obj.data{dataIndex} = updateContourgroup(obj, dataIndex);
+                    end
                 end
             case {"uimenu","uicontextmenu","legend"}
                 % Do nothing
@@ -288,6 +333,21 @@ function obj = updateData(obj, dataIndex)
 
             obj.layout = rmfield(obj.layout, "isAnimation");
         end
+    catch
+    end
+end
+
+function isSlice = isSliceSurface(surfHandle)
+    %-a slice plane is a rectangular grid with one coordinate
+    %-constant; regular surfaces from surf/mesh vary in all three-%
+    isSlice = false;
+    try
+        xd = get(surfHandle, 'XData');
+        yd = get(surfHandle, 'YData');
+        zd = get(surfHandle, 'ZData');
+        isSlice = (numel(unique(xd(:))) == 1) ...
+            || (numel(unique(yd(:))) == 1) ...
+            || (numel(unique(zd(:))) == 1);
     catch
     end
 end
