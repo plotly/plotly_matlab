@@ -642,6 +642,7 @@ classdef plotlyfig < handle
                 obj.State.Axis, axisUnitsOrig, obj.State.Figure.NumAxes));
 
             obj.data = {};
+            obj.PlotlyDefaults.patchEdges = {};
             obj.PlotOptions.nPlots = obj.State.Figure.NumPlots;
             obj.PlotlyDefaults.anIndex = obj.State.Figure.NumTexts;
 
@@ -668,6 +669,11 @@ classdef plotlyfig < handle
             % update plots
             for n = 1:obj.State.Figure.NumPlots
                 updateData(obj,n);
+            end
+
+            % append the patch edge traces collected by updatePatch
+            if ~isempty(obj.PlotlyDefaults.patchEdges)
+                obj.data = [obj.data, obj.PlotlyDefaults.patchEdges];
             end
 
             % update annotations

@@ -152,47 +152,92 @@ function obj = updatePatch(obj, patchIndex)
 
         % specify how vertices connect to form the faces
         tmpfaces = get(patch_data_red, 'faces');
+
+        %-colors stored on the patch (per face or per vertex)-%
+        try
+            faceVertexCData = get(patch_data, 'FaceVertexCData');
+        catch
+            faceVertexCData = [];
+        end
+
+        %-mesh3d only accepts triangles: fan-triangulate polygonal
+        %-faces (bar3/bar3h quads, fill3 polygons) and replicate any
+        %-per-face colors across the resulting triangles-%
+        if size(tmpfaces, 2) > 3
+            nPolys = size(tmpfaces, 1);
+            fvcPerPoly = numel(faceVertexCData) == nPolys;
+            fanFaces = cell(1, nPolys);
+            fanFVC = cell(1, nPolys);
+            for p = 1:nPolys
+                v = tmpfaces(p, :);
+                nTris = numel(v) - 2;
+                fanFaces{p} = [repmat(v(1), nTris, 1), v(2:end-1)', v(3:end)'];
+                if fvcPerPoly
+                    fanFVC{p} = faceVertexCData(p) * ones(nTris, 1);
+                end
+            end
+            tmpfaces = cell2mat(fanFaces');
+            if fvcPerPoly
+                faceVertexCData = cell2mat(fanFVC');
+            end
+        end
+
         i_data = tmpfaces(:,1)-1;
         j_data = tmpfaces(:,2)-1;
         k_data = tmpfaces(:,3)-1;
 
-        %-patch x/y/z-%
-        obj.data{patchIndex}.x = x_data;
-        obj.data{patchIndex}.y = y_data;
-        obj.data{patchIndex}.z = z_data;
+        %-which channel carries the data: native patches color either
+        %-the faces (trisurf) or the edges (trimesh) flat-%
+        faceColor = get(patch_data, 'FaceColor');
+        edgeColor = get(patch_data, 'EdgeColor');
+        faceIsFlat = ischar(faceColor) && any(strcmp(faceColor, {'flat', 'interp'}));
+        edgeIsFlat = ischar(edgeColor) && any(strcmp(edgeColor, {'flat', 'interp'}));
+        % plain white faces (trimesh) carry no information: draw the
+        % edges only
+        wantMesh = faceIsFlat || (isnumeric(faceColor) && any(faceColor < 1));
 
-        %-patch i/j/k-%
-        obj.data{patchIndex}.i = i_data;
-        obj.data{patchIndex}.j = j_data;
-        obj.data{patchIndex}.k = k_data;
+        %-per-vertex intensity from the patch colors (shared by the
+        %-mesh faces and the flat edge colors)-%
+        if ~isempty(faceVertexCData) && isnumeric(faceVertexCData) ...
+                && numel(faceVertexCData) > 1
+            cLim = get(ancestor(get(patch_data, 'Parent'), 'axes'), 'CLim');
+            cMap = get(ancestor(get(patch_data, 'Parent'), 'figure'), 'Colormap');
+            if numel(faceVertexCData) == size(tmpfaces, 1)
+                % per-face colors: average over the incident faces
+                intensity = zeros(size(x_data));
+                for f = 1:size(tmpfaces, 1)
+                    intensity(tmpfaces(f, :)) = ...
+                        intensity(tmpfaces(f, :)) + faceVertexCData(f);
+                end
+                counts = zeros(size(x_data));
+                for f = 1:size(tmpfaces, 1)
+                    counts(tmpfaces(f, :)) = ...
+                        counts(tmpfaces(f, :)) + 1;
+                end
+                intensity = intensity ./ max(counts, 1);
+            else
+                intensity = faceVertexCData(:);
+            end
+        end
 
-        %-patch fillcolor-%
-        fill = extractPatchFace(patch_data);
-        obj.data{patchIndex}.color = fill.color;
+        if wantMesh
+            %-patch x/y/z-%
+            obj.data{patchIndex}.x = x_data;
+            obj.data{patchIndex}.y = y_data;
+            obj.data{patchIndex}.z = z_data;
 
-        %-per-face or per-vertex colors (trisurf, isosurface...)-%
-        try
-            faceVertexCData = get(patch_data, 'FaceVertexCData');
+            %-patch i/j/k-%
+            obj.data{patchIndex}.i = i_data;
+            obj.data{patchIndex}.j = j_data;
+            obj.data{patchIndex}.k = k_data;
+
+            %-patch fillcolor-%
+            fill = extractPatchFace(patch_data);
+            obj.data{patchIndex}.color = fill.color;
+
+            %-per-face or per-vertex colors (trisurf, isosurface...)-%
             if ~isempty(faceVertexCData) && isnumeric(faceVertexCData) ...
                     && numel(faceVertexCData) > 1
-                cLim = get(ancestor(get(patch_data, 'Parent'), 'axes'), 'CLim');
-                cMap = get(ancestor(get(patch_data, 'Parent'), 'figure'), 'Colormap');
-                if numel(faceVertexCData) == size(tmpfaces, 1)
-                    % per-face colors: average over the incident faces
-                    intensity = zeros(size(x_data));
-                    for f = 1:size(tmpfaces, 1)
-                        intensity(tmpfaces(f, :) + 1) = ...
-                            intensity(tmpfaces(f, :) + 1) + faceVertexCData(f);
-                    end
-                    counts = zeros(size(x_data));
-                    for f = 1:size(tmpfaces, 1)
-                        counts(tmpfaces(f, :) + 1) = ...
-                            counts(tmpfaces(f, :) + 1) + 1;
-                    end
-                    intensity = intensity ./ max(counts, 1);
-                else
-                    intensity = faceVertexCData(:);
-                end
                 obj.data{patchIndex}.intensity = intensity;
                 obj.data{patchIndex}.cmin = cLim(1);
                 obj.data{patchIndex}.cmax = cLim(2);
@@ -203,11 +248,70 @@ function obj = updatePatch(obj, patchIndex)
                 end
                 obj.data{patchIndex}.showscale = false;
             end
-        catch
+        else
+            % no faces to draw (trimesh): the slot becomes the edge line
+            obj.data{patchIndex} = struct();
+            obj.data{patchIndex}.type = 'scatter3d';
+        end
+
+        %-patch edges: mesh3d draws no lines, so stroke the
+        %-triangulation with a line trace (native patches outline
+        %-their faces)-%
+        if ~(ischar(edgeColor) && strcmp(edgeColor, 'none'))
+            nTris = size(tmpfaces, 1);
+            ex = zeros(1, nTris*9);
+            ey = zeros(1, nTris*9);
+            ez = zeros(1, nTris*9);
+            ecol = cell(1, nTris*6);
+            for t = 1:nTris
+                f = tmpfaces(t, :);
+                % three segments per triangle, NaN-separated
+                x6 = x_data([f(1) f(2) f(1) f(3) f(2) f(3)]);
+                y6 = y_data([f(1) f(2) f(1) f(3) f(2) f(3)]);
+                z6 = z_data([f(1) f(2) f(1) f(3) f(2) f(3)]);
+                ex(9*(t-1)+1:9*t) = [x6(1) x6(2) NaN x6(3) x6(4) NaN x6(5) x6(6) NaN];
+                ey(9*(t-1)+1:9*t) = [y6(1) y6(2) NaN y6(3) y6(4) NaN y6(5) y6(6) NaN];
+                ez(9*(t-1)+1:9*t) = [z6(1) z6(2) NaN z6(3) z6(4) NaN z6(5) z6(6) NaN];
+                if edgeIsFlat && ~isempty(faceVertexCData)
+                    % color each segment by the z value at its midpoint
+                    seg = zeros(1, 3);
+                    for s = 1:3
+                        seg(s) = (intensity(f(s)) + intensity(f(mod(s, 3)+1))) / 2;
+                    end
+                    for s = 1:3
+                        idx = 1 + round((max(min(seg(s), cLim(2)), cLim(1)) - cLim(1)) ...
+                                / max(diff(cLim), eps) * (size(cMap, 1) - 1));
+                        idx = max(1, min(idx, size(cMap, 1)));
+                        col = cMap(idx, :);
+                        colorStr = getStringColor(round(255*col));
+                        ecol(6*(t-1)+2*s-1) = {colorStr};
+                        ecol(6*(t-1)+2*s) = {colorStr};
+                    end
+                end
+            end
+            edgeTrace = struct('type', 'scatter3d', 'mode', 'lines', ...
+                'x', ex, 'y', ey, 'z', ez, ...
+                'scene', sprintf('scene%d', xsource), 'showlegend', false);
+            if edgeIsFlat && ~isempty(faceVertexCData)
+                edgeTrace.line = struct('color', {ecol}, ...
+                    'width', max(1, get(patch_data, 'LineWidth')));
+            else
+                edgeTrace.line = struct('color', ...
+                    getStringColor(round(255*edgeColor)), ...
+                    'width', max(1, get(patch_data, 'LineWidth')));
+            end
+            if wantMesh
+                obj.PlotlyDefaults.patchEdges{end+1} = edgeTrace;
+            else
+                obj.data{patchIndex} = edgeTrace;
+            end
         end
     end
 
-    if strcmp(obj.data{patchIndex}.type, 'mesh3d')
+    if strcmp(obj.data{patchIndex}.type, 'mesh3d') ...
+            || (numel(obj.data) >= patchIndex ...
+                && isfield(obj.data{patchIndex}, 'scene') ...
+                && strcmp(obj.data{patchIndex}.type, 'scatter3d'))
         %-associate scene-%
         obj.data{patchIndex}.scene = sprintf('scene%d', xsource);
         obj.data{patchIndex}.name = get(patch_data, 'DisplayName');
