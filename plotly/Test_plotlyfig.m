@@ -805,7 +805,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
         function testPlotmatrixData(tc)
             fig = figure("Visible","off");
-            "columns", [ ...
+            columns = [ ...
                 0.67  0.77  0.42;
                 0.43  0.70  0.66;
                 0.45  0.13  0.72;
