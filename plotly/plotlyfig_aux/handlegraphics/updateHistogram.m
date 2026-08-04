@@ -161,4 +161,10 @@ function data = updateHistogramBar(obj,data,hist_data,axisData)
     end
 
     data.marker = extractPatchFace(hist_data);
+    if isfield(data.marker, 'line') && isfield(data.marker.line, 'width')
+        % plotly.js fails to draw bars when the marker line width is
+        % set on large histogram datasets; drop the width (the color
+        % alone draws the edge)
+        data.marker.line = rmfield(data.marker.line, 'width');
+    end
 end
