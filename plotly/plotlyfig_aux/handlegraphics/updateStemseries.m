@@ -13,10 +13,11 @@ function obj = updateStemseries(obj,dataIndex)
     stem_temp_data.mode = 'lines+markers';
 
     %-update marker-%
+    stem_marker = stem_temp_data.marker;
     obj.State.Plot(dataIndex).Handle = stem_child(2);
     stem_temp_data = updateLineseries(obj,dataIndex);
 
-    stem_temp_data.marker = obj.data{dataIndex}.marker;
+    stem_temp_data.marker = stem_marker;
 
     %-hide every other marker-%
     color_temp = cell(1,length(stem_temp_data.x));
