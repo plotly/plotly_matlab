@@ -62,6 +62,13 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.type = 'mesh3d';
             % update the patch data using reducepatch
             patch_data_red = reducepatch(obj.State.Plot(patchIndex).Handle, 1);
+        elseif isprop(patch_data, 'Faces') && isprop(patch_data, 'Vertices') ...
+                && ~isempty(get(patch_data, 'Faces'))
+            % patches defined by Faces/Vertices (trisurf, trimesh,
+            % tetramesh, isosurface, bar3...) render as a colored
+            % triangular mesh
+            obj.data{patchIndex}.type = 'mesh3d';
+            patch_data_red = patch_data;
         else
             obj.data{patchIndex}.type = 'scatter3d';
         end
@@ -162,6 +169,51 @@ function obj = updatePatch(obj, patchIndex)
         %-patch fillcolor-%
         fill = extractPatchFace(patch_data);
         obj.data{patchIndex}.color = fill.color;
+
+        %-per-face or per-vertex colors (trisurf, isosurface...)-%
+        try
+            faceVertexCData = get(patch_data, 'FaceVertexCData');
+            if ~isempty(faceVertexCData) && isnumeric(faceVertexCData) ...
+                    && numel(faceVertexCData) > 1
+                cLim = get(ancestor(get(patch_data, 'Parent'), 'axes'), 'CLim');
+                cMap = get(ancestor(get(patch_data, 'Parent'), 'figure'), 'Colormap');
+                if numel(faceVertexCData) == size(tmpfaces, 1)
+                    % per-face colors: average over the incident faces
+                    intensity = zeros(size(x_data));
+                    for f = 1:size(tmpfaces, 1)
+                        intensity(tmpfaces(f, :) + 1) = ...
+                            intensity(tmpfaces(f, :) + 1) + faceVertexCData(f);
+                    end
+                    counts = zeros(size(x_data));
+                    for f = 1:size(tmpfaces, 1)
+                        counts(tmpfaces(f, :) + 1) = ...
+                            counts(tmpfaces(f, :) + 1) + 1;
+                    end
+                    intensity = intensity ./ max(counts, 1);
+                else
+                    intensity = faceVertexCData(:);
+                end
+                obj.data{patchIndex}.intensity = intensity;
+                obj.data{patchIndex}.cmin = cLim(1);
+                obj.data{patchIndex}.cmax = cLim(2);
+                len = size(cMap, 1) - 1;
+                for c = 1:size(cMap, 1)
+                    obj.data{patchIndex}.colorscale{c} = ...
+                        {(c-1)/len, getStringColor(round(255*cMap(c, :)))};
+                end
+                obj.data{patchIndex}.showscale = false;
+            end
+        catch
+        end
+    end
+
+    if strcmp(obj.data{patchIndex}.type, 'mesh3d')
+        %-associate scene-%
+        obj.data{patchIndex}.scene = sprintf('scene%d', xsource);
+        obj.data{patchIndex}.name = get(patch_data, 'DisplayName');
+        obj.data{patchIndex}.visible = strcmp(get(patch_data, 'Visible'), 'on');
+        updateScene(obj, patchIndex, 'setTitleFont', false, ...
+            'handleDatetimeTicks', false);
     end
 
     obj.data{patchIndex}.showlegend = getShowLegend(patch_data);
