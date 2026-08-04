@@ -15,14 +15,88 @@ function updateScene(obj, dataIndex, varargin)
     %-INITIALIZATIONS-%
     axIndex = obj.getAxisIndex(obj.State.Plot(dataIndex).AssociatedAxis);
     plotData = obj.State.Plot(dataIndex).Handle;
-    axisData = get(plotData, 'Parent');
+    % Octave groups some plot types (stem3, quiver3...) into hggroup
+    % objects; the plot handle passed here may be a child of the
+    % group, so climb up to the axes
+    axisData = ancestor(plotData, 'axes');
     xSource = findSourceAxis(obj, axIndex);
     scene = obj.layout.(sprintf("scene%d", xSource));
 
-    aspectRatio = get(axisData, 'PlotBoxAspectRatio');
+    %-axes geometry-%
+    xlim = get(axisData, 'XLim');
+    ylim = get(axisData, 'YLim');
+    zlim = get(axisData, 'ZLim');
+    pb = get(axisData, 'PlotBoxAspectRatio');
+    view = get(axisData, 'View');
+    az = view(1);
+    el = view(2);
+    if isprop(axisData, 'CameraProjection')
+        camProj = get(axisData, 'CameraProjection');
+    else
+        camProj = 'perspective';
+    end
+    %-replicate Octave/MATLAB's camera computation (axes::properties::update_camera)-%
+    xr = xlim(2) - xlim(1);
+    yr = ylim(2) - ylim(1);
+    zr = zlim(2) - zlim(1);
+
+    d = 5 * sqrt(sum(pb .^ 2));
+    azr = az * pi / 180;
+    elr = el * pi / 180;
+
+    if el == 90 || el == -90
+        dir = [0 0 sign(el)];
+    else
+        dir = [cos(elr) * sin(azr), -cos(elr) * cos(azr), sin(elr)];
+    end
+
+    % camera eye in data units
+    eye = [0 0 0];
+    eye(1) = dir(1) * xr / pb(1);
+    eye(2) = dir(2) * yr / pb(2);
+    eye(3) = dir(3) * zr / pb(3);
+    eye = d * eye + [(xlim(1) + xlim(2)) / 2, (ylim(1) + ylim(2)) / 2, ...
+        (zlim(1) + zlim(2)) / 2];
+
+    % camera up vector in data units
+    if el == 90 || el == -90
+        up = [sign(el) * sin(azr), sign(el) * cos(azr), 0];
+        up(1) = up(1) * xr / pb(1);
+        up(2) = up(2) * yr / pb(2);
+    else
+        up = [0 0 1];
+    end
+
+    %-projected extents of the plot box in view space (unit cube)-%
+    % the plot box spans [0 1]^3 in the "unit cube" space used by the
+    % viewport fit; transform its corners into view space and measure
+    % the projected width and height
+    [~, ~, ~, ~, upView] = projectedBoxExtents(eye, up, ...
+        xlim, ylim, zlim, pb);
+
+    %-scene aspect ratio-%
+    % the plot box proportions; plotly's scene box is centered at the
+    % origin and spans [aspectratio] in scene units
+    scene.aspectratio.x = pb(1) * opts.aspectMultiplier(1);
+    scene.aspectratio.y = pb(2) * opts.aspectMultiplier(2);
+    scene.aspectratio.z = pb(3) * opts.aspectMultiplier(3);
+
+    if strcmpi(camProj, 'orthographic')
+        scene.camera.projection.type = 'orthographic';
+    else
+        scene.camera.projection.type = 'perspective';
+    end
+
+    %-camera center and eye-%
+    % the eye direction follows the view angle with the plot box
+    % proportions; the distance keeps the original normalization so
+    % the plot box is not magnified
+    center = [0 0 0];
+    eyeDir = (dir .* pb);
+    eyeDir = eyeDir / norm(eyeDir);
+
     cameraPosition = get(axisData, 'CameraPosition');
     dataAspectRatio = get(axisData, 'DataAspectRatio');
-    cameraUpVector = get(axisData, 'CameraUpVector');
     cameraEye = cameraPosition ./ dataAspectRatio;
 
     %-camera normalization-%
@@ -34,41 +108,47 @@ function updateScene(obj, dataIndex, varargin)
         else
             fac = 1;
         end
-        r1 = rangeLength([1, prod(aspectRatio([1,2]))]);
-        r2 = rangeLength([1, prod(aspectRatio([1,3]))]);
-        r3 = rangeLength([1, prod(aspectRatio([2,3]))]);
+        r1 = rangeLength([1, prod(pb([1, 2]))]);
+        r2 = rangeLength([1, prod(pb([1, 3]))]);
+        r3 = rangeLength([1, prod(pb([2, 3]))]);
         r = max([r1, r2, r3]);
         eyeScale = (1.4 + r * fac) / normFac;
     elseif isnan(opts.normFacScale)
         cameraOffset = 0.5;
         normFac = abs(min(cameraEye));
         normFac = normFac ...
-            / (max(aspectRatio)/min(aspectRatio) + cameraOffset);
+            / (max(pb) / min(pb) + cameraOffset);
         eyeScale = 1 / normFac;
     else
         normFac = opts.normFacScale * abs(min(cameraEye));
         eyeScale = 1 / normFac;
     end
 
-    %-aspect ratio-%
-    scene.aspectratio.x = opts.aspectMultiplier(1) * aspectRatio(1);
-    scene.aspectratio.y = opts.aspectMultiplier(2) * aspectRatio(2);
-    scene.aspectratio.z = opts.aspectMultiplier(3) * aspectRatio(3);
+    eyeDist = norm(cameraEye) * eyeScale;
 
-    %-camera eye-%
-    scene.camera.eye.x = cameraEye(1) * eyeScale;
-    scene.camera.eye.y = cameraEye(2) * eyeScale;
-    scene.camera.eye.z = cameraEye(3) * eyeScale;
+    scene.camera.eye.x = center(1) + eyeDist * eyeDir(1);
+    scene.camera.eye.y = center(2) + eyeDist * eyeDir(2);
+    scene.camera.eye.z = center(3) + eyeDist * eyeDir(3);
 
-    %-camera up-%
-    scene.camera.up.x = cameraUpVector(1);
-    scene.camera.up.y = cameraUpVector(2);
-    scene.camera.up.z = cameraUpVector(3);
+    scene.camera.center.x = center(1);
+    scene.camera.center.y = center(2);
+    scene.camera.center.z = center(3);
+
+    %-camera up (direction only, unit length is fine)-%
+    upDir = upView;
+    if norm(upDir) > 0
+        upDir = upDir / norm(upDir);
+    else
+        upDir = [0 0 1];
+    end
+    scene.camera.up.x = upDir(1);
+    scene.camera.up.y = upDir(2);
+    scene.camera.up.z = upDir(3);
 
     %-scene axis configuration-%
-    scene.xaxis.range = get(axisData, 'XLim');
-    scene.yaxis.range = get(axisData, 'YLim');
-    scene.zaxis.range = get(axisData, 'ZLim');
+    scene.xaxis.range = xlim;
+    scene.yaxis.range = ylim;
+    scene.zaxis.range = zlim;
 
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;
@@ -142,6 +222,56 @@ function updateScene(obj, dataIndex, varargin)
 
     %-SET SCENE TO LAYOUT-%
     obj.layout.(sprintf("scene%d", xSource)) = scene;
+end
+
+function [xM, yM, fView, normF, UP] = projectedBoxExtents(eye, up, xlim, ylim, zlim, pb)
+    % transform the plot box corners into view space and measure the
+    % projected width and height, replicating Octave's
+    % axes::properties::update_camera
+    xr = xlim(2) - xlim(1);
+    yr = ylim(2) - ylim(1);
+    zr = zlim(2) - zlim(1);
+
+    % data -> unit cube [0 1]^3
+    eyeU = (eye - [xlim(1) ylim(1) zlim(1)]) ./ [xr yr zr];
+    centerU = 0.5 * ones(1, 3);
+    upU = up .* [pb(1) / xr, pb(2) / yr, pb(3) / zr];
+
+    F = centerU - eyeU;
+    normF = norm(F);
+    f = F / normF;
+    if norm(upU) > 0
+        UP = upU / norm(upU);
+    else
+        UP = [0 0 1];
+    end
+    if abs(dot(f, UP)) > 1e-15
+        fa = 1 / sqrt(1 - f(3) * f(3));
+        UP = UP * fa;
+    end
+
+    s = cross(f, UP);
+    u = cross(s, f);
+    l = [s; u; -f];
+
+    % unit cube corners in view space
+    corners = zeros(8, 3);
+    idx = 0;
+    for i = 0:1
+        for j = 0:1
+            for k = 0:1
+                idx = idx + 1;
+                c = [i j k];
+                v = l * (c - eyeU)';
+                v(3) = -v(3);
+                corners(idx, :) = v';
+            end
+        end
+    end
+
+    xM = max(corners(:, 1)) - min(corners(:, 1));
+    yM = max(corners(:, 2)) - min(corners(:, 2));
+    fView = -f;
 end
 
 function tickVals = resolveDatetimeTicks(tick, tickLabel)
