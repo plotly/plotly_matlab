@@ -255,57 +255,52 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.type = 'scatter3d';
         end
 
-        %-patch edges: mesh3d draws no lines, so stroke the polygon
-        %-borders with a line trace (native patches outline their
-        %-faces, not the triangulation diagonals)-%
+        %-patch edges: mesh3d draws no lines, so stroke each face
+        %-border with its own line trace. plotly's gl3d lines ignore
+        %-NaN breaks, so separate faces must not share a trace (the
+        %-wireframe would weld into one continuous line)-%
         if ~(ischar(edgeColor) && strcmp(edgeColor, 'none'))
-            nVerts = numel(tmpfacesOrig);
-            ex = zeros(1, nVerts*3);
-            ey = zeros(1, nVerts*3);
-            ez = zeros(1, nVerts*3);
-            ecol = cell(1, nVerts*2);
-            out = 0;
-            colOut = 0;
             for fIdx = 1:size(tmpfacesOrig, 1)
                 v = tmpfacesOrig(fIdx, :);
                 n = numel(v);
-                % ring segments around the face: (v1,v2)...(vn,v1)
+                % closed polygon loop: (v1,v2)...(vn,v1)
+                ex = zeros(1, n+1);
+                ey = zeros(1, n+1);
+                ez = zeros(1, n+1);
                 for s = 1:n
-                    p = v(s);
-                    q = v(mod(s, n) + 1);
-                    ex(out+1:out+3) = [x_data(p) x_data(q) NaN];
-                    ey(out+1:out+3) = [y_data(p) y_data(q) NaN];
-                    ez(out+1:out+3) = [z_data(p) z_data(q) NaN];
-                    out = out + 3;
-                    if edgeIsFlat && ~isempty(faceVertexCData)
-                        % color each segment by the z value at its midpoint
-                        segVal = (intensity(p) + intensity(q)) / 2;
-                        idx = 1 + round((max(min(segVal, cLim(2)), cLim(1)) - cLim(1)) ...
-                                / max(diff(cLim), eps) * (size(cMap, 1) - 1));
-                        idx = max(1, min(idx, size(cMap, 1)));
-                        colorStr = getStringColor(round(255*cMap(idx, :)));
-                        ecol(colOut+1) = {colorStr};
-                        ecol(colOut+2) = {colorStr};
-                    end
-                    colOut = colOut + 2;
+                    ex(s) = x_data(v(s));
+                    ey(s) = y_data(v(s));
+                    ez(s) = z_data(v(s));
                 end
-            end
-            edgeTrace = struct('type', 'scatter3d', 'mode', 'lines', ...
-                'x', ex, 'y', ey, 'z', ez, ...
-                'scene', sprintf('scene%d', xsource), 'showlegend', false);
-            if edgeIsFlat && ~isempty(faceVertexCData)
-                % flat edge colors wash out at one pixel wide: draw
-                % them a bit thicker so the colormap reads clearly
-                edgeTrace.line = struct('color', {ecol}, 'width', 2);
-            else
-                edgeTrace.line = struct('color', ...
-                    getStringColor(round(255*edgeColor)), ...
-                    'width', max(1, get(patch_data, 'LineWidth')));
-            end
-            if wantMesh
-                obj.PlotlyDefaults.patchEdges{end+1} = edgeTrace;
-            else
-                obj.data{patchIndex} = edgeTrace;
+                ex(n+1) = x_data(v(1));
+                ey(n+1) = y_data(v(1));
+                ez(n+1) = z_data(v(1));
+                if edgeIsFlat && ~isempty(faceVertexCData)
+                    % one color per face: the mean z over its vertices
+                    meanVal = mean(intensity(v));
+                    idx = 1 + round((max(min(meanVal, cLim(2)), cLim(1)) - cLim(1)) ...
+                            / max(diff(cLim), eps) * (size(cMap, 1) - 1));
+                    idx = max(1, min(idx, size(cMap, 1)));
+                    col = getStringColor(round(255*cMap(idx, :)));
+                    edgeTrace = struct('type', 'scatter3d', 'mode', 'lines', ...
+                        'x', ex, 'y', ey, 'z', ez, ...
+                        'scene', sprintf('scene%d', xsource), 'showlegend', false, ...
+                        'line', struct('color', col, 'width', 2));
+                else
+                    edgeTrace = struct('type', 'scatter3d', 'mode', 'lines', ...
+                        'x', ex, 'y', ey, 'z', ez, ...
+                        'scene', sprintf('scene%d', xsource), 'showlegend', false, ...
+                        'line', struct('color', ...
+                            getStringColor(round(255*edgeColor)), ...
+                            'width', max(1, get(patch_data, 'LineWidth'))));
+                end
+                if wantMesh
+                    obj.PlotlyDefaults.patchEdges{end+1} = edgeTrace;
+                elseif fIdx == 1
+                    obj.data{patchIndex} = edgeTrace;
+                else
+                    obj.PlotlyDefaults.patchEdges{end+1} = edgeTrace;
+                end
             end
         end
     end
