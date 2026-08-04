@@ -154,7 +154,10 @@ function data = updateHistogramBar(obj,data,hist_data,axisData)
     obj.layout.barmode = "overlay";
 
     if ~ischar(get(hist_data, 'FaceAlpha'))
-        data.opacity = get(hist_data, 'FaceAlpha') * 1.25;
+        % the 1.25 factor compensates for MATLAB's translucent hist
+        % patches; Octave patches are fully opaque and the factor
+        % would push the opacity past the valid range
+        data.opacity = min(1, get(hist_data, 'FaceAlpha') * 1.25);
     end
 
     data.marker = extractPatchFace(hist_data);
