@@ -8,16 +8,34 @@ function marker = extractPatchFace(patch_data)
     marker = struct();
     marker.line.width = get(patch_data, 'LineWidth');
 
-    if isnumeric(get(patch_data, 'FaceColor'))
-        col = get(patch_data, 'FaceColor');
-        alpha = get(patch_data, 'FaceAlpha');
+    % patches with Faces/Vertices store their colors in
+    % FaceVertexCData; patches without it have an empty color array
+    try
+        tmpFaceVertexCData = get(patch_data, 'FaceVertexCData');
+        if isempty(tmpFaceVertexCData)
+            tmpFaceVertexCData = get(patch_data, 'CData');
+        end
+    catch
+        try
+            tmpFaceVertexCData = get(patch_data, 'CData');
+        catch
+            tmpFaceVertexCData = [];
+        end
+    end
+
+    faceColor = get(patch_data, 'FaceColor');
+    alpha = 1;
+    if isnumeric(faceColor)
+        col = faceColor;
+        if isprop(patch_data, 'FaceAlpha')
+            alpha = get(patch_data, 'FaceAlpha');
+        end
     else
-        switch get(patch_data, 'FaceColor')
+        switch faceColor
             case "none"
                 col = [0 0 0];
                 alpha = 0;
             case {"flat","interp"}
-                tmpFaceVertexCData = get(patch_data, 'FaceVertexCData');
                 faceVertexCData = tmpFaceVertexCData(1,1);
                 switch get(patch_data, 'CDataMapping')
                     case "scaled"
@@ -28,22 +46,30 @@ function marker = extractPatchFace(patch_data)
                     case "direct"
                         col = colormap(faceVertexCData,:);
                 end
-                alpha = get(patch_data, 'FaceAlpha');
+                if isprop(patch_data, 'FaceAlpha')
+                    alpha = get(patch_data, 'FaceAlpha');
+                end
             case "auto"
                 cIndex = find(flipud(arrayfun(@(x) isequaln(x,patch_data), ...
                         get(get(patch_data, 'Parent'), 'Children')))); % far from pretty
                 tmpColorOrder = get(get(patch_data, 'Parent'), 'ColorOrder');
                 col = tmpColorOrder(cIndex,:);
-                alpha = get(patch_data, 'FaceAlpha');
+                if isprop(patch_data, 'FaceAlpha')
+                    alpha = get(patch_data, 'FaceAlpha');
+                end
         end
     end
     marker.color = getStringColor(round(255*col), alpha);
 
-    if isnumeric(get(patch_data, 'EdgeColor'))
-        col = get(patch_data, 'EdgeColor');
-        alpha = get(patch_data, 'EdgeAlpha');
+    edgeColor = get(patch_data, 'EdgeColor');
+    alpha = 1;
+    if isnumeric(edgeColor)
+        col = edgeColor;
+        if isprop(patch_data, 'EdgeAlpha')
+            alpha = get(patch_data, 'EdgeAlpha');
+        end
     else
-        switch get(patch_data, 'EdgeColor')
+        switch edgeColor
             case "none"
                 col = [0 0 0];
                 alpha = 0;
@@ -58,7 +84,9 @@ function marker = extractPatchFace(patch_data)
                     case "direct"
                         col = colormap(faceVertexCData,:);
                 end
-                alpha = get(patch_data, 'EdgeAlpha');
+                if isprop(patch_data, 'EdgeAlpha')
+                    alpha = get(patch_data, 'EdgeAlpha');
+                end
         end
     end
     marker.line.color = getStringColor(round(255*col), alpha);
