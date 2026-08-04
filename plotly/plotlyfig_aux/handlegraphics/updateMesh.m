@@ -90,6 +90,7 @@ function obj = updateMesh(obj, surfaceIndex)
     %-get colormap-%
     cMap = get(axisData, 'Colormap');
     colorScale = getColorScale(cMap);
+    tmpCLim = get(axisData, 'CLim');
 
     %-get edge color-%
     if isnumeric(get(meshData, 'EdgeColor'))
@@ -140,6 +141,10 @@ tmpCLim = get(axisData, 'CLim');
     obj.data{contourIndex}.line.color = cDataContour;
     obj.data{surfaceIndex}.contours.x.color = cDataContour;
     obj.data{surfaceIndex}.contours.y.color = cDataContour;
+
+    % the contour line colors are mapped through the trace's cmin/cmax
+    obj.data{surfaceIndex}.cmin = tmpCLim(1);
+    obj.data{surfaceIndex}.cmax = tmpCLim(2);
 
     %-get face color-%
     faceColor = get(meshData, 'FaceColor');

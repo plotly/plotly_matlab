@@ -90,6 +90,7 @@ function obj = updateSurf(obj, surfaceIndex)
     %-get colormap-%
     cMap = get(axisData, 'Colormap');
     colorScale = getColorScale(cMap);
+    tmpCLim = get(axisData, 'CLim');
 
     %-get edge color-%
     if isnumeric(get(meshData, 'EdgeColor'))
