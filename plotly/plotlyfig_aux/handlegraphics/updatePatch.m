@@ -163,6 +163,7 @@ function obj = updatePatch(obj, patchIndex)
         %-mesh3d only accepts triangles: fan-triangulate polygonal
         %-faces (bar3/bar3h quads, fill3 polygons) and replicate any
         %-per-face colors across the resulting triangles-%
+        tmpfacesOrig = tmpfaces;
         if size(tmpfaces, 2) > 3
             nPolys = size(tmpfaces, 1);
             fvcPerPoly = numel(faceVertexCData) == nPolys;
@@ -254,47 +255,48 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.type = 'scatter3d';
         end
 
-        %-patch edges: mesh3d draws no lines, so stroke the
-        %-triangulation with a line trace (native patches outline
-        %-their faces)-%
+        %-patch edges: mesh3d draws no lines, so stroke the polygon
+        %-borders with a line trace (native patches outline their
+        %-faces, not the triangulation diagonals)-%
         if ~(ischar(edgeColor) && strcmp(edgeColor, 'none'))
-            nTris = size(tmpfaces, 1);
-            ex = zeros(1, nTris*9);
-            ey = zeros(1, nTris*9);
-            ez = zeros(1, nTris*9);
-            ecol = cell(1, nTris*6);
-            for t = 1:nTris
-                f = tmpfaces(t, :);
-                % three segments per triangle, NaN-separated
-                x6 = x_data([f(1) f(2) f(1) f(3) f(2) f(3)]);
-                y6 = y_data([f(1) f(2) f(1) f(3) f(2) f(3)]);
-                z6 = z_data([f(1) f(2) f(1) f(3) f(2) f(3)]);
-                ex(9*(t-1)+1:9*t) = [x6(1) x6(2) NaN x6(3) x6(4) NaN x6(5) x6(6) NaN];
-                ey(9*(t-1)+1:9*t) = [y6(1) y6(2) NaN y6(3) y6(4) NaN y6(5) y6(6) NaN];
-                ez(9*(t-1)+1:9*t) = [z6(1) z6(2) NaN z6(3) z6(4) NaN z6(5) z6(6) NaN];
-                if edgeIsFlat && ~isempty(faceVertexCData)
-                    % color each segment by the z value at its midpoint
-                    seg = zeros(1, 3);
-                    for s = 1:3
-                        seg(s) = (intensity(f(s)) + intensity(f(mod(s, 3)+1))) / 2;
-                    end
-                    for s = 1:3
-                        idx = 1 + round((max(min(seg(s), cLim(2)), cLim(1)) - cLim(1)) ...
+            nVerts = numel(tmpfacesOrig);
+            ex = zeros(1, nVerts*3);
+            ey = zeros(1, nVerts*3);
+            ez = zeros(1, nVerts*3);
+            ecol = cell(1, nVerts*2);
+            out = 0;
+            colOut = 0;
+            for fIdx = 1:size(tmpfacesOrig, 1)
+                v = tmpfacesOrig(fIdx, :);
+                n = numel(v);
+                % ring segments around the face: (v1,v2)...(vn,v1)
+                for s = 1:n
+                    p = v(s);
+                    q = v(mod(s, n) + 1);
+                    ex(out+1:out+3) = [x_data(p) x_data(q) NaN];
+                    ey(out+1:out+3) = [y_data(p) y_data(q) NaN];
+                    ez(out+1:out+3) = [z_data(p) z_data(q) NaN];
+                    out = out + 3;
+                    if edgeIsFlat && ~isempty(faceVertexCData)
+                        % color each segment by the z value at its midpoint
+                        segVal = (intensity(p) + intensity(q)) / 2;
+                        idx = 1 + round((max(min(segVal, cLim(2)), cLim(1)) - cLim(1)) ...
                                 / max(diff(cLim), eps) * (size(cMap, 1) - 1));
                         idx = max(1, min(idx, size(cMap, 1)));
-                        col = cMap(idx, :);
-                        colorStr = getStringColor(round(255*col));
-                        ecol(6*(t-1)+2*s-1) = {colorStr};
-                        ecol(6*(t-1)+2*s) = {colorStr};
+                        colorStr = getStringColor(round(255*cMap(idx, :)));
+                        ecol(colOut+1) = {colorStr};
+                        ecol(colOut+2) = {colorStr};
                     end
+                    colOut = colOut + 2;
                 end
             end
             edgeTrace = struct('type', 'scatter3d', 'mode', 'lines', ...
                 'x', ex, 'y', ey, 'z', ez, ...
                 'scene', sprintf('scene%d', xsource), 'showlegend', false);
             if edgeIsFlat && ~isempty(faceVertexCData)
-                edgeTrace.line = struct('color', {ecol}, ...
-                    'width', max(1, get(patch_data, 'LineWidth')));
+                % flat edge colors wash out at one pixel wide: draw
+                % them a bit thicker so the colormap reads clearly
+                edgeTrace.line = struct('color', {ecol}, 'width', 2);
             else
                 edgeTrace.line = struct('color', ...
                     getStringColor(round(255*edgeColor)), ...
