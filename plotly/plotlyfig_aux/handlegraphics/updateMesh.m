@@ -109,7 +109,7 @@ tmpCLim = get(axisData, 'CLim');
         if size(cData, 3) ~= 1
             cMap = unique( reshape(cData, ...
                 [size(cData,1)*size(cData,2), size(cData,3)]), "rows" );
-            cData = rgb2ind(cData, cMap);
+            cData = quantizeColors(cData);
 
             edgeColorScale = getColorScale(cMap);
 
@@ -155,12 +155,19 @@ tmpCLim = get(axisData, 'CLim');
             end
         end
 
-        [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
+        [cDataSurface, cMapSurface] = quantizeColors(cDataSurface);
         cDataSurface = double(cDataSurface) + tmpCLim(1);
 
-        for c = 1: size(cMapSurface, 1)
-            colorScale{c} = {(c-1)*fac, ...
-                    getStringColor(round(255*cMapSurface(c, :)), 1)};
+        if size(cMapSurface, 1) == 1
+            % a single-color colormap must still have two stops for
+            % plotly to interpolate over the whole range
+            colorScale = {{0, getStringColor(round(255*cMapSurface(1, :)), 1)}, ...
+                {1, getStringColor(round(255*cMapSurface(1, :)), 1)}};
+        else
+            for c = 1: size(cMapSurface, 1)
+                colorScale{c} = {(c-1)/(size(cMapSurface, 1)-1), ...
+                        getStringColor(round(255*cMapSurface(c, :)), 1)};
+            end
         end
 
         obj.data{surfaceIndex}.cmin = tmpCLim(1);
@@ -191,7 +198,7 @@ tmpCLim = get(axisData, 'CLim');
         if size(cData, 3) ~= 1
             cMap = unique( reshape(cData, ...
                 [size(cData,1)*size(cData,2), size(cData,3)]), 'rows' );
-            cDataSurface = rgb2ind(cData, cMap);
+            cDataSurface = quantizeColors(cData);
 
             colorScale = getColorScale(cMap);
         else
