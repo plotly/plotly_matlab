@@ -215,8 +215,10 @@ tmpCLim = get(axisData, 'CLim');
     %-lighting settings-%
 
     if isnumeric(get(meshData, 'FaceColor')) && all(get(meshData, 'FaceColor') == [1, 1, 1])
-        obj.data{surfaceIndex}.lighting.diffuse = 0.5;
-        obj.data{surfaceIndex}.lighting.ambient = 0.725;
+        % the native mesh faces are plain white; render them without
+        % any shading so they stay white
+        obj.data{surfaceIndex}.lighting.diffuse = 0;
+        obj.data{surfaceIndex}.lighting.ambient = 1;
     end
 
     if get(meshData, 'FaceAlpha') ~= 1
