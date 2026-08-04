@@ -150,6 +150,17 @@ function updateScene(obj, dataIndex, varargin)
     scene.yaxis.range = ylim;
     scene.zaxis.range = zlim;
 
+    %-reversed axes (bar3/bar3h mirror the y axis)-%
+    if isprop(axisData, 'XDir') && strcmp(get(axisData, 'XDir'), 'reverse')
+        scene.xaxis.range = fliplr(scene.xaxis.range);
+    end
+    if isprop(axisData, 'YDir') && strcmp(get(axisData, 'YDir'), 'reverse')
+        scene.yaxis.range = fliplr(scene.yaxis.range);
+    end
+    if isprop(axisData, 'ZDir') && strcmp(get(axisData, 'ZDir'), 'reverse')
+        scene.zaxis.range = fliplr(scene.zaxis.range);
+    end
+
     scene.xaxis.zeroline = false;
     scene.yaxis.zeroline = false;
     scene.zaxis.zeroline = false;
