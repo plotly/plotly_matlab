@@ -101,9 +101,11 @@ function data = updateLineseries(obj, plotIndex)
                     yDataLabel = dataTipRow.Label;
                     continue
                 end
-                % spy and similar lines expose custom rows whose Value
-                % is a function handle; arrayfun cannot map over those
-                if ~isa(dataTipRow.Value, 'function_handle')
+                % only data rows carry numeric values; parameterized
+                % functionline rows carry property-name chars ('TData',
+                % 'XData'...) that arrayfun would iterate character by
+                % character, and spy's rows carry function handles
+                if isnumeric(dataTipRow.Value) || islogical(dataTipRow.Value)
                     customLabel = customLabel + arrayfun(@(value) dataTipRow.Label ...
                             + ": " + num2str(value) + "<br>", dataTipRow.Value);
                 end
