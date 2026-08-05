@@ -445,10 +445,10 @@ function trace = buildPieTrace(patch_data)
     % the figure's own percentage texts carry the labels, so the pie
     % trace draws none; the domain keeps the pie at the native size
     % the native pie starts its first slice at 12 o'clock and reads
-    % counterclockwise in data order (3, 5, 2, 4, 6 for the gallery
-    % entry). With the counterclockwise direction the plotly pie spans
-    % the first value clockwise from the top and the remaining values
-    % counterclockwise, so feed it the data order rotated by one
+    % counterclockwise in data order. With the counterclockwise
+    % direction the plotly pie spans the first value clockwise from
+    % the top and the remaining values counterclockwise, so feed it
+    % the data order rotated by one
     values = [values(end), values(1:end-1)];
     labels = [labels(end), labels(1:end-1)];
     colors = [colors(end), colors(1:end-1)];
