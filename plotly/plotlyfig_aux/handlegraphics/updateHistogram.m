@@ -120,24 +120,19 @@ function data = updateHistogramBar(obj,data,hist_data,axisData)
             xdata = mean(tmpXData(2:3,:));
             tmpYData = get(hist_data, 'YData');
             counts = tmpYData(2,:);
-            data.x = repelem(xdata, counts);
-            data.autobinx = false;
-            xbins.start = tmpXData(2,1);
-            xbins.end = tmpXData(3,end);
-            xbins.size = diff(tmpXData(2:3,1));
-            data.xbins = xbins;
+            data.x = xdata;
+            data.y = counts;
+            data.width = diff(tmpXData(2:3,:));
             obj.layout.bargap = ...
                     (tmpXData(3,1) - tmpXData(2,2)) ...
                     / (tmpXData(3,1) - tmpXData(2,1));
         case "h"
             ydata = mean(tmpYData(2:3,:));
             counts = tmpXData(2,:);
-            data.y = repelem(ydata, counts);
-            data.autobiny = false;
-            ybins.start = tmpYData(2,1);
-            ybins.end = tmpYData(3,end);
-            ybins.size = diff(tmpYData(2:3,1));
-            data.ybins = ybins;
+            data.y = ydata;
+            data.x = counts;
+            data.width = diff(tmpYData(2:3,:));
+            data.orientation = 'h';
             obj.layout.bargap = ...
                     (tmpXData(3,1) - tmpXData(2,2)) ...
                     / (tmpXData(3,1) - tmpXData(2,1));
