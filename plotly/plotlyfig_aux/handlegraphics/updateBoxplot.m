@@ -104,9 +104,10 @@ function obj = updateBoxplot(obj, boxIndex)
             %box name
             if strcmp(get(box_child_data, 'Type'),'text')
                 if iscell(get(box_child_data, 'String'))
-                    boxname =  get(box_child_data, 'String'){1};
+                    boxString = get(box_child_data, 'String');
+                    boxname = boxString{1};
                 else
-                    boxname =  get(box_child_data, 'String');
+                    boxname = get(box_child_data, 'String');
                 end
             end
 
