@@ -29,6 +29,8 @@ function obj = updateSurf(obj, surfaceIndex)
     %-scatter3d type for contour mesh lines-%
     obj.data{contourIndex}.type = 'scatter3d';
     obj.data{contourIndex}.mode = 'lines';
+    %-the mesh lines are decoration; hovering them shows nothing-%
+    obj.data{contourIndex}.hoverinfo = 'skip';
 
     %-get plot data-%
     xData = get(meshData, 'XData');

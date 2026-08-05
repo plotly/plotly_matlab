@@ -309,6 +309,11 @@ function obj = updatePatch(obj, patchIndex)
                             getStringColor(round(255*edgeColor)), ...
                             'width', max(1, get(patch_data, 'LineWidth'))));
                 end
+                if isPieSlice(patch_data)
+                    % pie3 borders hover as nothing; only the slice
+                    % faces carry the label
+                    edgeTrace.hoverinfo = 'skip';
+                end
                 if wantMesh
                     obj.PlotlyDefaults.patchEdges{end+1} = edgeTrace;
                 elseif fIdx == 1
@@ -335,4 +340,69 @@ function obj = updatePatch(obj, patchIndex)
     obj.data{patchIndex}.showlegend = getShowLegend(patch_data);
 
     obj.data{patchIndex}.showlegend = obj.data{patchIndex}.showlegend & ~isempty(obj.data{patchIndex}.name);
+
+    %-pie slices hover as one unit with their label: 2D slices hover
+    %-anywhere inside the fill, 3D faces show the label instead of the
+    %-vertex coordinates-%
+    if isPieSlice(patch_data)
+        [spanStart, spanEnd] = pieSliceSpan(patch_data);
+        label = pieSliceLabel(ancestor(patch_data, 'figure'), spanStart, spanEnd);
+        if strcmp(obj.data{patchIndex}.type, 'scatter')
+            obj.data{patchIndex}.hoveron = 'fills';
+            obj.data{patchIndex}.hoverinfo = 'text';
+            obj.data{patchIndex}.text = label;
+        elseif strcmp(obj.data{patchIndex}.type, 'mesh3d')
+            n = numel(obj.data{patchIndex}.x);
+            obj.data{patchIndex}.text = repmat({label}, n, 1);
+            obj.data{patchIndex}.hoverinfo = 'text';
+        end
+    end
+end
+
+function isPie = isPieSlice(patch_data)
+    %-a pie slice polygon starts at the origin and arcs out to the
+    %-circle (the closing vertex sits on the circle too)-%
+    isPie = false;
+    try
+        x = get(patch_data, 'XData');
+        y = get(patch_data, 'YData');
+        if numel(x) >= 4 && x(1) == 0 && y(1) == 0
+            r = sqrt(x(2:end).^2 + y(2:end).^2);
+            isPie = mean(r) > 0.5 && std(r) / mean(r) < 0.2;
+        end
+    catch
+    end
+end
+
+function [spanStart, spanEnd] = pieSliceSpan(patch_data)
+    x = get(patch_data, 'XData');
+    y = get(patch_data, 'YData');
+    n = numel(x);
+    spanStart = mod(rad2deg(atan2(y(2), x(2))), 360);
+    spanEnd = mod(rad2deg(atan2(y(n-1), x(n-1))), 360);
+    if spanEnd < spanStart
+        spanEnd = spanEnd + 360;
+    end
+end
+
+function label = pieSliceLabel(fig, spanStart, spanEnd)
+    %-the percentage text whose angle falls inside the slice span-%
+    label = '';
+    ts = findall(fig, 'type', 'text');
+    for i = 1:numel(ts)
+        st = get(ts(i), 'String');
+        if isempty(st) || (iscell(st) && isempty(st{1}))
+            continue
+        end
+        pos = get(ts(i), 'Position');
+        ang = mod(rad2deg(atan2(pos(2), pos(1))), 360);
+        if (ang >= spanStart && ang < spanEnd) ...
+                || (ang + 360 >= spanStart && ang + 360 < spanEnd)
+            if iscell(st)
+                st = st{1};
+            end
+            label = st;
+            return
+        end
+    end
 end
