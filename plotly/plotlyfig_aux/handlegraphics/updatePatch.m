@@ -366,27 +366,62 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.hoverinfo = 'text';
             obj.data{patchIndex}.text = label;
         elseif strcmp(obj.data{patchIndex}.type, 'mesh3d')
-            n = numel(obj.data{patchIndex}.x);
-            obj.data{patchIndex}.text = repmat({label}, n, 1);
-            obj.data{patchIndex}.hoverinfo = 'text';
+            if all(abs(z_data) < eps)
+                % the base faces at z=0 hover nothing
+                obj.data{patchIndex}.hoverinfo = 'skip';
+            else
+                % the top faces are densified into radial rings so the
+                % whole face hovers as one unit with the slice label
+                nRings = 5;
+                nAng = numel(x_data) - 1;
+                th = atan2(y_data(2:end), x_data(2:end));
+                newX = zeros(nRings*nAng + 1, 1);
+                newY = zeros(nRings*nAng + 1, 1);
+                newZ = z_data(1) * ones(nRings*nAng + 1, 1);
+                for k = 1:nRings
+                    r = k / nRings;
+                    seg = (k-1)*nAng + (1:nAng);
+                    newX(seg+1) = r*cos(th);
+                    newY(seg+1) = r*sin(th);
+                end
+                triI = zeros(nAng + 2*(nRings-1)*nAng, 1);
+                triJ = triI;
+                triK = triI;
+                t = 0;
+                jj = (0:nAng-1)';
+                jj2 = mod(jj + 1, nAng);
+                % fan from the center to the first ring
+                triI(t+1:t+nAng) = 0;
+                triJ(t+1:t+nAng) = jj;
+                triK(t+1:t+nAng) = jj2;
+                t = t + nAng;
+                % quads between consecutive rings
+                for k = 1:nRings-1
+                    off = (k-1)*nAng;
+                    off2 = k*nAng;
+                    triI(t+1:t+nAng) = off + jj;
+                    triJ(t+1:t+nAng) = off + jj2;
+                    triK(t+1:t+nAng) = off2 + jj;
+                    t = t + nAng;
+                    triI(t+1:t+nAng) = off + jj2;
+                    triJ(t+1:t+nAng) = off2 + jj2;
+                    triK(t+1:t+nAng) = off2 + jj;
+                    t = t + nAng;
+                end
+                obj.data{patchIndex}.x = newX;
+                obj.data{patchIndex}.y = newY;
+                obj.data{patchIndex}.z = newZ;
+                obj.data{patchIndex}.i = triI;
+                obj.data{patchIndex}.j = triJ;
+                obj.data{patchIndex}.k = triK;
+                n = numel(newX);
+                obj.data{patchIndex}.text = repmat({label}, n, 1);
+                obj.data{patchIndex}.hoverinfo = 'text';
+            end
         end
     end
 end
 
-function isPie = isPieSlice(patch_data)
-    %-a pie slice polygon starts at the origin and arcs out to the
-    %-circle (the closing vertex sits on the circle too)-%
-    isPie = false;
-    try
-        x = get(patch_data, 'XData');
-        y = get(patch_data, 'YData');
-        if numel(x) >= 4 && x(1) == 0 && y(1) == 0
-            r = sqrt(x(2:end).^2 + y(2:end).^2);
-            isPie = mean(r) > 0.5 && std(r) / mean(r) < 0.2;
-        end
-    catch
-    end
-end
 
 function [spanStart, spanEnd] = pieSliceSpan(patch_data)
     x = get(patch_data, 'XData');

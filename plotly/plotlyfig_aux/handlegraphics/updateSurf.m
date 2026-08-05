@@ -11,6 +11,13 @@ function obj = updateSurf(obj, surfaceIndex)
     %-AXIS STRUCTURE-%
     axisData = ancestor(get(meshData, 'Parent'),'axes');
 
+    %-pie3 side walls (the strips around the slices) carry no tooltip;
+    %-only the slice faces do-%
+    fig = ancestor(meshData, 'figure');
+    if any(arrayfun(@(p) isPieSlice(p), findall(fig, 'type', 'patch')))
+        obj.PlotlyDefaults.skipSurfaceHover = true;
+    end
+
     %-SCENE DATA-%
     scene = obj.layout.(sprintf("scene%d", xsource));
 
@@ -257,4 +264,8 @@ function obj = updateSurf(obj, surfaceIndex)
     obj.data{contourIndex}.visible = strcmp(get(meshData, 'Visible'),'on');
 
     obj.data{surfaceIndex}.showlegend = getShowLegend(meshData);
+    if obj.PlotlyDefaults.skipSurfaceHover
+        obj.data{surfaceIndex}.hoverinfo = 'skip';
+        obj.PlotlyDefaults.skipSurfaceHover = false;
+    end
 end
