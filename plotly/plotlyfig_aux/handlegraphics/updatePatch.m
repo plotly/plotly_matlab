@@ -365,8 +365,15 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.hoverinfo = 'text';
             obj.data{patchIndex}.text = label;
         elseif strcmp(obj.data{patchIndex}.type, 'mesh3d')
-            % the pie3 faces (top and base) hover nothing
+            % the pie3 faces (top and base) hover nothing, and the
+            % scene draws no spikelines to the hover point
             obj.data{patchIndex}.hoverinfo = 'skip';
+            scn = sprintf('scene%d', xsource);
+            if isfield(obj.layout, scn)
+                obj.layout.(scn).xaxis.showspikes = false;
+                obj.layout.(scn).yaxis.showspikes = false;
+                obj.layout.(scn).zaxis.showspikes = false;
+            end
         end
     end
 end
