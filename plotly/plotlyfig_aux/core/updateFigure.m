@@ -64,7 +64,7 @@ function obj = updateFigure(obj)
     obj.layout.width = w * obj.PlotlyDefaults.FigureIncreaseFactor;
     obj.layout.height = h * obj.PlotlyDefaults.FigureIncreaseFactor;
 
-    col = round(255*get(figure_data, 'Color'));
+    col = round(255*obj.State.Figure.OriginalColor);
     obj.layout.paper_bgcolor = getStringColor(col);
 
     obj.layout.hovermode = 'closest';
