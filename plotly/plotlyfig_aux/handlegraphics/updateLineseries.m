@@ -41,6 +41,13 @@ function data = updateLineseries(obj, plotIndex)
             thetaData = atan2(xData, yData);
             thetaData = -(rad2deg(thetaData) - 90);
         end
+
+        % Octave's rose draws each petal as a (0,0)-(t,h)-(t+dt,h)-(0,0)
+        % loop; render it as bars so every petal hovers as one unit
+        isRose = mod(numel(rData), 4) == 0 ...
+            && all(rData(1:4:end) == 0) && all(rData(4:4:end) == 0);
+    else
+        isRose = false;
     end
 
     if isPlot3D
@@ -137,6 +144,23 @@ function data = updateLineseries(obj, plotIndex)
     end
     data.marker = extractLineMarker(plotData);
     data.showlegend = getShowLegend(plotData) & ~isempty(get(plotData, 'DisplayName'));
+
+    if isRose
+        % one bar per petal, centered on the petal's angular span and
+        % filled like the native rose (white with the outline color)
+        data.type = 'barpolar';
+        petalStart = thetaData(2:4:end);
+        petalEnd = thetaData(3:4:end);
+        % unwrap the petal that crosses the +/-180 boundary (the
+        % 180-198 petal reads as 180 to -162)
+        crossed = petalEnd < petalStart - 180;
+        petalEnd(crossed) = petalEnd(crossed) + 360;
+        data.theta = (petalStart + petalEnd) / 2;
+        data.r = rData(2:4:end);
+        data.marker.color = 'rgb(255,255,255)';
+        data.marker.line.color = getStringColor(round(255*get(plotData, 'Color')));
+        data.marker.line.width = max(1, 2*get(plotData, 'LineWidth'));
+    end
 end
 
 function polarAxis = updateDefaultPolarAxes(obj, plotIndex)
