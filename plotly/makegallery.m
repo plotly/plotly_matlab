@@ -85,7 +85,7 @@ function gallery = makegallery(varargin)
     end
     parts{end + 1} = sprintf('</body>\n</html>\n');
 
-    page = char(strjoin(parts, ''));
+    page = char(strjoin(cellfun(@flattenChar, parts, 'UniformOutput', false), ''));
 
     htmlPath = fullfile(opts.OutputFolder, opts.FileName);
     fid = fopen(htmlPath, 'w');
@@ -542,6 +542,15 @@ function d = userHome()
             d = getenv('USERPROFILE');
         end
     end
+end
+
+function row = flattenChar(p)
+    % strjoin requires every element to be a char row vector; strings
+    % and cells convert to padded char matrices, so flatten afterwards
+    if iscell(p) || isstring(p)
+        p = char(p);
+    end
+    row = p(:)';
 end
 
 function clean = htmlEscape(str)
