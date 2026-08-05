@@ -216,12 +216,21 @@ function polarAxis = updateDefaultPolarAxes(obj, plotIndex)
 
     gridColor = getStringColor(255*get(axisData, 'GridColor'), get(axisData, 'GridAlpha'));
     gridWidth = get(axisData, 'LineWidth');
+    % the polar area takes the native axes background so the grid
+    % lines blend the same way they do in the figure
+    bgColor = get(axisData, 'Color');
+    if isnumeric(bgColor)
+        bgColor = getStringColor(round(255*bgColor));
+    end
 tmpView = get(axisData, 'View');
 
     polarAxis.domain = struct( ...
         "x", min([xo xo + w], 1), ...
         "y", min([yo yo + h], 1) ...
     );
+    if ischar(bgColor)
+        polarAxis.bgcolor = bgColor;
+    end
     polarAxis.angularaxis = struct(...
         "ticklen", 0, ...
         "autorange", true, ...
