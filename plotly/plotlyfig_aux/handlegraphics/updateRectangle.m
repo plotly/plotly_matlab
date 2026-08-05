@@ -51,7 +51,9 @@ tmpPosition = get(rect_data, 'Position');
         tmpPosition(2) ...
         tmpPosition(2)];
 
-    obj.data{rectIndex}.name = get(rect_data, 'DisplayName');
+    if isprop(rect_data, 'DisplayName')
+        obj.data{rectIndex}.name = get(rect_data, 'DisplayName');
+    end
     obj.data{rectIndex}.mode = 'lines';
     obj.data{rectIndex}.visible = strcmp(get(rect_data, 'Visible'),'on');
     obj.data{rectIndex}.fill = 'tonexty';
