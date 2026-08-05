@@ -68,6 +68,7 @@ function obj = updateFunctionSurface(obj, surfaceIndex)
             end
         end
         [cDataSurface, cMapSurface] = rgb2ind(cDataSurface, 256);
+        fac = 1/255;
         for c = 1: size(cMapSurface, 1)
             colorScale{c} = { (c-1)*fac , getStringColor(round(255*cMapSurface(c, :)), 1)};
         end
