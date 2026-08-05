@@ -179,7 +179,7 @@ function obj = updateData(obj, dataIndex)
                 updateStemseries(obj, dataIndex);
             case "surfaceplot"
                 obj.data{dataIndex} = updateSurfaceplot(obj,dataIndex);
-            case "implicitfunctionline"
+            case {"implicitfunctionline", "functionline", "parameterizedfunctionline"}
                 obj.data{dataIndex} = updateLineseries(obj, dataIndex);
             case "graphplot"
                 updateGraphPlot(obj, dataIndex);
