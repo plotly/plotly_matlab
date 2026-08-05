@@ -707,10 +707,20 @@ classdef plotlyfig < handle
                         % TODO
                     else
                         if ~obj.PlotlyDefaults.isTernary
-                            obj.layout.annotations{end+1} = updateAnnotation(obj,n);
+                            axHandle = obj.State.Text(n).AssociatedAxis;
+                            if ~obj.State.Text(n).Title ...
+                                    && isprop(axHandle, 'View') ...
+                                    && ~isequal(get(axHandle, 'View'), [0 90]) ...
+                                    && ~isempty(get(obj.State.Text(n).Handle, 'String'))
+                                % texts on 3D axes (pie3 labels) live in
+                                % the scene so they rotate with the view
+                                updateSceneText(obj, n);
+                            else
+                                obj.layout.annotations{end+1} = updateAnnotation(obj,n);
 
-                            if obj.State.Figure.NumAxes == 1
-                                obj.PlotOptions.CleanFeedTitle = false;
+                                if obj.State.Figure.NumAxes == 1
+                                    obj.PlotOptions.CleanFeedTitle = false;
+                                end
                             end
                         end
                     end
