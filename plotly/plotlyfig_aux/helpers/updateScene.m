@@ -191,6 +191,25 @@ function updateScene(obj, dataIndex, varargin)
             matlab2plotlyfont(get(get(axisData, 'ZLabel'), 'FontName'));
     end
 
+    %-invisible axes (pie3, hidden frames) draw no axis furniture-%
+    if isprop(axisData, 'Visible') && strcmp(get(axisData, 'Visible'), 'off')
+        scene.xaxis.showline = false;
+        scene.yaxis.showline = false;
+        scene.zaxis.showline = false;
+        scene.xaxis.showticklabels = false;
+        scene.yaxis.showticklabels = false;
+        scene.zaxis.showticklabels = false;
+        scene.xaxis.ticks = '';
+        scene.yaxis.ticks = '';
+        scene.zaxis.ticks = '';
+        scene.xaxis.showgrid = false;
+        scene.yaxis.showgrid = false;
+        scene.zaxis.showgrid = false;
+        scene.xaxis.title = '';
+        scene.yaxis.title = '';
+        scene.zaxis.title = '';
+    end
+
     %-tick labels-%
     if opts.handleDatetimeTicks
         xTick = resolveDatetimeTicks(get(axisData, 'XTick'), get(axisData, 'XTickLabel'));
