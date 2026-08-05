@@ -59,7 +59,7 @@ function data = updateContourgroup(obj,plotIndex)
     data.zmax = tmpCLim(2);
     data.showscale = false;
     data.reversescale = false;
-    data.colorscale = getColorScale(plotData, axisData);
+    data.colorscale = getColorScale(plotData, axisData, tmpTextList);
 
     if strcmp(get(plotData, 'Fill'), "off")
         data.contours.coloring = "lines";
@@ -100,7 +100,7 @@ function contourLine = getContourLine(plotData)
     );
 end
 
-function colorScale = getColorScale(plotData, axisData)
+function colorScale = getColorScale(plotData, axisData, tmpTextList)
     cMap = get(axisData, 'Colormap');
     nColors = size(cMap, 1);
     tmpZData = get(plotData, 'ZData');
