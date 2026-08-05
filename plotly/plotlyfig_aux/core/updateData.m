@@ -109,11 +109,11 @@ function obj = updateData(obj, dataIndex)
                     end
                     if isMeshLike
                         updateMesh(obj, dataIndex);
+                    elseif isSliceSurface(surfHandle)
+                        updateSlice(obj, dataIndex);
                     elseif all(nonzeros(get(surfHandle, 'ZData')) == 0) ...
                             || isempty(nonzeros(get(surfHandle, 'ZData')))
                         updatePColor(obj, dataIndex);
-                    elseif isSliceSurface(surfHandle)
-                        updateSlice(obj, dataIndex);
                     else
                         updateSurf(obj, dataIndex);
                     end
@@ -339,9 +339,15 @@ end
 
 function isSlice = isSliceSurface(surfHandle)
     %-a slice plane is a rectangular grid with one coordinate
-    %-constant; regular surfaces from surf/mesh vary in all three-%
+    %-constant; regular surfaces from surf/mesh vary in all three.
+    %-pcolor also has an all-zero z grid, but it lives in a 2D-view
+    %-axes, so slice planes are only recognized in 3D-view axes-%
     isSlice = false;
     try
+        axView = get(get(surfHandle, 'Parent'), 'View');
+        if isequal(axView, [0 90])
+            return
+        end
         xd = get(surfHandle, 'XData');
         yd = get(surfHandle, 'YData');
         zd = get(surfHandle, 'ZData');
