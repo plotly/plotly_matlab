@@ -448,6 +448,10 @@ function parts = htmlEntry(entry, i, opts)
     else
         parts{end + 1} = [sprintf('<p class="err">') ...
             htmlEscape(entry.plotlyError) sprintf('</p>\n')];
+        if ~isempty(entry.plotlyStack)
+            parts{end + 1} = [sprintf('<pre class="err">') ...
+                htmlEscape(entry.plotlyStack) sprintf('</pre>\n')];
+        end
     end
     parts{end + 1} = sprintf('</div>\n');
 
