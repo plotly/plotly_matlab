@@ -356,8 +356,7 @@ function obj = updatePatch(obj, patchIndex)
     obj.data{patchIndex}.showlegend = obj.data{patchIndex}.showlegend & ~isempty(obj.data{patchIndex}.name);
 
     %-pie slices hover as one unit with their label: 2D slices hover
-    %-anywhere inside the fill, 3D slices show their label from a
-    %-single tooltip point at the arc midpoint-%
+    %-anywhere inside the fill, 3D slices hover nothing-%
     if isPieSlice(patch_data)
         [spanStart, spanEnd] = pieSliceSpan(patch_data);
         label = pieSliceLabel(ancestor(patch_data, 'figure'), spanStart, spanEnd);
@@ -366,28 +365,8 @@ function obj = updatePatch(obj, patchIndex)
             obj.data{patchIndex}.hoverinfo = 'text';
             obj.data{patchIndex}.text = label;
         elseif strcmp(obj.data{patchIndex}.type, 'mesh3d')
-            if all(abs(z_data) < eps)
-                % the base faces at z=0 hover nothing
-                obj.data{patchIndex}.hoverinfo = 'skip';
-            else
-                % the face hovers nothing: one invisible tooltip point
-                % at the arc midpoint carries the slice label
-                obj.data{patchIndex}.hoverinfo = 'skip';
-                midAng = deg2rad((spanStart + spanEnd) / 2);
-                % a duplicated point keeps x/y/z arrays (m2json
-                % collapses single elements to scalars, which plotly
-                % scatter3d refuses to render)
-                tipX = [cos(midAng); cos(midAng)];
-                tipY = [sin(midAng); sin(midAng)];
-                tipZ = [z_data(1); z_data(1)];
-                tip = struct('type', 'scatter3d', 'mode', 'markers', ...
-                    'x', tipX, 'y', tipY, 'z', tipZ, ...
-                    'hoverinfo', 'text', 'showlegend', false, ...
-                    'marker', struct('size', 10, 'color', 'rgba(0,0,0,0)'), ...
-                    'scene', sprintf('scene%d', xsource));
-                tip.text = {label, label};
-                obj.PlotlyDefaults.patchEdges{end+1} = tip;
-            end
+            % the pie3 faces (top and base) hover nothing
+            obj.data{patchIndex}.hoverinfo = 'skip';
         end
     end
 end
