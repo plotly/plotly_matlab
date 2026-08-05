@@ -39,6 +39,24 @@ function data = updateLineseries(obj, plotIndex)
         && all(xData(1:4:end) == 0) && all(xData(4:4:end) == 0) ...
         && all(yData(1:4:end) == 0) && all(yData(4:4:end) == 0);
 
+    % MATLAB's polar()/compass()/ezpolar() draw into a regular axes
+    % with an equal aspect, symmetric limits and ticks, and a 15%
+    % taller y-range for the labels; route them through the polar
+    % machinery like Octave's (which marks its axes with rtick)
+    isMatlabPolarAxes = false;
+    if ~is_octave() && ~isPolar && ~isRose && ~isPlot3D
+        ax = get(plotData, 'Parent');
+        xlim = get(ax, 'XLim');
+        ylim = get(ax, 'YLim');
+        xtick = get(ax, 'XTick');
+        ytick = get(ax, 'YTick');
+        isMatlabPolarAxes = isequal(get(ax, 'DataAspectRatio'), [1 1 1]) ...
+            && xlim(1) == -xlim(2) ...
+            && abs(ylim(2) - 1.15*xlim(2)) < 0.05*xlim(2) ...
+            && ~isempty(xtick) && xtick(1) == xlim(1) && xtick(end) == xlim(2) ...
+            && all(ismember(xtick, -xtick)) && all(ismember(ytick, -ytick));
+    end
+
     if isPolar
         rData = sqrt(xData.^2 + yData.^2);
         if isOctavePolar
@@ -47,10 +65,11 @@ function data = updateLineseries(obj, plotIndex)
             thetaData = atan2(xData, yData);
             thetaData = -(rad2deg(thetaData) - 90);
         end
-    elseif isRose
-        % MATLAB's rose is a line in a regular axes (no rtick marker);
-        % route it through the same polar machinery, with the petals
-        % laid out in the math angle convention like Octave's
+    elseif isRose || isMatlabPolarAxes
+        % the rose and MATLAB's polar family are lines in a regular
+        % axes (no rtick marker); route them through the same polar
+        % machinery, with the data laid out in the math angle
+        % convention like Octave's
         isPolar = true;
         rData = sqrt(xData.^2 + yData.^2);
         thetaData = rad2deg(atan2(yData, xData));
@@ -175,12 +194,13 @@ function data = updateLineseries(obj, plotIndex)
         end
         data.marker.line.color = getStringColor(round(255*get(plotData, 'Color')));
         data.marker.line.width = max(1, 2*get(plotData, 'LineWidth'));
+    end
 
-        if ~isOctavePolar
-            % the plotly polar direction defaults to clockwise; the
-            % rose petals are laid out in the math angle convention
-            obj.layout.(data.subplot).angularaxis.direction = 'counterclockwise';
-        end
+    if (isRose || isMatlabPolarAxes) && ~isOctavePolar
+        % the plotly polar direction defaults to clockwise; the rose
+        % petals and the MATLAB polar family are laid out in the math
+        % angle convention
+        obj.layout.(data.subplot).angularaxis.direction = 'counterclockwise';
     end
 end
 
