@@ -88,12 +88,10 @@ function updateScene(obj, dataIndex, varargin)
     end
 
     %-camera center and eye-%
-    % the eye direction follows the view angle with the plot box
-    % proportions; the distance keeps the original normalization so
-    % the plot box is not magnified
+    % the eye direction follows the view angle; the distance keeps the
+    % original normalization so the plot box is not magnified
     center = [0 0 0];
-    eyeDir = (dir .* pb);
-    eyeDir = eyeDir / norm(eyeDir);
+    eyeDir = dir / norm(dir);
 
     cameraPosition = get(axisData, 'CameraPosition');
     dataAspectRatio = get(axisData, 'DataAspectRatio');
