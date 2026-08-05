@@ -245,7 +245,13 @@ function data = updateOctaveContour(obj, plotIndex)
 
     if strcmp(get(plotData, 'Fill'), 'on')
         data.contours.coloring = 'fill';
-        data.contours.showlines = false;
+        % the native contourf draws the band boundaries with the
+        % contour line color (black)
+        data.contours.showlines = true;
+        if isnumeric(get(plotData, 'LineColor'))
+            data.line.width = 1.5*get(plotData, 'LineWidth');
+            data.line.color = getStringColor(round(255*get(plotData, 'LineColor')));
+        end
     else
         data.contours.coloring = 'lines';
         data.contours.showlines = true;
