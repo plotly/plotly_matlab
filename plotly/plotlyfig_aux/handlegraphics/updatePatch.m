@@ -72,8 +72,16 @@ function obj = updatePatch(obj, patchIndex)
         else
             obj.data{patchIndex}.type = 'scatter3d';
         end
-    else
+    elseif isequal(get(ancestor(get(patch_data, 'Parent'), 'axes'), 'View'), [0 90])
         obj.data{patchIndex}.type = 'scatter';
+    elseif isprop(patch_data, 'Faces') && isprop(patch_data, 'Vertices') ...
+            && ~isempty(get(patch_data, 'Faces'))
+        % all-zero z in a 3D-view axes: pie3's slice bases sit at
+        % z=0 in a 3D figure and must stay 3D, not draw as a 2D fill
+        obj.data{patchIndex}.type = 'mesh3d';
+        patch_data_red = patch_data;
+    else
+        obj.data{patchIndex}.type = 'scatter3d';
     end
 
     if ~strcmp(obj.data{patchIndex}.type, 'mesh3d')
