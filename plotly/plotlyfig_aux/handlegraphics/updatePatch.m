@@ -446,16 +446,18 @@ function trace = buildPieTrace(patch_data)
     % trace draws none; the domain keeps the pie at the native size
     % the native pie starts its first slice at 12 o'clock and reads
     % counterclockwise in data order (3, 5, 2, 4, 6 for the gallery
-    % entry); the counterclockwise direction reads the values as first
-    % then the rest reversed, so feed it the mirror of the data order
-    values = [values(1), fliplr(values(2:end))];
-    labels = [labels(1), fliplr(labels(2:end))];
-    colors = [colors(1), fliplr(colors(2:end))];
+    % entry). With the counterclockwise direction the plotly pie spans
+    % the first value clockwise from the top and the remaining values
+    % counterclockwise, so feed it the data order rotated by one
+    values = [values(end), values(1:end-1)];
+    labels = [labels(end), labels(1:end-1)];
+    colors = [colors(end), colors(1:end-1)];
     trace = struct('type', 'pie', 'labels', {labels}, ...
         'values', values, 'textinfo', 'percent', 'sort', false, ...
         'direction', 'counterclockwise', 'rotation', 0, ...
         'textposition', 'outside', ...
-        'domain', struct('x', [0.2 0.8], 'y', [0.2 0.8]));
+        'marker', struct('line', struct('color', 'rgb(0,0,0)', 'width', 1)), ...
+        'domain', struct('x', [0.22 0.78], 'y', [0.22 0.78]));
     if ~isempty(colors)
         trace.marker.colors = colors;
     end
