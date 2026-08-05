@@ -463,6 +463,23 @@ classdef plotlyfig < handle
             ax = temp_ax;
             %---------- checking the overlapping of the graphs ------------%
 
+            % drop invisible axes that carry no plots: plotmatrix adds a
+            % full-page invisible outer axes for its labels, and converting
+            % it would draw an empty white plot area over the whole grid
+            % (the polar axes is invisible too, but it carries the data)
+            keep = true(size(ax));
+            for a = 1:numel(ax)
+                try
+                    if strcmp(get(ax(a), 'Visible'), 'off') ...
+                            && isempty(findobj(ax(a), '-depth', 1, ...
+                                '-not', 'Type', 'Text', '-not', 'Type', 'axes'))
+                        keep(a) = false;
+                    end
+                catch
+                end
+            end
+            ax = ax(keep);
+
             obj.State.Figure.NumAxes = length(ax);
 
             % update number of annotations (one title per axis)
