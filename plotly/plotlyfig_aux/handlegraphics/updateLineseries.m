@@ -33,6 +33,12 @@ function data = updateLineseries(obj, plotIndex)
     xData = get(plotData, 'XData');
     yData = get(plotData, 'YData');
 
+    % rose() draws each petal as a (0,0)-(t,h)-(t+dt,h)-(0,0) loop in
+    % both engines; render it as bars so every petal hovers as one unit
+    isRose = ~isPlot3D && mod(numel(xData), 4) == 0 ...
+        && all(xData(1:4:end) == 0) && all(xData(4:4:end) == 0) ...
+        && all(yData(1:4:end) == 0) && all(yData(4:4:end) == 0);
+
     if isPolar
         rData = sqrt(xData.^2 + yData.^2);
         if isOctavePolar
@@ -41,13 +47,13 @@ function data = updateLineseries(obj, plotIndex)
             thetaData = atan2(xData, yData);
             thetaData = -(rad2deg(thetaData) - 90);
         end
-
-        % Octave's rose draws each petal as a (0,0)-(t,h)-(t+dt,h)-(0,0)
-        % loop; render it as bars so every petal hovers as one unit
-        isRose = mod(numel(rData), 4) == 0 ...
-            && all(rData(1:4:end) == 0) && all(rData(4:4:end) == 0);
-    else
-        isRose = false;
+    elseif isRose
+        % MATLAB's rose is a line in a regular axes (no rtick marker);
+        % route it through the same polar machinery, with the petals
+        % laid out in the math angle convention like Octave's
+        isPolar = true;
+        rData = sqrt(xData.^2 + yData.^2);
+        thetaData = rad2deg(atan2(yData, xData));
     end
 
     if isPlot3D
@@ -160,9 +166,21 @@ function data = updateLineseries(obj, plotIndex)
         % the bars span the full petal so adjacent bars touch
         data.width = petalEnd - petalStart;
 
-        data.marker.color = 'rgb(255,255,255)';
+        if is_octave()
+            % Octave's rose fills the petals white
+            data.marker.color = 'rgb(255,255,255)';
+        else
+            % MATLAB's rose draws the petals as outlines only
+            data.marker.color = 'rgba(0,0,0,0)';
+        end
         data.marker.line.color = getStringColor(round(255*get(plotData, 'Color')));
         data.marker.line.width = max(1, 2*get(plotData, 'LineWidth'));
+
+        if ~isOctavePolar
+            % the plotly polar direction defaults to clockwise; the
+            % rose petals are laid out in the math angle convention
+            obj.layout.(data.subplot).angularaxis.direction = 'counterclockwise';
+        end
     end
 end
 
