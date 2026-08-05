@@ -84,7 +84,7 @@ function data = updateStem(obj, dataIndex)
         %-fix marker symbol-%
         symbol = data.marker.symbol;
 
-        if any(cellfun(@(p) ~isempty(strfind(lower(symbol), p)), {"asterisk-open", "cross-thin-open"}))
+        if any(cellfun(@(p) ~isempty(strfind(lower(symbol), p)), {'asterisk-open', 'cross-thin-open'}))
             data.marker.symbol = "cross";
         end
 

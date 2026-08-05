@@ -8,7 +8,7 @@ function marker = extractScatterMarker(plotData)
     % SCATTERGROUP.                                                       %
     %                                                                     %
     %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%
-    axisData = ancestor(get(plotData, 'Parent'), {"Axes" "PolarAxes"});
+    axisData = ancestor(get(plotData, 'Parent'), {'Axes' 'PolarAxes'});
     figureData = ancestor(get(plotData, 'Parent'), "figure");
 
     marker = struct();

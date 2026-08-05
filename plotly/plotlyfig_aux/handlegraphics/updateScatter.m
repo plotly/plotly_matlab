@@ -31,7 +31,7 @@ function data = updateScatter(obj,plotIndex)
         end
     end
     if ~isempty(dataTipRows)
-        dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, {"Size" "Color" "X" "Y" "Z"}));
+        dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, {'Size' 'Color' 'X' 'Y' 'Z'}));
         if numel(dataTipRows) > 0
             customLabel = "";
             for i = 1:numel(dataTipRows)

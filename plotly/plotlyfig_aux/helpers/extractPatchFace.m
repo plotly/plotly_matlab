@@ -2,7 +2,7 @@ function marker = extractPatchFace(patch_data)
     % EXTRACTS THE FACE STYLE USED FOR MATLAB OBJECTS
     % OF TYPE "PATCH". THESE OBJECTS ARE USED BOXPLOTS.
 
-    cLim = get(ancestor(get(patch_data, 'Parent'), {"axes" "polaraxes"}), 'CLim');
+    cLim = get(ancestor(get(patch_data, 'Parent'), {'axes' 'polaraxes'}), 'CLim');
     colormap = get(ancestor(get(patch_data, 'Parent'), "figure"), 'Colormap');
 
     marker = struct();
