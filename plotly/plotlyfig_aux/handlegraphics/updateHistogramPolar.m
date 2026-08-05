@@ -66,4 +66,6 @@ function data = updateHistogramPolar(obj,histIndex)
     data.visible = strcmp(get(hist_data, 'Visible'), "on");
 
     data.showlegend = getShowLegend(hist_data);
+
+    updatePolarAxesLayout(obj, histIndex);
 end
