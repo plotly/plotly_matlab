@@ -101,8 +101,12 @@ function data = updateLineseries(obj, plotIndex)
                     yDataLabel = dataTipRow.Label;
                     continue
                 end
-                customLabel = customLabel + arrayfun(@(value) dataTipRow.Label ...
-                        + ": " + num2str(value) + "<br>", dataTipRow.Value);
+                % spy and similar lines expose custom rows whose Value
+                % is a function handle; arrayfun cannot map over those
+                if ~isa(dataTipRow.Value, 'function_handle')
+                    customLabel = customLabel + arrayfun(@(value) dataTipRow.Label ...
+                            + ": " + num2str(value) + "<br>", dataTipRow.Value);
+                end
             end
             if isPolar
                 data.hovertext = "R: " + data.r(:) + "<br>" + "Theta: " + ...
