@@ -39,4 +39,16 @@ function obj = updateStemseries(obj,dataIndex)
     %-revert handle-%
     obj.State.Plot(dataIndex).Handle = stem_group;
     obj.data{dataIndex} = stem_temp_data;
+
+    %-baseline (y=0 line) for octave stem-%
+    if isprop(stem_group, 'baseline')
+        baseLine = get(stem_group, 'baseline');
+        obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+        baseIndex = obj.PlotOptions.nPlots;
+        obj.State.Plot(dataIndex).Handle = baseLine;
+        baseData = updateLineseries(obj, dataIndex);
+        baseData.showlegend = false;
+        obj.data{baseIndex} = baseData;
+        obj.State.Plot(dataIndex).Handle = stem_group;
+    end
 end
