@@ -201,7 +201,17 @@ function polarAxis = updateDefaultPolarAxes(obj, plotIndex)
     h = tmpPosition(4);
 
     tickValues = get(rAxis, 'TickValues');
-    tickValues = tickValues(find(tickValues==0) + 1 : end);
+    % Octave's axis objects expose no TickValues; the axes holds them
+    if isempty(tickValues)
+        tickValues = get(axisData, 'YTick');
+    end
+    zeroIdx = find(tickValues == 0);
+    if ~isempty(zeroIdx)
+        tickValues = tickValues(zeroIdx(1) + 1 : end);
+    end
+    if isempty(tickValues)
+        tickValues = [0 0.5 1];
+    end
     rLabel = get(rAxis, 'Label');
 
     gridColor = getStringColor(255*get(axisData, 'GridColor'), get(axisData, 'GridAlpha'));
