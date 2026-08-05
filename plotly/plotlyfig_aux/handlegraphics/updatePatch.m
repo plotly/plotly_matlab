@@ -356,8 +356,8 @@ function obj = updatePatch(obj, patchIndex)
     obj.data{patchIndex}.showlegend = obj.data{patchIndex}.showlegend & ~isempty(obj.data{patchIndex}.name);
 
     %-pie slices hover as one unit with their label: 2D slices hover
-    %-anywhere inside the fill, 3D faces show the label instead of the
-    %-vertex coordinates-%
+    %-anywhere inside the fill, 3D slices show their label from a
+    %-single tooltip point at the arc midpoint-%
     if isPieSlice(patch_data)
         [spanStart, spanEnd] = pieSliceSpan(patch_data);
         label = pieSliceLabel(ancestor(patch_data, 'figure'), spanStart, spanEnd);
@@ -370,58 +370,23 @@ function obj = updatePatch(obj, patchIndex)
                 % the base faces at z=0 hover nothing
                 obj.data{patchIndex}.hoverinfo = 'skip';
             else
-                % the top faces are densified into radial rings so the
-                % whole face hovers as one unit with the slice label
-                nRings = 5;
-                nAng = numel(x_data) - 1;
-                th = atan2(y_data(2:end), x_data(2:end));
-                newX = zeros(nRings*nAng + 1, 1);
-                newY = zeros(nRings*nAng + 1, 1);
-                newZ = z_data(1) * ones(nRings*nAng + 1, 1);
-                for k = 1:nRings
-                    r = k / nRings;
-                    seg = (k-1)*nAng + (1:nAng);
-                    newX(seg+1) = r*cos(th);
-                    newY(seg+1) = r*sin(th);
-                end
-                triI = zeros(nAng + 2*(nRings-1)*nAng, 1);
-                triJ = triI;
-                triK = triI;
-                t = 0;
-                jj = (0:nAng-1)';
-                jj2 = mod(jj + 1, nAng);
-                % fan from the center to the first ring (the center is
-                % vertex 0, the rings start at vertex 1)
-                triI(t+1:t+nAng) = 0;
-                triJ(t+1:t+nAng) = jj + 1;
-                triK(t+1:t+nAng) = jj2 + 1;
-                t = t + nAng;
-                % quads between consecutive rings
-                for k = 1:nRings-1
-                    off = (k-1)*nAng + 1;
-                    off2 = k*nAng + 1;
-                    triI(t+1:t+nAng) = off + jj;
-                    triJ(t+1:t+nAng) = off + jj2;
-                    triK(t+1:t+nAng) = off2 + jj;
-                    t = t + nAng;
-                    triI(t+1:t+nAng) = off + jj2;
-                    triJ(t+1:t+nAng) = off2 + jj2;
-                    triK(t+1:t+nAng) = off2 + jj;
-                    t = t + nAng;
-                end
-                obj.data{patchIndex}.x = newX;
-                obj.data{patchIndex}.y = newY;
-                obj.data{patchIndex}.z = newZ;
-                obj.data{patchIndex}.i = triI;
-                obj.data{patchIndex}.j = triJ;
-                obj.data{patchIndex}.k = triK;
-                % the per-vertex intensity no longer matches the
-                % densified mesh; the solid slice color stands alone
-                obj.data{patchIndex} = rmfield(obj.data{patchIndex}, ...
-                    {'intensity', 'colorscale', 'cmin', 'cmax'});
-                n = numel(newX);
-                obj.data{patchIndex}.text = repmat({label}, n, 1);
-                obj.data{patchIndex}.hoverinfo = 'text';
+                % the face hovers nothing: one invisible tooltip point
+                % at the arc midpoint carries the slice label
+                obj.data{patchIndex}.hoverinfo = 'skip';
+                midAng = deg2rad((spanStart + spanEnd) / 2);
+                % a duplicated point keeps x/y/z arrays (m2json
+                % collapses single elements to scalars, which plotly
+                % scatter3d refuses to render)
+                tipX = [cos(midAng); cos(midAng)];
+                tipY = [sin(midAng); sin(midAng)];
+                tipZ = [z_data(1); z_data(1)];
+                tip = struct('type', 'scatter3d', 'mode', 'markers', ...
+                    'x', tipX, 'y', tipY, 'z', tipZ, ...
+                    'hoverinfo', 'text', 'showlegend', false, ...
+                    'marker', struct('size', 10, 'color', 'rgba(0,0,0,0)'), ...
+                    'scene', sprintf('scene%d', xsource));
+                tip.text = {label, label};
+                obj.PlotlyDefaults.patchEdges{end+1} = tip;
             end
         end
     end
