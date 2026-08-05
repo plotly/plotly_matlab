@@ -415,9 +415,16 @@ function trace = buildPieTrace(patch_data)
     for i = 1:numel(ps)
         if isPieSlice(ps(i))
             [spanStart, spanEnd] = pieSliceSpan(ps(i));
-            values(end+1) = spanEnd - spanStart;
             starts(end+1) = spanStart;
             labels{end+1} = pieSliceLabel(fig, spanStart, spanEnd);
+            % the label is the exact percentage ("15%"); using it as
+            % the value keeps the native labels instead of re-deriving
+            % them from the rounded polygon spans (15.1%...)
+            val = str2double(strrep(labels{end}, '%', ''));
+            if isnan(val)
+                val = spanEnd - spanStart;
+            end
+            values(end+1) = val;
             fvc = get(ps(i), 'FaceVertexCData');
             if isnumeric(fvc) && ~isempty(fvc)
                 % the slice colors spread across the full colormap
@@ -439,12 +446,16 @@ function trace = buildPieTrace(patch_data)
     % trace draws none; the domain keeps the pie at the native size
     % the native pie starts its first slice at 12 o'clock and reads
     % counterclockwise in data order (3, 5, 2, 4, 6 for the gallery
-    % entry); with the clockwise direction the plotly pie reads the
-    % values in the same counterclockwise order from the top
+    % entry); the counterclockwise direction reads the values as first
+    % then the rest reversed, so feed it the mirror of the data order
+    values = [values(1), fliplr(values(2:end))];
+    labels = [labels(1), fliplr(labels(2:end))];
+    colors = [colors(1), fliplr(colors(2:end))];
     trace = struct('type', 'pie', 'labels', {labels}, ...
         'values', values, 'textinfo', 'percent', 'sort', false, ...
-        'direction', 'clockwise', 'rotation', 0, ...
-        'domain', struct('x', [0.18 0.82], 'y', [0.18 0.82]));
+        'direction', 'counterclockwise', 'rotation', 0, ...
+        'textposition', 'outside', ...
+        'domain', struct('x', [0.2 0.8], 'y', [0.2 0.8]));
     if ~isempty(colors)
         trace.marker.colors = colors;
     end
