@@ -14,18 +14,18 @@ function valstr = m2json(val)
         else
             numDigits = 15;
         end
-        fmt = sprintf("%%.%ig", numDigits);
+        fmt = sprintf('%%.%ig', numDigits);
         if sum(sz>1)>1 % 2D or higher array
             valsubstr = cell(1, sz(1));
             for i = 1:sz(1)
-                valsubstr{i} = sprintf([fmt ","], val(i,:));
+                valsubstr{i} = sprintf([fmt ','], val(i,:));
                 valsubstr{i} = char(valsubstr{i});
                 valsubstr{i}(end) = [];
                 valsubstr{i} = sprintf('[%s]', valsubstr{i});
             end
             valstr = strjoin(valsubstr, ",");
         else
-            valstr = sprintf([fmt ","], val);
+            valstr = sprintf([fmt ','], val);
             valstr = char(valstr);
             valstr(end) = [];
         end
