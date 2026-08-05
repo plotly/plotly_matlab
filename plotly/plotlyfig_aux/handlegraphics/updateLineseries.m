@@ -157,6 +157,9 @@ function data = updateLineseries(obj, plotIndex)
         petalEnd(crossed) = petalEnd(crossed) + 360;
         data.theta = (petalStart + petalEnd) / 2;
         data.r = rData(2:4:end);
+        % the bars span the full petal so adjacent bars touch
+        data.width = petalEnd - petalStart;
+
         data.marker.color = 'rgb(255,255,255)';
         data.marker.line.color = getStringColor(round(255*get(plotData, 'Color')));
         data.marker.line.width = max(1, 2*get(plotData, 'LineWidth'));
