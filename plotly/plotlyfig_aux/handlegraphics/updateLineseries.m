@@ -110,15 +110,20 @@ function data = updateLineseries(obj, plotIndex)
             end
             if isPolar
                 data.hovertext = "R: " + data.r(:) + "<br>" + "Theta: " + ...
-                        data.theta(:) + "<br>" + customLabel(:);
+                        data.theta(:) + "<br>";
             elseif isPlot3D
                 data.hovertext = xDataLabel + ": " + data.x(:) + "<br>" ...
                                + yDataLabel + ": " + data.y(:) + "<br>" ...
-                               + "Z: " + data.z(:) + "<br>" + customLabel(:);
+                               + "Z: " + data.z(:) + "<br>";
             else
                 data.hovertext = xDataLabel + ": " + data.x(:) + "<br>" ...
-                               + yDataLabel + ": " + data.y(:) + "<br>" ...
-                               + customLabel(:);
+                               + yDataLabel + ": " + data.y(:) + "<br>";
+            end
+            % customLabel stays empty when every row's Value is a
+            % function handle (fplot3, spy); appending it would
+            % concatenate a 0x0 with the data strings
+            if ~isempty(customLabel)
+                data.hovertext = data.hovertext + customLabel(:);
             end
             data.hoverinfo = "text";
         end
