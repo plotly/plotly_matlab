@@ -103,7 +103,7 @@ function updateScene(obj, dataIndex, varargin)
     if opts.useQuiverCamera
         normFac = abs(min(cameraEye));
         if isprop(axisData, "Layout") ...
-                && isprop(get(axisData, 'Layout'), "TileSpan")
+                && all(isprop(get(axisData, 'Layout'), "TileSpan"))
             fac = size(get(get(axisData, 'Layout'), 'TileSpan'), 2);
         else
             fac = 1;
