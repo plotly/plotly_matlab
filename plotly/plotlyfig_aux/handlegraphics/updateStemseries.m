@@ -41,8 +41,13 @@ function obj = updateStemseries(obj,dataIndex)
     obj.data{dataIndex} = stem_temp_data;
 
     %-baseline (y=0 line) for octave stem-%
+    %-stem3's baseline is a degenerate object with no data; converting
+    %-it would add an empty 2D trace that draws a second axes frame-%
     if isprop(stem_group, 'baseline')
         baseLine = get(stem_group, 'baseline');
+        if isempty(get(baseLine, 'XData'))
+            return
+        end
         obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
         baseIndex = obj.PlotOptions.nPlots;
         obj.State.Plot(dataIndex).Handle = baseLine;
