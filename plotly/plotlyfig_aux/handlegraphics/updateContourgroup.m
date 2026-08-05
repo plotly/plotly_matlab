@@ -59,7 +59,7 @@ function data = updateContourgroup(obj,plotIndex)
     data.zmax = tmpCLim(2);
     data.showscale = false;
     data.reversescale = false;
-    data.colorscale = getColorScale(plotData, axisData, tmpTextList);
+    data.colorscale = getContourColorScale(plotData, axisData, tmpTextList);
 
     if strcmp(get(plotData, 'Fill'), "off")
         data.contours.coloring = "lines";
@@ -100,7 +100,7 @@ function contourLine = getContourLine(plotData)
     );
 end
 
-function colorScale = getColorScale(plotData, axisData, tmpTextList)
+function colorScale = getContourColorScale(plotData, axisData, tmpTextList)
     cMap = get(axisData, 'Colormap');
     nColors = size(cMap, 1);
     tmpZData = get(plotData, 'ZData');
@@ -170,12 +170,12 @@ function data = updateOctaveContour(obj, plotIndex)
         end
 
         c = get(plotData, 'Contourmatrix');
-        nLevels = size(c, 2) - 1;
         cIdx = 1;
         data = struct();
         data.x = [];
         data.y = [];
         data.z = [];
+        colorZ = [];
         while cIdx <= size(c, 2)
             level = c(1, cIdx);
             nPts = c(2, cIdx);
@@ -187,10 +187,12 @@ function data = updateOctaveContour(obj, plotIndex)
                 data.x = [data.x xPts NaN];
                 data.y = [data.y yPts NaN];
                 data.z = [data.z zLvl*ones(size(xPts)) NaN];
+                colorZ = [colorZ level*ones(size(xPts)) NaN];
             end
             cIdx = cIdx + 1 + max(nPts, 0);
         end
 
+        tmpCLim = get(axisData, 'CLim');
         data.type = 'scatter3d';
         data.scene = sprintf('scene%d', xSource);
         data.mode = 'lines';
@@ -198,7 +200,10 @@ function data = updateOctaveContour(obj, plotIndex)
         data.name = get(plotData, 'DisplayName');
         data.showlegend = false;
         data.line.width = 2*get(plotData, 'LineWidth');
-        data.line.color = getStringColor(round(255*get(axisData, 'ColorOrder')));
+        data.line.color = colorZ;
+        data.line.colorscale = getColorScale(get(axisData, 'Colormap'));
+        data.line.cmin = tmpCLim(1);
+        data.line.cmax = tmpCLim(2);
         updateScene(obj, plotIndex, 'setTitleFont', false);
         return
     end
