@@ -7,9 +7,25 @@ function data = updateContour3(obj,contourIndex)
 
     %-PLOT DATA STRUCTURE- %
     contour_data = obj.State.Plot(contourIndex).Handle;
+    axisData = obj.State.Plot(contourIndex).AssociatedAxis;
 
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
+
+    %-detect meshc/surfc/ezmeshc/ezsurfc projection shadows-%
+    try
+        axChildren = get(axisData, 'Children');
+        types = get(axChildren, 'Type');
+        hasSurface = iscell(types) && any(strcmp(types, 'surface'));
+    catch
+        hasSurface = false;
+    end
+
+    if hasSurface
+        data = updateContour3Shadow(contour_data, axisData, ...
+            figure_data, xsource);
+        return
+    end
 
     data.xaxis = sprintf("x%d", xsource);
     data.yaxis = sprintf("y%d", ysource);
@@ -121,4 +137,44 @@ function data = updateContour3(obj,contourIndex)
     data.reversescale = false;
 
     data.showlegend = getShowLegend(contour_data);
+end
+
+function data = updateContour3Shadow(contourData, axisData, figureData, xSource)
+    cMat = get(contourData, 'ContourMatrix');
+    zmin = get(axisData, 'ZLim');
+    zmin = zmin(1);
+    tmpCLim = get(axisData, 'CLim');
+    cMap = get(figureData, 'Colormap');
+
+    xData = [];
+    yData = [];
+    zData = [];
+    colorData = [];
+    len = size(cMat, 2);
+    n = 1;
+    while n < len
+        m = cMat(2, n);
+        level = cMat(1, n);
+        xData = [xData, cMat(1, n+1:n+m), NaN];
+        yData = [yData, cMat(2, n+1:n+m), NaN];
+        zData = [zData, zmin * ones(1, m), NaN];
+        colorData = [colorData, level * ones(1, m), NaN];
+        n = n + m + 1;
+    end
+
+    data.scene = sprintf('scene%d', xSource);
+    data.type = 'scatter3d';
+    data.mode = 'lines';
+    data.x = xData;
+    data.y = yData;
+    data.z = zData;
+    data.name = get(contourData, 'DisplayName');
+    data.visible = strcmp(get(contourData, 'Visible'), 'on');
+    data.showscale = false;
+    data.showlegend = false;
+    data.line.color = colorData;
+    data.line.colorscale = getColorScale(cMap);
+    data.line.cmin = tmpCLim(1);
+    data.line.cmax = tmpCLim(2);
+    data.line.width = 2*get(contourData, 'LineWidth');
 end
