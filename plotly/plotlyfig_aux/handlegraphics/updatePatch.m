@@ -390,15 +390,16 @@ function obj = updatePatch(obj, patchIndex)
                 t = 0;
                 jj = (0:nAng-1)';
                 jj2 = mod(jj + 1, nAng);
-                % fan from the center to the first ring
+                % fan from the center to the first ring (the center is
+                % vertex 0, the rings start at vertex 1)
                 triI(t+1:t+nAng) = 0;
-                triJ(t+1:t+nAng) = jj;
-                triK(t+1:t+nAng) = jj2;
+                triJ(t+1:t+nAng) = jj + 1;
+                triK(t+1:t+nAng) = jj2 + 1;
                 t = t + nAng;
                 % quads between consecutive rings
                 for k = 1:nRings-1
-                    off = (k-1)*nAng;
-                    off2 = k*nAng;
+                    off = (k-1)*nAng + 1;
+                    off2 = k*nAng + 1;
                     triI(t+1:t+nAng) = off + jj;
                     triJ(t+1:t+nAng) = off + jj2;
                     triK(t+1:t+nAng) = off2 + jj;
@@ -414,6 +415,10 @@ function obj = updatePatch(obj, patchIndex)
                 obj.data{patchIndex}.i = triI;
                 obj.data{patchIndex}.j = triJ;
                 obj.data{patchIndex}.k = triK;
+                % the per-vertex intensity no longer matches the
+                % densified mesh; the solid slice color stands alone
+                obj.data{patchIndex} = rmfield(obj.data{patchIndex}, ...
+                    {'intensity', 'colorscale', 'cmin', 'cmax'});
                 n = numel(newX);
                 obj.data{patchIndex}.text = repmat({label}, n, 1);
                 obj.data{patchIndex}.hoverinfo = 'text';
