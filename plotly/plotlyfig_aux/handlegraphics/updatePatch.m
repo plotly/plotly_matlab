@@ -410,11 +410,13 @@ function trace = buildPieTrace(patch_data)
     labels = {};
     values = [];
     colors = {};
+    starts = [];
     ps = findall(fig, 'type', 'patch');
     for i = 1:numel(ps)
         if isPieSlice(ps(i))
             [spanStart, spanEnd] = pieSliceSpan(ps(i));
             values(end+1) = spanEnd - spanStart;
+            starts(end+1) = spanStart;
             labels{end+1} = pieSliceLabel(fig, spanStart, spanEnd);
             fvc = get(ps(i), 'FaceVertexCData');
             if isnumeric(fvc) && ~isempty(fvc)
@@ -427,8 +429,21 @@ function trace = buildPieTrace(patch_data)
             end
         end
     end
+    % the native pie starts each slice at 0 degrees in data order;
+    % sort by the start angle so the plotly pie matches
+    [~, ord] = sort(starts);
+    values = values(ord);
+    labels = labels(ord);
+    colors = colors(ord);
+    % the figure's own percentage texts carry the labels, so the pie
+    % trace draws none; the domain keeps the pie at the native size
+    % the native pie starts its first slice at 3 o'clock going
+    % counterclockwise; the plotly pie defaults to the top and
+    % clockwise, so mirror the native
     trace = struct('type', 'pie', 'labels', {labels}, ...
-        'values', values, 'textinfo', 'percent');
+        'values', values, 'textinfo', 'none', 'sort', false, ...
+        'direction', 'counterclockwise', 'rotation', 90, ...
+        'domain', struct('x', [0.15 0.85], 'y', [0.15 0.85]));
     if ~isempty(colors)
         trace.marker.colors = colors;
     end
