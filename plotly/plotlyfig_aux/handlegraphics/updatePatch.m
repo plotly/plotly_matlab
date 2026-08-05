@@ -49,6 +49,20 @@ function obj = updatePatch(obj, patchIndex)
     %-PATCH DATA STRUCTURE- %
     patch_data = obj.State.Plot(patchIndex).Handle;
 
+    %-2D pie slices: convert the whole pie to a single pie trace so the
+    %-hover labels sit on each slice, away from the center-%
+    if isPieSlice(patch_data) ...
+            && isequal(get(ancestor(patch_data, 'axes'), 'View'), [0 90])
+        if obj.PlotlyDefaults.isPie
+            obj.data{patchIndex} = struct();
+            obj.data{patchIndex}.visible = false;
+            return
+        end
+        obj.PlotlyDefaults.isPie = true;
+        obj.data{patchIndex} = buildPieTrace(patch_data);
+        return
+    end
+
     %-CHECK FOR MULTIPLE AXES-%
     [xsource, ysource] = findSourceAxis(obj,axIndex);
 
@@ -382,6 +396,41 @@ function [spanStart, spanEnd] = pieSliceSpan(patch_data)
     spanEnd = mod(rad2deg(atan2(y(n-1), x(n-1))), 360);
     if spanEnd < spanStart
         spanEnd = spanEnd + 360;
+    end
+end
+
+function trace = buildPieTrace(patch_data)
+    %-a single plotly pie trace from all the slice patches in the
+    %-figure: values from the angular spans, labels from the
+    %-percentage texts, colors from the patch colormap indices-%
+    fig = ancestor(patch_data, 'figure');
+    ax = ancestor(patch_data, 'axes');
+    cMap = get(fig, 'Colormap');
+    cLim = get(ax, 'CLim');
+    labels = {};
+    values = [];
+    colors = {};
+    ps = findall(fig, 'type', 'patch');
+    for i = 1:numel(ps)
+        if isPieSlice(ps(i))
+            [spanStart, spanEnd] = pieSliceSpan(ps(i));
+            values(end+1) = spanEnd - spanStart;
+            labels{end+1} = pieSliceLabel(fig, spanStart, spanEnd);
+            fvc = get(ps(i), 'FaceVertexCData');
+            if isnumeric(fvc) && ~isempty(fvc)
+                % the slice colors spread across the full colormap
+                % via the axes CLim
+                idx = 1 + round((fvc(1) - cLim(1)) ...
+                        / max(diff(cLim), eps) * (size(cMap, 1) - 1));
+                idx = max(1, min(idx, size(cMap, 1)));
+                colors{end+1} = getStringColor(round(255*cMap(idx, :)));
+            end
+        end
+    end
+    trace = struct('type', 'pie', 'labels', {labels}, ...
+        'values', values, 'textinfo', 'percent');
+    if ~isempty(colors)
+        trace.marker.colors = colors;
     end
 end
 
