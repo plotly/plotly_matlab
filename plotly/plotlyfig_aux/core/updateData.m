@@ -243,7 +243,7 @@ function obj = updateData(obj, dataIndex)
     if ~isfield(obj.data{dataIndex},"name")
         obj.data{dataIndex}.name = "";
     end
-    assert(all(isfield(obj.data{dataIndex},{"name" "showlegend"})), ...
+    assert(all(isfield(obj.data{dataIndex},{'name' 'showlegend'})), ...
             "Missing fields that are assumed to be present downstream");
 
     %----------------------AXIS/DATA CLEAN UP-----------------------------%
@@ -284,14 +284,14 @@ function obj = updateData(obj, dataIndex)
 
         % check for xaxis categories
         if strcmpi(xaxis.type, "category") && ...
-                ~any(strcmp(obj.data{dataIndex}.type, {"heatmap" "box"}))
+                ~any(strcmp(obj.data{dataIndex}.type, {'heatmap' 'box'}))
             obj.data{dataIndex}.x = get(ax, 'XTickLabel');
             obj.layout.(sprintf("xaxis%d", xsource)).autotick = true;
         end
 
         % check for yaxis categories
         if strcmpi(yaxis.type, "category") && ...
-                ~any(strcmp(obj.data{dataIndex}.type, {"heatmap" "box"}))
+                ~any(strcmp(obj.data{dataIndex}.type, {'heatmap' 'box'}))
             obj.data{dataIndex}.y = get(ax, 'YTickLabel');
             obj.layout.(sprintf("yaxis%d", xsource)).autotick = true;
         end
