@@ -271,9 +271,9 @@ function entries = processEntries(names, allEntries, opts)
             catch e
                 entry.plotlyError = e.message;
                 entry.plotlyStack = '';
-                for st = 1:min(6, numel(e.stack))
+                for st = 1:numel(e.stack)
                     entry.plotlyStack = [entry.plotlyStack ...
-                        sprintf('%s (line %d); ', e.stack(st).name, e.stack(st).line)];
+                        sprintf('%s (line %d)\n', e.stack(st).name, e.stack(st).line)];
                 end
             end
         end
@@ -294,7 +294,7 @@ function entries = processEntries(names, allEntries, opts)
         if ~entry.plotlyOK && ~isempty(entry.plotlyError)
             fprintf('      plotly error: %s\n', entry.plotlyError);
             if ~isempty(entry.plotlyStack)
-                fprintf('      stack: %s\n', entry.plotlyStack);
+                fprintf('      stack:\n%s', entry.plotlyStack);
             end
         end
     end
