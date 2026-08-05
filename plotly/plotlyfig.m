@@ -708,19 +708,25 @@ classdef plotlyfig < handle
                         % TODO
                     else
                         if ~obj.PlotlyDefaults.isTernary
-                            axHandle = obj.State.Text(n).AssociatedAxis;
-                            if ~obj.State.Text(n).Title ...
-                                    && isprop(axHandle, 'View') ...
-                                    && ~isequal(get(axHandle, 'View'), [0 90]) ...
-                                    && ~isempty(get(obj.State.Text(n).Handle, 'String'))
-                                % texts on 3D axes (pie3 labels) live in
-                                % the scene so they rotate with the view
-                                updateSceneText(obj, n);
-                            else
-                                obj.layout.annotations{end+1} = updateAnnotation(obj,n);
+                            % the 2D pie's own textinfo draws the slice
+                            % labels; its text objects become annotations
+                            % only when it is a title
+                            if ~obj.PlotlyDefaults.isPie || obj.State.Text(n).Title
+                                axHandle = obj.State.Text(n).AssociatedAxis;
+                                if ~obj.State.Text(n).Title ...
+                                        && isprop(axHandle, 'View') ...
+                                        && ~isequal(get(axHandle, 'View'), [0 90]) ...
+                                        && ~isempty(get(obj.State.Text(n).Handle, 'String'))
+                                    % texts on 3D axes (pie3 labels) live
+                                    % in the scene so they rotate with
+                                    % the view
+                                    updateSceneText(obj, n);
+                                else
+                                    obj.layout.annotations{end+1} = updateAnnotation(obj,n);
 
-                                if obj.State.Figure.NumAxes == 1
-                                    obj.PlotOptions.CleanFeedTitle = false;
+                                    if obj.State.Figure.NumAxes == 1
+                                        obj.PlotOptions.CleanFeedTitle = false;
+                                    end
                                 end
                             end
                         end

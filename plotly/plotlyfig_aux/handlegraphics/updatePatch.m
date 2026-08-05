@@ -437,13 +437,14 @@ function trace = buildPieTrace(patch_data)
     colors = colors(ord);
     % the figure's own percentage texts carry the labels, so the pie
     % trace draws none; the domain keeps the pie at the native size
-    % the native pie starts its first slice at 3 o'clock going
-    % counterclockwise; the plotly pie defaults to the top and
-    % clockwise, so mirror the native
+    % the native pie starts its first slice at 12 o'clock and reads
+    % counterclockwise in data order (3, 5, 2, 4, 6 for the gallery
+    % entry); with the clockwise direction the plotly pie reads the
+    % values in the same counterclockwise order from the top
     trace = struct('type', 'pie', 'labels', {labels}, ...
-        'values', values, 'textinfo', 'none', 'sort', false, ...
-        'direction', 'counterclockwise', 'rotation', 90, ...
-        'domain', struct('x', [0.15 0.85], 'y', [0.15 0.85]));
+        'values', values, 'textinfo', 'percent', 'sort', false, ...
+        'direction', 'clockwise', 'rotation', 0, ...
+        'domain', struct('x', [0.18 0.82], 'y', [0.18 0.82]));
     if ~isempty(colors)
         trace.marker.colors = colors;
     end
