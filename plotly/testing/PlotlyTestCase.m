@@ -64,6 +64,12 @@ classdef PlotlyTestCase < handle
             else
                 detail = sprintf('  Actual  : %s\n  Expected: %s', ...
                     testCase.formatValue(actual), testCase.formatValue(expected));
+                if absTol > 0
+                    detail = [detail sprintf('\n  AbsTol  : %s', num2str(absTol, 17))];
+                end
+                if isnumeric(actual) && isnumeric(expected) && isscalar(actual) && isscalar(expected)
+                    detail = [detail sprintf('\n  |a-e|   : %s', num2str(abs(double(actual) - double(expected)), 17))];
+                end
                 if isempty(msg)
                     testCase.recordFail(sprintf('Values are not equal.\n%s', detail));
                 else
@@ -328,16 +334,20 @@ classdef PlotlyTestCase < handle
                 end
             elseif isstring(v) && isscalar(v)
                 s = sprintf('%s "%s"', cls, char(v));
-            elseif isnumeric(v) && isscalar(v)
-                s = sprintf('%s%s %s', dimStr, cls, num2str(v, 16));
+            elseif isnumeric(v)
+                if isscalar(v)
+                    s = sprintf('%s%s %s', dimStr, cls, num2str(v, 17));
+                elseif numel(v) <= 10
+                    s = sprintf('%s%s [%s]', dimStr, cls, strjoin(cellstr(num2str(v(:)', 17)), ' '));
+                else
+                    s = sprintf('%s%s', dimStr, cls);
+                end
             elseif islogical(v) && isscalar(v)
                 if v, s = sprintf('%s%s true', dimStr, cls); else, s = sprintf('%s%s false', dimStr, cls); end
             elseif iscell(v)
                 s = PlotlyTestCase.formatCell(v);
             elseif isstruct(v)
                 s = PlotlyTestCase.formatStruct(v);
-            elseif isnumeric(v)
-                s = sprintf('%s%s', dimStr, cls);
             else
                 s = sprintf('%s%s', dimStr, cls);
             end
