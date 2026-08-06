@@ -54,6 +54,10 @@ function data = updateLineseries(obj, plotIndex)
         && yData(1) == 0 ...
         && xData(2) == xData(4) && yData(2) == yData(4);
 
+    % feather draws a baseline from the first to the last arrow base
+    isFeatherBase = ~isPlot3D && ~isCompassArrow && ~isFeatherArrow ...
+        && ~isRose && numel(xData) == 2 && all(yData == 0);
+
     % MATLAB's polar()/ezpolar()/compass()/rose() draw into a
     % regular axes with an equal aspect, symmetric limits and ticks,
     % and a 15% taller y-range for the labels; route them through
@@ -200,6 +204,10 @@ function data = updateLineseries(obj, plotIndex)
     end
     data.marker = extractLineMarker(plotData);
     data.showlegend = getShowLegend(plotData) & ~isempty(get(plotData, 'DisplayName'));
+
+    if isFeatherBase
+        data.hoverinfo = 'skip';
+    end
 
     if isRose
         % one bar per petal, centered on the petal's angular span and
