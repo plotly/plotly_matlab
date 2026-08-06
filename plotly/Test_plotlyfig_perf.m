@@ -20,12 +20,12 @@ tb = res.sampleSummary;
                 hold off;
             end
 
-            if is_octave()
-                p = plotlyfig(fig, "visible", "off");
-            else
+            p = plotlyfig(fig, "visible", "off");
+            try
                 while tc.keepMeasuring
                     p = plotlyfig(fig, "visible", "off");
                 end
+            catch
             end
 
             % Verify correctness: one trace per line
@@ -45,12 +45,12 @@ tb = res.sampleSummary;
             n = 100000;
             val = repmat('a"b\c/d', 1, n);
 
-            if is_octave()
-                result = checkescape(val);
-            else
+            result = checkescape(val);
+            try
                 while tc.keepMeasuring
                     result = checkescape(val);
                 end
+            catch
             end
 
             % Verify correctness
