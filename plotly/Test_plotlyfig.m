@@ -65,7 +65,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 family = "Arial, sans-serif";
             end
 
-            tc.verifyEqualStructs(p.layout, struct( ...
+            expected = struct( ...
                 "autosize", false, ...
                 "margin", struct( ...
                     "pad", 0, ...
@@ -176,7 +176,16 @@ classdef Test_plotlyfig < PlotlyTestCase
                     "borderwidth", 0.5, ...
                     "borderpad", 3 ...
                 )}} ...
-            ), 'AbsTol', 1e-15);
+            );
+            if is_octave()
+                expected.xaxis1.tickvals = [0 2 4 6 8 10];
+                expected.xaxis1.range = [0 10];
+                expected.xaxis1.ticktext = {'0'; '2'; '4'; '6'; '8'; '10'};
+                expected.yaxis1.tickvals = [0 0.2 0.4 0.6 0.8 1];
+                expected.yaxis1.range = [0 1];
+                expected.yaxis1.ticktext = {'0'; '0.2'; '0.4'; '0.6'; '0.8'; '1'};
+            end
+            tc.verifyEqualStructs(p.layout, expected, 'AbsTol', 1e-15);
             try close(); catch; end
         end
 
