@@ -23,12 +23,18 @@ classdef PlotlyTestCase < handle
         end
 
         function v = finishTest(testCase)
-            v.Name = testCase.CurrentTest;
-            v.Passed = testCase._curPassed > 0 && testCase._curFailed == 0;
-            v.VerificationFailures = testCase._curFailed;
-            v.Diagnostics = testCase._curDiagnostics;
+            v = struct('Name', testCase.CurrentTest, ...
+                       'Passed', testCase._curPassed > 0 && testCase._curFailed == 0, ...
+                       'VerificationFailures', testCase._curFailed, ...
+                       'Diagnostics', {testCase._curDiagnostics}, ...
+                       'Duration', 0, ...
+                       'Errored', false);
             testCase.CurrentTest = '';
-            testCase.TestVerdicts(end+1) = v;
+            if isempty(testCase.TestVerdicts)
+                testCase.TestVerdicts = v;
+            else
+                testCase.TestVerdicts(end+1) = v;
+            end
         end
 
         function recordPass(testCase)
