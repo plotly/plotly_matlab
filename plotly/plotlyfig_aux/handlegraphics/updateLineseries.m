@@ -130,7 +130,7 @@ function data = updateLineseries(obj, plotIndex)
         data.y = yData(1:2);
         idx = xData(1);
         label = sprintf("(%d) (%.2f, %.2f)", idx, xData(2)-xData(1), yData(2));
-        data.hovertext = {label, label};
+        data.hovertext = {label, ''};
         data.hoverinfo = 'text';
     elseif isPolar
         data.r = rData;
