@@ -33,6 +33,10 @@ function obj = updateQuiver(obj, dataIndex)
         updateScene(obj, dataIndex, ...
             "useQuiverCamera", true, "setTitleFont", false, ...
             "handleDatetimeTicks", false);
+        scn = sprintf('scene%d', xSource);
+        obj.layout.(scn).xaxis.showspikes = false;
+        obj.layout.(scn).yaxis.showspikes = false;
+        obj.layout.(scn).zaxis.showspikes = false;
     end
 
     %-set trace-%

@@ -55,6 +55,13 @@ function obj = updateQuivergroup(obj, quiverIndex)
         obj.data{quiverIndex}.z = zdata;
     end
 
+    if ~isempty(zdata) && isfield(obj.data{quiverIndex}, 'scene')
+        scn = obj.data{quiverIndex}.scene;
+        obj.layout.(scn).xaxis.showspikes = false;
+        obj.layout.(scn).yaxis.showspikes = false;
+        obj.layout.(scn).zaxis.showspikes = false;
+    end
+
     %-collect tail positions and hovertext-%
     is3d = ~isempty(zdata);
     nPts = numel(xdata);
