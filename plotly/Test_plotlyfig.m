@@ -2953,8 +2953,8 @@ classdef Test_plotlyfig < PlotlyTestCase
             p = plotlyfig(fig,"visible","off");
 
             tc.verifyNumElements(p.layout.annotations, numel(data)+1);
-            actualStrings = cellfun(@(ann) ann.text, p.layout.annotations, 'UniformOutput', false);
-            tc.verifyNotEmpty(actualStrings(contains(actualStrings, titleString)));
+            actualStrings = string(cellfun(@(ann) ann.text, p.layout.annotations, 'UniformOutput', false));
+            tc.verifyTrue(any(contains(actualStrings, titleString)));
             try close(); catch; end
         end
 
