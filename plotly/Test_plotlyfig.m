@@ -3319,7 +3319,7 @@ classdef Test_plotlyfig < PlotlyTestCase
         function testAreaEmptyLegend(tc)
             fig = figure("Visible","off");
             area((1:2)', zeros(2,0));
-            legend(strings(0,1));
+            try legend({}); catch; end
 
             p = plotlyfig(fig,"visible","off");
 
