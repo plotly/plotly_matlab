@@ -68,11 +68,11 @@ classdef PlotlyTestCase < handle
             else
                 detail = sprintf('  Actual  : %s\n  Expected: %s', ...
                     testCase.formatValue(actual), testCase.formatValue(expected));
-                if absTol > 0
-                    detail = [detail sprintf('\n  AbsTol  : %s', num2str(absTol, 17))];
+                if absTol > 0 && isnumeric(actual) && isnumeric(expected)
+                    detail = [detail sprintf('\n  AbsTol  : %s', strtrim(sprintf('%.17g', absTol)))];
                 end
                 if isnumeric(actual) && isnumeric(expected) && isscalar(actual) && isscalar(expected)
-                    detail = [detail sprintf('\n  |a-e|   : %s', num2str(abs(double(actual) - double(expected)), 17))];
+                    detail = [detail sprintf('\n  |a-e|   : %s', strtrim(sprintf('%.17g', abs(double(actual) - double(expected)))))];
                 end
                 if isempty(msg)
                     testCase.recordFail(sprintf('Values are not equal.\n%s', detail));
@@ -350,12 +350,18 @@ classdef PlotlyTestCase < handle
                 end
             elseif isnumeric(v)
                 if isscalar(v)
-                    s = sprintf('%s%s %s', dimStr, cls, num2str(v, 17));
-                elseif numel(v) <= 10
-                    s = sprintf('%s%s [%s]', dimStr, cls, strjoin(cellstr(num2str(v(:)', 17)), ' '));
+                    s = sprintf('%s%s %s', dimStr, cls, strtrim(sprintf('%.17g', v)));
                 else
-                    firstN = cellstr(num2str(v(1:min(10,numel(v)))', 17));
-                    s = sprintf('%s%s [%s ...]', dimStr, cls, strjoin(firstN, ' '));
+                    nShow = min(10, numel(v));
+                    parts = cell(1, nShow);
+                    for j = 1:nShow
+                        parts{j} = strtrim(sprintf('%.17g', v(j)));
+                    end
+                    if numel(v) <= 10
+                        s = sprintf('%s%s [%s]', dimStr, cls, strjoin(parts, ' '));
+                    else
+                        s = sprintf('%s%s [%s ...]', dimStr, cls, strjoin(parts, ' '));
+                    end
                 end
             elseif islogical(v) && isscalar(v)
                 if v, s = sprintf('%s%s true', dimStr, cls); else, s = sprintf('%s%s false', dimStr, cls); end
