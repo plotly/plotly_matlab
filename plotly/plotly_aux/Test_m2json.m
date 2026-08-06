@@ -1,4 +1,4 @@
-classdef Test_m2json < matlab.unittest.TestCase
+classdef Test_m2json < PlotlyTestCase
     methods (Test)
         function testLowPrecisionInRange0to10(tc)
             values = 1 + (1:5) + 0.234;

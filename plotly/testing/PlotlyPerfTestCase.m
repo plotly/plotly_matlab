@@ -1,0 +1,2 @@
+classdef PlotlyPerfTestCase < PlotlyTestCase
+end

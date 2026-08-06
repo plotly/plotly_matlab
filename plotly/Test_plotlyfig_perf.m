@@ -1,4 +1,4 @@
-classdef Test_plotlyfig_perf < matlab.perftest.TestCase
+classdef Test_plotlyfig_perf < PlotlyPerfTestCase
 % Run as:
 %{
 res = runperf("Test_plotlyfig_perf");
@@ -20,8 +20,12 @@ tb = res.sampleSummary;
                 hold off;
             end
 
-            while tc.keepMeasuring
+            if is_octave()
                 p = plotlyfig(fig, "visible", "off");
+            else
+                while tc.keepMeasuring
+                    p = plotlyfig(fig, "visible", "off");
+                end
             end
 
             % Verify correctness: one trace per line
@@ -41,8 +45,12 @@ tb = res.sampleSummary;
             n = 100000;
             val = repmat('a"b\c/d', 1, n);
 
-            while tc.keepMeasuring
+            if is_octave()
                 result = checkescape(val);
+            else
+                while tc.keepMeasuring
+                    result = checkescape(val);
+                end
             end
 
             % Verify correctness
