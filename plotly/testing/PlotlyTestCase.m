@@ -58,6 +58,10 @@ classdef PlotlyTestCase < handle
 
         function verifyEqual(testCase, actual, expected, varargin)
             [absTol, msg] = testCase.parseVerifyArgs(varargin{:});
+            if isstruct(actual) && isstruct(expected)
+                testCase.compareHelper(actual, expected, '', varargin);
+                return;
+            end
             ok = testCase.isEqualCheck(actual, expected, absTol);
             if ok
                 testCase.recordPass();
