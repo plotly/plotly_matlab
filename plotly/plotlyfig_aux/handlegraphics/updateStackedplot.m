@@ -129,7 +129,8 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
                 b = nAxis-a+1;
                 tmpAxesProperties = get(plotData, 'AxesProperties');
                 axisLim{a} = tmpAxesProperties(b).YLimits;
-                axisLabel{a} = displayLabels{b};
+                tmpLabels = get(plotData, 'DisplayLabels');
+                axisLabel{a} = tmpLabels{b};
                 axisDomain{a} = min([yPos(a)+yOffset(a) yPos(a+1)], 1);
                 axisAnchor{a} = "x1";
             end

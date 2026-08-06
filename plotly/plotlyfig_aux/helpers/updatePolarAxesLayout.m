@@ -21,8 +21,13 @@ function polarAxis = updateDefaultPolar(obj, plotIndex)
         axisData = get(obj.State.Plot(plotIndex).Handle, 'Parent');
     end
 
-    thetaAxis = get(axisData, 'ThetaAxis');
-    rAxis = get(axisData, 'RAxis');
+    if isprop(axisData, 'ThetaAxis')
+        thetaAxis = get(axisData, 'ThetaAxis');
+        rAxis = get(axisData, 'RAxis');
+    else
+        thetaAxis = get(axisData, 'XAxis');
+        rAxis = get(axisData, 'YAxis');
+    end
     thetaLabel = get(thetaAxis, 'Label');
 
     tmpPosition = get(axisData, 'Position');
