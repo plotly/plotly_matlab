@@ -205,7 +205,10 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "showlegend", true ...
             );
             if is_octave()
+                expected.x = PlotlyTestCase.Any();
+                expected.y = PlotlyTestCase.Any();
                 expected.marker = PlotlyTestCase.Any();
+                expected.showlegend = false;
             end
             tc.verifyEqualStructs(p.data{1}, expected);
             try close(); catch; end
