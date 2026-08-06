@@ -123,7 +123,7 @@ function data = updateLineseries(obj, plotIndex)
     if isCompassArrow
         data.r = rData(1:2);
         data.theta = thetaData(1:2);
-        data.hovertext = {'', sprintf("R: %.2f<br>Theta: %.2f", rData(2), thetaData(2))};
+        data.hovertext = {'', sprintf("r: %.2f<br>\u03B8: %.2f", rData(2), thetaData(2))};
         data.hoverinfo = 'text';
     elseif isFeatherArrow
         data.x = xData(1:2);
@@ -174,7 +174,7 @@ function data = updateLineseries(obj, plotIndex)
                 end
             end
             if isPolar
-                data.hovertext = "R: " + data.r(:) + "<br>" + "Theta: " + ...
+                data.hovertext = "r: " + data.r(:) + "<br>" + "\u03B8: " + ...
                         data.theta(:) + "<br>";
             elseif isPlot3D
                 data.hovertext = xDataLabel + ": " + data.x(:) + "<br>" ...
