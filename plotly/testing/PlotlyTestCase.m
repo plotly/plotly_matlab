@@ -10,25 +10,25 @@ classdef PlotlyTestCase < handle
     end
 
     properties (Access = private)
-        _curPassed = 0
-        _curFailed = 0
-        _curDiagnostics = {}
+        p_curPassed = 0
+        p_curFailed = 0
+        p_curDiagnostics = {}
     end
 
     methods
         function startTest(testCase, name)
             testCase.CurrentTest = name;
-            testCase._curPassed = 0;
-            testCase._curFailed = 0;
-            testCase._curDiagnostics = {};
+            testCase.p_curPassed = 0;
+            testCase.p_curFailed = 0;
+            testCase.p_curDiagnostics = {};
             testCase.ErrorTrace = '';
         end
 
         function v = finishTest(testCase)
             v = struct('Name', testCase.CurrentTest, ...
-                       'Passed', testCase._curPassed > 0 && testCase._curFailed == 0, ...
-                       'VerificationFailures', testCase._curFailed, ...
-                       'Diagnostics', {testCase._curDiagnostics}, ...
+                       'Passed', testCase.p_curPassed > 0 && testCase.p_curFailed == 0, ...
+                       'VerificationFailures', testCase.p_curFailed, ...
+                       'Diagnostics', {testCase.p_curDiagnostics}, ...
                        'ErrorTrace', testCase.ErrorTrace, ...
                        'Duration', 0, ...
                        'Errored', false);
@@ -42,13 +42,13 @@ classdef PlotlyTestCase < handle
 
         function recordPass(testCase)
             testCase.Passed = testCase.Passed + 1;
-            testCase._curPassed = testCase._curPassed + 1;
+            testCase.p_curPassed = testCase.p_curPassed + 1;
         end
 
         function recordFail(testCase, diagnostic)
             testCase.Failed = testCase.Failed + 1;
-            testCase._curFailed = testCase._curFailed + 1;
-            testCase._curDiagnostics{end+1} = diagnostic;
+            testCase.p_curFailed = testCase.p_curFailed + 1;
+            testCase.p_curDiagnostics{end+1} = diagnostic;
             if isempty(testCase.CurrentTest)
                 testCase.Failures{end+1} = diagnostic;
             else
