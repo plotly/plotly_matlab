@@ -5,15 +5,41 @@ classdef PlotlyTestCase < handle
         Passed = 0
         Failed = 0
         Failures = {}
+        TestVerdicts = []
+    end
+
+    properties (Access = private)
+        _curPassed = 0
+        _curFailed = 0
+        _curDiagnostics = {}
     end
 
     methods
+        function startTest(testCase, name)
+            testCase.CurrentTest = name;
+            testCase._curPassed = 0;
+            testCase._curFailed = 0;
+            testCase._curDiagnostics = {};
+        end
+
+        function v = finishTest(testCase)
+            v.Name = testCase.CurrentTest;
+            v.Passed = testCase._curPassed > 0 && testCase._curFailed == 0;
+            v.VerificationFailures = testCase._curFailed;
+            v.Diagnostics = testCase._curDiagnostics;
+            testCase.CurrentTest = '';
+            testCase.TestVerdicts(end+1) = v;
+        end
+
         function recordPass(testCase)
             testCase.Passed = testCase.Passed + 1;
+            testCase._curPassed = testCase._curPassed + 1;
         end
 
         function recordFail(testCase, diagnostic)
             testCase.Failed = testCase.Failed + 1;
+            testCase._curFailed = testCase._curFailed + 1;
+            testCase._curDiagnostics{end+1} = diagnostic;
             if isempty(testCase.CurrentTest)
                 testCase.Failures{end+1} = diagnostic;
             else
