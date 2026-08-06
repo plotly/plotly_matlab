@@ -23,6 +23,8 @@ function cls = getOctaveGroupClass(handle)
                 cls = 'errorbar';
             elseif strcmp(creator, '__contour__')
                 cls = 'contour';
+            elseif strcmp(creator, '__scatter__')
+                cls = 'scatter';
             end
         end
     catch

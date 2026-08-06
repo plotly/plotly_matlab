@@ -29,7 +29,11 @@ function marker = extractScatterMarker(plotData)
     end
 
     markerFaceColor = get(plotData, 'MarkerFaceColor');
-    markerFaceAlpha = get(plotData, 'MarkerFaceAlpha');
+    if isprop(plotData, 'MarkerFaceAlpha')
+        markerFaceAlpha = get(plotData, 'MarkerFaceAlpha');
+    else
+        markerFaceAlpha = 1;
+    end
 
     if filledMarker
         if isnumeric(markerFaceColor)
@@ -67,7 +71,11 @@ function marker = extractScatterMarker(plotData)
     end
 
     markerEdgeColor = get(plotData, 'MarkerEdgeColor');
-    markerEdgeAlpha = get(plotData, 'MarkerEdgeAlpha');
+    if isprop(plotData, 'MarkerEdgeAlpha')
+        markerEdgeAlpha = get(plotData, 'MarkerEdgeAlpha');
+    else
+        markerEdgeAlpha = 1;
+    end
 
     if isnumeric(markerEdgeColor)
         lineColor = getStringColor(round(255*markerEdgeColor));

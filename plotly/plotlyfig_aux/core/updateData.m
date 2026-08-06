@@ -210,6 +210,8 @@ function obj = updateData(obj, dataIndex)
                             obj.data{dataIndex} = updateErrorbarseries(obj, dataIndex);
                         case 'contour'
                             obj.data{dataIndex} = updateContourgroup(obj, dataIndex);
+                        case 'scatter'
+                            obj.data{dataIndex} = updateScatter(obj, dataIndex);
                     end
                 end
             case {"uimenu","uicontextmenu","legend"}
