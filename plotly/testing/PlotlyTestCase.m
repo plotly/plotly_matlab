@@ -1,6 +1,7 @@
 classdef PlotlyTestCase < handle
 
-    properties (SetAccess = private, GetAccess = public)
+    properties
+        CurrentTest = ''
         Passed = 0
         Failed = 0
         Failures = {}
@@ -13,7 +14,11 @@ classdef PlotlyTestCase < handle
 
         function recordFail(testCase, diagnostic)
             testCase.Failed = testCase.Failed + 1;
-            testCase.Failures{end+1} = diagnostic;
+            if isempty(testCase.CurrentTest)
+                testCase.Failures{end+1} = diagnostic;
+            else
+                testCase.Failures{end+1} = [testCase.CurrentTest ': ' diagnostic];
+            end
         end
 
         function verifyEqual(testCase, actual, expected, varargin)

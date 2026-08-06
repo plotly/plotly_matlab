@@ -31,18 +31,20 @@ function runplotlytests()
                 continue;
             end
             nTests = nTests + 1;
+            tc.CurrentTest = [className '/' methodName];
             fname = str2func(methodName);
             try
                 fname(tc);
             catch e
-                tc.recordFail(sprintf('%s THREW: %s', methodName, e.message));
+                tc.recordFail(sprintf('THREW: %s', e.message));
             end
+            tc.CurrentTest = '';  % reset after test
         end
 
         fprintf('  Tests run: %d, Passed: %d, Failed: %d\n', ...
             nTests, tc.Passed, tc.Failed);
         for f = 1:tc.Failed
-            fprintf('    FAIL %d: %s\n', f, tc.Failures{f});
+            fprintf('    FAIL: %s\n', tc.Failures{f});
         end
         totalPassed = totalPassed + tc.Passed;
         totalFailed = totalFailed + tc.Failed;
