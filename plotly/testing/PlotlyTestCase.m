@@ -291,35 +291,37 @@ classdef PlotlyTestCase < handle
 
         function s = formatValue(v)
             cls = class(v);
+            sz = size(v);
+            dimStr = '';
+            for d = 1:numel(sz)
+                if d > 1, dimStr = [dimStr 'x']; end
+                dimStr = [dimStr num2str(sz(d))];
+            end
+            dimStr = [dimStr ' '];
 
             if ischar(v)
                 if isempty(v)
                     q = char(39);
-                    s = sprintf('%s %s%s', cls, q, q);
+                    s = sprintf('%s%s %s%s', dimStr, cls, q, q);
                 elseif numel(v) < 200
-                    s = sprintf('%s ''%s''', cls, v);
+                    s = sprintf('%s%s ''%s''', dimStr, cls, v);
                 else
-                    sz = size(v);
-                    s = sprintf('%s %dx%d', cls, sz(1), sz(2));
+                    s = sprintf('%s%s', dimStr, cls);
                 end
             elseif isstring(v) && isscalar(v)
                 s = sprintf('%s "%s"', cls, char(v));
             elseif isnumeric(v) && isscalar(v)
-                s = sprintf('%s %s', cls, num2str(v, 16));
+                s = sprintf('%s%s %s', dimStr, cls, num2str(v, 16));
             elseif islogical(v) && isscalar(v)
-                if v, s = sprintf('%s true', cls); else, s = sprintf('%s false', cls); end
+                if v, s = sprintf('%s%s true', dimStr, cls); else, s = sprintf('%s%s false', dimStr, cls); end
             elseif iscell(v)
                 s = PlotlyTestCase.formatCell(v);
             elseif isstruct(v)
                 s = PlotlyTestCase.formatStruct(v);
             elseif isnumeric(v)
-                sz = size(v);
-                s = cls;
-                for d = 1:numel(sz)
-                    s = [s ' ' num2str(sz(d))];
-                end
+                s = sprintf('%s%s', dimStr, cls);
             else
-                s = cls;
+                s = sprintf('%s%s', dimStr, cls);
             end
         end
     end
