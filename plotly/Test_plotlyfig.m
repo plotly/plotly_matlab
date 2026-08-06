@@ -3590,24 +3590,24 @@ classdef Test_plotlyfig < PlotlyTestCase
             % using the per-trace legendrank property.
             % Traces are created in order C, A, B but the legend is
             % reordered to A, B, C via legendrank.
-            legends = ["C" "A" "B"];
-            customOrderedLegends = ["A" "B" "C"];
+            legends = {'C' 'A' 'B'};
+            customOrderedLegends = {'A' 'B' 'C'};
 
-            fig = figure(Visible="off");
+            fig = figure("Visible","off");
             n = 100;
             rng("default");
             y = cumsum(randn(n,3));
             lines = plot(1:n,y);
 
             [~,ix] = ismember(customOrderedLegends,legends);
-            legend(lines(ix),legends(ix),Location="northwest",Box="off");
+            legend(lines(ix),legends(ix),"Location","northwest","Box","off");
 
-            p = plotlyfig(fig,visible="off");
+            p = plotlyfig(fig,"visible","off");
 
             tc.verifyNumElements(p.data,3);
 
             % Traces stay in original creation order (C, A, B).
-            actualNames = cellfun(@(d) string(d.name),p.data);
+            actualNames = cellfun(@(d) char(d.name),p.data,'UniformOutput',false);
             tc.verifyEqual(actualNames,legends, ...
                 "Traces must remain in original creation order");
 
@@ -3625,7 +3625,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "All traces should have showlegend=true");
 
             % traceorder must be 'normal' so Plotly honours legendrank.
-            tc.verifyEqual(string(p.layout.legend.traceorder),"normal");
+            tc.verifyEqual(char(p.layout.legend.traceorder),"normal");
             try close(); catch; end
         end
 

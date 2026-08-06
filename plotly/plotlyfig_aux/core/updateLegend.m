@@ -57,34 +57,71 @@ function obj = updateLegend(obj, legIndex)
 end
 
 function assignLegendRank(obj, legendHandle)
-    if ~isprop(legendHandle, "PlotChildren")
+    if isprop(legendHandle, "PlotChildren")
+        legendPlots = get(legendHandle, 'PlotChildren');
+        nPlots = obj.State.Figure.NumPlots;
+
+        % Build a map from MATLAB plot handle to Plotly trace index.
+        % NOTE: obj.data may contain more entries than obj.State.Plot (e.g.
+        % phantom scatter traces added by updateAxisMultipleYAxes for yyaxis
+        % visibility), so iterate over the real plot count, not numel(obj.data).
+        handleToTrace = containers.Map("KeyType", "double", "ValueType", "double");
+        for k = 1:nPlots
+            h = obj.State.Plot(k).Handle;
+            if isa(h, "handle") || (isscalar(h) && isgraphics(h))
+                handleToTrace(double(h)) = k;
+            end
+        end
+
+        % Walk the legend's PlotChildren in order and assign ascending
+        % legendrank values to the corresponding Plotly traces.
+        rank = 0;
+        for k = 1:numel(legendPlots)
+            key = double(legendPlots(k));
+            if handleToTrace.isKey(key)
+                rank = rank + 1;
+                traceIdx = handleToTrace(key);
+                obj.data{traceIdx}.legendrank = rank;
+            end
+        end
         return
     end
 
-    legendPlots = get(legendHandle, 'PlotChildren');
-    nPlots = obj.State.Figure.NumPlots;
-
-    % Build a map from MATLAB plot handle to Plotly trace index.
-    % NOTE: obj.data may contain more entries than obj.State.Plot (e.g.
-    % phantom scatter traces added by updateAxisMultipleYAxes for yyaxis
-    % visibility), so iterate over the real plot count, not numel(obj.data).
-    handleToTrace = containers.Map("KeyType", "double", "ValueType", "double");
-    for k = 1:nPlots
-        h = obj.State.Plot(k).Handle;
-        if isa(h, "handle") || (isscalar(h) && isgraphics(h))
-            handleToTrace(double(h)) = k;
+    % Octave path: the legend text children are laid out in display
+    % order; the topmost (highest y) or leftmost (lowest x) entry is
+    % displayed first. Match each entry's label to the trace name.
+    kids = get(legendHandle, 'children');
+    texts = [];
+    for k = 1:numel(kids)
+        if strcmp(get(kids(k), 'type'), 'text')
+            texts(end+1) = kids(k); %#ok<AGROW>
         end
     end
+    if isempty(texts)
+        return
+    end
 
-    % Walk the legend's PlotChildren in order and assign ascending
-    % legendrank values to the corresponding Plotly traces.
+    positions = zeros(2, numel(texts));
+    for k = 1:numel(texts)
+        pos = get(texts(k), 'position');
+        positions(1, k) = pos(1);
+        positions(2, k) = pos(2);
+    end
+    if strcmpi(get(legendHandle, 'orientation'), 'horizontal')
+        [~, order] = sort(positions(1, :));
+    else
+        [~, order] = sort(positions(2, :), 'descend');
+    end
+
     rank = 0;
-    for k = 1:numel(legendPlots)
-        key = double(legendPlots(k));
-        if handleToTrace.isKey(key)
-            rank = rank + 1;
-            traceIdx = handleToTrace(key);
-            obj.data{traceIdx}.legendrank = rank;
+    for k = 1:numel(order)
+        label = get(texts(order(k)), 'string');
+        for t = 1:numel(obj.data)
+            if isfield(obj.data{t}, 'name') && strcmp(obj.data{t}.name, label)
+                rank = rank + 1;
+                obj.data{t}.legendrank = rank;
+                break;
+            end
         end
     end
 end
