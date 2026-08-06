@@ -62,7 +62,7 @@ classdef PlotlyTestCase < handle
                 detail = sprintf('  Actual  : %s\n  Expected: %s', ...
                     testCase.formatValue(actual), testCase.formatValue(expected));
                 if isempty(msg)
-                    testCase.recordFail(['Values are not equal.\n' detail]);
+                    testCase.recordFail(sprintf('Values are not equal.\n%s', detail));
                 else
                     testCase.recordFail(sprintf('%s\n%s', msg, detail));
                 end
@@ -290,29 +290,36 @@ classdef PlotlyTestCase < handle
         end
 
         function s = formatValue(v)
+            cls = class(v);
+
             if ischar(v)
-                if numel(v) < 200
-                    s = ['''' v ''''];
+                if isempty(v)
+                    q = char(39);
+                    s = sprintf('%s %s%s', cls, q, q);
+                elseif numel(v) < 200
+                    s = sprintf('%s ''%s''', cls, v);
                 else
-                    s = sprintf('%dx%d char', size(v, 1), size(v, 2));
+                    sz = size(v);
+                    s = sprintf('%s %dx%d', cls, sz(1), sz(2));
                 end
             elseif isstring(v) && isscalar(v)
-                s = ['"' char(v) '"'];
+                s = sprintf('%s "%s"', cls, char(v));
             elseif isnumeric(v) && isscalar(v)
-                s = num2str(v, 16);
+                s = sprintf('%s %s', cls, num2str(v, 16));
             elseif islogical(v) && isscalar(v)
-                if v, s = 'true'; else, s = 'false'; end
+                if v, s = sprintf('%s true', cls); else, s = sprintf('%s false', cls); end
             elseif iscell(v)
                 s = PlotlyTestCase.formatCell(v);
             elseif isstruct(v)
                 s = PlotlyTestCase.formatStruct(v);
             elseif isnumeric(v)
                 sz = size(v);
-                dims = sprintf('%dx', sz(1:end-1));
-                dims = [dims num2str(sz(end))];
-                s = [dims ' ' class(v)];
+                s = cls;
+                for d = 1:numel(sz)
+                    s = [s ' ' num2str(sz(d))];
+                end
             else
-                s = class(v);
+                s = cls;
             end
         end
     end
