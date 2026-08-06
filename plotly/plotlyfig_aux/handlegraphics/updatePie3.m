@@ -35,8 +35,7 @@ function updatePie3(obj,plotIndex)
     obj.data{plotIndex}.hovertext = obj.PlotOptions.perc;
 
     %-update scene-%
-    obj.layout = setfield(obj.layout,['scene' ...
-            obj.PlotOptions.scene_anchor(end)], obj.PlotOptions.scene);
+    obj.layout = setfield(obj.layout, char(obj.PlotOptions.scene_anchor), obj.PlotOptions.scene);
     obj.data{plotIndex}.scene = obj.PlotOptions.scene_anchor;
     obj.data{plotIndex}.legendgroup = obj.PlotOptions.scene_anchor;
 
