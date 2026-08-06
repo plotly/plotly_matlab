@@ -123,6 +123,8 @@ function data = updateLineseries(obj, plotIndex)
     if isCompassArrow
         data.r = rData(1:2);
         data.theta = thetaData(1:2);
+        data.hovertext = {'', sprintf("R: %.2f<br>Theta: %.2f", rData(2), thetaData(2))};
+        data.hoverinfo = 'text';
     elseif isFeatherArrow
         data.x = xData(1:2);
         data.y = yData(1:2);
