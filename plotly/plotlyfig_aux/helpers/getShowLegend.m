@@ -8,6 +8,10 @@ function showLegend = getShowLegend(plotData)
 				showLegend = false;
 		end
 	catch
-		showLegend = false;
+		% Octave objects have no Annotation property; fall back to a
+		% non-empty DisplayName (set by legend) as the legend marker.
+		if isprop(plotData, 'DisplayName')
+			showLegend = ~isempty(get(plotData, 'DisplayName'));
+		end
 	end
 end
