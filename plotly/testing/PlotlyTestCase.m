@@ -336,15 +336,26 @@ classdef PlotlyTestCase < handle
                 else
                     s = sprintf('%s%s', dimStr, cls);
                 end
-            elseif isstring(v) && isscalar(v)
-                s = sprintf('%s "%s"', cls, char(v));
+            elseif isstring(v)
+                if isscalar(v)
+                    s = sprintf('%s "%s"', cls, char(v));
+                elseif numel(v) <= 10
+                    parts = cell(1, numel(v));
+                    for j = 1:numel(v)
+                        parts{j} = sprintf('"%s"', char(v(j)));
+                    end
+                    s = sprintf('%s%s [%s]', dimStr, cls, strjoin(parts, ' '));
+                else
+                    s = sprintf('%s%s', dimStr, cls);
+                end
             elseif isnumeric(v)
                 if isscalar(v)
                     s = sprintf('%s%s %s', dimStr, cls, num2str(v, 17));
                 elseif numel(v) <= 10
                     s = sprintf('%s%s [%s]', dimStr, cls, strjoin(cellstr(num2str(v(:)', 17)), ' '));
                 else
-                    s = sprintf('%s%s', dimStr, cls);
+                    firstN = cellstr(num2str(v(1:min(10,numel(v)))', 17));
+                    s = sprintf('%s%s [%s ...]', dimStr, cls, strjoin(firstN, ' '));
                 end
             elseif islogical(v) && isscalar(v)
                 if v, s = sprintf('%s%s true', dimStr, cls); else, s = sprintf('%s%s false', dimStr, cls); end
