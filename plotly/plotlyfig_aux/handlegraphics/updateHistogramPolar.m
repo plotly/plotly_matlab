@@ -47,7 +47,11 @@ function data = updateHistogramPolar(obj,histIndex)
 
     hist_data = obj.State.Plot(histIndex).Handle;
 
-    data.type = "barpolar";
+    axIndex = obj.getAxisIndex(obj.State.Plot(histIndex).AssociatedAxis);
+    xsource = findSourceAxis(obj, axIndex);
+    data.subplot = sprintf('polar%d', xsource+1);
+
+    data.type = 'barpolar';
 
     binedges = rad2deg(get(hist_data, 'BinEdges'));
     data.theta = binedges(1:end-1) + 0.5*diff(binedges);
