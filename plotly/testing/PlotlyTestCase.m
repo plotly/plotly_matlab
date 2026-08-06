@@ -112,30 +112,45 @@ classdef PlotlyTestCase < handle
             end
         end
 
-        function verifyGreaterThan(testCase, value, floor)
+        function verifyGreaterThan(testCase, value, floor, varargin)
             if value > floor
                 testCase.recordPass();
             else
-                testCase.recordFail(sprintf( ...
-                    'Expected value > %s but got %s.', testCase.formatValue(floor), testCase.formatValue(value)));
+                if numel(varargin) >= 1 && ischar(varargin{1})
+                    msg = varargin{1};
+                    testCase.recordFail(msg);
+                else
+                    testCase.recordFail(sprintf( ...
+                        'Expected value > %s but got %s.', testCase.formatValue(floor), testCase.formatValue(value)));
+                end
             end
         end
 
-        function verifyGreaterThanOrEqual(testCase, value, floor)
+        function verifyGreaterThanOrEqual(testCase, value, floor, varargin)
             if value >= floor
                 testCase.recordPass();
             else
-                testCase.recordFail(sprintf( ...
-                    'Expected value >= %s but got %s.', testCase.formatValue(floor), testCase.formatValue(value)));
+                if numel(varargin) >= 1 && ischar(varargin{1})
+                    msg = varargin{1};
+                    testCase.recordFail(msg);
+                else
+                    testCase.recordFail(sprintf( ...
+                        'Expected value >= %s but got %s.', testCase.formatValue(floor), testCase.formatValue(value)));
+                end
             end
         end
 
-        function verifyLessThan(testCase, value, ceiling)
+        function verifyLessThan(testCase, value, ceiling, varargin)
             if value < ceiling
                 testCase.recordPass();
             else
-                testCase.recordFail(sprintf( ...
-                    'Expected value < %s but got %s.', testCase.formatValue(ceiling), testCase.formatValue(value)));
+                if numel(varargin) >= 1 && ischar(varargin{1})
+                    msg = varargin{1};
+                    testCase.recordFail(msg);
+                else
+                    testCase.recordFail(sprintf( ...
+                        'Expected value < %s but got %s.', testCase.formatValue(ceiling), testCase.formatValue(value)));
+                end
             end
         end
     end
