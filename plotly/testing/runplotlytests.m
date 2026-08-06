@@ -11,7 +11,8 @@ function runplotlytests()
         'Test_plotlyfig_perf','/workspace/plotly/Test_plotlyfig_perf.m'
     };
 
-    allVerdicts = struct([]);
+    allVerdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
+        'Diagnostics', {}, 'ErrorTrace', {}, 'Duration', {}, 'Errored', {});
 
     for s = 1:size(suites, 1)
         className = suites{s, 1};
@@ -27,7 +28,8 @@ function runplotlytests()
 
         meths = methods(tc);
         nTests = 0;
-        verdicts = struct([]);
+        verdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
+            'Diagnostics', {}, 'ErrorTrace', {}, 'Duration', {}, 'Errored', {});
 
         for i = 1:numel(meths)
             methodName = meths{i};
