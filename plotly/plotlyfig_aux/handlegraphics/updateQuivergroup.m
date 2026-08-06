@@ -8,6 +8,10 @@ function obj = updateQuivergroup(obj, quiverIndex)
     xdata = [];
     ydata = [];
     zdata = [];
+    barbX = [];
+    barbY = [];
+    barbZ = [];
+    hasBarb = false;
     %-process visible children (shafts + heads), skipping data-holder
     %-children that have no line or marker style-%
     for n = 1:numel(quiver_child)
@@ -20,11 +24,27 @@ function obj = updateQuivergroup(obj, quiverIndex)
         obj.State.Plot(quiverIndex).Handle = qt;
         obj.data{quiverIndex} = updateLineseries(obj,quiverIndex);
 
-        %update xdata and ydata
-        xdata = [xdata obj.data{quiverIndex}.x];
-        ydata = [ydata obj.data{quiverIndex}.y];
-        if isfield(obj.data{quiverIndex}, 'z')
-            zdata = [zdata obj.data{quiverIndex}.z];
+        xd = obj.data{quiverIndex}.x;
+        nans = isnan(xd);
+        if numel(xd) > 1 && any(nans)
+            seglen = max(diff([0 find(nans) numel(xd)+1]) - 1);
+        else
+            seglen = numel(xd);
+        end
+
+        if seglen == 2
+            xdata = [xdata xd];
+            ydata = [ydata obj.data{quiverIndex}.y];
+            if isfield(obj.data{quiverIndex}, 'z')
+                zdata = [zdata obj.data{quiverIndex}.z];
+            end
+        else
+            hasBarb = true;
+            barbX = [barbX xd];
+            barbY = [barbY obj.data{quiverIndex}.y];
+            if isfield(obj.data{quiverIndex}, 'z')
+                barbZ = [barbZ obj.data{quiverIndex}.z];
+            end
         end
     end
 
@@ -33,6 +53,34 @@ function obj = updateQuivergroup(obj, quiverIndex)
     obj.data{quiverIndex}.y = ydata;
     if ~isempty(zdata)
         obj.data{quiverIndex}.z = zdata;
+    end
+
+    if hasBarb
+        obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+        barbIndex = obj.PlotOptions.nPlots;
+
+        obj.data{barbIndex}.type = obj.data{quiverIndex}.type;
+        if isfield(obj.data{quiverIndex}, 'scene')
+            obj.data{barbIndex}.scene = obj.data{quiverIndex}.scene;
+        end
+        if isfield(obj.data{quiverIndex}, 'xaxis')
+            obj.data{barbIndex}.xaxis = obj.data{quiverIndex}.xaxis;
+            obj.data{barbIndex}.yaxis = obj.data{quiverIndex}.yaxis;
+        end
+        obj.data{barbIndex}.mode = 'lines';
+        obj.data{barbIndex}.visible = obj.data{quiverIndex}.visible;
+        if isfield(obj.data{quiverIndex}, 'line')
+            obj.data{barbIndex}.line = obj.data{quiverIndex}.line;
+        else
+            obj.data{barbIndex}.marker = obj.data{quiverIndex}.marker;
+        end
+        obj.data{barbIndex}.hoverinfo = 'none';
+        obj.data{barbIndex}.showlegend = false;
+        obj.data{barbIndex}.x = barbX;
+        obj.data{barbIndex}.y = barbY;
+        if ~isempty(barbZ)
+            obj.data{barbIndex}.z = barbZ;
+        end
     end
 
     %-revert handle-%

@@ -80,6 +80,10 @@ function obj = updateQuiver(obj, dataIndex)
     if strcmp(get(plotData, 'ShowArrowHead'), 'on')
         maxHeadSize = get(plotData, 'MaxHeadSize') * 1.5;
         headWidth = 20;
+
+        barbX = [];
+        barbY = [];
+        barbZ = [];
         for n = 1:numel(xData)
             if isQuiver3D
                 quiverBarb = getQuiverBarb3D(...
@@ -94,13 +98,36 @@ function obj = updateQuiver(obj, dataIndex)
                     maxHeadSize, headWidth ...
                 );
             end
-            for m = 1:size(quiverBarb, 2)
-                obj.data{dataIndex}.x(end+1) = quiverBarb(1, m);
-                obj.data{dataIndex}.y(end+1) = quiverBarb(2, m);
-                if isQuiver3D
-                    obj.data{dataIndex}.z(end+1) = quiverBarb(3, m);
-                end
+            barbX = [barbX, quiverBarb(1, :)];
+            barbY = [barbY, quiverBarb(2, :)];
+            if isQuiver3D
+                barbZ = [barbZ, quiverBarb(3, :)];
             end
+        end
+
+        obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+        barbIndex = obj.PlotOptions.nPlots;
+
+        if isQuiver3D
+            obj.data{barbIndex}.type = 'scatter3d';
+            obj.data{barbIndex}.scene = sprintf('scene%d', xSource);
+        else
+            obj.data{barbIndex}.type = 'scatter';
+            obj.data{barbIndex}.xaxis = sprintf('x%d', xSource);
+            obj.data{barbIndex}.yaxis = sprintf('y%d', xSource);
+        end
+
+        obj.data{barbIndex}.mode = 'lines';
+        obj.data{barbIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
+        obj.data{barbIndex}.line.color = obj.data{dataIndex}.line.color;
+        obj.data{barbIndex}.line.width = obj.data{dataIndex}.line.width;
+        obj.data{barbIndex}.hoverinfo = 'none';
+        obj.data{barbIndex}.showlegend = false;
+
+        obj.data{barbIndex}.x = barbX;
+        obj.data{barbIndex}.y = barbY;
+        if isQuiver3D
+            obj.data{barbIndex}.z = barbZ;
         end
     end
 

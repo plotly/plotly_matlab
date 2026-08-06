@@ -46,6 +46,14 @@ function data = updateLineseries(obj, plotIndex)
         && xData(1) == 0 && yData(1) == 0 ...
         && xData(2) == xData(4) && yData(2) == yData(4);
 
+    % feather draws one line per arrow: a base point on the
+    % horizontal axis to the tip, back through a barb, to the tip
+    % again and out through the other barb, so the tip appears twice
+    isFeatherArrow = ~isPlot3D && ~isCompassArrow && ~isRose ...
+        && numel(xData) == 5 ...
+        && yData(1) == 0 ...
+        && xData(2) == xData(4) && yData(2) == yData(4);
+
     % MATLAB's polar()/ezpolar()/compass()/rose() draw into a
     % regular axes with an equal aspect, symmetric limits and ticks,
     % and a 15% taller y-range for the labels; route them through
@@ -112,7 +120,13 @@ function data = updateLineseries(obj, plotIndex)
     data.name = get(plotData, 'DisplayName');
     data.mode = getScatterMode(plotData);
 
-    if isPolar
+    if isCompassArrow
+        data.r = rData(1:2);
+        data.theta = thetaData(1:2);
+    elseif isFeatherArrow
+        data.x = xData(1:2);
+        data.y = yData(1:2);
+    elseif isPolar
         data.r = rData;
         data.theta = thetaData;
     else
@@ -212,6 +226,35 @@ function data = updateLineseries(obj, plotIndex)
         % petals and the MATLAB polar family are laid out in the math
         % angle convention
         obj.layout.(data.subplot).angularaxis.direction = 'counterclockwise';
+    end
+
+    if isCompassArrow || isFeatherArrow
+        obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+        bi = obj.PlotOptions.nPlots;
+
+        if isCompassArrow
+            obj.data{bi}.type = 'scatterpolar';
+            obj.data{bi}.subplot = data.subplot;
+            obj.data{bi}.r = rData(2:5);
+            obj.data{bi}.theta = thetaData(2:5);
+        else
+            obj.data{bi}.type = 'scatter';
+            obj.data{bi}.xaxis = data.xaxis;
+            obj.data{bi}.yaxis = data.yaxis;
+            obj.data{bi}.x = xData(2:5);
+            obj.data{bi}.y = yData(2:5);
+        end
+
+        obj.data{bi}.mode = 'lines';
+        obj.data{bi}.visible = data.visible;
+        if isfield(data, 'line')
+            obj.data{bi}.line = data.line;
+        end
+        if isfield(data, 'marker')
+            obj.data{bi}.marker = data.marker;
+        end
+        obj.data{bi}.hoverinfo = 'none';
+        obj.data{bi}.showlegend = false;
     end
 end
 
