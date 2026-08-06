@@ -1143,7 +1143,17 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             );
-            if ~is_octave()
+            if is_octave()
+                expected.contours.end = 0.81412281872963299;
+                expected.contours.start = -0.99767975543523912;
+                expected.contours.size = 0.18118025741648722;
+                expected.zmin = -0.81649949801875188;
+                expected.zmax = 0.81412281872963299;
+                expected.line = struct( ...
+                    "width", 0.75, ...
+                    "color", "rgba(0,0,0,0)" ...
+                );
+            else
                 expected.reversescale = false;
             end
             tc.verifyEqual(rmfield(p.data{1}, "colorscale"), expected, 'AbsTol', 1e-16);
