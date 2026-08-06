@@ -3101,6 +3101,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPlotWithCustomDataTip(tc)
+            if is_octave()
+                return % DataTipTemplate is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = 1:5;
             y = [2 4 6 8 10];
@@ -3122,6 +3125,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPlotTableDataTip(tc)
+            if is_octave()
+                return % DataTipTemplate is not yet implemented in Octave.
+            end
             tb = table();
             tb.time = (2:2:12)';
             tb.Saved = rand(6,1);
@@ -3158,6 +3164,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPlotWithMultipleCustomDataTips(tc)
+            if is_octave()
+                return % DataTipTemplate is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = 1:3;
             y = [10 20 30];
