@@ -2934,7 +2934,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             p = plotlyfig(fig,"visible","off");
 
             tc.verifyNumElements(p.layout.annotations, numel(data));
-            actualStrings = cellfun(@(ann) ann.text, p.layout.annotations);
+            actualStrings = cellfun(@(ann) ann.text, p.layout.annotations, 'UniformOutput', false);
             expectedStrings = arrayfun(@(v) string(v), data(:));
             tc.verifyEqual(sort(actualStrings(:)), sort(expectedStrings(:)));
             try close(); catch; end
@@ -2953,7 +2953,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             p = plotlyfig(fig,"visible","off");
 
             tc.verifyNumElements(p.layout.annotations, numel(data)+1);
-            actualStrings = cellfun(@(ann) ann.text, p.layout.annotations);
+            actualStrings = cellfun(@(ann) ann.text, p.layout.annotations, 'UniformOutput', false);
             tc.verifyNotEmpty(actualStrings(contains(actualStrings, titleString)));
             try close(); catch; end
         end
