@@ -2,8 +2,8 @@ function str = struct2json(s)
     if isscalar(s)
         str = oneStruct2json(s);
     else
-        str = arrayfun(@oneStruct2json,s);
-        str = sprintf("[%s]",strjoin(str,", "));
+        str = arrayfun(@oneStruct2json, s, 'UniformOutput', false);
+        str = sprintf("[%s]", strjoin(str, ", "));
     end
 end
 
