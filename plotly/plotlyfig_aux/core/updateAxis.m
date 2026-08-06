@@ -44,9 +44,11 @@ function obj = updateAxis(obj,axIndex)
     axisData = obj.State.Axis(axIndex).Handle;
 
     %-set plot background from axes color-%
-    axColor = get(axisData, 'Color');
-    if isnumeric(axColor)
-        obj.layout.plot_bgcolor = getStringColor(round(255*axColor));
+    if isprop(axisData, 'Color')
+        axColor = get(axisData, 'Color');
+        if isnumeric(axColor)
+            obj.layout.plot_bgcolor = getStringColor(round(255*axColor));
+        end
     end
 
     %-Octave legends are axes objects tagged "legend"; they are handled
