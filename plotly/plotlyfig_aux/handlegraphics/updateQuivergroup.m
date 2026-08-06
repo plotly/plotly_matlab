@@ -76,7 +76,7 @@ function obj = updateQuivergroup(obj, quiverIndex)
                     xdata(m), ydata(m), ...
                     xdata(m+1)-xdata(m), ydata(m+1)-ydata(m));
                 ht{m} = label;
-                ht{m+1} = label;
+                ht{m+1} = '';
             end
             m = m + 2;
         else

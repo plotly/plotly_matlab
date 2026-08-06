@@ -84,7 +84,7 @@ function obj = updateQuiver(obj, dataIndex)
             label = sprintf("(%.2f, %.2f) u=%.2f v=%.2f", ...
                 xData(n), yData(n), uData(n), vData(n));
             ht{m} = label;
-            ht{m+1} = label;
+            ht{m+1} = '';
         end
         ht{m+2} = '';
         m = m + 3;
