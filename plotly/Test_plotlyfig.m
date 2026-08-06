@@ -363,6 +363,21 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            if is_octave()
+                tc.verifyNumElements(p.data, 2);
+                tc.verifyEqual(p.data{1}.type, "surface");
+                tc.verifyEqual(p.data{1}.scene, "scene1");
+                tc.verifyEqual(p.data{1}.contours.x.start, -2);
+                tc.verifyEqual(p.data{1}.contours.x.end, 2);
+                tc.verifyEqual(p.data{1}.contours.y.start, -2);
+                tc.verifyEqual(p.data{1}.contours.y.end, 2);
+                tc.verifyEqual(p.data{2}.type, "scatter3d");
+                tc.verifyEqual(p.data{2}.mode, "lines");
+                tc.verifyEqual(p.data{2}.scene, "scene1");
+                try close(); catch; end
+                return
+            end
+
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(rmfield(p.data{1}, ["colorscale" "surfacecolor"]), struct( ...
                 "xaxis", "x1", ...
@@ -2011,6 +2026,15 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            if is_octave()
+                tc.verifyNumElements(p.data, 1);
+                tc.verifyEqual(p.data{1}.type, "scatter3d");
+                tc.verifyEqual(p.data{1}.scene, "scene1");
+                tc.verifyEqual(p.data{1}.mode, "lines");
+                try close(); catch; end
+                return
+            end
+
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(rmfield(p.data{1}, "colorscale"), struct( ...
                 "xaxis", "x1", ...
@@ -2564,6 +2588,17 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            if is_octave()
+                tc.verifyNumElements(p.data, 2);
+                tc.verifyEqual(p.data{1}.type, "surface");
+                tc.verifyEqual(p.data{1}.scene, "scene1");
+                tc.verifyEqual(p.data{2}.type, "scatter3d");
+                tc.verifyEqual(p.data{2}.mode, "lines");
+                tc.verifyEqual(p.data{2}.scene, "scene1");
+                try close(); catch; end
+                return
+            end
+
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(rmfield(p.data{1}, ["colorscale" "surfacecolor"]), struct( ...
                 "xaxis", "x1", ...
@@ -2604,6 +2639,21 @@ classdef Test_plotlyfig < PlotlyTestCase
             ribbon(x,y);
 
             p = plotlyfig(fig,"visible","off");
+
+            if is_octave()
+                tc.verifyNumElements(p.data, 6);
+                for i = 1:3
+                    tc.verifyEqual(p.data{i}.type, "surface");
+                    tc.verifyEqual(p.data{i}.scene, "scene1");
+                end
+                for i = 4:6
+                    tc.verifyEqual(p.data{i}.type, "scatter3d");
+                    tc.verifyEqual(p.data{i}.mode, "lines");
+                    tc.verifyEqual(p.data{i}.scene, "scene1");
+                end
+                try close(); catch; end
+                return
+            end
 
             tc.verifyNumElements(p.data, 3);
             tc.verifyEqual(rmfield(p.data{1}, ["colorscale" "surfacecolor"]), struct( ...
