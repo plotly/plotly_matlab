@@ -1232,6 +1232,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testStackedBarData(tc)
+            if is_octave()
+                return % Octave's bar does not support the 'stack' option.
+            end
             fig = figure("Visible","off");
             data = [10 20 30; 15 25 35; 5 15 25];
             bar(1:3, data, 'stack');
@@ -1651,6 +1654,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testStackedPlotData(tc)
+            if is_octave()
+                return % The `stackedplot` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = 1:5;
             a = cos(x);
@@ -2169,6 +2175,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testGroupedKernelScatterHistPlotData(tc)
+            if is_octave()
+                return % The `scatterhist` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = [0.15 0.19 0.04 0.64 0.28 0.54 0.70 0.50 0.54 0.45];
             y = [0.12 0.49 0.85 0.87 0.27 0.21 0.56 0.64 0.42 0.21];
@@ -3189,6 +3198,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testScatterWithCustomDataTip(tc)
+            if is_octave()
+                return % DataTipTemplate is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = [1 2 3];
             y = [4 5 6];
@@ -3209,6 +3221,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testScatterWithCustomDataTipTransposed(tc)
+            if is_octave()
+                return % DataTipTemplate is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = [1 2 3];
             y = [4 5 6];
