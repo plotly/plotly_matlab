@@ -276,8 +276,14 @@ classdef PlotlyTestCase < handle
             if isequaln(a, b)
                 ok = true; return;
             end
-            if isnumeric(a) && isnumeric(b) && isscalar(a) && isscalar(b)
-                ok = abs(double(a) - double(b)) <= tol;
+            if isnumeric(a) && isnumeric(b) && isequal(size(a), size(b)) && ~isempty(a)
+                if any(isnan(a) ~= isnan(b))
+                    ok = false; return;
+                end
+                bothNaN = isnan(a) & isnan(b);
+                d = abs(double(a) - double(b));
+                d(bothNaN) = 0;
+                ok = all(d <= tol);
                 return;
             end
             ok = false;
