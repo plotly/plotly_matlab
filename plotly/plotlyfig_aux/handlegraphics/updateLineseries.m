@@ -39,12 +39,19 @@ function data = updateLineseries(obj, plotIndex)
         && all(xData(1:4:end) == 0) && all(xData(4:4:end) == 0) ...
         && all(yData(1:4:end) == 0) && all(yData(4:4:end) == 0);
 
-    % MATLAB's polar()/compass()/ezpolar() draw into a regular axes
+    % MATLAB's compass draws one line per arrow: (0,0) to the tip,
+    % back through a barb, to the tip again and out through the other
+    % barb, so the tip appears twice
+    isCompassArrow = ~isPlot3D && numel(xData) == 5 ...
+        && xData(1) == 0 && yData(1) == 0 ...
+        && xData(2) == xData(4) && yData(2) == yData(4);
+
+    % MATLAB's polar()/ezpolar() draw the curve into a regular axes
     % with an equal aspect, symmetric limits and ticks, and a 15%
     % taller y-range for the labels; route them through the polar
     % machinery like Octave's (which marks its axes with rtick)
     isMatlabPolarAxes = false;
-    if ~is_octave() && ~isPolar && ~isRose && ~isPlot3D
+    if ~is_octave() && ~isPolar && ~isRose && ~isCompassArrow && ~isPlot3D
         ax = get(plotData, 'Parent');
         xlim = get(ax, 'XLim');
         ylim = get(ax, 'YLim');
@@ -67,11 +74,11 @@ function data = updateLineseries(obj, plotIndex)
             thetaData = atan2(xData, yData);
             thetaData = -(rad2deg(thetaData) - 90);
         end
-    elseif isRose || isMatlabPolarAxes
-        % the rose and MATLAB's polar family are lines in a regular
-        % axes (no rtick marker); route them through the same polar
-        % machinery, with the data laid out in the math angle
-        % convention like Octave's
+    elseif isRose || isCompassArrow || isMatlabPolarAxes
+        % the rose, the compass arrows and the polar family are lines
+        % in a regular axes (no rtick marker); route them through the
+        % same polar machinery, with the data laid out in the math
+        % angle convention like Octave's
         isPolar = true;
         rData = sqrt(xData.^2 + yData.^2);
         thetaData = rad2deg(atan2(yData, xData));
@@ -198,7 +205,7 @@ function data = updateLineseries(obj, plotIndex)
         data.marker.line.width = max(1, 2*get(plotData, 'LineWidth'));
     end
 
-    if (isRose || isMatlabPolarAxes) && ~isOctavePolar
+    if (isRose || isCompassArrow || isMatlabPolarAxes) && ~isOctavePolar
         % the plotly polar direction defaults to clockwise; the rose
         % petals and the MATLAB polar family are laid out in the math
         % angle convention
