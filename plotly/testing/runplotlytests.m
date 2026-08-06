@@ -1,4 +1,4 @@
-function runtests()
+function runplotlytests()
     addpath(genpath('/workspace/plotly'));
     addpath('/workspace/plotly/testing');
 
