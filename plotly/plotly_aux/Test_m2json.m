@@ -1,5 +1,5 @@
 classdef Test_m2json < PlotlyTestCase
-    methods (Test)
+    methods
         function testLowPrecisionInRange0to10(tc)
             values = 1 + (1:5) + 0.234;
             expected = "[2.234,3.234,4.234,5.234,6.234]";

@@ -1,5 +1,5 @@
 classdef Test_plotlyfig < PlotlyTestCase
-    methods (Test)
+    methods
         function testLinePlotData(tc)
             fig = figure("Visible","off");
             y = [0.0301 0.4411 0.7007 0.7030 0.5102 0.6122 0.7464 0.8014 0.3367 0.5641];

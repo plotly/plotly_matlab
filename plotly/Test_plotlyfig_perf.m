@@ -4,7 +4,7 @@ classdef Test_plotlyfig_perf < PlotlyPerfTestCase
 res = runperf("Test_plotlyfig_perf");
 tb = res.sampleSummary;
 %}
-    methods (Test)
+    methods
         function testManySubplotsConversionTime(tc)
             % Stress test: many subplots with multiple lines each.
             nAxes = 10;
