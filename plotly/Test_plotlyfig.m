@@ -32,6 +32,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testLinePlotDatetimeXaxis(tc)
@@ -44,6 +45,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqualStructs(p.data{1}.x, string(x));
+            try close(); catch; end
         end
 
         function testLinePlotLayout(tc)
@@ -165,6 +167,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                     "borderpad", 3 ...
                 )}} ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testAreaPlotData(tc)
@@ -194,6 +197,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "fillcolor", PlotlyTestCase.AnyColorString(), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testScatterPlotData(tc)
@@ -228,6 +232,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ));
+            try close(); catch; end
         end
 
         function testSingleScatterPlotData(tc)
@@ -262,6 +267,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ));
+            try close(); catch; end
         end
 
         function testSingleDatetimeScatterPlotData(tc)
@@ -274,6 +280,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(p.data{1}.y, {y});
+            try close(); catch; end
         end
 
         function testScatter3DPlotData(tc)
@@ -310,6 +317,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ));
+            try close(); catch; end
         end
 
         function testSurfacePlotData(tc)
@@ -350,6 +358,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testPolarScatterData(tc)
@@ -386,6 +395,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testPolarPlotData(tc)
@@ -419,6 +429,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testComplexPolarPlotData(tc)
@@ -448,6 +459,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "line", struct(), ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testHistogramPlotData(tc)
@@ -480,6 +492,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testHistogramStairsPlotData(tc)
@@ -507,6 +520,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testPolarHistogramPlotData(tc)
@@ -537,6 +551,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testEasyToUsePolarPlotData(tc)
@@ -569,6 +584,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testLogLogPlot(tc)
@@ -608,6 +624,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testSingleBarPlotData(tc)
@@ -636,6 +653,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testDateBarPlotData(tc)
@@ -666,6 +684,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testVerticalBarPlotData(tc)
@@ -696,6 +715,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testHorizontalBarPlotData(tc)
@@ -726,6 +746,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testPieChartPlotData(tc)
@@ -764,6 +785,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "fillcolor", "rgba(62,38,168,1.000000)", ...
                 "showlegend", false ...
             ), AbsTol=1e-4);
+            try close(); catch; end
         end
 
         function testStairsPlotData(tc)
@@ -801,6 +823,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-4);
+            try close(); catch; end
         end
 
         function testPlotmatrixData(tc)
@@ -1004,6 +1027,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testContourPlotData(tc)
@@ -1048,6 +1072,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-16);
+            try close(); catch; end
         end
 
         function testFunctionContourPlotData(tc)
@@ -1091,6 +1116,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), AbsTol=1e-2);
+            try close(); catch; end
         end
 
         function testStemPlotData(tc)
@@ -1127,6 +1153,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "y", reshape([zeros(1,length(y)); y'; nan(1,length(y))], [], 1), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testStackedBarData(tc)
@@ -1194,6 +1221,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testHeatmapData(tc)
@@ -1245,6 +1273,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "showlegend", false, ...
                 "name", "" ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testHeatmap1x1Data(tc)
@@ -1269,6 +1298,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             % arrays, not bare values.
             tc.verifyEqual(d.x,{{'1'}});
             tc.verifyEqual(d.y,{{'1'}});
+            try close(); catch; end
         end
 
         function testHeatmap1x2Data(tc)
@@ -1292,6 +1322,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyEqual(d.x,{'x1'; 'x2'});
             tc.verifyEqual(d.y,{{'y1'}});
+            try close(); catch; end
         end
 
         function testHeatmap2x1Data(tc)
@@ -1314,6 +1345,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyEqual(d.x,{{'x1'}});
             tc.verifyEqual(d.y,{'y2'; 'y1'});
+            try close(); catch; end
         end
 
         function testHeatmapDataColorLimitsOverride(tc)
@@ -1331,6 +1363,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyEqual(p.data{1}.zmin, zmin);
             tc.verifyEqual(p.data{1}.zmax, zmax);
+            try close(); catch; end
         end
 
         function testErrorbarData(tc)
@@ -1385,6 +1418,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                     "color", PlotlyTestCase.AnyColorString() ...
                 ) ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testDoubleYAxisLinePlotData(tc)
@@ -1450,6 +1484,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testDoubleYAxisLineLegend(tc)
@@ -1474,6 +1509,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(p.data{2}.name, 'y2_legend');
             tc.verifyEqual(p.data{2}.showlegend, true);
             tc.verifyEqual(p.data{2}.legendrank, 2);
+            try close(); catch; end
         end
 
         function testVerticalConstantLinePlotData(tc)
@@ -1502,6 +1538,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testVerticalConstantLineWithLabel(tc)
@@ -1525,6 +1562,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             ));
             tc.verifyTrue(any(cellfun(@(ann) contains(ann.text,label), p.layout.annotations)));
             tc.verifyTrue(any(cellfun(@(ann) ann.xanchor == alignment, p.layout.annotations)));
+            try close(); catch; end
         end
 
         function testStackedPlotData(tc)
@@ -1585,6 +1623,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                     "dash", "solid" ...
                 ) ...
             ));
+            try close(); catch; end
         end
 
         function testDoubleYAxisAreaPlotData(tc)
@@ -1640,6 +1679,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "fillcolor", PlotlyTestCase.AnyColorString(), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testBoxPlotData(tc)
@@ -1808,6 +1848,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testContour3PlotData(tc)
@@ -1842,6 +1883,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "reversescale", false, ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testFunctionSurfacePlotData(tc)
@@ -1876,6 +1918,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "showscale", false, ...
                 "visible", true ...
             ));
+            try close(); catch; end
         end
 
         function testIsosurfacePlotData(tc)
@@ -1911,6 +1954,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "scene", "scene1", ...
                 "showlegend", false ...
             ));
+            try close(); catch; end
         end
 
         function testScatterHistPlotData(tc)
@@ -1982,6 +2026,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testScatterHistPlotLayout(tc)
@@ -2026,6 +2071,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(p.layout.yaxis3.domain, ...
                     [figChildren(1).Position(2), sum(figChildren(1).Position([2 4]))]);
             tc.verifyEqual(p.layout.yaxis3.anchor, "x3");
+            try close(); catch; end
         end
 
         function testGroupedKernelScatterHistPlotData(tc)
@@ -2295,6 +2341,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testTitleFont(tc)
@@ -2313,6 +2360,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "family", "Arial, sans-serif", ...
                 "size", 24 ...
             ));
+            try close(); catch; end
         end
 
         function testAxisLabelSizeFont(tc)
@@ -2343,6 +2391,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "size", 20, ...
                 "family", "Droid Sans, sans-serif" ...
             ));
+            try close(); catch; end
         end
 
         function testMeshPlotData(tc)
@@ -2382,6 +2431,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testRibbonPlotData(tc)
@@ -2422,6 +2472,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testPatchPlotData(tc)
@@ -2460,6 +2511,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "fillcolor", "rgba(255,0,0,1.000000)", ...
                 "showlegend", false ...
             ));
+            try close(); catch; end
         end
 
         function testFillPlotData(tc)
@@ -2527,6 +2579,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "fillcolor", "rgba(0,255,0,1.000000)", ...
                 "showlegend", false ...
             ));
+            try close(); catch; end
         end
 
         function testCompassPlotData(tc)
@@ -2561,6 +2614,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testFeatherPlotData(tc)
@@ -2597,6 +2651,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testSemilogyPlotData(tc)
@@ -2631,6 +2686,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testSemilogxPlotData(tc)
@@ -2665,6 +2721,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testTiledLayoutHeatmap(tc)
@@ -2718,6 +2775,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "xpad", 10, ...
                 "outlinecolor", "rgb(150,150,150)" ...
             ), AbsTol=1e-15);
+            try close(); catch; end
         end
 
         function testGroupedBarPlotData(tc)
@@ -2785,6 +2843,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
         end
 
         function testHeatmapTextColorBrightCells(tc)
@@ -2804,6 +2863,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ann = p.layout.annotations{i};
                 tc.verifyEqual(ann.font.color, "rgb(0,0,0)"); % Black text
             end
+            try close(); catch; end
         end
 
         function testHeatmapTextColorDarkCells(tc)
@@ -2823,6 +2883,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ann = p.layout.annotations{i};
                 tc.verifyEqual(ann.font.color, "rgb(255,255,255)"); % White text
             end
+            try close(); catch; end
         end
 
         function testHeatmapMixedColorCells(tc)
@@ -2859,6 +2920,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             expected = ["5,0" "6,0" "6,1" "6,2" "6,3" "6,4" "6,5" "6,6" "6,7" ...
                     "7,0" "7,1" "7,2" "7,3" "7,4" "7,5" "7,6" "7,7"];
             tc.verifyEqual(actual, expected);
+            try close(); catch; end
         end
 
         function testHeatmapCellTextAnnotations(tc)
@@ -2875,6 +2937,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             actualStrings = cellfun(@(ann) ann.text, p.layout.annotations);
             expectedStrings = arrayfun(@(v) string(v), data(:));
             tc.verifyEqual(sort(actualStrings(:)), sort(expectedStrings(:)));
+            try close(); catch; end
         end
 
         function testHeatmapTitleAnnotation(tc)
@@ -2892,6 +2955,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyNumElements(p.layout.annotations, numel(data)+1);
             actualStrings = cellfun(@(ann) ann.text, p.layout.annotations);
             tc.verifyNotEmpty(actualStrings(contains(actualStrings, titleString)));
+            try close(); catch; end
         end
 
         function testHeatmapAxisLabels(tc)
@@ -2910,6 +2974,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyEqual(p.layout.xaxis1.title.text, xLabelText);
             tc.verifyEqual(p.layout.yaxis1.title.text, yLabelText);
+            try close(); catch; end
         end
 
         function testHeatmapWithNaNValues(tc)
@@ -2928,6 +2993,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyNumElements(p.data, 1);
             heatmapData = p.data{1};
             tc.verifyEqual(heatmapData.z, nestZ);
+            try close(); catch; end
         end
 
         function testHeatmapAllNaNValues(tc)
@@ -2948,6 +3014,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(heatmapData.z, nestZ);
             tc.verifyTrue(all(cellfun(@(row) all(cellfun(@isnan,row)), heatmapData.z)));
             tc.verifyTrue(all(cellfun(@(row) all(cellfun(@isnan,row)), heatmapData.text)));
+            try close(); catch; end
         end
 
         function testPlotWithCustomDataTip(tc)
@@ -2968,6 +3035,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
                     + string(y(:)) + "<br>" + "Label: " + customData(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
+            try close(); catch; end
         end
 
         function testPlotTableDataTip(tc)
@@ -3003,6 +3071,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             expectedHovertext = "time: " + string(tb.time) + "<br>" + ...
                                 "Sim2: " + string(tb.Sim2) + "<br>";
             tc.verifyEqual(p.data{3}.hovertext, expectedHovertext);
+            try close(); catch; end
         end
 
         function testPlotWithMultipleCustomDataTips(tc)
@@ -3024,6 +3093,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " + string(y(:)) + "<br>" + ...
                 "Name: " + names(:) + "<br>" + "Value: " + string(values(:)) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
+            try close(); catch; end
         end
 
         function testScatterWithCustomDataTip(tc)
@@ -3043,6 +3113,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
                     + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
+            try close(); catch; end
         end
 
         function testScatterWithCustomDataTipTransposed(tc)
@@ -3062,6 +3133,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
                     + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
+            try close(); catch; end
         end
 
         function testMultiGroupBarWidths(tc)
@@ -3094,6 +3166,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             % All traces should use overlay mode
             tc.verifyEqual(p.layout.barmode, "overlay");
+            try close(); catch; end
         end
 
         function testPlotDigraph(tc)
@@ -3137,6 +3210,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 tc.verifyEqual(textAnns{k}.textangle, 22.5, ...
                     "Rotation should be negated for graph plot axes");
             end
+            try close(); catch; end
         end
 
         function testPlotDigraphWithMultipleMarkers(tc)
@@ -3162,6 +3236,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                     && d.mode == "markers", p.data);
             expectedMarkers = ["circle" "square" "diamond" "star"];
             tc.verifyEqual(p.data{isMarkers}.marker.symbol, expectedMarkers);
+            try close(); catch; end
         end
 
         function testDigraphTreeJsonPayloadSize(tc)
@@ -3193,6 +3268,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyLessThan(payloadBytes, maxBytes, ...
                 sprintf("JSON payload is %d bytes, exceeds %d byte limit", ...
                     payloadBytes, maxBytes));
+            try close(); catch; end
         end
 
         function testCustomLegendOrder(tc)
@@ -3237,6 +3313,7 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             % traceorder must be 'normal' so Plotly honours legendrank.
             tc.verifyEqual(string(p.layout.legend.traceorder),"normal");
+            try close(); catch; end
         end
 
         function testAreaEmptyLegend(tc)
