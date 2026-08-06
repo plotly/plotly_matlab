@@ -5,7 +5,15 @@ function output = convertDate(date)
     else
         format = 'yyyy-mm-dd HH:MM:SS';
     end
-    output = datestr(date, format);
+    if is_octave()
+        output = sprintf('%04d-%02d-%02d', year(date), month(date), day(date));
+        if ~isDate(date)
+            output = sprintf('%s %02d:%02d:%02d', output, ...
+                hour(date), minute(date), round(second(date)));
+        end
+    else
+        output = datestr(date, format);
+    end
 end
 
 function dt = convertToDateTime(input)
