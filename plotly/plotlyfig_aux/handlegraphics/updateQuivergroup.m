@@ -74,7 +74,7 @@ function obj = updateQuivergroup(obj, quiverIndex)
         else
             obj.data{barbIndex}.marker = obj.data{quiverIndex}.marker;
         end
-        obj.data{barbIndex}.hoverinfo = 'none';
+        obj.data{barbIndex}.hoverinfo = 'skip';
         obj.data{barbIndex}.showlegend = false;
         obj.data{barbIndex}.x = barbX;
         obj.data{barbIndex}.y = barbY;

@@ -121,7 +121,7 @@ function obj = updateQuiver(obj, dataIndex)
         obj.data{barbIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
         obj.data{barbIndex}.line.color = obj.data{dataIndex}.line.color;
         obj.data{barbIndex}.line.width = obj.data{dataIndex}.line.width;
-        obj.data{barbIndex}.hoverinfo = 'none';
+        obj.data{barbIndex}.hoverinfo = 'skip';
         obj.data{barbIndex}.showlegend = false;
 
         obj.data{barbIndex}.x = barbX;

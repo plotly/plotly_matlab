@@ -253,7 +253,7 @@ function data = updateLineseries(obj, plotIndex)
         if isfield(data, 'marker')
             obj.data{bi}.marker = data.marker;
         end
-        obj.data{bi}.hoverinfo = 'none';
+        obj.data{bi}.hoverinfo = 'skip';
         obj.data{bi}.showlegend = false;
     end
 end
