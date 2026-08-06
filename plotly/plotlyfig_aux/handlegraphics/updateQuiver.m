@@ -76,12 +76,12 @@ function obj = updateQuiver(obj, dataIndex)
         end
 
         if isQuiver3D
-            label = sprintf("(%.2f, %.2f, %.2f) u=%.2f v=%.2f w=%.2f", ...
+            label = sprintf("(%.2f, %.2f, %.2f)\n(%.2f, %.2f, %.2f)", ...
                 xData(n), yData(n), zData(n), uData(n), vData(n), wData(n));
             ht{m} = label;
             ht{m+1} = '';
         else
-            label = sprintf("(%.2f, %.2f) u=%.2f v=%.2f", ...
+            label = sprintf("(%.2f, %.2f)\n(%.2f, %.2f)", ...
                 xData(n), yData(n), uData(n), vData(n));
             ht{m} = label;
             ht{m+1} = '';
