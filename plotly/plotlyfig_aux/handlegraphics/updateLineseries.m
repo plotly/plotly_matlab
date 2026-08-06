@@ -128,6 +128,10 @@ function data = updateLineseries(obj, plotIndex)
     elseif isFeatherArrow
         data.x = xData(1:2);
         data.y = yData(1:2);
+        idx = xData(1);
+        label = sprintf("(%d) (%.2f, %.2f)", idx, xData(2)-xData(1), yData(2));
+        data.hovertext = {label, label};
+        data.hoverinfo = 'text';
     elseif isPolar
         data.r = rData;
         data.theta = thetaData;
