@@ -46,12 +46,14 @@ function data = updateLineseries(obj, plotIndex)
         && xData(1) == 0 && yData(1) == 0 ...
         && xData(2) == xData(4) && yData(2) == yData(4);
 
-    % MATLAB's polar()/ezpolar() draw the curve into a regular axes
-    % with an equal aspect, symmetric limits and ticks, and a 15%
-    % taller y-range for the labels; route them through the polar
-    % machinery like Octave's (which marks its axes with rtick)
+    % MATLAB's polar()/ezpolar()/compass()/rose() draw into a
+    % regular axes with an equal aspect, symmetric limits and ticks,
+    % and a 15% taller y-range for the labels; route them through
+    % the polar machinery like Octave's (which marks its axes with
+    % rtick).  The axes signature alone suffices — data is not
+    % inspected to decide the routing.
     isMatlabPolarAxes = false;
-    if ~is_octave() && ~isPolar && ~isRose && ~isCompassArrow && ~isPlot3D
+    if ~is_octave() && ~isPolar && ~isPlot3D
         ax = get(plotData, 'Parent');
         xlim = get(ax, 'XLim');
         ylim = get(ax, 'YLim');
