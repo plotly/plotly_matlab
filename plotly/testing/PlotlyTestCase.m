@@ -6,6 +6,7 @@ classdef PlotlyTestCase < handle
         Failed = 0
         Failures = {}
         TestVerdicts = []
+        ErrorTrace = ''
     end
 
     properties (Access = private)
@@ -20,6 +21,7 @@ classdef PlotlyTestCase < handle
             testCase._curPassed = 0;
             testCase._curFailed = 0;
             testCase._curDiagnostics = {};
+            testCase.ErrorTrace = '';
         end
 
         function v = finishTest(testCase)
@@ -27,6 +29,7 @@ classdef PlotlyTestCase < handle
                        'Passed', testCase._curPassed > 0 && testCase._curFailed == 0, ...
                        'VerificationFailures', testCase._curFailed, ...
                        'Diagnostics', {testCase._curDiagnostics}, ...
+                       'ErrorTrace', testCase.ErrorTrace, ...
                        'Duration', 0, ...
                        'Errored', false);
             testCase.CurrentTest = '';

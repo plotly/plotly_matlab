@@ -44,7 +44,12 @@ function runplotlytests()
                 fname(tc);
             catch e
                 threw = true;
-                tc.recordFail(sprintf('THREW: %s', e.message));
+                trace = sprintf('''%s''\n%s', e.identifier, e.message);
+                for si = 1:numel(e.stack)
+                    trace = sprintf('%s\n\nError in %s (line %d)', ...
+                        trace, e.stack(si).name, e.stack(si).line);
+                end
+                tc.ErrorTrace = trace;
             end
             dt = toc;
             v = tc.finishTest();
@@ -56,8 +61,19 @@ function runplotlytests()
                 fprintf('\n');
                 printBanner();
                 fprintf('Error occurred in %s and it did not run to completion.\n', v.Name);
-                fprintf('    ---------\n    Error Details:\n    --------------\n');
-                fprintf('    %s\n', tc.Failures{end});
+                diag = v.ErrorTrace;
+                nl = strfind(diag, char(10));
+                if ~isempty(nl)
+                    id = diag(1:nl(1)-1);
+                    rest = diag(nl(1)+1:end);
+                else
+                    id = '';
+                    rest = diag;
+                end
+                fprintf('    ---------\n    Error ID:\n    ---------\n');
+                fprintf('    %s\n', id);
+                fprintf('    --------------\n    Error Details:\n    --------------\n');
+                fprintf('    %s\n', rest);
                 printBanner();
                 fprintf('\n');
             elseif ~v.Passed
