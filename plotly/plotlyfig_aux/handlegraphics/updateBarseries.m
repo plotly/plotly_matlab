@@ -100,4 +100,24 @@ function obj = updateBarseries(obj,barIndex)
 
     %-bar marker-%
     obj.data{barIndex}.marker = extractPatchFace(bar_child_data);
+
+    %-bar width: set when multiple bar series with different BarWidth-%
+    parentAxis = obj.State.Plot(barIndex).AssociatedAxis;
+    allBars = findobj(get(parentAxis, 'Children'), 'Type', 'hggroup');
+    barWidths = [];
+    for b = 1:numel(allBars)
+        if isprop(allBars(b), 'barwidth')
+            barWidths(end+1) = get(allBars(b), 'barwidth');
+        end
+    end
+    if numel(unique(barWidths)) > 1
+        obj.layout.barmode = 'overlay';
+        obj.layout.bargap = 0;
+        if isprop(bar_child_data, 'XData')
+            xData = get(bar_child_data, 'XData');
+            if ~isempty(xData)
+                obj.data{barIndex}.width = max(xData(:,1)) - min(xData(:,1));
+            end
+        end
+    end
 end

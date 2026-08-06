@@ -3446,9 +3446,15 @@ classdef Test_plotlyfig < PlotlyTestCase
             wideWidth = max(widths);
             narrowWidth = min(widths);
 
-            % Wide bar (single series, BarWidth=0.95) should be wider
-            % than narrow bars (2 series, BarWidth=1.0)
-            tc.verifyGreaterThan(wideWidth, 2 * narrowWidth);
+            if is_octave()
+                % Octave renders single-series bars at BarWidth and
+                % multi-series bars at BarWidth/nSeries
+                tc.verifyGreaterThan(wideWidth, narrowWidth);
+            else
+                % Wide bar (single series, BarWidth=0.95) should be wider
+                % than narrow bars (2 series, BarWidth=1.0)
+                tc.verifyGreaterThan(wideWidth, 2 * narrowWidth);
+            end
 
             % Both narrow bars should have the same width
             narrowWidths = widths(widths < wideWidth);
