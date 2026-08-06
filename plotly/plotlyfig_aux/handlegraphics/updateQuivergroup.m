@@ -55,6 +55,38 @@ function obj = updateQuivergroup(obj, quiverIndex)
         obj.data{quiverIndex}.z = zdata;
     end
 
+    %-build hovertext for the shaft trace-%
+    is3d = ~isempty(zdata);
+    nPts = numel(xdata);
+    ht = cell(1, nPts);
+    m = 1;
+    while m <= nPts
+        if isnan(xdata(m))
+            ht{m} = '';
+            m = m + 1;
+        elseif m + 1 <= nPts && ~isnan(xdata(m+1))
+            if is3d
+                label = sprintf("(%.2f, %.2f, %.2f) u=%.2f v=%.2f w=%.2f", ...
+                    xdata(m), ydata(m), zdata(m), ...
+                    xdata(m+1)-xdata(m), ydata(m+1)-ydata(m), zdata(m+1)-zdata(m));
+                ht{m} = label;
+                ht{m+1} = '';
+            else
+                label = sprintf("(%.2f, %.2f) u=%.2f v=%.2f", ...
+                    xdata(m), ydata(m), ...
+                    xdata(m+1)-xdata(m), ydata(m+1)-ydata(m));
+                ht{m} = label;
+                ht{m+1} = label;
+            end
+            m = m + 2;
+        else
+            ht{m} = '';
+            m = m + 1;
+        end
+    end
+    obj.data{quiverIndex}.hovertext = ht;
+    obj.data{quiverIndex}.hoverinfo = 'text';
+
     if hasBarb
         obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
         barbIndex = obj.PlotOptions.nPlots;

@@ -58,6 +58,7 @@ function obj = updateQuiver(obj, dataIndex)
 
     %-set trace data for quiver line only-%
     m = 1;
+    ht = cell(1, numel(xData) * 3);
 
     for n = 1:numel(xData)
         obj.data{dataIndex}.x(m) = xData(n);
@@ -73,8 +74,24 @@ function obj = updateQuiver(obj, dataIndex)
             obj.data{dataIndex}.z(m+1) = zData(n) + wData(n);
             obj.data{dataIndex}.z(m+2) = nan;
         end
+
+        if isQuiver3D
+            label = sprintf("(%.2f, %.2f, %.2f) u=%.2f v=%.2f w=%.2f", ...
+                xData(n), yData(n), zData(n), uData(n), vData(n), wData(n));
+            ht{m} = label;
+            ht{m+1} = '';
+        else
+            label = sprintf("(%.2f, %.2f) u=%.2f v=%.2f", ...
+                xData(n), yData(n), uData(n), vData(n));
+            ht{m} = label;
+            ht{m+1} = label;
+        end
+        ht{m+2} = '';
         m = m + 3;
     end
+
+    obj.data{dataIndex}.hovertext = ht;
+    obj.data{dataIndex}.hoverinfo = 'text';
 
     %-set trace data for quiver barb-%
     if strcmp(get(plotData, 'ShowArrowHead'), 'on')
