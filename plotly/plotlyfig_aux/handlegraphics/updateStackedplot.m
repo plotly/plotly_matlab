@@ -32,6 +32,7 @@ function updateStackedplot(obj, plotIndex)
 
     traceIndex = plotIndex;
 
+    displayLabels = get(plotData, 'DisplayLabels');
     for t = 1:nTraces
         %-update current trace Index-%
         if t ~= 1
@@ -42,7 +43,7 @@ function updateStackedplot(obj, plotIndex)
         %-set current trace-%
         data.type = "scatter";
         data.visible = strcmp(get(plotData, 'Visible'), "on");
-        data.name = get(plotData, 'DisplayLabels'){t};
+        data.name = displayLabels{t};
         data.xaxis = "x1";
         data.yaxis = sprintf("y%d", t);
 
@@ -128,7 +129,7 @@ function [ax, expoFormat] = getAxis(obj, plotIndex, axName)
                 b = nAxis-a+1;
                 tmpAxesProperties = get(plotData, 'AxesProperties');
                 axisLim{a} = tmpAxesProperties(b).YLimits;
-                axisLabel{a} = get(plotData, 'DisplayLabels'){b};
+                axisLabel{a} = displayLabels{b};
                 axisDomain{a} = min([yPos(a)+yOffset(a) yPos(a+1)], 1);
                 axisAnchor{a} = "x1";
             end
