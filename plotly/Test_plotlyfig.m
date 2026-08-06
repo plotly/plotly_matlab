@@ -589,9 +589,9 @@ classdef Test_plotlyfig < PlotlyTestCase
 
         function testLogLogPlot(tc)
             fig = figure("Visible","off");
-            "zeta", 0.5; % damping factor
+            zeta = 0.5; % damping factor
             color = "r";
-            "w", logspace(-1, 1, 1000); % values equally spaced logarithmically
+            w = logspace(-1, 1, 1000); % values equally spaced logarithmically
             a = w.^2 - 1;
             b = 2*w*zeta;
             gain = sqrt(1./(a.^2 + b.^2));
