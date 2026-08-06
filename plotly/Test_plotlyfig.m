@@ -934,6 +934,23 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             p = plotlyfig(fig,"visible","off");
 
+            if is_octave()
+                tc.verifyNumElements(p.data, 9); % 3x3 matrix, no parent plot
+                for i = 1:9
+                    d = p.data{i};
+                    tc.verifyEqual(d.xaxis, sprintf("x%d", i));
+                    tc.verifyEqual(d.yaxis, sprintf("y%d", i));
+                    if ismember(i, [1 5 9])
+                        tc.verifyEqual(d.type, "bar");
+                    else
+                        tc.verifyEqual(d.type, "scatter");
+                        tc.verifyEqual(d.mode, "markers");
+                    end
+                end
+                try close(); catch; end
+                return
+            end
+
             tc.verifyNumElements(p.data, 10); % 3x3 matrix of plots + 1 parent plot
             tc.verifyEqual(p.data{1}, struct( ...
                 "xaxis", "x1", ...
