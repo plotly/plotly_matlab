@@ -36,6 +36,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testLinePlotDatetimeXaxis(tc)
+            if is_octave()
+                return % Octave does not support plotting datetime data.
+            end
             fig = figure("Visible","off");
             y = [0.0301 0.4411 0.7007 0.7030 0.5102 0.6122 0.7464 0.8014 0.3367 0.5641];
             x = datetime(2025,1:10,1);
@@ -290,6 +293,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testSingleDatetimeScatterPlotData(tc)
+            if is_octave()
+                return % Octave does not support plotting datetime data.
+            end
             fig = figure("Visible","off");
             x = 1;
             y = datetime("today");
@@ -688,6 +694,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testDateBarPlotData(tc)
+            if is_octave()
+                return % Octave's bar does not accept datetime values.
+            end
             fig = figure("Visible","off");
             x = datetime("today");
             y = 1;
