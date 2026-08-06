@@ -58,7 +58,10 @@ function obj = updateQuiver(obj, dataIndex)
 
     %-set trace data for quiver line only-%
     m = 1;
-    ht = cell(1, numel(xData) * 3);
+    tailX = [];
+    tailY = [];
+    tailZ = [];
+    tailHt = {};
 
     for n = 1:numel(xData)
         obj.data{dataIndex}.x(m) = xData(n);
@@ -69,29 +72,50 @@ function obj = updateQuiver(obj, dataIndex)
         obj.data{dataIndex}.y(m+1) = yData(n) + vData(n);
         obj.data{dataIndex}.y(m+2) = nan;
 
+        tailX(end+1) = xData(n);
+        tailY(end+1) = yData(n);
+
         if isQuiver3D
             obj.data{dataIndex}.z(m) = zData(n);
             obj.data{dataIndex}.z(m+1) = zData(n) + wData(n);
             obj.data{dataIndex}.z(m+2) = nan;
-        end
-
-        if isQuiver3D
+            tailZ(end+1) = zData(n);
             label = sprintf("(%.2f, %.2f, %.2f)\n(%.2f, %.2f, %.2f)", ...
                 xData(n), yData(n), zData(n), uData(n), vData(n), wData(n));
-            ht{m} = label;
-            ht{m+1} = '';
         else
             label = sprintf("(%.2f, %.2f)\n(%.2f, %.2f)", ...
                 xData(n), yData(n), uData(n), vData(n));
-            ht{m} = label;
-            ht{m+1} = '';
         end
-        ht{m+2} = '';
+        tailHt{end+1} = label;
         m = m + 3;
     end
 
-    obj.data{dataIndex}.hovertext = ht;
-    obj.data{dataIndex}.hoverinfo = 'text';
+    obj.data{dataIndex}.hoverinfo = 'skip';
+
+    obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+    tailIndex = obj.PlotOptions.nPlots;
+
+    if isQuiver3D
+        obj.data{tailIndex}.type = 'scatter3d';
+        obj.data{tailIndex}.scene = sprintf('scene%d', xSource);
+    else
+        obj.data{tailIndex}.type = 'scatter';
+        obj.data{tailIndex}.xaxis = sprintf('x%d', xSource);
+        obj.data{tailIndex}.yaxis = sprintf('y%d', xSource);
+    end
+
+    obj.data{tailIndex}.mode = 'markers';
+    obj.data{tailIndex}.visible = strcmp(get(plotData, 'Visible'),'on');
+    obj.data{tailIndex}.x = tailX;
+    obj.data{tailIndex}.y = tailY;
+    if isQuiver3D
+        obj.data{tailIndex}.z = tailZ;
+    end
+    obj.data{tailIndex}.hovertext = tailHt;
+    obj.data{tailIndex}.hoverinfo = 'text';
+    obj.data{tailIndex}.marker.color = 'rgba(0,0,0,0)';
+    obj.data{tailIndex}.marker.size = 6;
+    obj.data{tailIndex}.showlegend = false;
 
     %-set trace data for quiver barb-%
     if strcmp(get(plotData, 'ShowArrowHead'), 'on')

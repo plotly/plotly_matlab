@@ -55,37 +55,62 @@ function obj = updateQuivergroup(obj, quiverIndex)
         obj.data{quiverIndex}.z = zdata;
     end
 
-    %-build hovertext for the shaft trace-%
+    %-collect tail positions and hovertext-%
     is3d = ~isempty(zdata);
     nPts = numel(xdata);
-    ht = cell(1, nPts);
+    tailX = [];
+    tailY = [];
+    tailZ = [];
+    tailHt = {};
     m = 1;
     while m <= nPts
         if isnan(xdata(m))
-            ht{m} = '';
             m = m + 1;
         elseif m + 1 <= nPts && ~isnan(xdata(m+1))
+            tailX(end+1) = xdata(m);
+            tailY(end+1) = ydata(m);
             if is3d
+                tailZ(end+1) = zdata(m);
                 label = sprintf("(%.2f, %.2f, %.2f)\n(%.2f, %.2f, %.2f)", ...
                     xdata(m), ydata(m), zdata(m), ...
                     xdata(m+1)-xdata(m), ydata(m+1)-ydata(m), zdata(m+1)-zdata(m));
-                ht{m} = label;
-                ht{m+1} = '';
             else
                 label = sprintf("(%.2f, %.2f)\n(%.2f, %.2f)", ...
                     xdata(m), ydata(m), ...
                     xdata(m+1)-xdata(m), ydata(m+1)-ydata(m));
-                ht{m} = label;
-                ht{m+1} = '';
             end
+            tailHt{end+1} = label;
             m = m + 2;
         else
-            ht{m} = '';
             m = m + 1;
         end
     end
-    obj.data{quiverIndex}.hovertext = ht;
-    obj.data{quiverIndex}.hoverinfo = 'text';
+
+    obj.data{quiverIndex}.hoverinfo = 'skip';
+
+    obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
+    tailIndex = obj.PlotOptions.nPlots;
+
+    obj.data{tailIndex}.type = obj.data{quiverIndex}.type;
+    if isfield(obj.data{quiverIndex}, 'scene')
+        obj.data{tailIndex}.scene = obj.data{quiverIndex}.scene;
+    end
+    if isfield(obj.data{quiverIndex}, 'xaxis')
+        obj.data{tailIndex}.xaxis = obj.data{quiverIndex}.xaxis;
+        obj.data{tailIndex}.yaxis = obj.data{quiverIndex}.yaxis;
+    end
+    obj.data{tailIndex}.mode = 'markers';
+    obj.data{tailIndex}.visible = obj.data{quiverIndex}.visible;
+    obj.data{tailIndex}.x = tailX;
+    obj.data{tailIndex}.y = tailY;
+    if is3d
+        obj.data{tailIndex}.z = tailZ;
+    end
+    obj.data{tailIndex}.hovertext = tailHt;
+    obj.data{tailIndex}.hoverinfo = 'text';
+    obj.data{tailIndex}.marker.color = 'rgba(0,0,0,0)';
+    obj.data{tailIndex}.marker.size = 6;
+    obj.data{tailIndex}.showlegend = false;
 
     if hasBarb
         obj.PlotOptions.nPlots = obj.PlotOptions.nPlots + 1;
