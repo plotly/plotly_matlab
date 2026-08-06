@@ -1,6 +1,6 @@
 function runplotlytests()
+    clear classes;
     addpath(genpath('/workspace/plotly'));
-    addpath('/workspace/plotly/testing');
 
     suites = {
         'Test_m2json',       '/workspace/plotly/plotly_aux/Test_m2json.m'
