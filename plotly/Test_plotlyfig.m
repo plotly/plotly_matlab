@@ -409,6 +409,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testPolarPlotData(tc)
+            if is_octave()
+                return % The `polarplot` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             t = 0:0.01:2*pi;
             r = abs(sin(2*t).*cos(2*t));
@@ -443,6 +446,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testComplexPolarPlotData(tc)
+            if is_octave()
+                return % The `polarplot` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             Z = [2+3i 2 -1+4i 3-4i 5+2i -4-2i -2+3i -2 -3i 3i-2i];
             polarplot(Z,'*')
@@ -2007,6 +2013,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testScatterHistPlotData(tc)
+            if is_octave()
+                return % The `scatterhist` function is not yet implemented in Octave.
+            end
             fig = figure("Visible","off");
             x = [0.15 0.19 0.04 0.64 0.28 0.54 0.70 0.50 0.54 0.45];
             y = [0.12 0.49 0.85 0.87 0.27 0.21 0.56 0.64 0.42 0.21];
@@ -2079,6 +2088,9 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testScatterHistPlotLayout(tc)
+            if is_octave()
+                return % The `scatterhist` function is not yet implemented in Octave.
+            end
             fig = figure(Visible="off");
             x = [0.15 0.19 0.04 0.64 0.28 0.54 0.70 0.50 0.54 0.45];
             y = [0.12 0.49 0.85 0.87 0.27 0.21 0.56 0.64 0.42 0.21];
