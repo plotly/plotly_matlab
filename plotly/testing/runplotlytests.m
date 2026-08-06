@@ -1,5 +1,9 @@
 function runplotlytests()
     clear classes;
+    if exist('OCTAVE_VERSION', 'builtin')
+        try pkg load datatypes; catch, end
+        try pkg load statistics; catch, end
+    end
     addpath(genpath('/workspace/plotly'));
 
     suites = {
