@@ -276,11 +276,16 @@ function obj = updateData(obj, dataIndex)
             obj.data{dataIndex}.y = convertDuration(obj.data{dataIndex}.y);
         end
 
-        % Plotly requires x and y to be iterable
-        if isfield(obj.data{dataIndex},"x") && isscalar(obj.data{dataIndex}.x)
+        % Plotly requires x and y to be iterable; a single converted date
+        % is a 1xN char (not scalar), so wrap single-row chars too
+        if isfield(obj.data{dataIndex},"x") && ...
+                (isscalar(obj.data{dataIndex}.x) || ...
+                (ischar(obj.data{dataIndex}.x) && size(obj.data{dataIndex}.x, 1) == 1))
             obj.data{dataIndex}.x = {obj.data{dataIndex}.x};
         end
-        if isfield(obj.data{dataIndex},"y") && isscalar(obj.data{dataIndex}.y)
+        if isfield(obj.data{dataIndex},"y") && ...
+                (isscalar(obj.data{dataIndex}.y) || ...
+                (ischar(obj.data{dataIndex}.y) && size(obj.data{dataIndex}.y, 1) == 1))
             obj.data{dataIndex}.y = {obj.data{dataIndex}.y};
         end
 
