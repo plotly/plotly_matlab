@@ -95,6 +95,12 @@ function [axis, exponentFormat] = extractAxisData(obj,axisData,axisName)
 
         if ~isa(tickValues, "categorical")
             axis.tickvals = tickValues;
+            % a single tick (numeric scalar or single date string) must
+            % be an array for plotly
+            if isscalar(tickValues) || ...
+                    (ischar(tickValues) && size(tickValues, 1) == 1)
+                axis.tickvals = {tickValues};
+            end
         end
 
         %-set axis limits-%
