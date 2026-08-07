@@ -167,10 +167,14 @@ function data = updateLineseries(obj, plotIndex)
                 % only data rows carry numeric values; parameterized
                 % functionline rows carry property-name chars ('TData',
                 % 'XData'...) that arrayfun would iterate character by
-                % character, and spy's rows carry function handles
+                % character, and spy's rows carry function handles;
+                % text rows (dataTipTextRow) carry cell/string values
                 if isnumeric(dataTipRow.Value) || islogical(dataTipRow.Value)
                     customLabel = customLabel + arrayfun(@(value) dataTipRow.Label ...
                             + ": " + num2str(value) + "<br>", dataTipRow.Value);
+                elseif iscell(dataTipRow.Value) || isstring(dataTipRow.Value)
+                    customLabel = customLabel + arrayfun(@(value) dataTipRow.Label ...
+                            + ": " + string(value) + "<br>", dataTipRow.Value);
                 end
             end
             if isPolar
