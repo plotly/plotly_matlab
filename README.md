@@ -8,7 +8,7 @@
   </a>
 </div>
 
-Version: 3.0.0
+Version: 3.1.0
 
 *MATLAB is a registered trademarks of The MathWorks, Inc.*
 
