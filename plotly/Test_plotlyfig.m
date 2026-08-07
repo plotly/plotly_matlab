@@ -325,6 +325,26 @@ classdef Test_plotlyfig < PlotlyTestCase
             try close(); catch; end
         end
 
+        function testMultiDateScatterData(tc)
+            % multiple datetimes on the y axis: convertDate yields a
+            % char matrix, kept as-is (renders as an array of date
+            % strings)
+            if is_octave()
+                return % Octave does not support plotting datetime data.
+            end
+            fig = figure("Visible","off");
+            x = 1:5;
+            y = datetime(2026,8,1:5);
+            scatter(x,y);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqual(p.data{1}.y, convertDate(y));
+            tc.verifyEqual(p.layout.yaxis1.type, "date");
+            try close(); catch; end
+        end
+
         function testScatter3DPlotData(tc)
             fig = figure("Visible","off");
             [X,Y,Z] = sphere(16);
@@ -735,6 +755,26 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
+            try close(); catch; end
+        end
+
+        function testMultiDateBarData(tc)
+            % multiple datetimes on the x axis: convertDate yields a
+            % char matrix, kept as-is (renders as an array of date
+            % strings)
+            if is_octave()
+                return % Octave does not support plotting datetime data.
+            end
+            fig = figure("Visible","off");
+            x = datetime(2026,8,1:5);
+            y = 1:5;
+            bar(x,y);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqual(p.data{1}.x, convertDate(x));
+            tc.verifyEqual(p.layout.xaxis1.type, "date");
             try close(); catch; end
         end
 
