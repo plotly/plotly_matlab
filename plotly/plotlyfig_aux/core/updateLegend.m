@@ -87,9 +87,12 @@ function assignLegendRank(obj, legendHandle)
         return
     end
 
-    % Octave path: the legend text children are laid out in display
-    % order; the topmost (highest y) or leftmost (lowest x) entry is
-    % displayed first. Match each entry's label to the trace name.
+    % Octave path: the legend text children are created in reverse
+    % display order (the last text child is the topmost entry for
+    % vertical legends, leftmost for horizontal). This order is set at
+    % legend creation time and does not depend on rendering, so it works
+    % even for invisible figures. Match each entry's label to the trace
+    % name.
     kids = get(legendHandle, 'children');
     texts = [];
     for k = 1:numel(kids)
@@ -101,21 +104,9 @@ function assignLegendRank(obj, legendHandle)
         return
     end
 
-    positions = zeros(2, numel(texts));
-    for k = 1:numel(texts)
-        pos = get(texts(k), 'position');
-        positions(1, k) = pos(1);
-        positions(2, k) = pos(2);
-    end
-    if strcmpi(get(legendHandle, 'orientation'), 'horizontal')
-        [~, order] = sort(positions(1, :));
-    else
-        [~, order] = sort(positions(2, :), 'descend');
-    end
-
     rank = 0;
-    for k = 1:numel(order)
-        label = get(texts(order(k)), 'string');
+    for k = numel(texts):-1:1
+        label = get(texts(k), 'string');
         for t = 1:numel(obj.data)
             if isfield(obj.data{t}, 'name') && strcmp(obj.data{t}.name, label)
                 rank = rank + 1;
