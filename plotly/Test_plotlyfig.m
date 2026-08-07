@@ -47,7 +47,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             p = plotlyfig(fig,"visible","off");
 
             tc.verifyNumElements(p.data, 1);
-            tc.verifyEqualStructs(p.data{1}.x, string(x));
+            tc.verifyEqualStructs(p.data{1}.x, convertDate(x));
             try close(); catch; end
         end
 
@@ -321,7 +321,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             p = plotlyfig(fig,"visible","off");
 
             tc.verifyNumElements(p.data, 1);
-            tc.verifyEqual(p.data{1}.y, {y});
+            tc.verifyEqual(p.data{1}.y, {convertDate(y)});
             try close(); catch; end
         end
 
@@ -723,7 +723,7 @@ classdef Test_plotlyfig < PlotlyTestCase
                 "name", '', ...
                 "visible", true, ...
                 "orientation", "v", ...
-                "x", {{x}}, ...
+                "x", {{convertDate(x)}}, ...
                 "y", {{y}}, ...
                 "marker", struct( ...
                     "line", struct( ...
