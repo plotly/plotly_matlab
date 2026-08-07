@@ -44,7 +44,8 @@ function marker = extractLineMarker(line_data)
                 case "none"
                     markercolor = "rgba(0,0,0,0)";
                 case "auto"
-                    markercolor = "rgba(0, 0.4470, 0.7410,1)";
+                    col = round(255*get(line_data, 'Color'));
+                    markercolor = getStringColor(col);
             end
         end
         marker.color = markercolor;
