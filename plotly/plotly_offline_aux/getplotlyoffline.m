@@ -19,7 +19,7 @@ function getplotlyoffline(plotly_bundle_url)
     validatedir(status, mess, messid, 'plotlyjs');
 
     % save bundle
-    bundle = escapechars(plotly_bundle);
+    bundle = plotly_bundle;
     bundle_name = 'plotly-matlab-offline-bundle.js';
     bundle_file = fullfile(plotly_js_folder, bundle_name);
     file_id = fopen(bundle_file, 'w');
