@@ -19,9 +19,9 @@ jobs:
           octave --no-gui --eval "pkg install -forge datatypes; pkg install -forge statistics"
 
       - name: Run plotly tests
-        working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}/plotly/testing
         env:
           PLOTLY_ROOT: ${{ github.workspace }}/plotly
           CI: true
         run: |
-          xvfb-run -a octave --no-gui plotly/testing/runplotlytests.m
+          xvfb-run -a octave --no-gui runplotlytests.m
