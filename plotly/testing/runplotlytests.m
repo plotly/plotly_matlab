@@ -136,6 +136,10 @@ function runplotlytests()
         total = sum([allVerdicts.Duration]);
         fprintf('   %.4f seconds testing time.\n', total);
     end
+
+    if ~isempty(getenv('CI')) && (nFailed > 0 || nErrored > 0)
+        exit(1);
+    end
 end
 
 function r = iff(cond, tval, fval)
