@@ -14,11 +14,11 @@ Version: 3.1.0
 
 ## Install
 
-The latest version of the wrapper can be downloaded from [github](https://github.com/plotly/MATLAB-Online/archive/master.zip).
+The latest version of the wrapper can be downloaded from [github](https://github.com/plotly/plotly_matlab/archive/master.zip).
 
 Once downloaded, run `plotlysetup_offline()` to get started.
 If you have a plotly bundle url of the form '<http://cdn.plot.ly/plotly-latest.min.js>', then run instead
-`plotlysetup_offline('plotly_bundle_url')
+`plotlysetup_offline('plotly_bundle_url')`
 
 For online use, run `plotlysetup_online('your_username', 'your_api_key')` to get started.
 
@@ -34,32 +34,31 @@ of the wrapper by following the installation instructions above.
 Convert your MATLAB® figures into online [Plotly](https://plot.ly) graphs with a single line of code:
 
 ```MATLAB
- % Create some data for the two curves to be plotted
- x  = 0:0.01:20;
- y1 = 200*exp(-0.05*x).*sin(x);
- y2 = 0.8*exp(-0.5*x).*sin(10*x);
+% Create some data for the two curves to be plotted
+x  = 0:0.01:20;
+y1 = 200*exp(-0.05*x).*sin(x);
+y2 = 0.8*exp(-0.5*x).*sin(10*x);
 
- % Create a plot with 2 y axes using the plotyy function
- figure;
- [ax, h1, h2] = plotyy(x, y1, x, y2, 'plot');
+% Create a plot with 2 y axes using the plotyy function
+figure;
+[ax, h1, h2] = plotyy(x, y1, x, y2, 'plot');
 
- % Add title and x axis label
- xlabel('Time (s)');
- title('Frequency Response');
+% Add title and x axis label
+xlabel('Time (s)');
+title('Frequency Response');
 
- % Use the axis handles to set the labels of the y axes
- ax(1).YLabel.String = "Low Frequency";
- ax(2).YLabel.String = "High Frequency";
+% Use the axis handles to set the labels of the y axes
+ylabel(ax(1), 'Low Frequency');
+ylabel(ax(2), 'High Frequency');
 
- %--PLOTLY--%
- p = fig2plotly; % <-- converts the yy-plot to an interactive, online version.
+%--PLOTLY--%
+p = fig2plotly; % <-- converts the yy-plot to an interactive, online version.
 
- %--URL--%
- % p.url = 'https://plot.ly/~matlab_user_guide/1522'
-
+%--URL--%
+% p.url = 'https://plot.ly/~matlab_user_guide/1522'
 ```
 
-[![MATLAB® Contour Plot](https://plot.ly/~matlab_user_guide/1522.png)](https://plot.ly/~matlab_user_guide/1522)
+![Sample Plot](sample_plot.png)
 
 Also, access other Plotly services and graphs programmatically. Like, publication-quality image export:
 
@@ -83,10 +82,10 @@ Ask on the [Plotly Community Forum](https://community.plotly.com/c/plotly-r-matl
 
 ## Contribute
 
-Please do! This is an open source project. Check out [the issues](https://github.com/plotly/MATLAB-Online/issues) or open a PR!
+Please do! This is an open source project. Check out [the issues](https://github.com/plotly/plotly_matlab/issues) or open a PR!
 
 We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](CODE_OF_CONDUCT.md) for more information.
 
 ## License
 
-[MIT](LICENSE) © 2021 Plotly, Inc.
+[MIT](LICENSE) © Plotly, Inc.
