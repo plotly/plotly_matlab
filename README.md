@@ -1,6 +1,9 @@
-# Plotly Graphing Library for MATLAB®
+# Plotly Graphing Library for MATLAB® and GNU Octave
 
-> Plotly Graphing Library for MATLAB® - Create interactive charts in your web browser with MATLAB® and Plotly
+[![CI](https://github.com/plotly/plotly_matlab/actions/workflows/ci.yml/badge.svg)](https://github.com/plotly/plotly_matlab/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/plotly/plotly_matlab)](https://github.com/plotly/plotly_matlab/releases)
+
+> Create interactive, web-based charts in your browser from MATLAB® and GNU Octave.
 
 <div align="center">
   <a href="https://dash.plotly.com/project-maintenance">
@@ -10,23 +13,34 @@
 
 Version: 3.1.0
 
-*MATLAB is a registered trademarks of The MathWorks, Inc.*
+*MATLAB is a registered trademark of The MathWorks, Inc.*
+
+## Features
+
+- Convert native MATLAB and GNU Octave figures to interactive [Plotly](https://plotly.com) charts with a single line of code
+- Fully offline: charts render locally in your browser — plotly.js is downloaded once during setup and cached on your machine
+- Publication-quality static export (PNG, JPEG, PDF, SVG) via the Kaleido runtime (downloaded once during setup)
+- Comparison gallery generator (`makegallery`) showing native and converted figures side by side
 
 ## Install
 
-The latest version of the wrapper can be downloaded from [github](https://github.com/plotly/plotly_matlab/archive/master.zip).
+Download the latest version of the wrapper:
 
-Once downloaded, run `plotlysetup_offline()` to get started.
-If you have a plotly bundle url of the form '<http://cdn.plot.ly/plotly-latest.min.js>', then run instead
-`plotlysetup_offline('plotly_bundle_url')`
+- [github.com/plotly/plotly_matlab/archive/master.zip](https://github.com/plotly/plotly_matlab/archive/master.zip)
 
-For online use, run `plotlysetup_online('your_username', 'your_api_key')` to get started.
+Then, from the extracted folder, run:
+
+```matlab
+plotlysetup_offline()   % one-time setup: downloads and caches plotly.js for offline usage (requires internet once)
+```
+
+This works in both MATLAB and GNU Octave.
 
 ## Usage
 
-Convert your MATLAB® figures into online [Plotly](https://plot.ly) graphs with a single line of code:
+Convert your MATLAB® or Octave figure into an interactive Plotly chart with a single line of code:
 
-```MATLAB
+```matlab
 % Create some data for the two curves to be plotted
 x  = 0:0.01:20;
 y1 = 200*exp(-0.05*x).*sin(x);
@@ -45,39 +59,62 @@ ylabel(ax(1), 'Low Frequency');
 ylabel(ax(2), 'High Frequency');
 
 %--PLOTLY--%
-p = fig2plotly; % <-- converts the yy-plot to an interactive, online version.
-
-%--URL--%
-% p.url = 'https://plot.ly/~matlab_user_guide/1522'
+p = fig2plotly; % <-- converts the current figure to an interactive Plotly chart
 ```
 
 ![Sample Plot](sample_plot.png)
 
-Also, access other Plotly services and graphs programmatically. Like, publication-quality image export:
+The resulting figure is an interactive web chart: pan, zoom, hover, and download from the plotly.js toolbar.
 
-```MATLAB
- saveplotlyfig(p, 'testimage.svg')
+## Static export
+
+Export figures to publication-quality static images:
+
+```matlab
+p = fig2plotly;
+saveplotlyfig(p, 'testimage.svg')  % PNG, JPEG, PDF, and SVG supported
 ```
 
-and Plotly figure retrieval:
+## Online mode
 
-```MATLAB
- p = getplotlyfig('chris', 1638) % downloads the graph data from https://plot.ly/~chris/1638
+Offline usage is the default and requires nothing. For online features — storing charts on the Plotly cloud, retrieving figures with `getplotlyfig`, and streaming — configure your Plotly credentials:
+
+```matlab
+plotlysetup_online('your_username', 'your_api_key')
+```
+
+## Retrieving figures
+
+Fetch figures stored on the Plotly cloud:
+
+```matlab
+p = getplotlyfig('chris', 1638)  % downloads the graph data
+```
+
+
+## Gallery
+
+Generate a side-by-side comparison of native and converted figures for over 80 plot types:
+
+```matlab
+makegallery('OutputFolder', 'gallery')
 ```
 
 ## Documentation
 
-This lives here: [https://plot.ly/matlab](https://plot.ly/matlab)
+- [plotly.com/matlab](https://plotly.com/matlab) - official documentation
 
 ## Questions & troubleshooting
 
-Ask on the [Plotly Community Forum](https://community.plotly.com/c/plotly-r-matlab-julia-net)
+Ask on the [Plotly Community Forum](https://community.plotly.com/c/plotly-r-matlab-julia-net).
 
 ## Contribute
 
 Please do! This is an open source project. Check out [the issues](https://github.com/plotly/plotly_matlab/issues) or open a PR!
 
 We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](CODE_OF_CONDUCT.md) for more information.
+
+The test suite (`plotly/testing/runplotlytests.m`) runs in both MATLAB and GNU Octave and is executed on every push via GitHub Actions.
 
 ## License
 
