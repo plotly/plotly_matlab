@@ -3,12 +3,16 @@ function runplotlytests()
         try pkg load datatypes; catch, end
         try pkg load statistics; catch, end
     end
-    addpath(genpath('/workspace/plotly'));
+    root = getenv('PLOTLY_ROOT');
+    if isempty(root)
+        root = fileparts(fileparts(mfilename('fullpath')));
+    end
+    addpath(genpath(root));
 
     suites = {
-        'Test_m2json',       '/workspace/plotly/plotly_aux/Test_m2json.m'
-        'Test_plotlyfig',    '/workspace/plotly/Test_plotlyfig.m'
-        'Test_plotlyfig_perf','/workspace/plotly/Test_plotlyfig_perf.m'
+        'Test_m2json',       fullfile(root, 'plotly_aux', 'Test_m2json.m')
+        'Test_plotlyfig',    fullfile(root, 'Test_plotlyfig.m')
+        'Test_plotlyfig_perf', fullfile(root, 'Test_plotlyfig_perf.m')
     };
 
     allVerdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
