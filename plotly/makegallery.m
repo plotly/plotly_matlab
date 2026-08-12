@@ -29,6 +29,8 @@ function gallery = makegallery(varargin)
     %   Theme        - 'dark' (default), 'light' or 'auto' (follow the
     %                  browser/system preference). A toggle button in the
     %                  gallery switches between dark and light at runtime.
+    %   Open         - true (default) to open the gallery in the default
+    %                  web browser once it has been written.
     %   Width,Height - maximum width and aspect ratio (Width:Height) of
     %                  the figure panels. The native PNGs and the Plotly
     %                  figures share the same size and shrink together
@@ -109,6 +111,10 @@ function gallery = makegallery(varargin)
     fprintf('  %d/%d native figure exports OK, %d/%d Plotly conversions OK\n', ...
         gallery.summary.nativeOK, gallery.summary.total, ...
         gallery.summary.plotlyOK, gallery.summary.total);
+
+    if opts.Open
+        web(htmlPath);
+    end
 end
 
 function opts = parseOptions(varargs)
@@ -121,6 +127,7 @@ function opts = parseOptions(varargs)
         'SavePNGs', false, ...
         'PlotlyJS', 'auto', ...
         'Theme', 'dark', ...
+        'Open', true, ...
         'Width', 640, ...
         'Height', 480 ...
     );
@@ -145,6 +152,8 @@ function opts = parseOptions(varargs)
                 opts.PlotlyJS = value;
             case 'theme'
                 opts.Theme = value;
+            case 'open'
+                opts.Open = value;
             case 'width'
                 opts.Width = value;
             case 'height'
