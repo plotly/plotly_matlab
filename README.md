@@ -22,13 +22,6 @@ If you have a plotly bundle url of the form '<http://cdn.plot.ly/plotly-latest.m
 
 For online use, run `plotlysetup_online('your_username', 'your_api_key')` to get started.
 
-### Updates
-
-**NOTE:** `plotlyupdate.m` is currently turned off.
-
-Please manually download and setup the latest version
-of the wrapper by following the installation instructions above.
-
 ## Usage
 
 Convert your MATLAB® figures into online [Plotly](https://plot.ly) graphs with a single line of code:

@@ -46,8 +46,7 @@ function removed = plotlycleanup
     end
 
     for d = 1:length(plotlyDirs)
-        % add plotlydirs to searchpath (will be removed in future once
-        % handled by plotlyupdate)
+        % add plotlydirs to searchpath
         addpath(genpath(plotlyDirs{d}));
 
         % delete files from plotly directory
