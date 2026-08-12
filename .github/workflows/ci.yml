@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+
+jobs:
+  octave-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Octave, Xvfb and packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y octave octave-dev build-essential xvfb
+          octave --no-gui --eval "pkg install -forge datatypes; pkg install -forge statistics"
+
+      - name: Run plotly tests
+        working-directory: ${{ github.workspace }}
+        env:
+          PLOTLY_ROOT: ${{ github.workspace }}/plotly
+          CI: true
+        run: |
+          xvfb-run -a octave --no-gui plotly/testing/runplotlytests.m
