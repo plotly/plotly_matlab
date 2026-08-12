@@ -12,11 +12,51 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Octave, Xvfb and packages
+      - name: Install Octave, Xvfb
         run: |
           sudo apt-get update
           sudo apt-get install -y octave octave-dev build-essential xvfb
-          octave --no-gui --eval "pkg install -forge datatypes; pkg install -forge statistics"
+
+      - name: Octave package prefix
+        id: octave-prefix
+        run: |
+          dir="$(octave --no-gui -q --eval "printf('%s', pkg('prefix'))")"
+          mkdir -p "$dir"
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+          echo "api=$(basename "$(dirname "$dir")")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Octave packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.octave-prefix.outputs.dir }}
+          key: octave-pkgs-${{ runner.os }}-${{ steps.octave-prefix.outputs.api }}
+
+      - name: Install Octave packages
+        run: |
+          install_pkg () {
+            name="$1"
+            if octave --no-gui -q --eval "pkg load $name" >/dev/null 2>&1; then
+              echo "$name: already installed"
+              return 0
+            fi
+            attempt=0
+            while [ $attempt -lt 3 ]; do
+              attempt=$((attempt+1))
+              echo "$name: install attempt $attempt/3"
+              if octave --no-gui -q --eval "pkg install -forge $name"; then
+                return 0
+              fi
+              [ $attempt -lt 3 ] && sleep 15
+            done
+            return 1
+          }
+          if ! octave --no-gui -q --eval "pkg load datatypes statistics" >/dev/null 2>&1; then
+            octave --no-gui -q --eval "pkg rebuild"
+            if ! octave --no-gui -q --eval "pkg load datatypes statistics" >/dev/null 2>&1; then
+              install_pkg datatypes
+              install_pkg statistics
+            fi
+          fi
 
       - name: Run plotly tests
         working-directory: ${{ github.workspace }}/plotly/testing
