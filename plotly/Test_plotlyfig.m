@@ -3256,5 +3256,24 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyFalse(p.data{1}.showlegend);
         end
+
+        function testPColorHeatmapData(tc)
+            % pcolor must convert to a 2D heatmap: one z value per
+            % cell, x/y at the cell centers.
+            fig = figure("Visible","off");
+            [X, Y] = meshgrid(1:4, 1:3);
+            C = [1 2 3 4; 5 6 7 8; 9 10 11 12];
+            pcolor(X, Y, C);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqual(p.data{1}.type, "heatmap");
+            tc.verifyEqual(p.data{1}.z, C(1:end-1, 1:end-1));
+            tc.verifyEqual(p.data{1}.x, mean([X(1,1:end-1); X(1,2:end)]));
+            tc.verifyEqual(p.data{1}.y, mean([Y(1:end-1,1)'; Y(2:end,1)']));
+            tc.verifyFalse(p.data{1}.showscale);
+            try close(); catch; end
+        end
     end
 end
