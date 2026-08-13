@@ -3342,5 +3342,21 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(p.data{1}.x, 1:5);
             try close(); catch; end
         end
+
+        function testFigureBackgroundColors(tc)
+            % the native figure and axes background colors must be
+            % preserved as paper_bgcolor and plot_bgcolor.
+            fig = figure("Visible","off");
+            set(fig, "Color", [0.8 0.1 0.1]);
+            ax = axes();
+            plot(1:5, 1:5);
+            set(ax, "Color", [0.1 0.8 0.1]);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyEqual(p.layout.paper_bgcolor, "rgb(204,26,26)");
+            tc.verifyEqual(p.layout.plot_bgcolor, "rgb(26,204,26)");
+            try close(); catch; end
+        end
     end
 end
