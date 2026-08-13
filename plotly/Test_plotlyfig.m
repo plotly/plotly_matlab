@@ -3275,5 +3275,25 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyFalse(p.data{1}.showscale);
             try close(); catch; end
         end
+
+        function testRoseBarpolarData(tc)
+            % rose petals must convert to barpolar bars (one bar per
+            % petal) instead of a polar line loop, so each petal hovers
+            % as one unit.
+            fig = figure("Visible","off");
+            angles = deg2rad(0:30:330);
+            rose(angles);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqual(p.data{1}.type, "barpolar");
+            tc.verifyEqual(p.data{1}.marker.color, PlotlyTestCase.AnyColorString());
+            tc.verifyEqual(p.data{1}.marker.line.color, PlotlyTestCase.AnyColorString());
+            tc.verifyGreaterThanOrEqual(p.data{1}.marker.line.width, 1);
+            tc.verifyEqual(numel(p.data{1}.theta), numel(p.data{1}.r));
+            tc.verifyEqual(sum(p.data{1}.r), numel(angles));
+            try close(); catch; end
+        end
     end
 end
