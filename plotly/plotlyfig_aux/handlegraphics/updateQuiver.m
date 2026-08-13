@@ -10,20 +10,30 @@ function obj = updateQuiver(obj, dataIndex)
     xData = get(plotData, 'XData');
     yData = get(plotData, 'YData');
     zData = get(plotData, 'ZData');
+    uDataRaw = get(plotData, 'UData');
+    vDataRaw = get(plotData, 'VData');
+    wDataRaw = get(plotData, 'WData');
 
-    if isvector(xData)
-        [xData, yData] = meshgrid(xData, yData);
+    %-one arrow per element: vector inputs pair up x/y/u/v directly,
+    %-matrix inputs are full grids of matching shape-%
+    if isvector(xData) && isvector(uDataRaw)
+        nArrows = numel(uDataRaw);
+    else
+        if isvector(xData)
+            [xData, yData] = meshgrid(xData, yData);
+        end
+        nArrows = numel(uDataRaw);
     end
 
     if strcmpi(get(plotData, 'AutoScale'), 'on')
-        scaleFactor = getScaleFactor(xData, get(plotData, 'UData'), 45);
+        scaleFactor = getScaleFactor(xData, uDataRaw, 45);
     else
         scaleFactor = 1;
     end
 
-    uData = get(plotData, 'UData') * scaleFactor;
-    vData = get(plotData, 'VData') * scaleFactor;
-    wData = get(plotData, 'WData') * scaleFactor;
+    uData = uDataRaw * scaleFactor;
+    vData = vDataRaw * scaleFactor;
+    wData = wDataRaw * scaleFactor;
 
     %-check if is 3D quiver-%
     isQuiver3D = ~isempty(zData);
@@ -67,7 +77,7 @@ function obj = updateQuiver(obj, dataIndex)
     tailZ = [];
     tailHt = {};
 
-    for n = 1:numel(xData)
+    for n = 1:nArrows
         obj.data{dataIndex}.x(m) = xData(n);
         obj.data{dataIndex}.x(m+1) = xData(n) + uData(n);
         obj.data{dataIndex}.x(m+2) = nan;
@@ -129,7 +139,7 @@ function obj = updateQuiver(obj, dataIndex)
         barbX = [];
         barbY = [];
         barbZ = [];
-        for n = 1:numel(xData)
+        for n = 1:nArrows
             if isQuiver3D
                 quiverBarb = getQuiverBarb3D(...
                     xData(n), yData(n), zData(n), ...
