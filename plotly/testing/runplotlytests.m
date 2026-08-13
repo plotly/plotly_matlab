@@ -1,4 +1,4 @@
-function runplotlytests()
+function runplotlytests(varargin)
     if exist('OCTAVE_VERSION', 'builtin')
         try pkg load datatypes; catch, end
         try pkg load statistics; catch, end
@@ -9,18 +9,33 @@ function runplotlytests()
     end
     addpath(genpath(root));
 
-    suites = {
-        'Test_m2json',       fullfile(root, 'plotly_aux', 'Test_m2json.m')
-        'Test_plotlyfig',    fullfile(root, 'Test_plotlyfig.m')
-        'Test_plotlyfig_perf', fullfile(root, 'Test_plotlyfig_perf.m')
-    };
+    %-targets: {className, methodName} rows; an empty methodName runs
+    %-every test method of the class.  Without arguments the default
+    %-suites run-%
+    if nargin == 0
+        args = {'Test_m2json', 'Test_plotlyfig', 'Test_plotlyfig_perf'};
+    else
+        args = varargin;
+    end
+    targets = cell(numel(args), 2);
+    for i = 1:numel(args)
+        [className, methodName] = parseTarget(args{i});
+        targets{i, 1} = className;
+        targets{i, 2} = methodName;
+    end
 
     allVerdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
         'Diagnostics', {}, 'ErrorTrace', {}, 'Duration', {}, 'Errored', {});
 
-    for s = 1:size(suites, 1)
-        className = suites{s, 1};
-        fprintf('Running %s\n', className);
+    for t = 1:size(targets, 1)
+        className = targets{t, 1};
+        onlyMethod = targets{t, 2};
+
+        if isempty(onlyMethod)
+            fprintf('Running %s\n', className);
+        else
+            fprintf('Running %s/%s\n', className, onlyMethod);
+        end
 
         try
             constructor = str2func(className);
@@ -34,6 +49,10 @@ function runplotlytests()
         nTests = 0;
         verdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
             'Diagnostics', {}, 'ErrorTrace', {}, 'Duration', {}, 'Errored', {});
+
+        if ~isempty(onlyMethod)
+            meths = meths(strcmp(meths, onlyMethod))
+        end
 
         for i = 1:numel(meths)
             methodName = meths{i};
@@ -97,6 +116,15 @@ function runplotlytests()
             end
         end
 
+        %-a requested method that does not exist counts as an error-%
+        if ~isempty(onlyMethod) && nTests == 0
+            fprintf('\n  SKIP: no test method ''%s'' in %s\n', onlyMethod, className);
+            verdicts(end+1) = struct('Name', sprintf('%s/%s', className, onlyMethod), ...
+                'Passed', false, 'VerificationFailures', 1, ...
+                'Diagnostics', {sprintf('No test method ''%s'' in %s', onlyMethod, className)}, ...
+                'ErrorTrace', '', 'Duration', 0, 'Errored', true);
+        end
+
         fprintf('\nDone %s\n', className);
         fprintf('__________\n\n');
 
@@ -140,6 +168,56 @@ function runplotlytests()
     if ~isempty(getenv('CI')) && (nFailed > 0 || nErrored > 0)
         exit(1);
     end
+end
+
+function [className, methodName] = parseTarget(arg)
+    % Accept 'Class', 'Class.m', 'Class/method' and 'Class.method'
+    methodName = '';
+    if ~ischar(arg)
+        arg = char(arg);
+    end
+    arg = strtrim(arg);
+
+    file = '';
+    if ~isempty(strfind(arg, '/'))
+        % path to a test file
+        if exist(arg, 'file')
+            file = arg;
+        end
+    elseif isempty(strfind(arg, '.'))
+        % bare class name on the path
+        file = which(arg);
+    elseif numel(arg) >= 2 && strcmp(arg(numel(arg)-1:numel(arg)), '.m')
+        % class file name on the path (Octave's which resolves any
+        % dotted name to the class file, so only try '.m' suffixes)
+        file = which(arg);
+    end
+
+    if isempty(file) && ~isempty(arg)
+        % split at the first '/' or '.': Class/method or Class.method
+        slash = strfind(arg, '/');
+        dot = strfind(arg, '.');
+        sep = min([slash, dot]);
+        if ~isempty(sep)
+            cls = arg(1:sep-1);
+            methodName = arg(sep+1:end);
+            if isempty(methodName)
+                error('runplotlytests:badTarget', ...
+                    'No test method given in ''%s''', arg);
+            end
+            file = which(cls);
+            if isempty(file) && exist(cls, 'file')
+                file = cls;
+            end
+        end
+    end
+
+    if isempty(file)
+        error('runplotlytests:noTarget', ...
+            'No test class or file ''%s'' found', arg);
+    end
+
+    [~, className] = fileparts(file);
 end
 
 function r = iff(cond, tval, fval)
