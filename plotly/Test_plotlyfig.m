@@ -3295,5 +3295,37 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(sum(p.data{1}.r), numel(angles));
             try close(); catch; end
         end
+
+        function testQuiverHovertextData(tc)
+            % quiver emits three traces: the shaft (no hover), a tail
+            % marker trace with a per-arrow "(x, y)<br>(u, v)" tooltip,
+            % and the arrowhead barbs (no hover).
+            fig = figure("Visible","off");
+            quiver(1:3, [2 4 6], [3 1 -2], [4 2 1]);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 3);
+            tc.verifyEqual(p.data{1}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{3}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{2}.mode, "markers");
+            tc.verifyEqual(p.data{2}.hoverinfo, "text");
+
+            shaftX = p.data{1}.x;
+            shaftY = p.data{1}.y;
+            expectedHovertext = {};
+            n = 1;
+            while n <= numel(shaftX)
+                if isnan(shaftX(n))
+                    n = n + 1;
+                    continue;
+                end
+                expectedHovertext{end+1} = sprintf("(%.2f, %.2f)<br>(%.2f, %.2f)", ...
+                    shaftX(n), shaftY(n), shaftX(n+1)-shaftX(n), shaftY(n+1)-shaftY(n));
+                n = n + 2;
+            end
+            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
+            try close(); catch; end
+        end
     end
 end
