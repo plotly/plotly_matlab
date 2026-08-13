@@ -37,9 +37,8 @@ This library, which was originally created in 2013, builds on top of the existin
 
 # Statement of need
 
-Plotly[@plotly], whose canonical citation is cited more than 1,000 times on OpenAlex[^1],
-is widely used by the scientific community to generate interactive web
-plots. While other languages were supported by Plotly, the Octave[@octave] and MATLAB[@matlab]
+Plotly[@plotly] is widely used by the scientific community to generate interactive web
+plots (its canonical scholarly citation has been cited more than 1,000 times on OpenAlex[^1]). While other languages were supported by Plotly, the Octave[@octave] and MATLAB[@matlab]
 ecosystems, which are widely used in scientific research, both lacked a plotting library
 that is interactive and web-based. This library bridges this gap by providing an easy
 way to generate Plotly figures from the full range of plots supported by Octave and MATLAB.
