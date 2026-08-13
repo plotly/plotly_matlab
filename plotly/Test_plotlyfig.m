@@ -3358,5 +3358,18 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(p.layout.plot_bgcolor, "rgb(26,204,26)");
             try close(); catch; end
         end
+
+        function testMarkerFaceAutoColor(tc)
+            % a filled marker with auto face color must be filled with
+            % the line color converted to 0-255, not a hardcoded float
+            % rgba default.
+            fig = figure("Visible","off");
+            plot(1:5, 1:5, "-o", "Color", [0.2 0.6 0.3], "MarkerFaceColor", "auto");
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyEqual(p.data{1}.marker.color, "rgb(51,153,77)");
+            try close(); catch; end
+        end
     end
 end
