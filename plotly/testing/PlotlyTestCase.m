@@ -62,6 +62,10 @@ classdef PlotlyTestCase < handle
                 testCase.compareHelper(actual, expected, '', varargin);
                 return;
             end
+            if isa(actual, 'PlotlyTestCaseAny') || isa(expected, 'PlotlyTestCaseAny')
+                testCase.compareHelper(actual, expected, '', varargin);
+                return;
+            end
             ok = testCase.isEqualCheck(actual, expected, absTol);
             if ok
                 testCase.recordPass();
