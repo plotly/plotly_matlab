@@ -3327,5 +3327,20 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
             try close(); catch; end
         end
+
+        function testInvisibleEmptyAxesSkipped(tc)
+            % invisible axes that carry no plots (e.g. plotmatrix's
+            % full-page outer axes) must not produce data traces.
+            fig = figure("Visible","off");
+            axes("Visible","off");
+            axes();
+            plot(1:5, 1:5);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 1);
+            tc.verifyEqual(p.data{1}.x, 1:5);
+            try close(); catch; end
+        end
     end
 end
