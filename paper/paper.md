@@ -10,9 +10,18 @@ authors:
   - name: Roberto Moura
     orcid: 0009-0004-5413-3375
     affiliation: 1
+  - name: Gilberto Galvis
+    orcid: 0000-0002-2574-4917
+    affiliation: 2
+  - name: Christopher Parmer
+    affiliation: 3
 affiliations:
  - name: Independent Researcher, United Kingdom
    index: 1
+ - name: Independent Researcher, Slovenia
+   index: 2
+ - name: Plotly Technologies, Canada
+   index: 3
 date: 13 August 2026
 bibliography: paper.bib
 ---
@@ -33,7 +42,7 @@ displays tooltips with numerical values. Because the charts are web-based, they
 are easy to share between researchers on different operating systems, unlike
 language-specific figure objects.
 
-This library, which was originally created in 2013, builds on top of the existing Plotly library to bring interactive web-based plots to Octave and MATLAB.
+First released in 2013, this library brings interactive web-based plots to Octave and MATLAB.
 
 # Statement of need
 
@@ -49,7 +58,16 @@ way to generate Plotly figures from the full range of plots supported by Octave 
 
 Wrappers for Plotly also exist in R[@r], Python[@python], Rust[@rust], and .NET programming
 languages[@dotnet], and those ecosystems have multiple interactive web-visualization
-options besides Plotly. Octave and MATLAB users only have this library for interactive web-based graphing.
+options besides Plotly. For MATLAB and Octave, the existing alternatives cover
+only part of the workflow: `export_fig`[@export_fig] is the standard tool for
+high-quality static export of figures but produces no interactive charts;
+`matlab2tikz`[@matlab2tikz] targets LaTeX documents with generated TikZ code;
+and the `gramm` package[@gramm] provides a grammar-of-graphics interface for
+statistical visualization in MATLAB but renders to native figures rather than
+web charts. Rather than extending an existing binding, this library implements
+figure conversion directly from each engine's native graphics object model,
+giving Octave and MATLAB users interactive web-based graphing where no other
+option exists.
 
 # Software design
 
@@ -67,7 +85,7 @@ axis aspect-ratio computation derived from each engine's native camera model.
 
 A central design commitment is cross-engine parity. MATLAB and GNU Octave
 differ in their graphics object trees (e.g., Octave wraps plot types in
-hggroups that MATLAB exposes differently), property semantics (character
+hggroups that MATLAB exposes differently) and property semantics (character
 arrays versus string types, annotation properties absent in Octave). The library maintains
 a single codebase that behaves identically in both engines, with behavior
 verified by a regression suite that runs on each.
@@ -84,8 +102,8 @@ test suite on every push (GitHub Actions).
 `plotly_matlab` is used in published scientific research. For example, it was
 used to produce visualizations in a biomechanical imaging study of pelvic
 floor ligaments [@MATTER2024111351]. The library is distributed through the
-official Plotly MATLAB page (plotly.com/matlab) and the MathWorks File
-Exchange, is supported on the Plotly community forum, and has been under
+official Plotly MATLAB page ([plotly.com/matlab](plotly.com/matlab)) and the MathWorks File
+Exchange. It is supported on the Plotly community forum, and has been under
 active, sustained maintenance, with regular tagged releases and
 extensive issue triage. The project's development history, releases, and
 usage statistics are public on GitHub.
@@ -99,7 +117,7 @@ validated by the authors. The authors made all decisions and verified technical 
 # Acknowledgements
 
 The library was originally created by Chuck Bronson and has benefited from
-contributions by Gilberto Galvis, Chris Parmer, and many other contributors.
+contributions by many other contributors.
 The authors thank Plotly Technologies Inc. for supporting the
 open-source development of the Plotly ecosystem.
 
