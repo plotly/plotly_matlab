@@ -3297,11 +3297,17 @@ classdef Test_plotlyfig < PlotlyTestCase
         end
 
         function testQuiverHovertextData(tc)
-            % quiver emits three traces: the shaft (no hover), a tail
-            % marker trace with a per-arrow "(x, y)<br>(u, v)" tooltip,
-            % and the arrowhead barbs (no hover).
+            % vector-input quiver emits three traces: the shaft (no
+            % hover), a tail marker trace with a per-arrow
+            % "(x, y)<br>(u, v)" tooltip, and the arrowhead barbs (no
+            % hover).
             fig = figure("Visible","off");
-            quiver(1:3, [2 4 6], [3 1 -2], [4 2 1]);
+            n = 3;
+            X = 1:n;
+            Y = [2 4 6];
+            U = [3 1 -2];
+            V = [4 2 1];
+            quiver(X, Y, U, V);
 
             p = plotlyfig(fig,"visible","off");
 
@@ -3311,19 +3317,114 @@ classdef Test_plotlyfig < PlotlyTestCase
             tc.verifyEqual(p.data{2}.mode, "markers");
             tc.verifyEqual(p.data{2}.hoverinfo, "text");
 
-            shaftX = p.data{1}.x;
-            shaftY = p.data{1}.y;
-            expectedHovertext = {};
-            n = 1;
-            while n <= numel(shaftX)
-                if isnan(shaftX(n))
-                    n = n + 1;
-                    continue;
-                end
-                expectedHovertext{end+1} = sprintf("(%.2f, %.2f)<br>(%.2f, %.2f)", ...
-                    shaftX(n), shaftY(n), shaftX(n+1)-shaftX(n), shaftY(n+1)-shaftY(n));
-                n = n + 2;
-            end
+            [expectedHovertext, nArrows] = Test_plotlyfig.expectedQuiverHovertext(...
+                p.data{1}.x, p.data{1}.y);
+            tc.verifyEqual(nArrows, n);
+            tc.verifyEqual(numel(p.data{2}.x), n);
+            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
+            try close(); catch; end
+        end
+
+        function testQuiverGridData(tc)
+            % grid-input quiver (every input is a 2D matrix).
+            fig = figure("Visible","off");
+            n = 3;
+            [X, Y] = meshgrid(1:n, 1:n);
+            U = ones(n);
+            V = ones(n);
+            quiver(X, Y, U, V);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 3);
+            tc.verifyEqual(p.data{1}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{3}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{2}.mode, "markers");
+            tc.verifyEqual(p.data{2}.hoverinfo, "text");
+
+            [expectedHovertext, nArrows] = Test_plotlyfig.expectedQuiverHovertext(...
+                p.data{1}.x, p.data{1}.y);
+            tc.verifyEqual(nArrows, n*n);
+            tc.verifyEqual(numel(p.data{2}.x), n*n);
+            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
+            try close(); catch; end
+        end
+
+        function testQuiverNoCoordsData(tc)
+            % quiver(u, v) without coordinates draws one arrow per
+            % element.
+            fig = figure("Visible","off");
+            u = [1 2 3 4];
+            v = [1 1 2 2];
+            quiver(u, v);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 3);
+            tc.verifyEqual(p.data{1}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{3}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{2}.mode, "markers");
+            tc.verifyEqual(p.data{2}.hoverinfo, "text");
+
+            [expectedHovertext, nArrows] = Test_plotlyfig.expectedQuiverHovertext(...
+                p.data{1}.x, p.data{1}.y);
+            tc.verifyEqual(nArrows, numel(u));
+            tc.verifyEqual(numel(p.data{2}.x), nArrows);
+            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
+            try close(); catch; end
+        end
+
+        function testQuiver3VectorData(tc)
+            % quiver3 with vector inputs.
+            fig = figure("Visible","off");
+            n = 3;
+            X = 1:n;
+            Y = [2 4 6];
+            Z = [1 1 1];
+            U = [3 1 -2];
+            V = [4 2 1];
+            W = [1 -1 2];
+            quiver3(X, Y, Z, U, V, W);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 3);
+            tc.verifyEqual(p.data{1}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{3}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{2}.mode, "markers");
+            tc.verifyEqual(p.data{2}.hoverinfo, "text");
+
+            [expectedHovertext, nArrows] = Test_plotlyfig.expectedQuiverHovertext(...
+                p.data{1}.x, p.data{1}.y, p.data{1}.z);
+            tc.verifyEqual(nArrows, 3);
+            tc.verifyEqual(numel(p.data{2}.x), nArrows);
+            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
+            try close(); catch; end
+        end
+
+        function testQuiver3GridData(tc)
+            % quiver3 with 2D matrix inputs.
+            fig = figure("Visible","off");
+            n = 2;
+            [X, Y] = meshgrid(1:n, 1:n);
+            Z = zeros(n);
+            U = ones(n);
+            V = ones(n);
+            W = ones(n);
+            quiver3(X, Y, Z, U, V, W);
+
+            p = plotlyfig(fig,"visible","off");
+
+            tc.verifyNumElements(p.data, 3);
+            tc.verifyEqual(p.data{1}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{3}.hoverinfo, "skip");
+            tc.verifyEqual(p.data{2}.mode, "markers");
+            tc.verifyEqual(p.data{2}.hoverinfo, "text");
+
+            [expectedHovertext, nArrows] = Test_plotlyfig.expectedQuiverHovertext(...
+                p.data{1}.x, p.data{1}.y, p.data{1}.z);
+            tc.verifyEqual(nArrows, n*n);
+            tc.verifyEqual(numel(p.data{2}.x), n*n);
             tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
             try close(); catch; end
         end
@@ -3370,6 +3471,37 @@ classdef Test_plotlyfig < PlotlyTestCase
 
             tc.verifyEqual(p.data{1}.marker.color, "rgb(51,153,77)");
             try close(); catch; end
+        end
+    end
+
+    methods (Static)
+        function [hovertext, nArrows] = expectedQuiverHovertext(shaftX, shaftY, shaftZ)
+            %-derive the expected per-arrow tail tooltips from the
+            %-shaft trace: one label per NaN-separated 2-point
+            %-segment, matching updateQuiver/updateQuivergroup-%
+            hovertext = {};
+            nArrows = 0;
+            n = 1;
+            while n < numel(shaftX)
+                if isnan(shaftX(n))
+                    n = n + 1;
+                    continue;
+                end
+                nArrows = nArrows + 1;
+                if nargin >= 3 && ~isempty(shaftZ)
+                    hovertext{end+1} = sprintf(...
+                        "(%.2f, %.2f, %.2f)<br>(%.2f, %.2f, %.2f)", ...
+                        shaftX(n), shaftY(n), shaftZ(n), ...
+                        shaftX(n+1)-shaftX(n), shaftY(n+1)-shaftY(n), ...
+                        shaftZ(n+1)-shaftZ(n));
+                else
+                    hovertext{end+1} = sprintf(...
+                        "(%.2f, %.2f)<br>(%.2f, %.2f)", ...
+                        shaftX(n), shaftY(n), ...
+                        shaftX(n+1)-shaftX(n), shaftY(n+1)-shaftY(n));
+                end
+                n = n + 2;
+            end
         end
     end
 end
