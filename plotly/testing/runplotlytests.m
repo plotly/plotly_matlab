@@ -51,7 +51,7 @@ function runplotlytests(varargin)
             'Diagnostics', {}, 'ErrorTrace', {}, 'Duration', {}, 'Errored', {});
 
         if ~isempty(onlyMethod)
-            meths = meths(strcmp(meths, onlyMethod))
+            meths = meths(strcmp(meths, onlyMethod));
         end
 
         for i = 1:numel(meths)
