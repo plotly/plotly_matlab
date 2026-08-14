@@ -15,9 +15,20 @@ function obj = updateQuiver(obj, dataIndex)
     wDataRaw = get(plotData, 'WData');
 
     %-one arrow per element: vector inputs pair up x/y/u/v directly,
-    %-matrix inputs are full grids of matching shape-%
+    %-matrix inputs are full grids of matching shape.  MATLAB's
+    %-no-coords quiver (quiver(u,v)) stores scalar defaults (YData = 1)
+    %-that the primitive broadcasts internally - replicate that here.-%
     if isvector(xData) && isvector(uDataRaw)
         nArrows = numel(uDataRaw);
+        if numel(xData) == 1
+            xData = xData * ones(size(uDataRaw));
+        end
+        if numel(yData) == 1
+            yData = yData * ones(size(uDataRaw));
+        end
+        if numel(zData) == 1
+            zData = zData * ones(size(uDataRaw));
+        end
     else
         if isvector(xData)
             [xData, yData] = meshgrid(xData, yData);
