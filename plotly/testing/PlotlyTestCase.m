@@ -48,12 +48,13 @@ classdef PlotlyTestCase < handle
         function recordFail(testCase, diagnostic)
             testCase.Failed = testCase.Failed + 1;
             testCase.p_curFailed = testCase.p_curFailed + 1;
-            testCase.p_curDiagnostics{end+1} = diagnostic;
+            diag = [diagnostic testCase.callSiteInfo()];
             if isempty(testCase.CurrentTest)
-                testCase.Failures{end+1} = diagnostic;
+                testCase.Failures{end+1} = diag;
             else
-                testCase.Failures{end+1} = [testCase.CurrentTest ': ' diagnostic];
+                testCase.Failures{end+1} = [testCase.CurrentTest ': ' diag];
             end
+            testCase.p_curDiagnostics{end+1} = diag;
         end
 
         function verifyEqual(testCase, actual, expected, varargin)
@@ -170,6 +171,24 @@ classdef PlotlyTestCase < handle
     end
 
     methods (Access = private)
+        function info = callSiteInfo(testCase)
+            %-the first stack frame outside this class file: the
+            %-assertion's location in the test file-%
+            info = '';
+            st = dbstack;
+            thisFile = [mfilename('fullpath') '.m'];
+            for i = 2:numel(st)
+                if ~isempty(st(i).file) && ~strcmp(st(i).file, thisFile)
+                    info = sprintf('\n  at %s:%d', st(i).file, st(i).line);
+                    line = PlotlyTestCase.readSourceLine(st(i).file, st(i).line);
+                    if ~isempty(line)
+                        info = sprintf('%s\n    %s', info, strtrim(line));
+                    end
+                    return;
+                end
+            end
+        end
+
         function compareHelper(testCase, actual, expected, path, extraArgs)
             if isa(expected, 'PlotlyTestCaseAny')
                 matchResult = expected.match(actual);
@@ -270,6 +289,31 @@ classdef PlotlyTestCase < handle
                     msg = arg;
                 end
                 i = i + 1;
+            end
+        end
+
+        function line = readSourceLine(file, lineNum)
+            %-the source line at lineNum of file, or '' when
+            %-unreadable-%
+            line = '';
+            fid = fopen(file, 'r');
+            if fid < 0
+                return;
+            end
+            try
+                for k = 1:lineNum
+                    ln = fgetl(fid);
+                    if ln == -1
+                        ln = '';
+                        break;
+                    end
+                end
+                if ischar(ln)
+                    line = ln;
+                end
+                fclose(fid);
+            catch
+                try fclose(fid); catch, end
             end
         end
 
