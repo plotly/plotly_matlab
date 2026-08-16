@@ -172,19 +172,26 @@ classdef PlotlyTestCase < handle
 
     methods (Access = private)
         function info = callSiteInfo(testCase)
-            %-the first stack frame outside this class file: the
-            %-assertion's location in the test file-%
+            % the first stack frame outside this class file: the
+            % assertion's location in the test file
             info = '';
             st = dbstack;
-            thisFile = [mfilename('fullpath') '.m'];
+            % MATLAB's dbstack reports file names without their
+            % directory (Octave reports full paths); compare
+            % basenames so the same file matches in both engines
+            [~, base, ext] = fileparts(mfilename('fullpath'));
+            thisFile = [base ext '.m'];
             for i = 2:numel(st)
-                if ~isempty(st(i).file) && ~strcmp(st(i).file, thisFile)
-                    info = sprintf('\n  at %s:%d', st(i).file, st(i).line);
-                    line = PlotlyTestCase.readSourceLine(st(i).file, st(i).line);
-                    if ~isempty(line)
-                        info = sprintf('%s\n    %s', info, strtrim(line));
+                if ~isempty(st(i).file)
+                    [~, fBase, fExt] = fileparts(st(i).file);
+                    if ~strcmp([fBase fExt], thisFile)
+                        info = sprintf('\n  at %s:%d', st(i).file, st(i).line);
+                        line = PlotlyTestCase.readSourceLine(st(i).file, st(i).line);
+                        if ~isempty(line)
+                            info = sprintf('%s\n    %s', info, strtrim(line));
+                        end
+                        return;
                     end
-                    return;
                 end
             end
         end
