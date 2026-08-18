@@ -119,7 +119,8 @@ validated by the authors. The authors made all decisions and verified technical 
 The library was originally created by Chuck Bronson and has benefited from
 contributions by many other contributors. R. Moura currently maintains the
 library in his personal time and receives no funding for this work.
-C. Parmer is an employee of Plotly Technologies Inc.; the library's early
+C. Parmer is a co-founder and the chief product officer (CPO) of Plotly
+Technologies Inc.; the library's early
 development was carried out by Plotly employees, and G. Galvis's 2021
 contributions were made under contract for Plotly. He has no current
 financial or contractual relationship with the company. The authors thank
