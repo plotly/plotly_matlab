@@ -1243,18 +1243,35 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             tc.verifyFalse(p.data{1}.showlegend);
         end
 
-        function testQuiverHovertextData(tc)
-            % vector-input quiver emits three traces: the shaft (no
-            % hover), a tail marker trace with a per-arrow
+        % @quiverKind = {'vector', 'grid', 'nocoords'}
+        function testQuiverHovertextData(tc, quiverKind)
+            % vector/grid/nocoords quiver inputs emit three traces: the
+            % shaft (no hover), a tail marker trace with a per-arrow
             % "(x, y)<br>(u, v)" tooltip, and the arrowhead barbs (no
             % hover).
             fig = figure("Visible","off");
-            n = 3;
-            X = 1:n;
-            Y = [2 4 6];
-            U = [3 1 -2];
-            V = [4 2 1];
-            quiver(X, Y, U, V);
+            switch quiverKind
+                case "vector"
+                    n = 3;
+                    X = 1:n;
+                    Y = [2 4 6];
+                    U = [3 1 -2];
+                    V = [4 2 1];
+                    quiver(X, Y, U, V);
+                    nArrows = n;
+                case "grid"
+                    n = 3;
+                    [X, Y] = meshgrid(1:n, 1:n);
+                    U = ones(n);
+                    V = ones(n);
+                    quiver(X, Y, U, V);
+                    nArrows = n*n;
+                case "nocoords"
+                    u = [1 2 3 4];
+                    v = [1 1 2 2];
+                    quiver(u, v);
+                    nArrows = numel(u);
+            end
 
             p = plotlyfig(fig,"visible","off");
 
@@ -1264,58 +1281,9 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             tc.verifyEqual(p.data{2}.mode, "markers");
             tc.verifyEqual(p.data{2}.hoverinfo, "text");
 
-            [expectedHovertext, nArrows] = Test_plotlyfig_lines.expectedQuiverHovertext(...
+            [expectedHovertext, nArrowsFound] = Test_plotlyfig_lines.expectedQuiverHovertext(...
                 p.data{1}.x, p.data{1}.y);
-            tc.verifyEqual(nArrows, n);
-            tc.verifyEqual(numel(p.data{2}.x), n);
-            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
-            try close(); catch; end
-        end
-
-        function testQuiverGridData(tc)
-            % grid-input quiver (every input is a 2D matrix).
-            fig = figure("Visible","off");
-            n = 3;
-            [X, Y] = meshgrid(1:n, 1:n);
-            U = ones(n);
-            V = ones(n);
-            quiver(X, Y, U, V);
-
-            p = plotlyfig(fig,"visible","off");
-
-            tc.verifyNumElements(p.data, 3);
-            tc.verifyEqual(p.data{1}.hoverinfo, "skip");
-            tc.verifyEqual(p.data{3}.hoverinfo, "skip");
-            tc.verifyEqual(p.data{2}.mode, "markers");
-            tc.verifyEqual(p.data{2}.hoverinfo, "text");
-
-            [expectedHovertext, nArrows] = Test_plotlyfig_lines.expectedQuiverHovertext(...
-                p.data{1}.x, p.data{1}.y);
-            tc.verifyEqual(nArrows, n*n);
-            tc.verifyEqual(numel(p.data{2}.x), n*n);
-            tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
-            try close(); catch; end
-        end
-
-        function testQuiverNoCoordsData(tc)
-            % quiver(u, v) without coordinates draws one arrow per
-            % element.
-            fig = figure("Visible","off");
-            u = [1 2 3 4];
-            v = [1 1 2 2];
-            quiver(u, v);
-
-            p = plotlyfig(fig,"visible","off");
-
-            tc.verifyNumElements(p.data, 3);
-            tc.verifyEqual(p.data{1}.hoverinfo, "skip");
-            tc.verifyEqual(p.data{3}.hoverinfo, "skip");
-            tc.verifyEqual(p.data{2}.mode, "markers");
-            tc.verifyEqual(p.data{2}.hoverinfo, "text");
-
-            [expectedHovertext, nArrows] = Test_plotlyfig_lines.expectedQuiverHovertext(...
-                p.data{1}.x, p.data{1}.y);
-            tc.verifyEqual(nArrows, numel(u));
+            tc.verifyEqual(nArrowsFound, nArrows);
             tc.verifyEqual(numel(p.data{2}.x), nArrows);
             tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
             try close(); catch; end
