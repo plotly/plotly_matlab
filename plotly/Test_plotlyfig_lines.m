@@ -1427,7 +1427,7 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
 
         function testSemilogyPlotData(tc)
             fig = figure("Visible","off");
-            x = 0:0.1:10;
+            x = 0.1:0.1:10;
             y = x;
             semilogy(x, y);
 
@@ -1462,7 +1462,7 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
 
         function testSemilogxPlotData(tc)
             fig = figure("Visible","off");
-            x = 0:0.1:10;
+            x = 0.1:0.1:10;
             y = x;
             semilogx(x, y);
 
