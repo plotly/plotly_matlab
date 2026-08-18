@@ -215,9 +215,9 @@ function runplotlytests(varargin)
         allVerdicts = [allVerdicts, verdicts];
     end
 
-    % Failure summary
-    fprintf('Failure Summary:\n\n');
+    % Failure summary, skipped when every test passed
     nErrored = 0; nFailed = 0; nPassed = 0;
+    maxName = 0;
     for i = 1:numel(allVerdicts)
         v = allVerdicts(i);
         if v.Errored
@@ -227,30 +227,29 @@ function runplotlytests(varargin)
         else
             nPassed = nPassed + 1;
         end
-    end
-
-    % the name field grows with the longest failing case name (capped
-    % at 80 so parameterized names like Class/method('value1', 2) stay
-    % readable); shorter suites keep the table compact
-    maxName = 0;
-    for i = 1:numel(allVerdicts)
-        v = allVerdicts(i);
         if ~v.Passed || v.Errored
             maxName = max(maxName, length(v.Name));
         end
     end
-    nameWidth = min(max(maxName, 20), 80);
-    headerLine = sprintf('     %-*s   %-7s %s\n', nameWidth, 'Name', 'Failed', 'Errored');
-    fprintf('%s', headerLine);
-    fprintf('     %s\n', repmat('=', 1, numel(headerLine) - 6));
-    for i = 1:numel(allVerdicts)
-        v = allVerdicts(i);
-        if ~v.Passed || v.Errored
-            nm = v.Name;
-            if length(nm) > nameWidth, nm = [nm(1:nameWidth-3) '...']; end
-            fprintf('     %-*s   %-7s %s\n', nameWidth, nm, ...
-                iff(~v.Passed && ~v.Errored, 'X', ''), ...
-                iff(v.Errored, 'X', ''));
+
+    if nFailed > 0 || nErrored > 0
+        fprintf('Failure Summary:\n\n');
+        % the name field grows with the longest failing case name (capped
+        % at 80 so parameterized names like Class/method('value1', 2) stay
+        % readable); shorter suites keep the table compact
+        nameWidth = min(max(maxName, 20), 80);
+        headerLine = sprintf('     %-*s   %-7s %s\n', nameWidth, 'Name', 'Failed', 'Errored');
+        fprintf('%s', headerLine);
+        fprintf('     %s\n', repmat('=', 1, numel(headerLine) - 6));
+        for i = 1:numel(allVerdicts)
+            v = allVerdicts(i);
+            if ~v.Passed || v.Errored
+                nm = v.Name;
+                if length(nm) > nameWidth, nm = [nm(1:nameWidth-3) '...']; end
+                fprintf('     %-*s   %-7s %s\n', nameWidth, nm, ...
+                    iff(~v.Passed && ~v.Errored, 'X', ''), ...
+                    iff(v.Errored, 'X', ''));
+            end
         end
     end
 
