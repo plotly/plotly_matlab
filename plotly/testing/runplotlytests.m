@@ -9,9 +9,15 @@ function runplotlytests(varargin)
     end
     addpath(genpath(root));
 
-    % Targets: {className, methodName} rows; an empty methodName runs
-    % every test method of the class.  Without arguments the default
-    % suites run.
+    % Targets: {className, methodName, rawParams, file} rows; an empty
+    % methodName runs every test method of the class.  methodName may
+    % carry a positional parameter filter:
+    %   'Class/method'           -> all parameterized values
+    %   'Class/method(2,"x")'    -> only matching combinations
+    %   'Class/method(2,,"x")'   -> empty slot: all annotated values
+    % Passing parameters to a method with no annotation is an error, as
+    % is passing more values than the method takes arguments. Without
+    % arguments the default suites run.
     if nargin == 0
         args = {'Test_m2json'};
         % Discover the split plotlyfig test classes (Test_plotlyfig_*).
@@ -23,11 +29,44 @@ function runplotlytests(varargin)
     else
         args = varargin;
     end
-    targets = cell(numel(args), 2);
+    targets = cell(numel(args), 4);
     for i = 1:numel(args)
-        [className, methodName] = parseTarget(args{i});
+        [className, methodName, rawParams, file] = parseTarget(args{i});
         targets{i, 1} = className;
         targets{i, 2} = methodName;
+        targets{i, 3} = rawParams;
+        targets{i, 4} = file;
+    end
+
+    % Validate explicit parameter filters before running anything.
+    for t = 1:size(targets, 1)
+        rawParams = targets{t, 3};
+        if isempty(rawParams)
+            continue;
+        end
+        className = targets{t, 1};
+        methodName = targets{t, 2};
+        file = targets{t, 4};
+        try
+            tc0 = str2func(className)();
+        catch
+            continue; % reported as SKIP by the main loop
+        end
+        if ~ismember(methodName, methods(tc0))
+            continue; % reported as SKIP by the main loop
+        end
+        [~, argCount] = testParams(file, methodName);
+        args0 = parseParamList(rawParams);
+        if argCount == 0
+            error('runplotlytests:paramsOnNoArgMethod', ...
+                'Test method %s/%s takes no arguments but parameters (%s) were given.', ...
+                className, methodName, rawParams);
+        end
+        if numel(args0) > argCount
+            error('runplotlytests:tooManyParams', ...
+                'Test method %s/%s takes %d argument(s) but %d value(s) (%s) were given.', ...
+                className, methodName, argCount, numel(args0), rawParams);
+        end
     end
 
     allVerdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
@@ -36,11 +75,15 @@ function runplotlytests(varargin)
     for t = 1:size(targets, 1)
         className = targets{t, 1};
         onlyMethod = targets{t, 2};
+        rawParams = targets{t, 3};
+        file = targets{t, 4};
 
         if isempty(onlyMethod)
             fprintf('Running %s\n', className);
-        else
+        elseif isempty(rawParams)
             fprintf('Running %s/%s\n', className, onlyMethod);
+        else
+            fprintf('Running %s/%s(%s)\n', className, onlyMethod, rawParams);
         end
 
         try
@@ -67,58 +110,93 @@ function runplotlytests(varargin)
             end
             nTests = nTests + 1;
 
-            tic;
-            tc.startTest([className '/' methodName]);
-            fname = str2func(methodName);
-            threw = false;
-            try
-                fname(tc);
-            catch e
-                threw = true;
-                trace = sprintf('''%s''\n%s', e.identifier, e.message);
-                for si = 1:numel(e.stack)
-                    trace = sprintf('%s\n\nError in %s (line %d)', ...
-                        trace, e.stack(si).name, e.stack(si).line);
-                end
-                tc.ErrorTrace = trace;
-            end
-            dt = toc;
-            v = tc.finishTest();
-            v.Duration = dt;
-            v.Errored = threw;
-            verdicts(end+1) = v;
-
-            if threw
-                fprintf('\n');
-                printBanner();
-                fprintf('Error occurred in %s and it did not run to completion.\n', v.Name);
-                diag = v.ErrorTrace;
-                nl = strfind(diag, char(10));
-                if ~isempty(nl)
-                    id = diag(1:nl(1)-1);
-                    rest = diag(nl(1)+1:end);
-                else
-                    id = '';
-                    rest = diag;
-                end
-                fprintf('    ---------\n    Error ID:\n    ---------\n');
-                fprintf('    %s\n', id);
-                fprintf('    --------------\n    Error Details:\n    --------------\n');
-                fprintf('    %s\n', rest);
-                printBanner();
-                fprintf('\n');
-            elseif ~v.Passed
-                fprintf('\n');
-                for d = 1:numel(v.Diagnostics)
+            combos = testParams(file, methodName);
+            if ~isempty(rawParams)
+                args0 = parseParamList(rawParams);
+                combos = filterCombos(combos, args0);
+                if isempty(combos)
+                    fprintf('\n');
                     printBanner();
-                    fprintf('Verification failed in %s.\n', v.Name);
-                    fprintf('    ----------------\n    Test Diagnostic:\n    ----------------\n');
-                    fprintf('    %s\n', v.Diagnostics{d});
+                    fprintf('No parameterization of %s/%s matches (%s).\n', ...
+                        className, methodName, rawParams);
                     printBanner();
                     fprintf('\n');
+                    verdicts(end+1) = struct('Name', ...
+                        sprintf('%s/%s(%s)', className, methodName, rawParams), ...
+                        'Passed', false, 'VerificationFailures', 1, ...
+                        'Diagnostics', {sprintf( ...
+                            'No parameterization of %s matches (%s).', methodName, rawParams)}, ...
+                        'ErrorTrace', '', 'Duration', 0, 'Errored', true);
+                    continue;
                 end
-            else
-                fprintf('.');
+            end
+            if isempty(combos)
+                combos = {{}};
+            end
+
+            for ci = 1:numel(combos)
+                combo = combos{ci};
+                if isempty(combo)
+                    caseName = [className '/' methodName];
+                else
+                    labels = cellfun(@valueLabel, combo, 'UniformOutput', false);
+                    caseName = sprintf('%s/%s(%s)', className, methodName, ...
+                        strjoin(labels, ', '));
+                end
+
+                tic;
+                tc.startTest(caseName);
+                fname = str2func(methodName);
+                threw = false;
+                try
+                    fname(tc, combo{:});
+                catch e
+                    threw = true;
+                    trace = sprintf('''%s''\n%s', e.identifier, e.message);
+                    for si = 1:numel(e.stack)
+                        trace = sprintf('%s\n\nError in %s (line %d)', ...
+                            trace, e.stack(si).name, e.stack(si).line);
+                    end
+                    tc.ErrorTrace = trace;
+                end
+                dt = toc;
+                v = tc.finishTest();
+                v.Duration = dt;
+                v.Errored = threw;
+                verdicts(end+1) = v;
+
+                if threw
+                    fprintf('\n');
+                    printBanner();
+                    fprintf('Error occurred in %s and it did not run to completion.\n', v.Name);
+                    diag = v.ErrorTrace;
+                    nl = strfind(diag, char(10));
+                    if ~isempty(nl)
+                        id = diag(1:nl(1)-1);
+                        rest = diag(nl(1)+1:end);
+                    else
+                        id = '';
+                        rest = diag;
+                    end
+                    fprintf('    ---------\n    Error ID:\n    ---------\n');
+                    fprintf('    %s\n', id);
+                    fprintf('    --------------\n    Error Details:\n    --------------\n');
+                    fprintf('    %s\n', rest);
+                    printBanner();
+                    fprintf('\n');
+                elseif ~v.Passed
+                    fprintf('\n');
+                    for d = 1:numel(v.Diagnostics)
+                        printBanner();
+                        fprintf('Verification failed in %s.\n', v.Name);
+                        fprintf('    ----------------\n    Test Diagnostic:\n    ----------------\n');
+                        fprintf('    %s\n', v.Diagnostics{d});
+                        printBanner();
+                        fprintf('\n');
+                    end
+                else
+                    fprintf('.');
+                end
             end
         end
 
@@ -176,15 +254,17 @@ function runplotlytests(varargin)
     end
 end
 
-function [className, methodName] = parseTarget(arg)
-    % Accept 'Class', 'Class.m', 'Class/method' and 'Class.method'
+function [className, methodName, rawParams, file] = parseTarget(arg)
+    % Accept 'Class', 'Class.m', 'Class/method', 'Class.method' and
+    % 'Class/method(v1,v2,...)' parameter filters.
     methodName = '';
+    rawParams = '';
+    file = '';
     if ~ischar(arg)
         arg = char(arg);
     end
     arg = strtrim(arg);
 
-    file = '';
     if ~isempty(strfind(arg, '/'))
         % Path to a test file
         if exist(arg, 'file')
@@ -211,10 +291,17 @@ function [className, methodName] = parseTarget(arg)
                 error('runplotlytests:badTarget', ...
                     'No test method given in ''%s''', arg);
             end
+            if ~isempty(strfind(methodName, '('))
+                [methodName, rawParams] = stripParams(methodName, arg);
+            end
             file = which(cls);
             if isempty(file) && exist(cls, 'file')
                 file = cls;
             end
+        elseif ~isempty(strfind(arg, '('))
+            error('runplotlytests:paramsNeedMethod', ...
+                ['Parameters in ''%s'' require a test method target like ' ...
+                'Class/method(v1,v2).'], arg);
         end
     end
 
@@ -224,6 +311,120 @@ function [className, methodName] = parseTarget(arg)
     end
 
     [~, className] = fileparts(file);
+end
+
+function [name, raw] = stripParams(name, fullArg)
+    % strip a trailing '(v1,v2,...)' from the method name
+    raw = '';
+    open = strfind(name, '(');
+    if isempty(open)
+        return;
+    end
+    if name(end) ~= ')'
+        error('runplotlytests:badParams', ...
+            'Unbalanced ''('' in ''%s''', fullArg);
+    end
+    raw = name(open(1)+1:end-1);
+    name = name(1:open(1)-1);
+end
+
+function args = parseParamList(raw)
+    % args: 1xn struct array with fields value (eval'd) and wildcard
+    % (true for empty slots)
+    args = struct('value', {}, 'wildcard', {});
+    tokens = splitOnCommas(raw);
+    for i = 1:numel(tokens)
+        tok = strtrim(tokens{i});
+        if isempty(tok)
+            args(end+1) = struct('value', [], 'wildcard', true); %#ok<AGROW>
+        else
+            try
+                v = eval(tok);
+            catch e
+                error('runplotlytests:badParamValue', ...
+                    'Cannot evaluate parameter value ''%s'': %s', tok, e.message);
+            end
+            args(end+1) = struct('value', v, 'wildcard', false); %#ok<AGROW>
+        end
+    end
+end
+
+function tokens = splitOnCommas(raw)
+    % comma split that ignores commas inside single- or double-quoted
+    % literals (doubled quotes escape a quote inside the literal)
+    tokens = {};
+    start = 1;
+    q = 0; % current quote character: 0 outside a literal, else ' or "
+    i = 1;
+    while i <= numel(raw)
+        c = raw(i);
+        if q == 0
+            if c == '''' || c == '"'
+                q = c;
+            elseif c == ','
+                tokens{end+1} = raw(start:i-1); %#ok<AGROW>
+                start = i + 1;
+            end
+        else
+            if c == q
+                if i + 1 <= numel(raw) && raw(i+1) == q
+                    i = i + 1; % doubled quote inside the literal
+                else
+                    q = 0;
+                end
+            end
+        end
+        i = i + 1;
+    end
+    tokens{end+1} = raw(start:end);
+end
+
+function combos = filterCombos(combos, args)
+    % keep only the combinations whose leading values match the filter;
+    % wildcard slots match every annotated value
+    if isempty(args)
+        return;
+    end
+    keep = false(1, numel(combos));
+    for c = 1:numel(combos)
+        combo = combos{c};
+        ok = true;
+        for j = 1:numel(args)
+            if args(j).wildcard
+                continue;
+            end
+            if j > numel(combo) || ~paramEqual(combo{j}, args(j).value)
+                ok = false;
+                break;
+            end
+        end
+        keep(c) = ok;
+    end
+    combos = combos(keep);
+end
+
+function ok = paramEqual(a, b)
+    % char and string compare as equal across engines and quote styles
+    if (ischar(a) || isstring(a)) && (ischar(b) || isstring(b))
+        ok = strcmp(char(a), char(b));
+    else
+        ok = isequal(a, b);
+    end
+end
+
+function s = valueLabel(v)
+    % compact display form of one parameter value for verdict names
+    if ischar(v)
+        s = sprintf('''%s''', v);
+    elseif isstring(v) && isscalar(v)
+        s = sprintf('"%s"', char(v));
+    elseif isnumeric(v) && isscalar(v)
+        s = strtrim(sprintf('%.17g', v));
+    elseif islogical(v) && isscalar(v)
+        if v, s = 'true'; else, s = 'false'; end
+    else
+        s = sprintf('%s', class(v));
+    end
 end
 
 function r = iff(cond, tval, fval)
