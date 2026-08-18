@@ -165,101 +165,109 @@ function opts = parseOptions(varargs)
 end
 
 function entries = testEntries()
-    % Parse Test_plotlyfig.m next to this file and extract, for every
-    % test method, the plot-generating code between the
+    % Parse the Test_plotlyfig*.m files next to this file and extract,
+    % for every test method, the plot-generating code between the
     % `fig = figure("Visible","off");` line and the
     % `p = plotlyfig(fig,...)` line. Also record whether the test is
     % guarded with `if is_octave() return` (Octave-unsupported feature).
-    testFile = fullfile(fileparts(mfilename('fullpath')), 'Test_plotlyfig.m');
-    fid = fopen(testFile, 'r');
-    if fid < 0
-        error('makegallerytests:noTestFile', ...
-            'Cannot open %s', testFile);
-    end
-    text = fread(fid, Inf, '*char')';
-    fclose(fid);
-    lines = strsplit(text, sprintf('\n'));
+    folder = fileparts(mfilename('fullpath'));
+    testFiles = dir(fullfile(folder, 'Test_plotlyfig*.m'));
 
     entries = struct('name', {}, 'code', {}, 'guarded', {}, 'guardReason', {});
 
-    i = 1;
-    n = numel(lines);
-    while i <= n
-        toks = regexp(lines{i}, '^\s{8}function\s+(test\w+)\s*\(tc\)\s*$', ...
-            'tokens', 'once');
-        if isempty(toks)
-            i = i + 1;
-            continue;
+    for fi = 1:numel(testFiles)
+        if strcmp(testFiles(fi).name, 'Test_plotlyfig_perf.m')
+            continue
         end
-        name = toks{1};
-
-        % the method ends at the first later line of exactly 8 spaces + end
-        j = i + 1;
-        while j <= n && isempty(regexp(lines{j}, '^\s{8}end\s*$', 'once'))
-            j = j + 1;
+        testFile = fullfile(folder, testFiles(fi).name);
+        fid = fopen(testFile, 'r');
+        if fid < 0
+            error('makegallerytests:noTestFile', ...
+                'Cannot open %s', testFile);
         end
-        body = lines(i + 1:j - 1);
+        text = fread(fid, Inf, '*char')';
+        fclose(fid);
+        lines = strsplit(text, sprintf('\n'));
 
-        figIdx = [];
-        pIdx = [];
-        for k = 1:numel(body)
-            if isempty(figIdx) && ...
-                    ~isempty(regexp(body{k}, '^\s*fig\s*=\s*figure\(', 'once'))
-                figIdx = k;
+        i = 1;
+        n = numel(lines);
+        while i <= n
+            toks = regexp(lines{i}, '^\s{8}function\s+(test\w+)\s*\(tc\)\s*$', ...
+                'tokens', 'once');
+            if isempty(toks)
+                i = i + 1;
+                continue;
             end
-            if ~isempty(regexp(body{k}, '^\s*p\s*=\s*plotlyfig\(fig,', 'once'))
-                pIdx = k;
-                break;
-            end
-        end
+            name = toks{1};
 
-        % extraction starts after any leading comments and the Octave
-        % guard block (`if is_octave() return ... end`), so the code
-        % runs standalone; setup statements before `fig` (tables,
-        % digraphs, legend labels, ...) are kept
-        startIdx = 1;
-        k = 1;
-        while k <= numel(body) && ...
-                ~isempty(regexp(body{k}, '^\s*%', 'once'))
-            k = k + 1;
-        end
-        if k <= numel(body) && ...
-                ~isempty(regexp(body{k}, '^\s*if\s+is_octave\(\)', 'once'))
-            while k <= numel(body) && ...
-                    isempty(regexp(body{k}, '^\s*end\s*$', 'once'))
-                k = k + 1;
+            % the method ends at the first later line of exactly 8 spaces + end
+            j = i + 1;
+            while j <= n && isempty(regexp(lines{j}, '^\s{8}end\s*$', 'once'))
+                j = j + 1;
             end
-            k = k + 1; % skip the guard's end line
-        end
-        startIdx = k;
+            body = lines(i + 1:j - 1);
 
-        guarded = false;
-        guardReason = '';
-        if ~isempty(figIdx)
-            for k = 1:figIdx - 1
-                if ~isempty(regexp(body{k}, '^\s*if\s+is_octave\(\)', 'once')) ...
-                        && k + 1 <= numel(body) ...
-                        && ~isempty(regexp(body{k + 1}, '^\s*return', 'once'))
-                    guarded = true;
-                    m = regexp(body{k + 1}, '^\s*return\s*%\s*(.*)$', ...
-                        'tokens', 'once');
-                    if ~isempty(m)
-                        guardReason = strtrim(m{1});
-                    end
+            figIdx = [];
+            pIdx = [];
+            for k = 1:numel(body)
+                if isempty(figIdx) && ...
+                        ~isempty(regexp(body{k}, '^\s*fig\s*=\s*figure\(', 'once'))
+                    figIdx = k;
+                end
+                if ~isempty(regexp(body{k}, '^\s*p\s*=\s*plotlyfig\(fig,', 'once'))
+                    pIdx = k;
                     break;
                 end
             end
-        end
 
-        if ~isempty(figIdx) && ~isempty(pIdx) && pIdx > figIdx
-            entries(end + 1) = struct( ... %#ok<AGROW>
-                'name', name, ...
-                'code', strjoin(body(startIdx:pIdx - 1), sprintf('\n')), ...
-                'guarded', guarded, ...
-                'guardReason', guardReason ...
-            );
+            % extraction starts after any leading comments and the Octave
+            % guard block (`if is_octave() return ... end`), so the code
+            % runs standalone; setup statements before `fig` (tables,
+            % digraphs, legend labels, ...) are kept
+            startIdx = 1;
+            k = 1;
+            while k <= numel(body) && ...
+                    ~isempty(regexp(body{k}, '^\s*%', 'once'))
+                k = k + 1;
+            end
+            if k <= numel(body) && ...
+                    ~isempty(regexp(body{k}, '^\s*if\s+is_octave\(\)', 'once'))
+                while k <= numel(body) && ...
+                        isempty(regexp(body{k}, '^\s*end\s*$', 'once'))
+                    k = k + 1;
+                end
+                k = k + 1; % skip the guard's end line
+            end
+            startIdx = k;
+
+            guarded = false;
+            guardReason = '';
+            if ~isempty(figIdx)
+                for k = 1:figIdx - 1
+                    if ~isempty(regexp(body{k}, '^\s*if\s+is_octave\(\)', 'once')) ...
+                            && k + 1 <= numel(body) ...
+                            && ~isempty(regexp(body{k + 1}, '^\s*return', 'once'))
+                        guarded = true;
+                        m = regexp(body{k + 1}, '^\s*return\s*%\s*(.*)$', ...
+                            'tokens', 'once');
+                        if ~isempty(m)
+                            guardReason = strtrim(m{1});
+                        end
+                        break;
+                    end
+                end
+            end
+
+            if ~isempty(figIdx) && ~isempty(pIdx) && pIdx > figIdx
+                entries(end + 1) = struct( ... %#ok<AGROW>
+                    'name', name, ...
+                    'code', strjoin(body(startIdx:pIdx - 1), sprintf('\n')), ...
+                    'guarded', guarded, ...
+                    'guardReason', guardReason ...
+                );
+            end
+            i = j;
         end
-        i = j;
     end
 end
 
