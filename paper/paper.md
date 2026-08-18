@@ -102,7 +102,7 @@ test suite on every push (GitHub Actions).
 `plotly_matlab` is used in published scientific research. For example, it was
 used to produce visualizations in a biomechanical imaging study of pelvic
 floor ligaments [@MATTER2024111351]. The library is distributed through the
-official Plotly MATLAB page ([plotly.com/matlab](plotly.com/matlab)) and the MathWorks File
+official Plotly MATLAB page ([plotly.com/matlab](https://plotly.com/matlab)) and the MathWorks File
 Exchange. It is supported on the Plotly community forum, and has been under
 active, sustained maintenance, with regular tagged releases and
 extensive issue triage. The project's development history, releases, and
