@@ -9,9 +9,9 @@ function runplotlytests(varargin)
     end
     addpath(genpath(root));
 
-    %-targets: {className, methodName} rows; an empty methodName runs
-    %-every test method of the class.  Without arguments the default
-    %-suites run-%
+    % Targets: {className, methodName} rows; an empty methodName runs
+    % every test method of the class.  Without arguments the default
+    % suites run.
     if nargin == 0
         args = {'Test_m2json'};
         % Discover the split plotlyfig test classes (Test_plotlyfig_*).
@@ -122,7 +122,7 @@ function runplotlytests(varargin)
             end
         end
 
-        %-a requested method that does not exist counts as an error-%
+        % A requested method that does not exist counts as an error
         if ~isempty(onlyMethod) && nTests == 0
             fprintf('\n  SKIP: no test method ''%s'' in %s\n', onlyMethod, className);
             verdicts(end+1) = struct('Name', sprintf('%s/%s', className, onlyMethod), ...
@@ -186,21 +186,21 @@ function [className, methodName] = parseTarget(arg)
 
     file = '';
     if ~isempty(strfind(arg, '/'))
-        % path to a test file
+        % Path to a test file
         if exist(arg, 'file')
             file = arg;
         end
     elseif isempty(strfind(arg, '.'))
-        % bare class name on the path
+        % Bare class name on the path
         file = which(arg);
     elseif numel(arg) >= 2 && strcmp(arg(numel(arg)-1:numel(arg)), '.m')
-        % class file name on the path (Octave's which resolves any
+        % Class file name on the path (Octave's which resolves any
         % dotted name to the class file, so only try '.m' suffixes)
         file = which(arg);
     end
 
     if isempty(file) && ~isempty(arg)
-        % split at the first '/' or '.': Class/method or Class.method
+        % Split at the first '/' or '.': Class/method or Class.method
         slash = strfind(arg, '/');
         dot = strfind(arg, '.');
         sep = min([slash, dot]);
