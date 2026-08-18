@@ -171,6 +171,9 @@ function entries = testEntries()
     % `p = plotlyfig(fig,...)` line. Also record whether the test is
     % guarded with `if is_octave() return` (Octave-unsupported feature).
     folder = fileparts(mfilename('fullpath'));
+    if isempty(which('testParams'))
+        addpath(fullfile(folder, 'testing'));
+    end
     testFiles = dir(fullfile(folder, 'Test_plotlyfig*.m'));
 
     entries = struct('name', {}, 'code', {}, 'guarded', {}, 'guardReason', {});
@@ -192,7 +195,7 @@ function entries = testEntries()
         i = 1;
         n = numel(lines);
         while i <= n
-            toks = regexp(lines{i}, '^\s{8}function\s+(test\w+)\s*\(tc\)\s*$', ...
+            toks = regexp(lines{i}, '^\s{8}function\s+(test\w+)\s*\(tc(?:,\s*\w+)*\)\s*$', ...
                 'tokens', 'once');
             if isempty(toks)
                 i = i + 1;
@@ -259,9 +262,31 @@ function entries = testEntries()
             end
 
             if ~isempty(figIdx) && ~isempty(pIdx) && pIdx > figIdx
+                % parameterized methods: prepend the first combination as
+                % assignments so the extracted code runs standalone
+                prepends = {};
+                try
+                    [combos, ~, argNames] = testParams(testFile, name);
+                    if ~isempty(combos)
+                        for v = 1:numel(combos{1})
+                            text = valueToEval(combos{1}{v});
+                            if isempty(text)
+                                prepends = {};
+                                break;
+                            end
+                            prepends{end+1} = sprintf('%s = %s;', argNames{v}, text); %#ok<AGROW>
+                        end
+                    end
+                catch
+                    prepends = {};
+                end
+                code = strjoin(body(startIdx:pIdx - 1), sprintf('\n'));
+                if ~isempty(prepends)
+                    code = [strjoin(prepends, sprintf('\n')) sprintf('\n') code];
+                end
                 entries(end + 1) = struct( ... %#ok<AGROW>
                     'name', name, ...
-                    'code', strjoin(body(startIdx:pIdx - 1), sprintf('\n')), ...
+                    'code', code, ...
                     'guarded', guarded, ...
                     'guardReason', guardReason ...
                 );
@@ -608,6 +633,23 @@ function chip = chipTag(ok, label)
         chip = sprintf('<span class="chip ok">%s OK</span>', label);
     else
         chip = sprintf('<span class="chip fail">%s FAIL</span>', label);
+    end
+end
+
+function s = valueToEval(v)
+    % render one parameter value as an evaluable literal for the prepend
+    % assignments; '' when the value cannot be rendered (the gallery
+    % entry then reports the error)
+    if ischar(v)
+        s = sprintf('''%s''', strrep(v, '''', ''''''));
+    elseif isstring(v) && isscalar(v)
+        s = sprintf('"%s"', char(v));
+    elseif isnumeric(v) && isscalar(v)
+        s = strtrim(sprintf('%.17g', v));
+    elseif islogical(v) && isscalar(v)
+        if v, s = 'true'; else, s = 'false'; end
+    else
+        s = '';
     end
 end
 
