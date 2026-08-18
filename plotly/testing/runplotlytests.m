@@ -13,7 +13,13 @@ function runplotlytests(varargin)
     %-every test method of the class.  Without arguments the default
     %-suites run-%
     if nargin == 0
-        args = {'Test_m2json', 'Test_plotlyfig', 'Test_plotlyfig_perf'};
+        args = {'Test_m2json'};
+        % Discover the split plotlyfig test classes (Test_plotlyfig_*).
+        testFiles = dir(fullfile(root, 'Test_plotlyfig_*.m'));
+        for f = 1:numel(testFiles)
+            [~, cls] = fileparts(testFiles(f).name);
+            args{end+1} = cls;
+        end
     else
         args = varargin;
     end
