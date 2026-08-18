@@ -229,14 +229,26 @@ function runplotlytests(varargin)
         end
     end
 
-    fprintf('     Name                                                 Failed  Errored\n');
-    fprintf('    =====================================================================\n');
+    % the name field grows with the longest failing case name (capped
+    % at 80 so parameterized names like Class/method('value1', 2) stay
+    % readable); shorter suites keep the table compact
+    maxName = 0;
+    for i = 1:numel(allVerdicts)
+        v = allVerdicts(i);
+        if ~v.Passed || v.Errored
+            maxName = max(maxName, length(v.Name));
+        end
+    end
+    nameWidth = min(max(maxName, 20), 80);
+    headerLine = sprintf('     %-*s   %-7s %s\n', nameWidth, 'Name', 'Failed', 'Errored');
+    fprintf('%s', headerLine);
+    fprintf('     %s\n', repmat('=', 1, numel(headerLine) - 6));
     for i = 1:numel(allVerdicts)
         v = allVerdicts(i);
         if ~v.Passed || v.Errored
             nm = v.Name;
-            if length(nm) > 50, nm = [nm(1:47) '...']; end
-            fprintf('     %-55s %-7s %s\n', nm, ...
+            if length(nm) > nameWidth, nm = [nm(1:nameWidth-3) '...']; end
+            fprintf('     %-*s   %-7s %s\n', nameWidth, nm, ...
                 iff(~v.Passed && ~v.Errored, 'X', ''), ...
                 iff(v.Errored, 'X', ''));
         end
