@@ -94,13 +94,19 @@ function runplotlytests(varargin)
             continue;
         end
 
-        meths = methods(tc);
+        classMeths = methods(tc);
+        % setUp/tearDown (if defined) run around every test case,
+        % including each parameterized case
+        hasSetup = ismember('setUp', classMeths);
+        hasTearDown = ismember('tearDown', classMeths);
         nTests = 0;
         verdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
             'Diagnostics', {}, 'ErrorTrace', {}, 'Duration', {}, 'Errored', {});
 
         if ~isempty(onlyMethod)
-            meths = meths(strcmp(meths, onlyMethod));
+            meths = classMeths(strcmp(classMeths, onlyMethod));
+        else
+            meths = classMeths;
         end
 
         for i = 1:numel(meths)
@@ -148,17 +154,41 @@ function runplotlytests(varargin)
                 tc.startTest(caseName);
                 fname = str2func(methodName);
                 threw = false;
-                try
-                    fname(tc, combo{:});
-                catch e
-                    threw = true;
-                    trace = sprintf('''%s''\n%s', e.identifier, e.message);
-                    for si = 1:numel(e.stack)
-                        trace = sprintf('%s\n\nError in %s (line %d)', ...
-                            trace, e.stack(si).name, e.stack(si).line);
+                trace = '';
+                % sequential try/catch blocks (Octave has no finally):
+                % setUp, then the test, then tearDown regardless of what
+                % threw
+                setUpOk = true;
+                if hasSetup
+                    try
+                        tc.setUp();
+                    catch e
+                        threw = true;
+                        trace = errorTrace(e);
+                        setUpOk = false;
                     end
-                    tc.ErrorTrace = trace;
                 end
+                if setUpOk
+                    try
+                        fname(tc, combo{:});
+                    catch e
+                        threw = true;
+                        trace = errorTrace(e);
+                    end
+                end
+                if hasTearDown
+                    try
+                        tc.tearDown();
+                    catch e
+                        threw = true;
+                        if isempty(trace)
+                            trace = errorTrace(e);
+                        else
+                            trace = [trace sprintf('\n\n') errorTrace(e)];
+                        end
+                    end
+                end
+                tc.ErrorTrace = trace;
                 dt = toc;
                 v = tc.finishTest();
                 v.Duration = dt;
@@ -435,6 +465,14 @@ function s = valueLabel(v)
         if v, s = 'true'; else, s = 'false'; end
     else
         s = sprintf('%s', class(v));
+    end
+end
+
+function trace = errorTrace(e)
+    trace = sprintf('''%s''\n%s', e.identifier, e.message);
+    for si = 1:numel(e.stack)
+        trace = sprintf('%s\n\nError in %s (line %d)', ...
+            trace, e.stack(si).name, e.stack(si).line);
     end
 end
 
