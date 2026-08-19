@@ -1,9 +1,6 @@
 classdef Test_plotlyfig_perf < PlotlyPerfTestCase
 % Run as:
-%{
-res = runperf("Test_plotlyfig_perf");
-tb = res.sampleSummary;
-%}
+%   runplotlytests('Test_plotlyfig_perf')
     methods
         function testManySubplotsConversionTime(tc)
             % Stress test: many subplots with multiple lines each.
@@ -20,12 +17,8 @@ tb = res.sampleSummary;
                 hold off;
             end
 
-            p = plotlyfig(fig, "visible", "off");
-            try
-                while tc.keepMeasuring
-                    p = plotlyfig(fig, "visible", "off");
-                end
-            catch
+            while tc.keepMeasuring
+                p = plotlyfig(fig, "visible", "off");
             end
 
             % Verify correctness: one trace per line
@@ -45,12 +38,8 @@ tb = res.sampleSummary;
             n = 100000;
             val = repmat('a"b\c/d', 1, n);
 
-            result = checkescape(val);
-            try
-                while tc.keepMeasuring
-                    result = checkescape(val);
-                end
-            catch
+            while tc.keepMeasuring
+                result = checkescape(val);
             end
 
             % Verify correctness
