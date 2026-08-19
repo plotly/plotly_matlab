@@ -1,5 +1,9 @@
 classdef Test_plotlyfig_special < PlotlyTestCase
     methods
+        function tearDown(tc)
+            try close(); catch; end
+        end
+
         function testPolarScatterData(tc)
             if is_octave()
                 return % The `polarscatter` function is not yet implemented in Octave.
@@ -34,7 +38,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testPolarPlotData(tc)
@@ -71,7 +74,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testComplexPolarPlotData(tc)
@@ -105,7 +107,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 "line", struct(), ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testPolarHistogramPlotData(tc)
@@ -137,7 +138,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 "subplot", PlotlyTestCase.Any(), ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testEasyToUsePolarPlotData(tc)
@@ -170,7 +170,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testContourPlotData(tc)
@@ -228,7 +227,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 expected.reversescale = false;
             end
             tc.verifyEqual(rmfield(p.data{1}, "colorscale"), expected, 'AbsTol', 1e-16);
-            try close(); catch; end
         end
 
         function testFunctionContourPlotData(tc)
@@ -272,7 +270,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-2);
-            try close(); catch; end
         end
 
         function testContourfPlotData(tc)
@@ -328,7 +325,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             if is_octave()
                 tc.verifyEqual(size(p.data{1}.z), [30 30]);
             end
-            try close(); catch; end
         end
 
         function testHeatmapData(tc)
@@ -380,7 +376,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 "showlegend", false, ...
                 "name", "" ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testHeatmap1x1Data(tc)
@@ -405,7 +400,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             % arrays, not bare values.
             tc.verifyEqual(d.x,{{'1'}});
             tc.verifyEqual(d.y,{{'1'}});
-            try close(); catch; end
         end
 
         function testHeatmap1x2Data(tc)
@@ -429,7 +423,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
 
             tc.verifyEqual(d.x,{'x1'; 'x2'});
             tc.verifyEqual(d.y,{{'y1'}});
-            try close(); catch; end
         end
 
         function testHeatmap2x1Data(tc)
@@ -452,7 +445,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
 
             tc.verifyEqual(d.x,{{'x1'}});
             tc.verifyEqual(d.y,{'y2'; 'y1'});
-            try close(); catch; end
         end
 
         function testHeatmapDataColorLimitsOverride(tc)
@@ -470,7 +462,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
 
             tc.verifyEqual(p.data{1}.zmin, zmin);
             tc.verifyEqual(p.data{1}.zmax, zmax);
-            try close(); catch; end
         end
 
         function testTiledLayoutHeatmap(tc)
@@ -524,7 +515,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 "xpad", 10, ...
                 "outlinecolor", "rgb(150,150,150)" ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testHeatmapTextColorBrightCells(tc)
@@ -544,7 +534,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 ann = p.layout.annotations{i};
                 tc.verifyEqual(ann.font.color, "rgb(0,0,0)"); % Black text
             end
-            try close(); catch; end
         end
 
         function testHeatmapTextColorDarkCells(tc)
@@ -564,7 +553,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 ann = p.layout.annotations{i};
                 tc.verifyEqual(ann.font.color, "rgb(255,255,255)"); % White text
             end
-            try close(); catch; end
         end
 
         function testHeatmapMixedColorCells(tc)
@@ -601,7 +589,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             expected = ["5,0" "6,0" "6,1" "6,2" "6,3" "6,4" "6,5" "6,6" "6,7" ...
                     "7,0" "7,1" "7,2" "7,3" "7,4" "7,5" "7,6" "7,7"];
             tc.verifyEqual(actual, expected);
-            try close(); catch; end
         end
 
         function testHeatmapCellTextAnnotations(tc)
@@ -618,7 +605,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             actualStrings = cellfun(@(ann) ann.text, p.layout.annotations, 'UniformOutput', false);
             expectedStrings = arrayfun(@(v) string(v), data(:));
             tc.verifyEqual(sort(actualStrings(:)), sort(expectedStrings(:)));
-            try close(); catch; end
         end
 
         function testHeatmapTitleAnnotation(tc)
@@ -636,7 +622,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             tc.verifyNumElements(p.layout.annotations, numel(data)+1);
             actualStrings = string(cellfun(@(ann) ann.text, p.layout.annotations, 'UniformOutput', false));
             tc.verifyTrue(any(contains(actualStrings, titleString)));
-            try close(); catch; end
         end
 
         function testHeatmapAxisLabels(tc)
@@ -655,7 +640,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
 
             tc.verifyEqual(p.layout.xaxis1.title.text, xLabelText);
             tc.verifyEqual(p.layout.yaxis1.title.text, yLabelText);
-            try close(); catch; end
         end
 
         function testHeatmapWithNaNValues(tc)
@@ -674,7 +658,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             tc.verifyNumElements(p.data, 1);
             heatmapData = p.data{1};
             tc.verifyEqual(heatmapData.z, nestZ);
-            try close(); catch; end
         end
 
         function testHeatmapAllNaNValues(tc)
@@ -695,7 +678,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             tc.verifyEqual(heatmapData.z, nestZ);
             tc.verifyTrue(all(cellfun(@(row) all(cellfun(@isnan,row)), heatmapData.z)));
             tc.verifyTrue(all(cellfun(@(row) all(cellfun(@isnan,row)), heatmapData.text)));
-            try close(); catch; end
         end
 
         function testPColorHeatmapData(tc)
@@ -714,7 +696,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             tc.verifyEqual(p.data{1}.x, mean([X(1,1:end-1); X(1,2:end)]));
             tc.verifyEqual(p.data{1}.y, mean([Y(1:end-1,1)'; Y(2:end,1)']));
             tc.verifyFalse(p.data{1}.showscale);
-            try close(); catch; end
         end
 
         function testRoseBarpolarData(tc)
@@ -734,7 +715,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             tc.verifyGreaterThanOrEqual(p.data{1}.marker.line.width, 1);
             tc.verifyEqual(numel(p.data{1}.theta), numel(p.data{1}.r));
             tc.verifyEqual(sum(p.data{1}.r), numel(angles));
-            try close(); catch; end
         end
 
         function testImagePlotData(tc)
@@ -775,7 +755,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 % image data is stored with y reversed (top row first)
                 tc.verifyEqual(p.layout.yaxis1.range, [8.5 0.5]);
             end
-            try close(); catch; end
         end
 
         function testImagescPlotData(tc)
@@ -809,7 +788,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
             if is_octave()
                 tc.verifyEqual(p.layout.yaxis1.range, [8.5 0.5]);
             end
-            try close(); catch; end
         end
 
         function testPatchPlotData(tc)
@@ -848,7 +826,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 "fillcolor", "rgba(255,0,0,1.000000)", ...
                 "showlegend", false ...
             ));
-            try close(); catch; end
         end
 
         function testFillPlotData(tc)
@@ -916,7 +893,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 "fillcolor", "rgba(0,255,0,1.000000)", ...
                 "showlegend", false ...
             ));
-            try close(); catch; end
         end
 
         function testRectanglePlotData(tc)
@@ -948,7 +924,6 @@ classdef Test_plotlyfig_special < PlotlyTestCase
                 "showlegend", false ...
             );
             tc.verifyEqualStructs(p.data{1}, expected, 'AbsTol', 1e-15);
-            try close(); catch; end
         end
     end
 end

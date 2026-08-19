@@ -1,5 +1,9 @@
 classdef Test_plotlyfig_bars < PlotlyTestCase
     methods
+        function tearDown(tc)
+            try close(); catch; end
+        end
+
         function testSingleBarPlotData(tc)
             fig = figure("Visible","off");
             bar(1,1);
@@ -32,7 +36,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 expected.marker.line.dash = "solid";
             end
             tc.verifyEqualStructs(p.data{1}, expected);
-            try close(); catch; end
         end
 
         function testDateBarPlotData(tc)
@@ -66,7 +69,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
-            try close(); catch; end
         end
 
         function testMultiDateBarData(tc)
@@ -86,7 +88,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(p.data{1}.x, convertDate(x));
             tc.verifyEqual(p.layout.xaxis1.type, "date");
-            try close(); catch; end
         end
 
         function testVerticalBarPlotData(tc)
@@ -125,7 +126,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 expected.marker.line.dash = "solid";
             end
             tc.verifyEqualStructs(p.data{1}, expected);
-            try close(); catch; end
         end
 
         function testHorizontalBarPlotData(tc)
@@ -164,7 +164,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 expected.marker.line.dash = "solid";
             end
             tc.verifyEqualStructs(p.data{1}, expected);
-            try close(); catch; end
         end
 
         function testStackedBarData(tc)
@@ -235,7 +234,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ));
-            try close(); catch; end
         end
 
         function testGroupedBarPlotData(tc)
@@ -280,7 +278,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 end
                 tc.verifyEqualStructs(p.data{i}, exp);
             end
-            try close(); catch; end
         end
 
         function testMultiGroupBarWidths(tc)
@@ -319,7 +316,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
 
             % All traces should use overlay mode
             tc.verifyEqual(p.layout.barmode, "overlay");
-            try close(); catch; end
         end
 
         function testHistogramPlotData(tc)
@@ -351,7 +347,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testHistogramStairsPlotData(tc)
@@ -379,7 +374,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ));
-            try close(); catch; end
         end
 
         function testHistPlotData(tc)
@@ -416,7 +410,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 expected.showlegend = false;
             end
             tc.verifyEqualStructs(p.data{1}, expected, 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testPieChartPlotData(tc)
@@ -462,7 +455,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 expected.fillcolor = "rgba(62,38,168,1.000000)";
             end
             tc.verifyEqualStructs(p.data{1}, expected, 'AbsTol', 1e-4);
-            try close(); catch; end
         end
 
         function testBoxPlotData(tc)
@@ -508,7 +500,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                         "showlegend", false ...
                     ), 'AbsTol', 1e-15);
                 end
-                try close(); catch; end
                 return
             end
 
@@ -672,7 +663,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testScatterHistPlotData(tc)
@@ -746,7 +736,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testScatterHistPlotLayout(tc)
@@ -794,7 +783,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
             tc.verifyEqual(p.layout.yaxis3.domain, ...
                     [figChildren(1).Position(2), sum(figChildren(1).Position([2 4]))]);
             tc.verifyEqual(p.layout.yaxis3.anchor, "x3");
-            try close(); catch; end
         end
 
         function testGroupedKernelScatterHistPlotData(tc)
@@ -853,7 +841,6 @@ classdef Test_plotlyfig_bars < PlotlyTestCase
                 tc.verifyEqual(p.data{i}.mode, "lines");
                 tc.verifyEqual(p.data{i}.name, '');
             end
-            try close(); catch; end
         end
     end
 end
