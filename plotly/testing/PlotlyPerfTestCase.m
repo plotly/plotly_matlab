@@ -77,6 +77,31 @@ classdef PlotlyPerfTestCase < PlotlyTestCase
             end
             ok = true;
         end
+        function s = sampleStats(tc)
+            % statistics of the collected samples; NumSamples is 0 when
+            % nothing was measured
+            if tc.p_nSamples == 0
+                s = struct('NumSamples', 0, 'Mean', [], 'Std', [], ...
+                    'Min', [], 'Max', [], 'RelMoE', [], ...
+                    'NumWarmups', tc.p_warmupsDone);
+                return;
+            end
+            x = tc.p_times(1:tc.p_nSamples);
+            m = mean(x);
+            sd = std(x);
+            if m > 0
+                relMoE = tc.tQuantile(tc.p_nSamples - 1) * sd / (m * sqrt(tc.p_nSamples));
+            else
+                relMoE = [];
+            end
+            s = struct('NumSamples', tc.p_nSamples, ...
+                'Mean', m, ...
+                'Std', sd, ...
+                'Min', min(x), ...
+                'Max', max(x), ...
+                'RelMoE', relMoE, ...
+                'NumWarmups', tc.p_warmupsDone);
+        end
     end
 
     methods (Access = private)
