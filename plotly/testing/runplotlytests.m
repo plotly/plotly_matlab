@@ -102,6 +102,8 @@ function runplotlytests(varargin)
         % including each parameterized case
         hasSetup = ismember('setUp', classMeths);
         hasTearDown = ismember('tearDown', classMeths);
+        isPerfClass = isa(tc, 'PlotlyPerfTestCase');
+        perfRows = {};
         nTests = 0;
         verdicts = struct('Name', {}, 'Passed', {}, 'VerificationFailures', {}, ...
             'Diagnostics', {}, 'ErrorTrace', {}, 'Duration', {}, 'Errored', {});
@@ -230,6 +232,16 @@ function runplotlytests(varargin)
                 else
                     fprintf('.');
                 end
+
+                if isPerfClass
+                    st = tc.sampleStats();
+                    if st.NumSamples > 0
+                        fprintf('\n  %s: %s mean, %s MoE, n=%d (%d warmups)\n', ...
+                            caseName, fmtTime(st.Mean), fmtMoE(st.RelMoE), ...
+                            st.NumSamples, st.NumWarmups);
+                        perfRows{end+1} = struct('Name', caseName, 'Stats', st); %#ok<AGROW>
+                    end
+                end
             end
         end
 
@@ -240,6 +252,25 @@ function runplotlytests(varargin)
                 'Passed', false, 'VerificationFailures', 1, ...
                 'Diagnostics', {sprintf('No test method ''%s'' in %s', onlyMethod, className)}, ...
                 'ErrorTrace', '', 'Duration', 0, 'Errored', true);
+        end
+
+        if ~isempty(perfRows)
+            maxName = 0;
+            for r = 1:numel(perfRows)
+                maxName = max(maxName, length(perfRows{r}.Name));
+            end
+            fprintf('\nSample summary:\n');
+            hdr = sprintf('     %-*s  %4s  %10s  %10s  %10s  %10s  %7s\n', ...
+                maxName, 'Name', 'n', 'Mean', 'Std', 'Min', 'Max', 'MoE');
+            fprintf('%s', hdr);
+            fprintf('     %s\n', repmat('-', 1, numel(hdr) - 1));
+            for r = 1:numel(perfRows)
+                st = perfRows{r}.Stats;
+                fprintf('     %-*s  %4d  %10s  %10s  %10s  %10s  %7s\n', ...
+                    maxName, perfRows{r}.Name, st.NumSamples, ...
+                    fmtSec(st.Mean), fmtSec(st.Std), fmtSec(st.Min), ...
+                    fmtSec(st.Max), fmtMoE(st.RelMoE));
+            end
         end
 
         fprintf('\nDone %s\n', className);
@@ -539,6 +570,29 @@ function s = valueLabel(v)
         if v, s = 'true'; else, s = 'false'; end
     else
         s = sprintf('%s', class(v));
+    end
+end
+
+function s = fmtTime(t)
+    % auto-scaled time for the inline per-case line
+    if t < 1
+        s = sprintf('%.2f ms', t * 1000);
+    else
+        s = sprintf('%.3f s', t);
+    end
+end
+
+function s = fmtSec(t)
+    % fixed seconds for the sample summary columns
+    s = sprintf('%.6g', t);
+end
+
+function s = fmtMoE(r)
+    % relative margin of error as a percentage
+    if isempty(r) || ~isfinite(r)
+        s = 'n/a';
+    else
+        s = sprintf('%.1f%%', r * 100);
     end
 end
 
