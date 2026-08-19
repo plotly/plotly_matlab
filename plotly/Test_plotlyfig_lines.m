@@ -1,5 +1,9 @@
 classdef Test_plotlyfig_lines < PlotlyTestCase
     methods
+        function tearDown(tc)
+            try close(); catch; end
+        end
+
         function testLinePlotData(tc)
             fig = figure("Visible","off");
             y = [0.0301 0.4411 0.7007 0.7030 0.5102 0.6122 0.7464 0.8014 0.3367 0.5641];
@@ -32,7 +36,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testLinePlotDatetimeXaxis(tc)
@@ -48,7 +51,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
 
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqualStructs(p.data{1}.x, convertDate(x));
-            try close(); catch; end
         end
 
         function testLinePlotLayout(tc)
@@ -186,7 +188,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 expected.yaxis1.ticktext = {'0'; '0.2'; '0.4'; '0.6'; '0.8'; '1'};
             end
             tc.verifyEqualStructs(p.layout, expected, 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testAreaPlotData(tc)
@@ -223,7 +224,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 expected.showlegend = false;
             end
             tc.verifyEqualStructs(p.data{1}, expected);
-            try close(); catch; end
         end
 
         function testScatterPlotData(tc)
@@ -266,7 +266,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ));
-            try close(); catch; end
         end
 
         function testSingleScatterPlotData(tc)
@@ -306,7 +305,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 expected.hovertext = PlotlyTestCase.Any();
             end
             tc.verifyEqualStructs(p.data{1}, expected);
-            try close(); catch; end
         end
 
         function testSingleDatetimeScatterPlotData(tc)
@@ -322,7 +320,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
 
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(p.data{1}.y, {convertDate(y)});
-            try close(); catch; end
         end
 
         function testMultiDateScatterData(tc)
@@ -342,7 +339,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(p.data{1}.y, convertDate(y));
             tc.verifyEqual(p.layout.yaxis1.type, "date");
-            try close(); catch; end
         end
 
         function testLogLogPlot(tc)
@@ -382,7 +378,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 "visible", true, ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testStairsPlotData(tc)
@@ -428,7 +423,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 expected.line.shape = "hv";
             end
             tc.verifyEqual(p.data{1}, expected, 'AbsTol', 1e-4);
-            try close(); catch; end
         end
 
         function testPlotmatrixData(tc)
@@ -457,7 +451,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                         tc.verifyEqual(d.mode, "markers");
                     end
                 end
-                try close(); catch; end
                 return
             end
 
@@ -516,7 +509,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                     "showlegend", true ...
                 ), 'AbsTol', 1e-15);
             end
-            try close(); catch; end
         end
 
         function testStemPlotData(tc)
@@ -567,7 +559,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 "y", yData, ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testErrorbarData(tc)
@@ -632,7 +623,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 );
             end
             tc.verifyEqualStructs(p.data{1}, expected, 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testDoubleYAxisLinePlotData(tc)
@@ -698,7 +688,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testDoubleYAxisLineLegend(tc)
@@ -723,7 +712,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             tc.verifyEqual(p.data{2}.name, 'y2_legend');
             tc.verifyEqual(p.data{2}.showlegend, true);
             tc.verifyEqual(p.data{2}.legendrank, 2);
-            try close(); catch; end
         end
 
         function testVerticalConstantLinePlotData(tc)
@@ -752,7 +740,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 ), ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testVerticalConstantLineWithLabel(tc)
@@ -776,7 +763,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             ));
             tc.verifyTrue(any(cellfun(@(ann) contains(ann.text,label), p.layout.annotations)));
             tc.verifyTrue(any(cellfun(@(ann) ann.xanchor == alignment, p.layout.annotations)));
-            try close(); catch; end
         end
 
         function testStackedPlotData(tc)
@@ -841,7 +827,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                     "dash", "solid" ...
                 ) ...
             ));
-            try close(); catch; end
         end
 
         function testDoubleYAxisAreaPlotData(tc)
@@ -899,7 +884,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             );
             tc.verifyEqualStructs(p.data{1}, expected1);
             tc.verifyEqualStructs(p.data{2}, expected2);
-            try close(); catch; end
         end
 
         function testTitleFont(tc)
@@ -918,7 +902,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 "family", "Arial, sans-serif", ...
                 "size", 24 ...
             ));
-            try close(); catch; end
         end
 
         function testAxisLabelSizeFont(tc)
@@ -949,7 +932,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 'size', 20, ...
                 'family', 'Droid Sans, sans-serif' ...
             ));
-            try close(); catch; end
         end
 
         function testPlotWithCustomDataTip(tc)
@@ -973,7 +955,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
                     + string(y(:)) + "<br>" + "Label: " + customData(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
-            try close(); catch; end
         end
 
         function testPlotTableDataTip(tc)
@@ -1012,7 +993,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             expectedHovertext = "time: " + string(tb.time) + "<br>" + ...
                                 "Sim2: " + string(tb.Sim2) + "<br>";
             tc.verifyEqual(p.data{3}.hovertext, expectedHovertext);
-            try close(); catch; end
         end
 
         function testPlotWithMultipleCustomDataTips(tc)
@@ -1037,7 +1017,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " + string(y(:)) + "<br>" + ...
                 "Name: " + names(:) + "<br>" + "Value: " + string(values(:)) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext, expectedHovertext);
-            try close(); catch; end
         end
 
         function testScatterWithCustomDataTip(tc)
@@ -1060,7 +1039,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
                     + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
-            try close(); catch; end
         end
 
         function testScatterWithCustomDataTipTransposed(tc)
@@ -1083,7 +1061,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             expectedHovertext = "X: " + string(x(:)) + "<br>" + "Y: " ...
                     + string(y(:)) + "<br>" + "ID: " + labels(:) + "<br>";
             tc.verifyEqual(p.data{1}.hovertext(:), expectedHovertext(:));
-            try close(); catch; end
         end
 
         function testPlotDigraph(tc)
@@ -1127,7 +1104,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 tc.verifyEqual(textAnns{k}.textangle, 22.5, ...
                     "Rotation should be negated for graph plot axes");
             end
-            try close(); catch; end
         end
 
         function testPlotDigraphWithMultipleMarkers(tc)
@@ -1153,7 +1129,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                     && d.mode == "markers", p.data);
             expectedMarkers = ["circle" "square" "diamond" "star"];
             tc.verifyEqual(p.data{isMarkers}.marker.symbol, expectedMarkers);
-            try close(); catch; end
         end
 
         function testDigraphTreeJsonPayloadSize(tc)
@@ -1185,7 +1160,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             tc.verifyLessThan(payloadBytes, maxBytes, ...
                 sprintf("JSON payload is %d bytes, exceeds %d byte limit", ...
                     payloadBytes, maxBytes));
-            try close(); catch; end
         end
 
         function testCustomLegendOrder(tc)
@@ -1230,7 +1204,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
 
             % traceorder must be 'normal' so Plotly honours legendrank.
             tc.verifyEqual(char(p.layout.legend.traceorder),"normal");
-            try close(); catch; end
         end
 
         function testAreaEmptyLegend(tc)
@@ -1286,7 +1259,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             tc.verifyEqual(nArrowsFound, nArrows);
             tc.verifyEqual(numel(p.data{2}.x), nArrows);
             tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
-            try close(); catch; end
         end
 
         function testCompassPlotData(tc)
@@ -1373,7 +1345,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                     "showlegend", false ...
                 ), 'AbsTol', 1e-8);
             end
-            try close(); catch; end
         end
 
         function testFeatherPlotData(tc)
@@ -1422,7 +1393,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 expected.y = [0 0 NaN 0.23999999999999999 0 -0.23999999999999999];
             end
             tc.verifyEqualStructs(p.data{1}, expected, 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testSemilogyPlotData(tc)
@@ -1457,7 +1427,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testSemilogxPlotData(tc)
@@ -1492,7 +1461,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testInvisibleEmptyAxesSkipped(tc)
@@ -1507,7 +1475,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
 
             tc.verifyNumElements(p.data, 1);
             tc.verifyEqual(p.data{1}.x, 1:5);
-            try close(); catch; end
         end
 
         function testFigureBackgroundColors(tc)
@@ -1523,7 +1490,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
 
             tc.verifyEqual(p.layout.paper_bgcolor, "rgb(204,26,26)");
             tc.verifyEqual(p.layout.plot_bgcolor, "rgb(26,204,26)");
-            try close(); catch; end
         end
 
         function testMarkerFaceAutoColor(tc)
@@ -1536,7 +1502,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
             p = plotlyfig(fig,"visible","off");
 
             tc.verifyEqual(p.data{1}.marker.color, "rgb(51,153,77)");
-            try close(); catch; end
         end
 
         function testLinePrimitivePlotData(tc)
@@ -1573,7 +1538,6 @@ classdef Test_plotlyfig_lines < PlotlyTestCase
                 "showlegend", false ...
             );
             tc.verifyEqualStructs(p.data{1}, expected, 'AbsTol', 1e-15);
-            try close(); catch; end
         end
     end
 

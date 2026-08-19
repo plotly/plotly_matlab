@@ -1,5 +1,9 @@
 classdef Test_plotlyfig_3d < PlotlyTestCase
     methods
+        function tearDown(tc)
+            try close(); catch; end
+        end
+
         function testScatter3DPlotData(tc)
             fig = figure("Visible","off");
             [X,Y,Z] = sphere(16);
@@ -44,7 +48,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ));
-            try close(); catch; end
         end
 
         function testSurfacePlotData(tc)
@@ -68,7 +71,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
             tc.verifyEqual(p.data{2}.type, "scatter3d");
             tc.verifyEqual(p.data{2}.mode, "lines");
             tc.verifyEqual(p.data{2}.scene, "scene1");
-            try close(); catch; end
         end
 
         function testPlot3PlotData(tc)
@@ -106,7 +108,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testMeshPlotData(tc)
@@ -129,7 +130,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
             tc.verifyEqual(p.data{2}.type, "scatter3d");
             tc.verifyEqual(p.data{2}.mode, "lines");
             tc.verifyEqual(p.data{2}.scene, "scene1");
-            try close(); catch; end
         end
 
         function testRibbonPlotData(tc)
@@ -153,7 +153,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 tc.verifyEqual(p.data{i}.mode, "lines");
                 tc.verifyEqual(p.data{i}.scene, "scene1");
             end
-            try close(); catch; end
         end
 
         function testFunctionSurfacePlotData(tc)
@@ -188,7 +187,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 "showscale", false, ...
                 "visible", true ...
             ));
-            try close(); catch; end
         end
 
         function testIsosurfacePlotData(tc)
@@ -231,7 +229,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 expected.color = "rgb(33,144,141)";
             end
             tc.verifyEqual(p.data{1}, expected);
-            try close(); catch; end
         end
 
         function testContour3PlotData(tc)
@@ -246,7 +243,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 tc.verifyEqual(p.data{1}.type, "scatter3d");
                 tc.verifyEqual(p.data{1}.scene, "scene1");
                 tc.verifyEqual(p.data{1}.mode, "lines");
-                try close(); catch; end
                 return
             end
 
@@ -275,7 +271,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 "reversescale", false, ...
                 "showlegend", true ...
             ), 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testBar3PlotData(tc)
@@ -328,7 +323,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 tc.verifyEqual(p.data{2}.type, "scatter3d");
                 tc.verifyEqual(p.data{end}.type, "scatter3d");
             end
-            try close(); catch; end
         end
 
         function testBar3hPlotData(tc)
@@ -380,7 +374,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 tc.verifyEqual(p.data{2}.type, "scatter3d");
                 tc.verifyEqual(p.data{end}.type, "scatter3d");
             end
-            try close(); catch; end
         end
 
         function testStem3PlotData(tc)
@@ -432,7 +425,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
                 expected.marker.line.width = 0.5;
             end
             tc.verifyEqualStructs(p.data{1}, expected, 'AbsTol', 1e-15);
-            try close(); catch; end
         end
 
         function testPie3PlotData(tc)
@@ -469,7 +461,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
             if is_octave()
                 tc.verifyNumElements(p.data, 30);
             end
-            try close(); catch; end
         end
 
         function testQuiver3VectorData(tc)
@@ -497,7 +488,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
             tc.verifyEqual(nArrows, 3);
             tc.verifyEqual(numel(p.data{2}.x), nArrows);
             tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
-            try close(); catch; end
         end
 
         function testQuiver3GridData(tc)
@@ -524,7 +514,6 @@ classdef Test_plotlyfig_3d < PlotlyTestCase
             tc.verifyEqual(nArrows, n*n);
             tc.verifyEqual(numel(p.data{2}.x), n*n);
             tc.verifyEqual(p.data{2}.hovertext, expectedHovertext);
-            try close(); catch; end
         end
     end
 end
