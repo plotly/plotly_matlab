@@ -9,29 +9,32 @@ function runplotlytests(varargin)
     end
     addpath(genpath(root));
 
+    % every Test_*.m under the root, in any folder, forms both the
+    % default suite and the pool a bare test method name resolves against
+    suiteFiles = sort(findTestFiles(root));
+
     % Targets: {className, methodName, rawParams, file} rows; an empty
     % methodName runs every test method of the class.  methodName may
     % carry a positional parameter filter:
     %   'Class/method'           -> all parameterized values
     %   'Class/method(2,"x")'    -> only matching combinations
     %   'Class/method(2,,"x")'   -> empty slot: all annotated values
-    % Passing parameters to a method with no annotation is an error, as
-    % is passing more values than the method takes arguments. Without
-    % arguments the default suites run.
+    % A bare test method name ('testFoo' or 'testFoo(2)') resolves to
+    % its class when unambiguous.  Passing parameters to a method with
+    % no annotation is an error, as is passing more values than the
+    % method takes arguments.  Without arguments the default suites run.
     if nargin == 0
-        args = {'Test_m2json'};
-        % Discover the split plotlyfig test classes (Test_plotlyfig_*).
-        testFiles = dir(fullfile(root, 'Test_plotlyfig_*.m'));
-        for f = 1:numel(testFiles)
-            [~, cls] = fileparts(testFiles(f).name);
-            args{end+1} = cls;
+        args = cell(1, numel(suiteFiles));
+        for f = 1:numel(suiteFiles)
+            [~, cls] = fileparts(suiteFiles{f});
+            args{f} = cls;
         end
     else
         args = varargin;
     end
     targets = cell(numel(args), 4);
     for i = 1:numel(args)
-        [className, methodName, rawParams, file] = parseTarget(args{i});
+        [className, methodName, rawParams, file] = parseTarget(args{i}, suiteFiles);
         targets{i, 1} = className;
         targets{i, 2} = methodName;
         targets{i, 3} = rawParams;
@@ -295,9 +298,11 @@ function runplotlytests(varargin)
     end
 end
 
-function [className, methodName, rawParams, file] = parseTarget(arg)
-    % Accept 'Class', 'Class.m', 'Class/method', 'Class.method' and
-    % 'Class/method(v1,v2,...)' parameter filters.
+function [className, methodName, rawParams, file] = parseTarget(arg, suiteFiles)
+    % Accept 'Class', 'Class.m', 'Class/method', 'Class.method',
+    % 'Class/method(v1,v2,...)' parameter filters and a bare test
+    % method name ('testFoo' or 'testFoo(v1)'), resolved to its class
+    % when unambiguous.
     methodName = '';
     rawParams = '';
     file = '';
@@ -339,10 +344,25 @@ function [className, methodName, rawParams, file] = parseTarget(arg)
             if isempty(file) && exist(cls, 'file')
                 file = cls;
             end
-        elseif ~isempty(strfind(arg, '('))
-            error('runplotlytests:paramsNeedMethod', ...
-                ['Parameters in ''%s'' require a test method target like ' ...
-                'Class/method(v1,v2).'], arg);
+        else
+            % no class prefix: a bare test method name resolves to the
+            % class that defines it when unambiguous
+            name = arg;
+            rawParams = '';
+            if ~isempty(strfind(arg, '('))
+                [name, rawParams] = stripParams(arg, arg);
+            end
+            if ~isempty(regexp(name, '^test\w+$', 'once'))
+                file = findTestMethodFile(suiteFiles, name);
+                if ~isempty(file)
+                    methodName = name;
+                end
+            end
+            if isempty(file) && ~isempty(strfind(arg, '('))
+                error('runplotlytests:paramsNeedMethod', ...
+                    ['Parameters in ''%s'' require a test method target like ' ...
+                    'Class/method(v1,v2).'], arg);
+            end
         end
     end
 
@@ -352,6 +372,60 @@ function [className, methodName, rawParams, file] = parseTarget(arg)
     end
 
     [~, className] = fileparts(file);
+end
+
+function files = findTestFiles(folder)
+    files = {};
+    d = dir(folder);
+    for i = 1:numel(d)
+        if isempty(d(i).name) || d(i).name(1) == '.'
+            continue; % . and .. and hidden folders
+        end
+        if d(i).isdir
+            files = [files, findTestFiles(fullfile(folder, d(i).name))]; %#ok<AGROW>
+        elseif ~isempty(regexp(d(i).name, '^Test_.*\.m$', 'once'))
+            files{end+1} = fullfile(folder, d(i).name); %#ok<AGROW>
+        end
+    end
+end
+
+function file = findTestMethodFile(suiteFiles, name)
+    % locate the class file that defines the test method name; error on
+    % ambiguity
+    found = cell(1, numel(suiteFiles));
+    n = 0;
+    for i = 1:numel(suiteFiles)
+        if fileDefinesMethod(suiteFiles{i}, name)
+            n = n + 1;
+            found{n} = suiteFiles{i};
+        end
+    end
+    found = found(1:n);
+    if numel(found) > 1
+        classes = cell(1, numel(found));
+        for i = 1:numel(found)
+            [~, classes{i}] = fileparts(found{i});
+        end
+        error('runplotlytests:ambiguousMethod', ...
+            'Test method ''%s'' is defined in %s; use Class/method to disambiguate.', ...
+            name, strjoin(classes, ', '));
+    end
+    file = '';
+    if ~isempty(found)
+        file = found{1};
+    end
+end
+
+function ok = fileDefinesMethod(file, name)
+    fid = fopen(file, 'r');
+    if fid < 0
+        ok = false;
+        return;
+    end
+    text = fread(fid, Inf, '*char')';
+    fclose(fid);
+    pat = ['^\s*function\s+' regexptranslate('escape', name) '\s*\('];
+    ok = ~isempty(regexp(text, pat, 'once', 'lineanchors'));
 end
 
 function [name, raw] = stripParams(name, fullArg)
