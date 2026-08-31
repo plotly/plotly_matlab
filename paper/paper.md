@@ -88,7 +88,7 @@ A central design commitment is cross-engine parity. MATLAB and GNU Octave
 differ in their graphics object trees (e.g., Octave wraps plot types in
 hggroups that MATLAB exposes differently) and property semantics (character
 arrays versus string types, annotation properties absent in Octave). The library maintains
-a single codebase that behaves identically in both engines, with behavior
+a single codebase that provides consistent behavior across both engines, with behavior
 verified by a regression suite that runs on each.
 
 Testing is an essential part of the project. A test runner
