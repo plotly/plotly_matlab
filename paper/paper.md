@@ -51,7 +51,7 @@ plots (its canonical scholarly citation has been cited more than 1,000 times on 
 While other languages were supported by Plotly, the Octave [@octave] and MATLAB [@matlab]
 ecosystems, which are widely used in scientific research, both lacked a plotting library
 that is interactive and web-based. This library bridges this gap by providing an easy
-way to generate Plotly figures from the full range of plots supported by Octave and MATLAB.
+way to generate Plotly figures from a broad range of native plots supported by Octave and MATLAB.
 
 [^1]: Cited 1,061 times as of Aug 2026 (https://openalex.org/works/W2991157178)
 
