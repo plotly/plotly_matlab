@@ -46,8 +46,9 @@ First released in 2013, this library brings interactive web-based plots to Octav
 
 # Statement of need
 
-Plotly[@plotly] is widely used by the scientific community to generate interactive web
-plots (its canonical scholarly citation has been cited more than 1,000 times on OpenAlex[^1]). While other languages were supported by Plotly, the Octave[@octave] and MATLAB[@matlab]
+Plotly [@plotly] is widely used by the scientific community to generate interactive web
+plots (its canonical scholarly citation has been cited more than 1,000 times on OpenAlex[^1]).
+While other languages were supported by Plotly, the Octave [@octave] and MATLAB [@matlab]
 ecosystems, which are widely used in scientific research, both lacked a plotting library
 that is interactive and web-based. This library bridges this gap by providing an easy
 way to generate Plotly figures from the full range of plots supported by Octave and MATLAB.
@@ -56,13 +57,13 @@ way to generate Plotly figures from the full range of plots supported by Octave 
 
 # State of the field
 
-Wrappers for Plotly also exist in R[@r], Python[@python], Rust[@rust], and .NET programming
-languages[@dotnet], and those ecosystems have multiple interactive web-visualization
+Wrappers for Plotly also exist in R [@r], Python [@python], Rust [@rust], and .NET programming
+languages [@dotnet], and those ecosystems have multiple interactive web-visualization
 options besides Plotly. For MATLAB and Octave, the existing alternatives cover
-only part of the workflow: `export_fig`[@export_fig] is the standard tool for
+only part of the workflow: `export_fig` [@export_fig] is the standard tool for
 high-quality static export of figures but produces no interactive charts;
-`matlab2tikz`[@matlab2tikz] targets LaTeX documents with generated TikZ code;
-and the `gramm` package[@gramm] provides a grammar-of-graphics interface for
+`matlab2tikz` [@matlab2tikz] targets LaTeX documents with generated TikZ code;
+and the `gramm` package [@gramm] provides a grammar-of-graphics interface for
 statistical visualization in MATLAB but renders to native figures rather than
 web charts. Rather than extending an existing binding, this library implements
 figure conversion directly from each engine's native graphics object model,
