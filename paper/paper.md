@@ -95,7 +95,7 @@ Testing is an essential part of the project. A test runner
 (`runplotlytests`) executes structural regression tests of converted figure
 descriptions in both engines, and a gallery of 81 plot types
 (`makegallery`) generates native and converted outputs that can be compared by
-rendering with plotly.js in a browser. Continuous integration runs the Octave
+rendering with Plotly.js in a browser. Continuous integration runs the Octave
 test suite on every push (GitHub Actions).
 
 # Research impact statement
