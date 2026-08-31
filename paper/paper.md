@@ -67,8 +67,8 @@ and the `gramm` package [@gramm] provides a grammar-of-graphics interface for
 statistical visualization in MATLAB but renders to native figures rather than
 web charts. Rather than extending an existing binding, this library implements
 figure conversion directly from each engine's native graphics object model,
-giving Octave and MATLAB users interactive web-based graphing where no other
-option exists.
+providing Octave and MATLAB users with a dedicated workflow for interactive
+web-based graphing.
 
 # Software design
 
