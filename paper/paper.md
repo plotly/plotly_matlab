@@ -58,8 +58,7 @@ way to generate Plotly figures from a broad range of native plots supported by O
 # State of the field
 
 Wrappers for Plotly also exist in R [@r], Python [@python], Rust [@rust], and .NET programming
-languages [@dotnet], and those ecosystems have multiple interactive web-visualization
-options besides Plotly. For MATLAB and Octave, the existing alternatives cover
+languages [@dotnet]. For MATLAB and Octave, the existing alternatives cover
 only part of the workflow: `export_fig` [@export_fig] is a widely used tool for
 high-quality static export of figures but produces no interactive charts;
 `matlab2tikz` [@matlab2tikz] targets LaTeX documents with generated TikZ code;
