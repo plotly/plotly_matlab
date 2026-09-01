@@ -22,7 +22,7 @@ affiliations:
    index: 2
  - name: Plotly Technologies, Canada
    index: 3
-date: 13 August 2026
+date: 1 September 2026
 bibliography: paper.bib
 ---
 
