@@ -164,5 +164,47 @@ classdef Test_m2json < PlotlyTestCase
             expected = "[[1, 2, 3]]";
             tc.verifyEqual(m2json(value), expected);
         end
+
+        function testStringWithNewline(tc)
+            value = sprintf('Hello\nWorld');
+            expected = '"Hello\nWorld"';
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testStringWithTab(tc)
+            value = sprintf('Hello\tWorld');
+            expected = '"Hello\tWorld"';
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testStringWithCarriageReturn(tc)
+            value = sprintf('Hello\rWorld');
+            expected = '"Hello\rWorld"';
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testStringWithBackspace(tc)
+            value = sprintf('Hello\bWorld');
+            expected = '"Hello\bWorld"';
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testStringWithFormFeed(tc)
+            value = sprintf('Hello\fWorld');
+            expected = '"Hello\fWorld"';
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testStringWithControlCharacters(tc)
+            value = ['hello', char(1), 'world'];
+            expected = '"hello\u0001world"';
+            tc.verifyEqual(m2json(value), expected);
+        end
+
+        function testCellWithControlCharacters(tc)
+            value = {sprintf('Line 1\nLine 2'), sprintf('Col 1\tCol 2')};
+            expected = '["Line 1\nLine 2", "Col 1\tCol 2"]';
+            tc.verifyEqual(m2json(value), expected);
+        end
     end
 end
