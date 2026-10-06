@@ -2,7 +2,7 @@ function status = getKaleido()
 status=0;
 kDir = fullfile(fileparts(mfilename('fullpath')),'..','kaleido');
 arch = computer('arch');
-plotlyJS = 'https://cdn.plot.ly/plotly-latest.min.js';
+plotlyJS = 'https://cdn.plot.ly/plotly-2.35.3.min.js';
 
 if isunix()
     if ismac()

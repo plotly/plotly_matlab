@@ -543,7 +543,7 @@ function js = resolvePlotlyJS(mode)
 
     if strcmpi(mode, 'cdn')
         js.mode = 'cdn';
-        js.script = 'https://cdn.plot.ly/plotly-latest.min.js';
+        js.script = 'https://cdn.plot.ly/plotly-2.35.3.min.js';
     elseif strcmpi(mode, 'bundle') || strcmpi(mode, 'auto')
         % look for the local offline bundle (same location as plotlyoffline)
         bundleFile = fullfile(userHome(), '.plotly', 'plotlyjs', ...
@@ -563,7 +563,7 @@ function js = resolvePlotlyJS(mode)
                 'Run getplotlyoffline() first.'], bundleFile);
         end
         js.mode = 'cdn';
-        js.script = 'https://cdn.plot.ly/plotly-latest.min.js';
+        js.script = 'https://cdn.plot.ly/plotly-2.35.3.min.js';
     end
 end
 
