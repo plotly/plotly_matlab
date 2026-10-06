@@ -1,7 +1,7 @@
 function plotlysetup_offline(plotly_bundle_url, varargin)
     % CALL: plotlysetup_offline(plotly_bundle_url);
-    % WHERE: plotly_bundle_url is the plotly bundle url, e.g. http://cdn.plot.ly/plotly-latest.min.js
-    % If no argument is provided, the default http://cdn.plot.ly/plotly-latest.min.js is used.
+    % WHERE: plotly_bundle_url is the plotly bundle url, e.g. https://cdn.plot.ly/plotly-latest.min.js
+    % If no argument is provided, the default https://cdn.plot.ly/plotly-latest.min.js is used.
     % [1] adds plotly api to matlabroot/toolboxes. If successful do [2]
     % [2] adds plotly api to searchpath via startup.m of matlabroot and/or userpath
 
@@ -11,7 +11,7 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
 
     try %check number of inputs
         if nargin == 0
-            plotly_bundle_url = 'http://cdn.plot.ly/plotly-latest.min.js';
+            plotly_bundle_url = 'https://cdn.plot.ly/plotly-latest.min.js';
         elseif nargin>1
             error('plotly:wrongInput',....
                 ['\n\nWhoops! Wrong number of inputs. Please run >> help plotlysetup_offline \n',...
