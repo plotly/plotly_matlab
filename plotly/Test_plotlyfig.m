@@ -1601,6 +1601,24 @@ classdef Test_plotlyfig < PlotlyTestCase
             try close(); catch; end
         end
 
+        function testFig2plotlyUntitledSubplotsWriteHtml(tc)
+            fig = figure("Visible","off");
+            subplot(2,1,1); plot(1:3);
+            subplot(2,1,2); plot(3:-1:1);
+            folder = tempname();
+            mkdir(folder);
+
+            fig2plotly(fig, "open", false, "visible", "off", ...
+                "savefolder", folder, "include_plotlyjs", false);
+
+            htmlFile = fullfile(folder, 'untitled.html');
+            tc.verifyTrue(exist(htmlFile, 'file') == 2, ...
+                sprintf('%s was not written', htmlFile));
+            try delete(htmlFile); catch; end
+            try rmdir(folder); catch; end
+            try close(); catch; end
+        end
+
         function testStackedPlotData(tc)
             if is_octave()
                 return % The `stackedplot` function is not yet implemented in Octave.
