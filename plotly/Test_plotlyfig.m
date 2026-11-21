@@ -295,10 +295,6 @@ classdef Test_plotlyfig < PlotlyTestCase
                 ), ...
                 "showlegend", false ...
             );
-            if ~is_octave()
-                expected.hoverinfo = PlotlyTestCase.Any();
-                expected.hovertext = PlotlyTestCase.Any();
-            end
             tc.verifyEqualStructs(p.data{1}, expected);
             try close(); catch; end
         end

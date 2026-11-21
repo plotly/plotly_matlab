@@ -32,6 +32,9 @@ function data = updateScatter(obj,plotIndex)
     end
     if ~isempty(dataTipRows)
         dataTipRows = dataTipRows(~ismember({dataTipRows.Label}, {'Size' 'Color' 'X' 'Y' 'Z'}));
+        % rows whose Value is a property name (e.g. 'AlphaData') refer to
+        % the scatter's own properties instead of carrying per-point data
+        dataTipRows = dataTipRows(~arrayfun(@(row) ischar(row.Value), dataTipRows));
         if numel(dataTipRows) > 0
             customLabel = "";
             for i = 1:numel(dataTipRows)
