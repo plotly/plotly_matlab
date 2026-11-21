@@ -51,6 +51,18 @@ classdef Test_plotlyfig < PlotlyTestCase
             try close(); catch; end
         end
 
+        function testFigureSizeLayout(tc)
+            fig = figure("Visible","off","Units","pixels","Position",[100 100 500 300]);
+            plot(1:3);
+
+            p = plotlyfig(fig,"visible","off");
+
+            figurePosition = get(fig, "Position");
+            tc.verifyEqual(p.layout.width, figurePosition(3));
+            tc.verifyEqual(p.layout.height, figurePosition(4));
+            try close(); catch; end
+        end
+
         function testLinePlotLayout(tc)
             fig = figure("Visible","off");
             y = [0.0301 0.4411 0.7007 0.7030 0.5102 0.6122 0.7464 0.8014 0.3367 0.5641];
