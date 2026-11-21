@@ -42,7 +42,7 @@ jobs:
         with:
           release: ${{ matrix.release }}
           cache: true
-          products: Statistics_and_Machine_Learning_Toolbox
+          products: Statistics_and_Machine_Learning_Toolbox Symbolic_Math_Toolbox
 
       - name: Run plotly tests
         uses: matlab-actions/run-command@v3
