@@ -76,6 +76,7 @@ function response = plotlyoffline(plotlyfig)
     if iscellstr(filename)
         filename = sprintf('%s ', filename{:});
     end
+    filename = char(filename);
 
     % remove the whitespace from the filename
     cleanFilename = filename(filename~=' ');
