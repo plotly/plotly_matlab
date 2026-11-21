@@ -14,7 +14,10 @@ function gallery = makegallery(varargin)
     %   OutputFolder - folder in which the HTML file is written.
     %                  Default: current working directory.
     %   Functions    - cellstr of plot function names to include.
-    %                  Default: all supported functions.
+    %                  Default: all supported functions. Functions
+    %                  that do not exist in the running MATLAB/Octave
+    %                  (e.g. sombrero in MATLAB, fsurf in Octave) are
+    %                  skipped.
     %   Visible      - 'off' (default) to keep the figures hidden while
     %                  the gallery is generated, 'on' to display them.
     %   EmbedPNG     - true (default) to embed the native PNGs in the
@@ -75,6 +78,14 @@ function gallery = makegallery(varargin)
                 strjoin(allEntries(:, 1), ', '));
         end
         names = requested;
+    end
+
+    available = cellfun(@isFunctionAvailable, names);
+    if ~all(available)
+        fprintf('Skipping entries not available in %s: %s\n', ...
+            tern(is_octave(), 'Octave', 'MATLAB'), ...
+            strjoin(names(~available), ', '));
+        names = names(available);
     end
 
     fprintf('Generating Plotly gallery with %d entries ...\n', numel(names));
@@ -648,6 +659,10 @@ function b64 = base64Encode(bytes)
     if pad > 0
         b64(end - pad + 1:end) = '=';
     end
+end
+
+function tf = isFunctionAvailable(name)
+    tf = exist(name, 'file') ~= 0 || exist(name, 'builtin') ~= 0;
 end
 
 function out = tern(cond, a, b)
