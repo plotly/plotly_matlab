@@ -25,3 +25,42 @@ jobs:
           CI: true
         run: |
           xvfb-run -a octave --no-gui runplotlytests.m
+
+  matlab-tests:
+    name: matlab-tests (${{ matrix.release }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [R2025a, R2026a]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v3
+        with:
+          release: ${{ matrix.release }}
+          cache: true
+          products: Statistics_and_Machine_Learning_Toolbox
+
+      - name: Run plotly tests
+        uses: matlab-actions/run-command@v3
+        env:
+          PLOTLY_ROOT: ${{ github.workspace }}/plotly
+          CI: true
+        with:
+          command: cd plotly/testing; runplotlytests
+
+      - name: Build gallery
+        if: ${{ !cancelled() }}
+        uses: matlab-actions/run-command@v3
+        with:
+          command: addpath(genpath('plotly')); mkdir('gallery'); makegallery('OutputFolder', 'gallery', 'Open', false);
+
+      - name: Upload gallery
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-${{ matrix.release }}
+          path: gallery/
