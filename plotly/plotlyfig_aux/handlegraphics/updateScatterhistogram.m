@@ -186,14 +186,14 @@ function updateMarginalHistogram(obj, plotIndex, axName)
         obj.data{traceIndex}.histfunc = 'count';
         obj.data{traceIndex}.showlegend = false;
 
+        tmpNumBins = get(plotData, 'NumBins');
         switch axName
             case 'X'
-                tmpNumBins = get(plotData, 'NumBins');
                 obj.data{traceIndex}.orientation = 'v';
-                try obj.data{traceIndex}.nbinsx = tmpNumBins(1,t); end
+                obj.data{traceIndex}.nbinsx = tmpNumBins(1,t);
             case 'Y'
                 obj.data{traceIndex}.orientation = 'h';
-                try obj.data{traceIndex}.nbinsy = tmpNumBins(2,t); end
+                obj.data{traceIndex}.nbinsy = tmpNumBins(2,t);
         end
 
         %-link legend-%
