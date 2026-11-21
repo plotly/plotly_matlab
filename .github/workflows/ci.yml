@@ -44,6 +44,11 @@ jobs:
           cache: true
           products: Statistics_and_Machine_Learning_Toolbox
 
+      - name: Diagnose scatter data tips
+        uses: matlab-actions/run-command@v3
+        with:
+          command: addpath(genpath('plotly')); run('.github/scripts/diag_scatter_datatip.m');
+
       - name: Run plotly tests
         uses: matlab-actions/run-command@v3
         env:
