@@ -44,6 +44,20 @@ jobs:
           cache: true
           products: Statistics_and_Machine_Learning_Toolbox Symbolic_Math_Toolbox
 
+      - name: Diagnose fig2plotly without titles
+        continue-on-error: true
+        uses: matlab-actions/run-command@v3
+        with:
+          command: addpath(genpath('plotly')); addpath('.github/scripts'); diag_untitled_filename('diag_out');
+
+      - name: Upload diagnostic output
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: diag-untitled-${{ matrix.release }}
+          path: diag_out/
+          retention-days: 7
+
       - name: Run plotly tests
         uses: matlab-actions/run-command@v3
         env:
