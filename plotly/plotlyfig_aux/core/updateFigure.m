@@ -61,8 +61,8 @@ function obj = updateFigure(obj)
         h = figurePosition(4);
     end
 
-    obj.layout.width = w * obj.PlotlyDefaults.FigureIncreaseFactor;
-    obj.layout.height = h * obj.PlotlyDefaults.FigureIncreaseFactor;
+    obj.layout.width = w;
+    obj.layout.height = h;
 
     col = round(255*obj.State.Figure.OriginalColor);
     obj.layout.paper_bgcolor = getStringColor(col);
