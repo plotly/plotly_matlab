@@ -56,6 +56,8 @@ classdef Test_plotlyfig < PlotlyTestCase
             y = [0.0301 0.4411 0.7007 0.7030 0.5102 0.6122 0.7464 0.8014 0.3367 0.5641];
             x = 1:10;
             plot(x,y);
+            set(gca, "XLim", [1 10], "XTick", 1:10, ...
+                "YLim", [0 0.9], "YTick", [0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]);
 
             p = plotlyfig(fig,"visible","off");
 
@@ -177,14 +179,6 @@ classdef Test_plotlyfig < PlotlyTestCase
                     "borderpad", 3 ...
                 )}} ...
             );
-            if is_octave()
-                expected.xaxis1.tickvals = [0 2 4 6 8 10];
-                expected.xaxis1.range = [0 10];
-                expected.xaxis1.ticktext = {'0'; '2'; '4'; '6'; '8'; '10'};
-                expected.yaxis1.tickvals = [0 0.2 0.4 0.6 0.8 1];
-                expected.yaxis1.range = [0 1];
-                expected.yaxis1.ticktext = {'0'; '0.2'; '0.4'; '0.6'; '0.8'; '1'};
-            end
             tc.verifyEqualStructs(p.layout, expected, 'AbsTol', 1e-15);
             try close(); catch; end
         end
