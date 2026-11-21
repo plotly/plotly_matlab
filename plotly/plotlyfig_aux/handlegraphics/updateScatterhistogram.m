@@ -247,6 +247,7 @@ function updateMarginalSmooth(obj, plotIndex, axName)
         obj.data{traceIndex}.y = ySmooth;
 
         %-set other trace properties-%
+        tmpColor = get(plotData, 'Color');
         traceColor = getStringColor(round(255*tmpColor(t,:)), 0.7);
         tmpLineStyle = get(plotData, 'LineStyle');
         lineStyle = tmpLineStyle(t);
