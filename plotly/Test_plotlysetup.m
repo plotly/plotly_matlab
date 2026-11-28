@@ -30,7 +30,7 @@ classdef Test_plotlysetup < PlotlyTestCase
                 startupFile = '~/.octaverc';
                 pathdefs = {};
             else
-                startupFile = 'startup.m';
+                startupFile = 'startup.m (in the folder that userpath returns)';
                 pathdefs = which('pathdef.m', '-all');
             end
             before = Test_plotlysetup.fileDatenums(pathdefs);
