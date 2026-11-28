@@ -12,10 +12,10 @@ classdef Test_plotlysetup < PlotlyTestCase
         end
 
         function testPlotlysetupOnlineFromAnyFolder(tc)
-            if ~is_octave()
-                return % MATLAB's getuserdir ignores HOME, so this would overwrite the real credentials.
-            end
             sandbox = Test_plotlysetup.enterSetupSandbox(); %#ok<NASGU>
+            if ~strcmp(getuserdir(), getenv('HOME'))
+                return % getuserdir() is outside the sandbox, so this would overwrite the real credentials.
+            end
 
             output = evalc('plotlysetup_online(''setup_test_user'', ''setup_test_key'');');
 
@@ -49,12 +49,14 @@ classdef Test_plotlysetup < PlotlyTestCase
     methods (Static)
         function sandbox = enterSetupSandbox()
             %-run the setup scripts, which live in the repository root,
-            %-from an empty folder that is also HOME; the returned object
-            %-restores folder, HOME and the repository root's absence from
+            %-from an empty folder that is also HOME and APPDATA (where
+            %-getuserdir looks on Windows); the returned object restores
+            %-folder, HOME, APPDATA and the repository root's absence from
             %-the path when it goes out of scope (restoring the whole path
             %-with path() breaks the running test object in Octave)-%
             oldFolder = pwd();
             oldHome = getenv('HOME');
+            oldAppdata = getenv('APPDATA');
             repoRoot = fileparts(fileparts(which('fig2plotly')));
             rootWasOnPath = ~isempty(strfind([pathsep path() pathsep], ...
                 [pathsep repoRoot pathsep]));
@@ -62,17 +64,19 @@ classdef Test_plotlysetup < PlotlyTestCase
             mkdir(home);
             cd(home);
             setenv('HOME', home);
+            setenv('APPDATA', home);
             addpath(repoRoot);
             sandbox = onCleanup(@() Test_plotlysetup.leaveSetupSandbox( ...
-                oldFolder, oldHome, home, repoRoot, rootWasOnPath));
+                oldFolder, oldHome, oldAppdata, home, repoRoot, rootWasOnPath));
         end
 
-        function leaveSetupSandbox(oldFolder, oldHome, home, repoRoot, rootWasOnPath)
+        function leaveSetupSandbox(oldFolder, oldHome, oldAppdata, home, repoRoot, rootWasOnPath)
             if ~rootWasOnPath
                 rmpath(repoRoot);
             end
             cd(oldFolder);
             setenv('HOME', oldHome);
+            setenv('APPDATA', oldAppdata);
             try rmdir(home, 's'); catch; end
         end
 
