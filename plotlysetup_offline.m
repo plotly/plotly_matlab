@@ -2,7 +2,7 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
     % CALL: plotlysetup_offline(plotly_bundle_url);
     % WHERE: plotly_bundle_url is the plotly bundle url, e.g. https://cdn.plot.ly/plotly-2.35.3.min.js
     % If no argument is provided, the default https://cdn.plot.ly/plotly-2.35.3.min.js is used.
-    % [1] adds plotly api to search path and keeps it there via persistplotlypath
+    % [1] adds plotly api to search path and prints how to keep it there
 
     %DEFAULT OUTPUT
     exception.message = '';
@@ -39,7 +39,7 @@ function plotlysetup_offline(plotly_bundle_url, varargin)
         return
     end
 
-    persistplotlypath(plotlyFolderPath);
+    printplotlypathhint(plotlyFolderPath);
 
     %get offline bundle
     fprintf('\nNow downloading the plotly offline bundle ...');

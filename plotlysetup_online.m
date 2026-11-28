@@ -5,7 +5,7 @@ function plotlysetup_online(username, api_key, varargin)
     % VALID PROPERTIES [OPTIONAL]: 'stream_ids' -> your stream ids [cell array] (found online)
     %                              'plotly_domain' -> your desired REST API endpoint [string]
     %                              'plotly_streaming_domain'-> your desired Stream API endpoint [string]
-    % [1] adds plotly api to search path and keeps it there via persistplotlypath
+    % [1] adds plotly api to search path and prints how to keep it there
     % [2] calls saveplotlycredentials (using username, api_key and stream_ids [optional])
     % [3] calls saveplotlyconfig with ('plotly_domain'[optional], 'plotly_streaming_domain' [optional])
 
@@ -42,7 +42,7 @@ function plotlysetup_online(username, api_key, varargin)
         return
     end
 
-    persistplotlypath(plotlyFolderPath);
+    printplotlypathhint(plotlyFolderPath);
 
     try %save user credentials
         fprintf('Saving username/api_key credentials ... ');
