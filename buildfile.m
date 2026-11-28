@@ -20,6 +20,11 @@ function packageTask(~)
         '"(\d+\.\d+\.\d+)"', 'tokens', 'once');
     version = string(version{1});
 
+    % ship the license at the toolbox root; the copy only lives for the build
+    licenseCopy = fullfile(root, 'plotly', 'LICENSE');
+    copyfile(fullfile(root, 'LICENSE'), licenseCopy);
+    removeLicense = onCleanup(@() delete(licenseCopy)); %#ok<NASGU>
+
     opts = matlab.addons.toolbox.ToolboxOptions(fullfile(root, 'plotly'), ...
         "e59f316c-4a80-11e4-9553-005056977bd0");
     opts.ToolboxName = "Plotly Graphing Library for MATLAB";
@@ -31,7 +36,7 @@ function packageTask(~)
             "Run getplotlyoffline() once after installing to download plotly.js.";
     end
     opts.AuthorCompany = "Plotly";
-    opts.ToolboxFiles = root + "/" + files;
+    opts.ToolboxFiles = [root + "/" + files; string(licenseCopy)];
     opts.ToolboxMatlabPath = root + "/" + folders;
     opts.MinimumMatlabRelease = "R2021a";
     opts.MaximumMatlabRelease = "";

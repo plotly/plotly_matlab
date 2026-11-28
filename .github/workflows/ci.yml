@@ -122,6 +122,7 @@ jobs:
             location = which("fig2plotly");
             assert(~isempty(location), "fig2plotly is not on the path after installing");
             disp(location);
+            assert(isfile(fullfile(fileparts(location), "LICENSE")), "the toolbox has no LICENSE");
             fig = figure("Visible", "off");
             plot(1:3);
             p = plotlyfig(fig, "visible", "off");
