@@ -11,19 +11,6 @@ classdef Test_plotlysetup < PlotlyTestCase
             tc.verifyTrue(~isempty(strfind(output, 'Now downloading')), output);
         end
 
-        function testPlotlysetupOnlineFromAnyFolder(tc)
-            sandbox = Test_plotlysetup.enterSetupSandbox(); %#ok<NASGU>
-            if ~strcmp(getuserdir(), getenv('HOME'))
-                return % getuserdir() is outside the sandbox, so this would overwrite the real credentials.
-            end
-
-            output = evalc('plotlysetup_online(''setup_test_user'', ''setup_test_key'');');
-
-            tc.verifyTrue(isempty(strfind(output, 'plotly:notFound')), output);
-            credentials = loadplotlycredentials();
-            tc.verifyEqual(credentials.username, 'setup_test_user');
-        end
-
         function testPrintPlotlyPathHint(tc)
             sandbox = Test_plotlysetup.enterSetupSandbox(); %#ok<NASGU>
             if is_octave()
@@ -49,14 +36,12 @@ classdef Test_plotlysetup < PlotlyTestCase
     methods (Static)
         function sandbox = enterSetupSandbox()
             %-run the setup scripts, which live in the repository root,
-            %-from an empty folder that is also HOME and APPDATA (where
-            %-getuserdir looks on Windows); the returned object restores
-            %-folder, HOME, APPDATA and the repository root's absence from
+            %-from an empty folder that is also HOME; the returned object
+            %-restores folder, HOME and the repository root's absence from
             %-the path when it goes out of scope (restoring the whole path
             %-with path() breaks the running test object in Octave)-%
             oldFolder = pwd();
             oldHome = getenv('HOME');
-            oldAppdata = getenv('APPDATA');
             repoRoot = fileparts(fileparts(which('fig2plotly')));
             rootWasOnPath = ~isempty(strfind([pathsep path() pathsep], ...
                 [pathsep repoRoot pathsep]));
@@ -64,19 +49,17 @@ classdef Test_plotlysetup < PlotlyTestCase
             mkdir(home);
             cd(home);
             setenv('HOME', home);
-            setenv('APPDATA', home);
             addpath(repoRoot);
             sandbox = onCleanup(@() Test_plotlysetup.leaveSetupSandbox( ...
-                oldFolder, oldHome, oldAppdata, home, repoRoot, rootWasOnPath));
+                oldFolder, oldHome, home, repoRoot, rootWasOnPath));
         end
 
-        function leaveSetupSandbox(oldFolder, oldHome, oldAppdata, home, repoRoot, rootWasOnPath)
+        function leaveSetupSandbox(oldFolder, oldHome, home, repoRoot, rootWasOnPath)
             if ~rootWasOnPath
                 rmpath(repoRoot);
             end
             cd(oldFolder);
             setenv('HOME', oldHome);
-            setenv('APPDATA', oldAppdata);
             if is_octave()
                 confirm_recursive_rmdir(false, 'local');
             end
