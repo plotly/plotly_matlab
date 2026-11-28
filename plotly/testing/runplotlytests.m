@@ -13,7 +13,8 @@ function runplotlytests(varargin)
     %-every test method of the class.  Without arguments the default
     %-suites run-%
     if nargin == 0
-        args = {'Test_m2json', 'Test_plotlyfig', 'Test_plotlyfig_perf'};
+        args = {'Test_m2json', 'Test_plotlyfig', 'Test_plotlyfig_perf', ...
+            'Test_plotlysetup'};
     else
         args = varargin;
     end
