@@ -77,6 +77,9 @@ classdef Test_plotlysetup < PlotlyTestCase
             cd(oldFolder);
             setenv('HOME', oldHome);
             setenv('APPDATA', oldAppdata);
+            if is_octave()
+                confirm_recursive_rmdir(false, 'local');
+            end
             try rmdir(home, 's'); catch; end
         end
 
