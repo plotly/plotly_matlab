@@ -64,3 +64,68 @@ jobs:
         with:
           name: gallery-${{ matrix.release }}
           path: gallery/
+
+  package-toolbox:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # R2023a is the oldest release with matlab.addons.toolbox.ToolboxOptions
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v3
+        with:
+          release: R2023a
+          cache: true
+
+      - name: Package toolbox
+        uses: matlab-actions/run-command@v3
+        with:
+          command: buildtool package
+
+      - name: Upload toolbox
+        uses: actions/upload-artifact@v4
+        with:
+          name: toolbox
+          path: release/*.mltbx
+
+  install-toolbox:
+    name: install-toolbox (${{ matrix.release }})
+    needs: package-toolbox
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [R2021a, R2026a]
+    steps:
+      # no checkout: fig2plotly must come from the installed toolbox
+      - name: Download toolbox
+        uses: actions/download-artifact@v4
+        with:
+          name: toolbox
+          path: release
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v3
+        with:
+          release: ${{ matrix.release }}
+          cache: true
+
+      - name: Install, use and uninstall the toolbox
+        uses: matlab-actions/run-command@v3
+        with:
+          command: |
+            mltbx = dir(fullfile("release", "*.mltbx"));
+            assert(isscalar(mltbx), "expected one .mltbx in release/");
+            installed = matlab.addons.toolbox.installToolbox(fullfile(mltbx.folder, mltbx.name));
+            disp(installed);
+            location = which("fig2plotly");
+            assert(~isempty(location), "fig2plotly is not on the path after installing");
+            disp(location);
+            fig = figure("Visible", "off");
+            plot(1:3);
+            p = plotlyfig(fig, "visible", "off");
+            assert(numel(p.data) == 1, "plotlyfig converted %d traces, expected 1", numel(p.data));
+            addtheme(struct("layout", struct()), "ggplot2");
+            matlab.addons.toolbox.uninstallToolbox(installed);
+            assert(isempty(which("fig2plotly")), "fig2plotly is still on the path after uninstalling");
