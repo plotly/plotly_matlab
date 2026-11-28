@@ -1641,7 +1641,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             a = cos(x);
             b = exp(x);
             dt = datetime(2010,1,1) + years(x);
-            tb = table(dt',a',b',VariableNames=["date" "a" "b"]);
+            tb = table(dt',a',b','VariableNames',{'date','a','b'});
             stackedplot(tb);
 
             p = plotlyfig(fig,"visible","off");
