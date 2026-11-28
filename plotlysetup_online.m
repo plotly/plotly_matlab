@@ -27,8 +27,7 @@ function plotlysetup_online(username, api_key, varargin)
 
     try
         %check to see if plotly is in the searchpath
-        plotlysetupPath = which('plotlysetup');
-        plotlyFolderPath = fullfile(fileparts(plotlysetupPath),'plotly');
+        plotlyFolderPath = fullfile(fileparts(mfilename('fullpath')),'plotly');
         %if it was not found
         if (strcmp(genpath(plotlyFolderPath),''))
             error('plotly:notFound',...
