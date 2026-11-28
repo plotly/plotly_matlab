@@ -1,35 +1,39 @@
 classdef Test_plotlysetup < PlotlyTestCase
     methods
-        function testPlotlysetupOfflineFromAnyFolder(tc)
-            % the URL cannot resolve, so the real bundle is never replaced
+        function testPlotlysetupOffline(tc)
+            % finds plotly/ from an unrelated folder and writes no startup
+            % file; the URL cannot resolve, so the real bundle is never replaced
             sandbox = Test_plotlysetup.enterSetupSandbox(); %#ok<NASGU>
+            if is_octave()
+                pathdefs = {};
+            else
+                pathdefs = which('pathdef.m', '-all');
+            end
+            before = Test_plotlysetup.fileContents(pathdefs);
 
             output = evalc(['try, plotlysetup_offline(', ...
                 '''https://plotly.invalid/plotly.min.js''); catch, end']);
 
             tc.verifyTrue(isempty(strfind(output, 'plotly:notFound')), output);
             tc.verifyTrue(~isempty(strfind(output, 'Now downloading')), output);
+            tc.verifyTrue(isequal(Test_plotlysetup.fileContents(pathdefs), before), ...
+                'a pathdef.m on the search path changed');
+            tc.verifyNumElements(dir(fullfile(getenv('HOME'), '.octaverc')), 0);
         end
 
         function testPrintPlotlyPathHint(tc)
-            sandbox = Test_plotlysetup.enterSetupSandbox(); %#ok<NASGU>
             if is_octave()
                 startupFile = '~/.octaverc';
-                pathdefs = {};
             else
                 startupFile = 'startup.m (in the folder that userpath returns)';
-                pathdefs = which('pathdef.m', '-all');
             end
-            before = Test_plotlysetup.fileDatenums(pathdefs);
 
             output = evalc('printplotlypathhint(''/opt/it''''s here/plotly'')');
 
             tc.verifyTrue(~isempty(strfind(output, ...
-                ['add this line to your ' startupFile])), output);
+                ['add this line to your ' startupFile ':'])), output);
             tc.verifyTrue(~isempty(strfind(output, ...
                 'addpath(genpath(''/opt/it''''s here/plotly''));')), output);
-            tc.verifyEqual(Test_plotlysetup.fileDatenums(pathdefs), before);
-            tc.verifyNumElements(dir(fullfile(getenv('HOME'), '.octaverc')), 0);
         end
     end
 
@@ -66,11 +70,10 @@ classdef Test_plotlysetup < PlotlyTestCase
             try rmdir(home, 's'); catch; end
         end
 
-        function datenums = fileDatenums(files)
-            datenums = zeros(size(files));
+        function contents = fileContents(files)
+            contents = cell(size(files));
             for i = 1:numel(files)
-                info = dir(files{i});
-                datenums(i) = info.datenum;
+                contents{i} = fileread(files{i});
             end
         end
     end
