@@ -3041,6 +3041,9 @@ classdef Test_plotlyfig < PlotlyTestCase
             if is_octave()
                 return % DataTipTemplate is not yet implemented in Octave.
             end
+            if isMATLABReleaseOlderThan("R2022a")
+                return % plot(tbl, ...) needs R2022a.
+            end
             tb = table();
             tb.time = (2:2:12)';
             tb.Saved = rand(6,1);
