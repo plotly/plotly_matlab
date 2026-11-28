@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [R2025a, R2026a]
+        release: [R2021a, R2022a, R2023a, R2024a, R2025a, R2026a]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
