@@ -1610,6 +1610,7 @@ classdef Test_plotlyfig < PlotlyTestCase
             ));
             tc.verifyTrue(any(cellfun(@(ann) contains(ann.text,label), p.layout.annotations)));
             tc.verifyTrue(any(cellfun(@(ann) ann.xanchor == alignment, p.layout.annotations)));
+            tc.verifyTrue(any(cellfun(@(ann) strcmp(ann.font.color, 'rgb(255,0,0)'), p.layout.annotations)));
             try close(); catch; end
         end
 

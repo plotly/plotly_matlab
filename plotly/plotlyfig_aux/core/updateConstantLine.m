@@ -59,7 +59,13 @@ function data = updateConstantLine(obj,plotIndex)
             annotation.y = get(plotData, 'Value');
         end
 
-        col = round(255*get(plotData, 'LabelColor'));
+        % LabelColor only exists since R2024b; its default ('auto' mode)
+        % is the line color, so older releases fall back to that
+        if isprop(plotData, 'LabelColor')
+            col = round(255*get(plotData, 'LabelColor'));
+        else
+            col = round(255*get(plotData, 'Color'));
+        end
         annotation.font.color = getStringColor(col);
 
         annotation.font.family = matlab2plotlyfont(get(plotData, 'FontName'));
