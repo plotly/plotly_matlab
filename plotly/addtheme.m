@@ -1,19 +1,8 @@
 function f = addtheme(f, theme)
     %-validate theme name-%
 
-    themePath = 'plotly/themes';
-    S = dir(themePath);
-
-    if isempty(S)
-        paths = split(path, ':');
-        for p = 1:length(paths)
-            if ~isempty(strfind(paths{p}, themePath))
-                themePath = paths{p};
-                break;
-            end
-        end
-        S = dir(themePath);
-    end
+    themePath = fullfile(fileparts(mfilename('fullpath')), 'themes');
+    S = dir(fullfile(themePath, '*.json'));
 
     N = {S.name};
 
@@ -28,8 +17,7 @@ function f = addtheme(f, theme)
 
     %-add theme to figure-%
 
-    fname = sprintf('%s/%s.json', themePath, theme);
-    % fname = strcat('plotly/themes/', theme, '.json');
+    fname = fullfile(themePath, sprintf('%s.json', theme));
     fid = fopen(fname);
     raw = fread(fid,inf);
     str = char(raw');
